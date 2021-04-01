@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application xmlns="http://appconfig.aura.nav.no" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			 xsi:schemaLocation="http://appconfig.aura.nav.no http://maven.adeo.no/xsd/appconfig.xsd">
+	<name>brevserver</name>
+	<selftest>
+		<path>/brevweb/BrevAdmin.jsp?cmd=Test</path>
+		<humanReadablePath>/brevweb/BrevAdmin.jsp</humanReadablePath>
+	</selftest>
+	<artifacts>
+		<ear groupId="no.nav.brevserver" artifactId="brevserver-j2ee">
+			<classPathLibrary groupId="no.nav.brevserver" artifactId="brevserver-asposeconfig" unpack="true"
+							  version="${project.version}"/>
+		</ear>
+	</artifacts>
+	<resources>
+		<datasource alias="brevserverDS" jndi="jdbc/brev" type="DB2" cmpEnabled="true">
+			<pool connectionTimeout="180" minPoolSize="1" maxPoolSize="10" reapTime="180" unusedTimeout="1800" agedTimeout="0"
+				  purgePolicy="ENTIRE_POOL"/>
+		</datasource>
+		<baseUrl alias="brevserverUrl" mapToProperty="brevserverUrl"/>
+		<baseUrl alias="joarkJournalUrl" mapToProperty="joarkJournalUrl"/>
+		<baseUrl alias="joarkJournalBehandlingUrl" mapToProperty="joarkJournalBehandlingUrl"/>
+		<queueManager alias="mqGateway01" jndi="jms/qcf/brev">
+			<pool connectionTimeout="180" minPoolSize="1" maxPoolSize="10" reapTime="180" unusedTimeout="1800" agedTimeout="0"
+				  purgePolicy="FAILING_CONNECTIONS"/>
+			<queue alias="onlinebrevQueue" jndi="jms/queue/brevserverOnlinebrev">
+				<customProperties parentObject="MQQueue">
+					<property key="useRFH2" value="false"/>
+					<property key="ccsid" value="819"/>
+				</customProperties>
+				<listenerPort name="BestillBrevPort" description="Lytter paa koeen BREVSERVER_ONLINEBREV"
+							  initialState="START" maxRetries="3" maxSessions="1" maxMessages="1"/>
+			</queue>
+			<queue alias="onlinebrevPEQueue" jndi="jms/queue/brevserverOnlinebrevPE">
+				<customProperties parentObject="MQQueue">
+					<property key="useRFH2" value="false"/>
+					<property key="ccsid" value="819"/>
+				</customProperties>
+				<listenerPort name="PEBestillBrevPort" description="Lytter paa koeen BREVSERVER_ONLINEBREV_PE01"
+							  initialState="START" maxRetries="3" maxSessions="1" maxMessages="1"/>
+			</queue>
+			<queue alias="dialogueOnlineQueue" jndi="jms/queue/dialogueOnline">
+				<customProperties parentObject="MQQueue">
+					<property key="useRFH2" value="false"/>
+					<property key="ccsid" value="819"/>
+				</customProperties>
+			</queue>
+			<queue alias="dialogueOnlinePEQueue" jndi="jms/queue/dialogueOnlinePE">
+				<customProperties parentObject="MQQueue">
+					<property key="useRFH2" value="false"/>
+					<property key="ccsid" value="819"/>
+				</customProperties>
+			</queue>
+			<queue alias="mottakOnlineQueue" jndi="jms/queue/brevserverMottakOnline">
+				<customProperties parentObject="MQQueue">
+					<property key="useRFH2" value="false"/>
+					<property key="ccsid" value="819"/>
+				</customProperties>
+				<listenerPort name="ArkiverBrevPort" description="Lytter paa koeen BREVSERVER_MOTTAK_ONLINE"
+							  initialState="START" maxRetries="3" maxSessions="1" maxMessages="1"/>
+			</queue>
+			<queue alias="mottakOnlinePEQueue" jndi="jms/queue/brevserverMottakOnlinePE">
+				<customProperties parentObject="MQQueue">
+					<property key="useRFH2" value="false"/>
+					<property key="ccsid" value="819"/>
+				</customProperties>
+				<listenerPort name="PEArkiverBrevPort" description="Lytter paa koeen BREVSERVER_MOTTAK_ONLINE_PE01"
+							  initialState="START" maxRetries="3" maxSessions="1" maxMessages="1"/>
+			</queue>
+			<queue alias="mottakArkivQueue" jndi="jms/queue/brevserverMottakArkiv">
+				<customProperties parentObject="MQQueue">
+					<property key="useRFH2" value="false"/>
+					<property key="ccsid" value="819"/>
+				</customProperties>
+				<listenerPort name="ArkiverBrevBatchPort" description="Lytter paa koeen BREVSERVER_MOTTAK_ARKIV"
+							  initialState="START" maxRetries="3" maxSessions="1" maxMessages="1"/>
+			</queue>
+			<queue alias="mottakArkivPEQueue" jndi="jms/queue/brevserverMottakArkivPE">
+				<customProperties parentObject="MQQueue">
+					<property key="useRFH2" value="false"/>
+					<property key="ccsid" value="819"/>
+				</customProperties>
+				<listenerPort name="PEArkiverBrevBatchPort" description="Lytter paa koeen BREVSERVER_MOTTAK_ARKIV_PE01"
+							  initialState="START" maxRetries="3" maxSessions="1" maxMessages="1"/>
+			</queue>
+			<queue alias="deadletterQueue" jndi="jms/queue/deadletter">
+				<customProperties parentObject="MQQueue">
+					<property key="useRFH2" value="false"/>
+					<property key="ccsid" value="819"/>
+				</customProperties>
+			</queue>
+			<queue alias="deadletterPEQueue" jndi="jms/queue/deadletterPE">
+				<customProperties parentObject="MQQueue">
+					<property key="useRFH2" value="false"/>
+					<property key="ccsid" value="819"/>
+				</customProperties>
+			</queue>
+			<queue alias="brevReplyPEQueue" jndi="jms/queue/brevReplyQueuePE">
+				<customProperties parentObject="MQQueue">
+					<property key="useRFH2" value="false"/>
+					<property key="ccsid" value="819"/>
+				</customProperties>
+			</queue>
+		</queueManager>
+		<applicationProperties alias="brevserverProperties"/>
+	</resources>
+	<security>
+		<runAs resourceAlias="srvBrevserver" toRole="JoarkWsClient"/>
+	</security>
+	<serverOptions>
+		<memoryParameters resourceAlias="brevserverMemoryProperties"/>
+	</serverOptions>
+</application>

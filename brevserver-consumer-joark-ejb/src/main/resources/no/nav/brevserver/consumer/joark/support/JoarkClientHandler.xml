@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jws:handler-chains xmlns:jws="http://java.sun.com/xml/ns/javaee">
+	<jws:handler-chain>
+		<jws:handler>
+			<jws:handler-class>no.stelvio.consumer.ws.JaxWsConsumerContextHandler</jws:handler-class>
+		</jws:handler>
+		<jws:handler>
+			<jws:handler-class>no.nav.brevserver.consumer.joark.handler.RequestResponseLoggingHandler</jws:handler-class>
+		</jws:handler>
+	</jws:handler-chain>
+</jws:handler-chains>

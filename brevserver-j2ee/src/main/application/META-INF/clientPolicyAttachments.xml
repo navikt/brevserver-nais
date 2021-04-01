@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<psa:PolicySetAttachment xmlns:psa="http://www.ibm.com/xmlns/prod/websphere/200605/policysetattachment" xmlns:ps="http://www.ibm.com/xmlns/prod/websphere/200605/policyset">
+    <psa:PolicySetReference name="NAV ESB WSImport" id="NAVESBWSImport">
+		<psa:PolicySetBinding scope="domain" name="NAV ESB WSImport Binding"/>
+		<psa:Resource pattern="WebService:/brevserver-consumer-joark-ejb.jar:{http://nav.no/virksomhet/tjenester/arkiv/journal/v2/Binding/}Journal"/>
+		<psa:Resource pattern="WebService:/brevserver-consumer-joark-ejb.jar:{http://nav.no/virksomhet/tjenester/arkiv/journalbehandling/v1/Binding/}Journalbehandling"/>
+    </psa:PolicySetReference>
+</psa:PolicySetAttachment>

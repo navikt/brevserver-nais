@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mappings xmlns="http://dozer.sourceforge.net" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		  xsi:schemaLocation="http://dozer.sourceforge.net
+			http://dozer.sourceforge.net/schema/beanmapping.xsd">
+
+	<!-- logg -->
+	<mapping>
+		<class-a>no.nav.tjenester.brevogarkiv.loggmottak.LoggRequest</class-a>
+		<class-b>no.nav.brevserver.service.loggmottak.to.LoggRequest</class-b>
+		<field>
+			<a>brevklientArguments.systemId</a>
+			<b>systemId</b>
+		</field>
+		<field>
+			<a>brevklientArguments.brevreferanse</a>
+			<b>brevreferanse</b>
+		</field>
+		<field>
+			<a>brevklientArguments.infotrygdId</a>
+			<b>infotrygdId</b>
+		</field>
+		<field custom-converter="no.nav.brevserver.provider.map.converters.SeverityToLogSeverityCustomConverter">
+			<a>severity</a>
+			<b>severity</b>
+		</field>
+	</mapping>
+
+	<mapping>
+		<class-a>no.nav.tjenester.brevogarkiv.loggmottak.WrappedException</class-a>
+		<class-b>no.nav.brevserver.service.loggmottak.to.LoggedException</class-b>
+	</mapping>
+
+</mappings>

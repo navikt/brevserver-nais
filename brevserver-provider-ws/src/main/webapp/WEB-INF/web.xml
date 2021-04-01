@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app id="WebApp_ID" version="2.5"
+		 xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+	<servlet>
+		<servlet-name>Dokumentbehandling</servlet-name>
+		<servlet-class>no.nav.brevserver.provider.ws.dokumentbehandling.DokumentbehandlingEndpoint</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>Loggmottak</servlet-name>
+		<servlet-class>no.nav.brevserver.provider.ws.loggmottak.LoggmottakEndpoint</servlet-class>
+	</servlet>
+</web-app>

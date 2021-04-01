@@ -1,0 +1,85 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>brevserver</artifactId>
+		<groupId>no.nav.brevserver</groupId>
+		<version>10.2.1-SNAPSHOT</version>
+	</parent>
+	<artifactId>brevserver-server-comptest</artifactId>
+	<version>10.2.1-SNAPSHOT</version>
+	<name>${project.artifactId}</name>
+	<description>Contains component tests of brevserver</description>
+
+	<dependencies>
+		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>no.nav.brevserver</groupId>
+			<artifactId>brevserver-server-business-ejb</artifactId>
+			<type>ejb</type>
+		</dependency>
+
+		<!-- Spring dependencies -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jms</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
+		</dependency>
+
+		<!-- IBM dependencies -->
+		<dependency>
+			<groupId>websphere</groupId>
+			<artifactId>com.ibm.ws.ejb.thinclient</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.ibm.db2</groupId>
+			<artifactId>db2jcc</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.ibm.db2</groupId>
+			<artifactId>db2jcc_license_cu</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.ibm.db2</groupId>
+			<artifactId>db2jcc_license_cisuz</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.ibm</groupId>
+			<artifactId>com.ibm.mqjms</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.ibm</groupId>
+			<artifactId>com.ibm.mq</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.ibm</groupId>
+			<artifactId>dhbcore</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>websphere</groupId>
+            <artifactId>com.ibm.jaxws.thinclient</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>websphere</groupId>
+            <artifactId>com.ibm.ws.runtime</artifactId>
+		</dependency>
+	</dependencies>
+
+</project>

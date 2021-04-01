@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<psa:PolicySetAttachment xmlns:psa="http://www.ibm.com/xmlns/prod/websphere/200605/policysetattachment"
+	xmlns:ps="http://www.ibm.com/xmlns/prod/websphere/200605/policyset">
+<!-- Ingen sikkerhet for provider tjenester aktivert -->
+</psa:PolicySetAttachment>

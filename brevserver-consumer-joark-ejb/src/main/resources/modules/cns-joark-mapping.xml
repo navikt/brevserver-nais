@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mappings xmlns="http://dozer.sourceforge.net" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://dozer.sourceforge.net
+          http://dozer.sourceforge.net/schema/beanmapping.xsd">
+
+	<configuration>
+		<copy-by-references>
+			<copy-by-reference>javax.xml.datatype.XMLGregorianCalendar</copy-by-reference>
+		</copy-by-references>
+	</configuration>
+
+	<!-- Journalpost -->
+	<mapping>
+		<class-a>no.nav.virksomhet.gjennomforing.arkiv.journal.v2.Journalpost</class-a>
+		<class-b>no.nav.virksomhet.tjenester.arkiv.journalbehandling.meldinger.v1.OppdaterJournalRequest</class-b>
+
+		<field>
+			<a>journalpostDokumentInfoRelasjonListe</a>
+			<b is-accessible="true">journalpostDokumentInfoRelasjonListe</b>
+			<b-hint>no.nav.virksomhet.tjenester.arkiv.journalbehandling.meldinger.v1.JournalpostDokumentInfoRelasjon</b-hint>
+		</field>
+		<field>
+			<a>gjelderListe</a>
+			<b is-accessible="true">gjelderListe</b>
+			<b-hint>no.nav.virksomhet.tjenester.arkiv.journalbehandling.meldinger.v1.Bruker</b-hint>
+		</field>
+		<field>
+			<a>saksrelasjon</a>
+			<b>saksrelasjon</b>
+			<b-hint>no.nav.virksomhet.tjenester.arkiv.journalbehandling.meldinger.v1.Saksrelasjon</b-hint>
+		</field>
+		<field>
+			<a get-method="isElektroniskDistribusjon">elektroniskDistribusjon</a>
+			<b>elektroniskDistribusjon</b>
+		</field>
+		<field>
+			<a get-method="isOriginaltBestilt">originaltBestilt</a>
+			<b>originaltBestilt</b>
+		</field>
+		<field>
+			<a>fagomrade.kode</a>
+			<b>fagomradeKode</b>
+		</field>
+		<field>
+			<a>faktiskDistribusjonskanal.kode</a>
+			<b>faktiskDistribusjonskanalKode</b>
+		</field>
+		<field>
+			<a>journalposttype.kode</a>
+			<b>journalposttypeKode</b>
+		</field>
+		<field>
+			<a>journalstatus.kode</a>
+			<b>journalstatusKode</b>
+		</field>
+		<field>
+			<a>mottakskanal.kode</a>
+			<b>mottakskanalKode</b>
+		</field>
+		<field>
+			<a>utsendingskanal.kode</a>
+			<b>utsendingskanalKode</b>
+		</field>
+		<field-exclude>
+			<a>kryssreferanseListe</a>
+			<b>kryssreferanseListe</b>
+		</field-exclude>
+		<field-exclude>
+			<a>returInfoListe</a>
+			<b>returInfoListe</b>
+		</field-exclude>
+	</mapping>
+
+	<!-- JournalpostDokumentInfoRelasjon -->
+	<mapping>
+		<class-a>no.nav.virksomhet.gjennomforing.arkiv.journal.v2.JournalpostDokumentInfoRelasjon</class-a>
+		<class-b>no.nav.virksomhet.tjenester.arkiv.journalbehandling.meldinger.v1.JournalpostDokumentInfoRelasjon</class-b>
+
+		<field>
+			<a>dokumentInfo</a>
+			<b>dokumentInfo</b>
+			<b-hint>no.nav.virksomhet.tjenester.arkiv.journalbehandling.meldinger.v1.DokumentInfo</b-hint>
+		</field>
+		<field>
+			<a>tilknyttetJournalpostSom.kode</a>
+			<b>tilknyttetJournalpostSomKode</b>
+		</field>
+	</mapping>
+
+	<!-- DokumentInfo -->
+	<mapping>
+		<class-a>no.nav.virksomhet.gjennomforing.arkiv.journal.v2.DokumentInfo</class-a>
+		<class-b>no.nav.virksomhet.tjenester.arkiv.journalbehandling.meldinger.v1.DokumentInfo</class-b>
+
+		<field>
+			<a>fildetaljerListe</a>
+			<b is-accessible="true">fildetaljerListe</b>
+			<b-hint>no.nav.virksomhet.tjenester.arkiv.journalbehandling.meldinger.v1.Fildetaljer</b-hint>
+		</field>
+		<field>
+			<a get-method="isSensitivt">sensitivt</a>
+			<b>sensitivt</b>
+		</field>
+		<field>
+			<a get-method="isInnskrenketPartsinnsyn">innskrenketPartsinnsyn</a>
+			<b>innskrenketPartsinnsyn</b>
+		</field>
+		<field>
+			<a get-method="isOrganInternt">organInternt</a>
+			<b>organInternt</b>
+		</field>
+		<field>
+			<a>kategori.kode</a>
+			<b>kategoriKode</b>
+		</field>
+		<field>
+			<a>dokumentstatus.kode</a>
+			<b>dokumentstatusKode</b>
+		</field>
+		
+		<field-exclude>
+			<a>skannetInnholdListe</a>
+			<b>skannetInnholdListe</b>
+		</field-exclude>
+	</mapping>
+
+	<!-- FilDetaljer -->
+	<mapping>
+		<class-a>no.nav.virksomhet.gjennomforing.arkiv.journal.v2.Fildetaljer</class-a>
+		<class-b>no.nav.virksomhet.tjenester.arkiv.journalbehandling.meldinger.v1.Fildetaljer</class-b>
+
+		<field>
+			<a>filtype.kode</a>
+			<b>filtypeKode</b>
+		</field>
+		<field>
+			<a>variantFormat.kode</a>
+			<b>variantFormatKode</b>
+		</field>
+	</mapping>
+	
+	<!-- Bruker -->
+	<mapping>
+		<class-a>no.nav.virksomhet.gjennomforing.arkiv.journal.v2.Bruker</class-a>
+		<class-b>no.nav.virksomhet.tjenester.arkiv.journalbehandling.meldinger.v1.Bruker</class-b>
+
+		<field>
+			<a>brukertype.kode</a>
+			<b>brukertypeKode</b>
+		</field>
+	</mapping>	
+	
+	<!-- Saksrelasjon -->
+	<mapping>
+		<class-a>no.nav.virksomhet.gjennomforing.arkiv.journal.v2.Saksrelasjon</class-a>
+		<class-b>no.nav.virksomhet.tjenester.arkiv.journalbehandling.meldinger.v1.Saksrelasjon</class-b>
+
+		<field>
+			<a>fagsystem.kode</a>
+			<b>fagsystemKode</b>
+		</field>
+	</mapping>		
+</mappings>

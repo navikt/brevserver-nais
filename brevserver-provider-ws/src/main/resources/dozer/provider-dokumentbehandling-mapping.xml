@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mappings xmlns="http://dozer.sourceforge.net" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		  xsi:schemaLocation="http://dozer.sourceforge.net
+          http://dozer.sourceforge.net/schema/beanmapping.xsd">
+
+	<configuration>
+		<custom-converters>
+			<converter type="no.nav.brevserver.provider.map.converters.HentDokumentResponseCustomConverter">
+				<class-a>no.nav.brevserver.service.dokumentbehandling.to.HentDokumentResponse</class-a>
+				<class-b>no.nav.tjenester.brevogarkiv.dokumentbehandling.HentDokumentResponse2</class-b>
+			</converter>
+		</custom-converters>
+	</configuration>
+
+	<!-- hentDokument -->
+	<mapping>
+		<class-a>no.nav.tjenester.brevogarkiv.dokumentbehandling.HentDokumentRequest</class-a>
+		<class-b>no.nav.brevserver.service.dokumentbehandling.to.HentDokumentRequest</class-b>
+		<field>
+			<a>systemId</a>
+			<b>brevStatus.systemID</b>
+		</field>
+		<field>
+			<a>brevreferanse</a>
+			<b>brevStatus.brevreferanse</b>
+		</field>
+		<field>
+			<a>token</a>
+			<b>brevStatus.token</b>
+		</field>
+	</mapping>
+	<mapping>
+		<class-a>no.nav.brevserver.service.dokumentbehandling.to.HentDokumentResponse</class-a>
+		<class-b>no.nav.tjenester.brevogarkiv.dokumentbehandling.HentDokumentResponse2</class-b>
+	</mapping>
+
+	<!-- lagreDokument -->
+	<mapping>
+		<class-a>no.nav.tjenester.brevogarkiv.dokumentbehandling.LagreDokumentRequest</class-a>
+		<class-b>no.nav.brevserver.service.dokumentbehandling.to.LagreDokumentRequest</class-b>
+		<field>
+			<a>systemId</a>
+			<b>brevStatus.systemID</b>
+		</field>
+		<field>
+			<a>brevreferanse</a>
+			<b>brevStatus.brevreferanse</b>
+		</field>
+		<field>
+			<a>token</a>
+			<b>brevStatus.token</b>
+		</field>
+		<field>
+			<a>kvitteringsKoe</a>
+			<b>brevStatus.returKoe</b>
+		</field>
+		<field>
+			<a>malpakke</a>
+			<b>brevStatus.brevmal</b>
+		</field>
+		<field>
+			<a>nyttDokument</a>
+			<b>newDocument</b>
+		</field>
+		<field>
+			<a>systemId</a>
+			<b>brev.systemID</b>
+		</field>
+		<field>
+			<a>brevreferanse</a>
+			<b>brev.brevreferanse</b>
+		</field>
+		<field>
+			<a>dokumentData.contentType</a>
+			<b>brev.contentType</b>
+		</field>
+		<field custom-converter="no.nav.brevserver.provider.map.converters.DatahandlerCustomConverter">
+			<a>dokumentData</a>
+			<b>brev.brevdata</b>
+		</field>
+		<field>
+			<a>brukerId</a>
+			<b>brev.brukerID</b>
+		</field>
+	</mapping>
+
+	<!-- ferdigstillDokument -->
+	<mapping>
+		<class-a>no.nav.tjenester.brevogarkiv.dokumentbehandling.FerdigstillDokumentRequest</class-a>
+		<class-b>no.nav.brevserver.service.dokumentbehandling.to.FerdigstillDokumentRequest</class-b>
+		<field>
+			<a>systemId</a>
+			<b>brevStatus.systemID</b>
+		</field>
+		<field>
+			<a>brevreferanse</a>
+			<b>brevStatus.brevreferanse</b>
+		</field>
+		<field>
+			<a>token</a>
+			<b>brevStatus.token</b>
+		</field>
+		<field>
+			<a>kvitteringsKoe</a>
+			<b>brevStatus.returKoe</b>
+		</field>
+		<field>
+			<a>malpakke</a>
+			<b>brevStatus.brevmal</b>
+		</field>
+		<field>
+			<a>nyttDokument</a>
+			<b>newDocument</b>
+		</field>
+		
+		<!-- Redigerbart -->
+		<field>
+			<a>systemId</a>
+			<b>brev.systemID</b>
+		</field>
+		<field>
+			<a>brevreferanse</a>
+			<b>brev.brevreferanse</b>
+		</field>
+		<field>
+			<a>redDokument.contentType</a>
+			<b>brev.contentType</b>
+		</field>
+		<field custom-converter="no.nav.brevserver.provider.map.converters.DatahandlerCustomConverter">
+			<a>redDokument</a>
+			<b>brev.brevdata</b>
+		</field>
+		<field>
+			<a>brukerId</a>
+			<b>brev.brukerID</b>
+		</field>
+
+		<!-- PDF -->
+		<field>
+			<a>systemId</a>
+			<b>pdfBrev.systemID</b>
+		</field>
+		<field>
+			<a>brevreferanse</a>
+			<b>pdfBrev.brevreferanse</b>
+		</field>
+		<field>
+			<a>pdfDokument.contentType</a>
+			<b>pdfBrev.contentType</b>
+		</field>
+		<field custom-converter="no.nav.brevserver.provider.map.converters.DatahandlerCustomConverter">
+			<a>pdfDokument</a>
+			<b>pdfBrev.brevdata</b>
+		</field>
+		<field>
+			<a>brukerId</a>
+			<b>pdfBrev.brukerID</b>
+		</field>
+	</mapping>
+	
+	<!-- avbrytDokument -->
+	<mapping>
+		<class-a>no.nav.tjenester.brevogarkiv.dokumentbehandling.AvbrytDokumentRequest</class-a>
+		<class-b>no.nav.brevserver.service.dokumentbehandling.to.AvbrytDokumentRequest</class-b>
+		<field>
+			<a>systemId</a>
+			<b>brevStatus.systemID</b>
+		</field>
+		<field>
+			<a>brevreferanse</a>
+			<b>brevStatus.brevreferanse</b>
+		</field>
+		<field>
+			<a>token</a>
+			<b>brevStatus.token</b>
+		</field>
+	</mapping>
+</mappings>

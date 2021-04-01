@@ -1,0 +1,110 @@
+package no.nav.brevserver.xml.beans;
+
+import no.nav.brevserver.server.common.config.Konstanter;
+import no.nav.brevserver.server.common.vo.BrevStatusVO;
+import no.nav.brevserver.server.common.vo.FilType;
+import no.nav.brevserver.server.common.vo.KvitteringVO;
+import no.nav.brevserver.service.xml.beans.XMLServiceBean;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.io.ByteArrayInputStream;
+import java.io.StringReader;
+
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+
+/**
+ * Unit tests for XMLServiceBean
+ *
+ * @author Joakim Bjørnstad, Visma Consulting
+ */
+public class XMLServiceBeanTest {
+
+	private final String BREVREFERANSE = "12345";
+	private final String SYSTEM_ID = "PE00";
+	private final String FEILKODE = "0";
+
+	private final String TOKEN = "TOKEN";
+	private final String BRUKERID = "b11111";
+	private final String BREVMAL = "PE00.01";
+	private final String MODUS = "MODUS";
+	private final String FORMAT = "FORMAT";
+	private final String SKRIVER_TYPE = "CANON";
+	private final String SKRIVER = "LOKAL";
+	private final String ARKIVER = "JA";
+	private final String SKUFF = "01";
+
+	private XMLServiceBean xmlService;
+
+	@Before
+	public void setUp() {
+		xmlService = new XMLServiceBean();
+	}
+
+	@Test
+	public void shouldUnmarshalKvitteringAndBrevstatus() {
+		String result = xmlService.unmarshal(createKvittering(), createBrevstatus());
+
+		assertThat(result, is(xmlKvittering()));
+	}
+
+	@Test
+	public void shouldMarshalHeader() throws Exception {
+		KvitteringVO kvittering = xmlService.marshalHeader(new ByteArrayInputStream(xmlKvittering().getBytes()));
+
+		assertThat(kvittering.getBrevreferanse(), is(BREVREFERANSE));
+		assertThat(kvittering.getSystemID(), is(SYSTEM_ID));
+		assertThat(kvittering.getContentType(), is(FilType.PDF.getContentType()));
+		assertThat(kvittering.getFeilkode(), is(FEILKODE));
+	}
+
+	@Test
+	public void shouldMarshalBrevstatus() throws Exception {
+		BrevStatusVO brevStatus = xmlService.marshalBrevStatus(new StringReader(xmlBrevstatus()));
+
+		assertThat(brevStatus.getToken(), is(TOKEN));
+		assertThat(brevStatus.getBestillerBrukerID(), is(BRUKERID));
+		assertThat(brevStatus.getBrevmal(), is(BREVMAL));
+		assertThat(brevStatus.getSystemID(), is(SYSTEM_ID));
+		assertThat(brevStatus.getModus(), is(MODUS));
+		assertThat(brevStatus.getFormat(), is(FORMAT));
+		assertThat(brevStatus.getSkrivertype(), is(SKRIVER_TYPE));
+		assertThat(brevStatus.getSkriver(), is(SKRIVER));
+		assertThat(brevStatus.getArkiver(), is(ARKIVER));
+		assertThat(brevStatus.getSkuff(), is(SKUFF));
+	}
+
+	private KvitteringVO createKvittering() {
+		KvitteringVO kvittering = new KvitteringVO();
+		kvittering.setBrevreferanse(BREVREFERANSE);
+		kvittering.setSystemID(SYSTEM_ID);
+		kvittering.setContentType(FilType.PDF.getContentType());
+		kvittering.setFeilkode(FEILKODE);
+		return kvittering;
+	}
+
+	private BrevStatusVO createBrevstatus() {
+		BrevStatusVO brevStatus = new BrevStatusVO();
+		brevStatus.setToken(TOKEN);
+		brevStatus.setBestillerBrukerID(BRUKERID);
+		brevStatus.setBrevmal(BREVMAL);
+		brevStatus.setSystemID(SYSTEM_ID);
+		brevStatus.setModus(MODUS);
+		brevStatus.setFormat(FORMAT);
+		brevStatus.setSkrivertype(SKRIVER_TYPE);
+		brevStatus.setSkriver(SKRIVER);
+		brevStatus.setArkiver(ARKIVER);
+		brevStatus.setSkuff(SKUFF);
+		brevStatus.setStatus(Konstanter.BREVSTATUS_FERDIG);
+		return brevStatus;
+	}
+
+	private String xmlKvittering() {
+		return "<?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>\n<rtv-brevkvitt>\n<brevref>12345</brevref>\n<sysid>PE00</sysid>\n<type>application/pdf</type>\n<status>FERDIG</status>\n<feilkode>0</feilkode>\n</rtv-brevkvitt>";
+	}
+
+	private String xmlBrevstatus() {
+		return "<rtv-brev klientToken=\"TOKEN\" saksbehandler=\"b11111\" malpakke=\"PE00.01\" sysid=\"PE00\" modus=\"MODUS\" format=\"FORMAT\" skrivertype=\"CANON\" skriver=\"LOKAL\" arkiver=\"JA\" skuff=\"01\"></rtv-brev>";
+	}
+}
