@@ -20,3 +20,4 @@ testDb.properties
 
 **/application-t*.properties
 **/application-q*.properties
+/brevserver-j2ee/lib/

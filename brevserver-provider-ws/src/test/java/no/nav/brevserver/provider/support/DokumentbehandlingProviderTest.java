@@ -25,7 +25,7 @@ import static org.mockito.Mockito.when;
 /**
  * Unit tests for DokumentbehandlingProvider
  *
- * @author Joakim Bjørnstad, Visma Consulting
+ * @author Joakim Bjï¿½rnstad, Visma Consulting
  */
 @RunWith(MockitoJUnitRunner.class)
 public class DokumentbehandlingProviderTest {
@@ -51,11 +51,7 @@ public class DokumentbehandlingProviderTest {
 		HentDokumentRequest wsRequest = new HentDokumentRequest();
 		no.nav.brevserver.service.dokumentbehandling.to.HentDokumentRequest domainRequest =
 				new no.nav.brevserver.service.dokumentbehandling.to.HentDokumentRequest();
-		HentDokumentResponse domainResponse = new HentDokumentResponse();
-		HentDokumentResponse2 wsResponse = new HentDokumentResponse2();
-
 		when(hentDokumentRequestMapper.map(wsRequest)).thenReturn(domainRequest);
-		when(hentDokumentResponseMapper.map(domainResponse)).thenReturn(wsResponse);
 
 		dokumentbehandlingProvider.hentDokument(wsRequest);
 

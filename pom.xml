@@ -21,7 +21,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
-		<java.jdk.version>1.7</java.jdk.version>
+		<java.jdk.version>11</java.jdk.version>
 
 		<ibm.container.version>7.0.0</ibm.container.version>
 		<db2.jdbc.version>3.4.65</db2.jdbc.version>
@@ -29,7 +29,7 @@
 		<spring.framework.version>3.0.6.RELEASE</spring.framework.version>
 		<hibernate.framework.version>3.3.1.GA</hibernate.framework.version>
 		<web.context.root>/brevweb</web.context.root>
-		<powermock.version>1.5.1</powermock.version>
+		<powermock.version>2.0.9</powermock.version>
 		<stelvio.version>2.2.0</stelvio.version>
 		<slf4j.version>1.7.5</slf4j.version>
 	</properties>
@@ -401,8 +401,8 @@
 			</dependency>
 			<dependency>
 				<groupId>org.mockito</groupId>
-				<artifactId>mockito-all</artifactId>
-				<version>1.9.5</version>
+				<artifactId>mockito-core</artifactId>
+				<version>2.23.4</version>
 				<scope>test</scope>
 			</dependency>
 			<dependency>
@@ -419,7 +419,7 @@
 			</dependency>
 			<dependency>
 				<groupId>org.powermock</groupId>
-				<artifactId>powermock-api-mockito</artifactId>
+				<artifactId>powermock-api-mockito2</artifactId>
 				<version>${powermock.version}</version>
 				<scope>test</scope>
 			</dependency>
@@ -489,6 +489,18 @@
 				<version>13.0.1</version>
 				<scope>test</scope>
 			</dependency>
+			<dependency>
+				<groupId>com.sun.xml.ws</groupId>
+				<artifactId>jaxws-ri</artifactId>
+				<version>2.3.2</version>
+				<type>pom</type>
+			</dependency>
+			<dependency>
+				<groupId>com.sun.istack</groupId>
+				<artifactId>istack-commons-runtime</artifactId>
+				<version>2.2</version>
+				<scope>test</scope>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -518,7 +530,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.mockito</groupId>
-			<artifactId>mockito-all</artifactId>
+			<artifactId>mockito-core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.powermock</groupId>
@@ -526,7 +538,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.powermock</groupId>
-			<artifactId>powermock-api-mockito</artifactId>
+			<artifactId>powermock-api-mockito2</artifactId>
 		</dependency>
 	</dependencies>
 
@@ -658,6 +670,9 @@
 				<plugin>
 					<artifactId>maven-surefire-plugin</artifactId>
 					<version>2.4.3</version>
+					<configuration>
+						<argLine>--add-opens java.xml/jdk.xml.internal=ALL-UNNAMED</argLine>
+					</configuration>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -750,8 +765,8 @@
 				<configuration>
 					<toolchains>
 						<jdk>
-							<version>1.7</version>
-							<vendor>ibm</vendor>
+							<version>11</version>
+							<vendor>openjdk</vendor>
 						</jdk>
 					</toolchains>
 				</configuration>

@@ -41,7 +41,7 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
 /**
  * Unit tests for ArkiverBrevCommand
  *
- * @author Joakim Bjørnstad, Visma Consulting
+ * @author Joakim Bjï¿½rnstad, Visma Consulting
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ConfigManager.class, BrevserverServiceFactory.class, BrevlagerServiceFactory.class,
@@ -86,7 +86,7 @@ public class ArkiverBrevCommandTest {
 		expectedException.expect(BrevTechnicalException.class);
 		expectedException.expectMessage("Technical exception");
 
-		when(DialogueXMLParser.lagKvitteringVOFraDialogueMelding(any(byte[].class))).thenThrow(new BrevTechnicalException("Technical exception"));
+		when(DialogueXMLParser.lagKvitteringVOFraDialogueMelding(any())).thenThrow(new BrevTechnicalException("Technical exception"));
 
 		Whitebox.<Void>invokeMethod(arkiverBrevCommand, "validate");
 	}
@@ -98,14 +98,14 @@ public class ArkiverBrevCommandTest {
 
 		KvitteringVO kvittering = createDefaultKvittering();
 		kvittering.setSystemID("PE02");
-		when(DialogueXMLParser.lagKvitteringVOFraDialogueMelding(any(byte[].class))).thenReturn(kvittering);
+		when(DialogueXMLParser.lagKvitteringVOFraDialogueMelding(any())).thenReturn(kvittering);
 
 		Whitebox.<Void>invokeMethod(arkiverBrevCommand, "validate");
 	}
 
 	@Test
 	public void shouldSetBrevReferanseAfterValidating() throws Exception {
-		when(DialogueXMLParser.lagKvitteringVOFraDialogueMelding(any(byte[].class))).thenReturn(createDefaultKvittering());
+		when(DialogueXMLParser.lagKvitteringVOFraDialogueMelding(any())).thenReturn(createDefaultKvittering());
 
 		Whitebox.<Void>invokeMethod(arkiverBrevCommand, "validate");
 
@@ -116,7 +116,7 @@ public class ArkiverBrevCommandTest {
 	public void shouldLagreRtfKladdBrevIBrevlageret() throws Exception {
 		KvitteringVO kvitt = createDefaultKvittering();
 		kvitt.setContentType(FilType.RTF.getContentType());
-		when(DialogueXMLParser.lagKvitteringVOFraDialogueMelding(any(byte[].class))).thenReturn(kvitt);
+		when(DialogueXMLParser.lagKvitteringVOFraDialogueMelding(any())).thenReturn(kvitt);
 		when(brevserverServiceMock.hentBrevStatus(systemId, brevReferanse)).thenReturn(createDefaultBrevstatus());
 		when(brevlagerServiceMock.lagreBrev(any(BrevVO.class), any(BrevStatusVO.class))).thenReturn(null);
 
@@ -133,7 +133,7 @@ public class ArkiverBrevCommandTest {
 
 	@Test
 	public void shouldLagrePdfFerdigBrevIBrevlageret() throws Exception {
-		when(DialogueXMLParser.lagKvitteringVOFraDialogueMelding(any(byte[].class))).thenReturn(createDefaultKvittering());
+		when(DialogueXMLParser.lagKvitteringVOFraDialogueMelding(any())).thenReturn(createDefaultKvittering());
 		when(brevserverServiceMock.hentBrevStatus(systemId, brevReferanse)).thenReturn(createDefaultBrevstatus());
 		when(brevlagerServiceMock.lagreBrev(any(BrevVO.class), any(BrevStatusVO.class))).thenReturn(null);
 
@@ -153,7 +153,7 @@ public class ArkiverBrevCommandTest {
 	public void shouldOppdatereBrevStatusIfFeilFromDialogue() throws Exception {
 		KvitteringVO kvittering = createDefaultKvittering();
 		kvittering.setFeilniva("08");
-		when(DialogueXMLParser.lagKvitteringVOFraDialogueMelding(any(byte[].class))).thenReturn(kvittering);
+		when(DialogueXMLParser.lagKvitteringVOFraDialogueMelding(any())).thenReturn(kvittering);
 		when(brevserverServiceMock.hentBrevStatus(systemId, brevReferanse)).thenReturn(createDefaultBrevstatus());
 
 		arkiverBrevCommand.execute();
@@ -171,7 +171,7 @@ public class ArkiverBrevCommandTest {
 	public void shouldOppdatereBrevStatusIfBrevetEksisterer() throws Exception {
 		BrevStatusVO retBrevstatus = createDefaultBrevstatus();
 		retBrevstatus.setStatus(Konstanter.BREVSTATUS_FERDIG);
-		when(DialogueXMLParser.lagKvitteringVOFraDialogueMelding(any(byte[].class))).thenReturn(createDefaultKvittering());
+		when(DialogueXMLParser.lagKvitteringVOFraDialogueMelding(any())).thenReturn(createDefaultKvittering());
 		when(brevserverServiceMock.hentBrevStatus(systemId, brevReferanse)).thenReturn(retBrevstatus);
 
 		arkiverBrevCommand.execute();

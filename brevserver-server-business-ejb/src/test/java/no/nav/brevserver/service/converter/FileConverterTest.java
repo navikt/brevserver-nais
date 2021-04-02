@@ -1,12 +1,6 @@
 package no.nav.brevserver.service.converter;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import no.nav.brevserver.server.common.config.ConfigManager;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,6 +10,12 @@ import org.springframework.core.io.ClassPathResource;
 
 import java.io.File;
 import java.nio.file.Path;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ConfigManager.class})
@@ -33,7 +33,7 @@ public class FileConverterTest {
 		byte[] output = FileConverter.getInstance().convertToPdf(ConverterTestUtils.getRealRft(new ClassPathResource("aspose/rtf/RTF.rtf").getFile().toPath()));
 
 		assertFalse("Generert PDF er null", output == null);
-		assertTrue("Generert PDF har størrelse 0", output.length > 0);
+		assertTrue("Generert PDF har stï¿½rrelse 0", output.length > 0);
 		Path outputPath = new File("target", "RTF.pdf").toPath();
 		ConverterTestUtils.saveByteArrayToDisk(output, outputPath);
 	}

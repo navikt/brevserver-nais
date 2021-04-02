@@ -55,6 +55,21 @@
 			<artifactId>nav-journalbehandling-tjenestespesifikasjon</artifactId>
 			<classifier>jaxws</classifier>
 		</dependency>
+		<dependency>
+			<groupId>com.sun.xml.ws</groupId>
+			<artifactId>jaxws-ri</artifactId>
+			<type>pom</type>
+			<exclusions>
+				<exclusion>
+					<groupId>com.sun.xml.ws</groupId>
+					<artifactId>release-documentation</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.sun.xml.ws</groupId>
+					<artifactId>samples</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
 
 		<!-- Test dependencies -->
 		<dependency>

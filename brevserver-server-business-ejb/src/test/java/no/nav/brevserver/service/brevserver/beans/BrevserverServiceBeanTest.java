@@ -14,6 +14,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -34,7 +35,7 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
 /**
  * Unit tests for BrevserverServiceBean
  *
- * @author Joakim Bjørnstad, Visma Consulting
+ * @author Joakim Bjï¿½rnstad, Visma Consulting
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({CacheManager.class})
@@ -89,7 +90,7 @@ public class BrevserverServiceBeanTest extends AbstractDatabaseTest {
 	}
 
 	@Test
-	@PrepareForTest({JndiHelper.class})
+	@PrepareForTest({JndiHelper.class, CacheManager.class})
 	public void shouldThrowExceptionIfLagreTilgangFailsBecauseOfWrongStatement() throws Exception {
 		expectExceptionDatabaseNoDatabaseTilgjengelig();
 
@@ -175,7 +176,7 @@ public class BrevserverServiceBeanTest extends AbstractDatabaseTest {
 	}
 
 	@Test
-	@PrepareForTest({JndiHelper.class})
+	@PrepareForTest({JndiHelper.class, CacheManager.class})
 	public void shouldThrowExceptionIfLagreBrevStatusFailsBecauseOfWrongStatement() throws Exception {
 		expectExceptionDatabaseNoDatabaseTilgjengelig();
 
@@ -201,7 +202,7 @@ public class BrevserverServiceBeanTest extends AbstractDatabaseTest {
 	}
 
 	@Test
-	@PrepareForTest({JndiHelper.class})
+	@PrepareForTest({JndiHelper.class, CacheManager.class})
 	public void shouldThrowExceptionIfHentBrevStatusFailsBecauseOfWrongStatement() throws Exception {
 		expectExceptionDatabaseNoDatabaseTilgjengelig();
 
@@ -246,7 +247,7 @@ public class BrevserverServiceBeanTest extends AbstractDatabaseTest {
 	}
 
 	@Test
-	@PrepareForTest({JndiHelper.class})
+	@PrepareForTest({JndiHelper.class, CacheManager.class})
 	public void shouldThrowExceptionIfSjekkSystemtilgangFailsBecauseOfWrongStatement() throws Exception {
 		expectExceptionDatabaseNoDatabaseTilgjengelig();
 
@@ -279,7 +280,7 @@ public class BrevserverServiceBeanTest extends AbstractDatabaseTest {
 	}
 
 	@Test
-	@PrepareForTest({JndiHelper.class})
+	@PrepareForTest({JndiHelper.class, CacheManager.class})
 	public void shouldThrowExceptionIfHentTilgangFailsBecauseOfWrongStatement() throws Exception {
 		expectExceptionDatabaseNoDatabaseTilgjengelig();
 
