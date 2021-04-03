@@ -1,5 +1,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.3.7.RELEASE</version>
+	</parent>
 	<groupId>no.nav.brevserver</groupId>
 	<artifactId>brevserver</artifactId>
 	<name>${project.artifactId}</name>
@@ -12,9 +17,10 @@
 		<module>brevserver-server-common-java</module>
 		<module>brevserver-consumer-joark-ejb</module>
 		<module>brevserver-j2ee</module>
+		<module>brevserver-app</module>
 		<module>brevserver-klient-applet</module>
 		<module>brevserver-server-business-ejb</module>
-		<module>brevserver-server-comptest</module>
+		<!--module>brevserver-server-comptest</module-->
 		<module>brevserver-provider-ws</module>
 		<module>brevserver-asposeconfig</module>
 	</modules>
@@ -26,7 +32,6 @@
 		<ibm.container.version>7.0.0</ibm.container.version>
 		<db2.jdbc.version>3.4.65</db2.jdbc.version>
 		<h2.jdbc.version>1.3.173</h2.jdbc.version>
-		<spring.framework.version>3.0.6.RELEASE</spring.framework.version>
 		<hibernate.framework.version>3.3.1.GA</hibernate.framework.version>
 		<web.context.root>/brevweb</web.context.root>
 		<powermock.version>2.0.9</powermock.version>
@@ -258,7 +263,7 @@
 			<dependency>
 				<groupId>ch.qos.logback</groupId>
 				<artifactId>logback-classic</artifactId>
-				<version>1.0.13</version>
+				<version>1.2.3</version>
 			</dependency>
 			<dependency>
 				<groupId>rtv-brev</groupId>
@@ -326,11 +331,6 @@
 				<artifactId>mail</artifactId>
 				<version>1.4.4</version>
 				<scope>provided</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-core</artifactId>
-				<version>${spring.framework.version}</version>
 			</dependency>
 
 			<dependency>
@@ -427,30 +427,6 @@
 				<groupId>commons-httpclient</groupId>
 				<artifactId>commons-httpclient</artifactId>
 				<version>3.1</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-jdbc</artifactId>
-				<version>${spring.framework.version}</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-jms</artifactId>
-				<version>${spring.framework.version}</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-test</artifactId>
-				<version>${spring.framework.version}</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-orm</artifactId>
-				<version>${spring.framework.version}</version>
 				<scope>test</scope>
 			</dependency>
 			<dependency>
