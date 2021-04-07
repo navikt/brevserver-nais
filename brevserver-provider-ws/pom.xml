@@ -46,14 +46,6 @@
 			<artifactId>servlet-api</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>websphere</groupId>
-			<artifactId>com.ibm.jaxws.thinclient</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>websphere</groupId>
-			<artifactId>com.ibm.ws.runtime</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>net.sf.dozer</groupId>
 			<artifactId>dozer</artifactId>
 		</dependency>

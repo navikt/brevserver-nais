@@ -31,7 +31,7 @@
 
 		<ibm.container.version>7.0.0</ibm.container.version>
 		<db2.jdbc.version>3.4.65</db2.jdbc.version>
-		<h2.jdbc.version>1.3.173</h2.jdbc.version>
+		<h2.jdbc.version>1.4.200</h2.jdbc.version>
 		<hibernate.framework.version>3.3.1.GA</hibernate.framework.version>
 		<web.context.root>/brevweb</web.context.root>
 		<powermock.version>2.0.9</powermock.version>
@@ -211,19 +211,16 @@
 				<groupId>com.ibm.db2</groupId>
 				<artifactId>db2jcc</artifactId>
 				<version>${db2.jdbc.version}</version>
-				<scope>provided</scope>
 			</dependency>
 			<dependency>
 				<groupId>com.ibm.db2</groupId>
 				<artifactId>db2jcc_license_cu</artifactId>
 				<version>${db2.jdbc.version}</version>
-				<scope>provided</scope>
 			</dependency>
 			<dependency>
 				<groupId>com.ibm.db2</groupId>
 				<artifactId>db2jcc_license_cisuz</artifactId>
 				<version>${db2.jdbc.version}</version>
-				<scope>provided</scope>
 			</dependency>
 			<dependency>
 				<groupId>com.ibm</groupId>
@@ -350,25 +347,6 @@
 				<artifactId>nav-journalbehandling-tjenestespesifikasjon</artifactId>
 				<version>1.1.0</version>
 				<classifier>jaxws</classifier>
-			</dependency>
-
-			<dependency>
-				<groupId>websphere</groupId>
-				<artifactId>com.ibm.ws.runtime</artifactId>
-				<version>${ibm.container.version}</version>
-				<scope>provided</scope>
-			</dependency>
-			<dependency>
-				<groupId>websphere</groupId>
-				<artifactId>com.ibm.jaxws.thinclient</artifactId>
-				<version>${ibm.container.version}</version>
-				<scope>provided</scope>
-			</dependency>
-			<dependency>
-				<groupId>websphere</groupId>
-				<artifactId>com.ibm.ws.ejb.thinclient</artifactId>
-				<version>${ibm.container.version}</version>
-				<scope>provided</scope>
 			</dependency>
 
 			<!-- Test dependencies -->
