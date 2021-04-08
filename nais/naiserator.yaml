@@ -1,0 +1,50 @@
+kind: Application
+apiVersion: nais.io/v1alpha1
+metadata:
+  name: brevserver
+  namespace: {{ NAMESPACE }}
+  labels:
+    team: teamdokumenthandtering
+spec:
+  env:
+    - name: BREVSERVER_DS_URL
+      value: {{ BREVSERVER_DS_URL }}
+    - name: BREVSERVER_DS_USERNAME
+      value: {{ BREVSERVER_DS_USERNAME }}
+    - name: BREVSERVER_DS_PASSWORD
+      value: {{ BREVSERVER_DS_PASSWORD }}
+  image: {{ image }}
+  ingresses:
+    {{#each INGRESSES}}
+    - {{this }}
+    {{/each}}
+  liveness:
+    path: /isAlive
+    port: 8080
+    initialDelay: 30
+    failureThreshold: 10
+  port: 8080
+  prometheus:
+    enabled: true
+    path: /actuator/prometheus
+  readiness:
+    path: /isReady
+    port: 8080
+    initialDelay: 30
+    timeout: 3
+  replicas:
+    min: 6
+    max: 12
+    cpuThresholdPercentage: 50
+  resources:
+    limits:
+      cpu: 3000m
+      memory: 3072Mi
+    requests:
+      memory: 1920Mi
+  vault:
+    enabled: true
+    paths:
+      - kvPath: {{ BREVSERVER_DS }}
+        mountPath: "/var/run/secrets/nais.io/brevserverDS"
+  webproxy: true

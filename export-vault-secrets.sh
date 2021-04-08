@@ -1,32 +1,17 @@
 #!/usr/bin/env sh
 
-if test -f /secrets/serviceuser/srvdokarkiv/username;
+if test -f /var/run/secrets/nais.io/brevserverDS/username;
 then
-    echo "Setting serviceuser_username"
-    export  serviceuser_username=$(cat /secrets/serviceuser/srvdokarkiv/username)
+    echo "Setting BREVSERVER_DS_USERNAME"
+    export  BREVSERVER_DS_USERNAME=$(cat /var/run/secrets/nais.io/brevserversDS/username)
 fi
-if test -f /secrets/serviceuser/srvdokarkiv/password;
+if test -f /var/run/secrets/nais.io/brevserverDS/password;
 then
-    echo "Setting serviceuser_password"
-    export  serviceuser_password=$(cat /secrets/serviceuser/srvdokarkiv/password)
+    echo "Setting BREVSERVER_DS_PASSWORD"
+    export  BREVSERVER_DS_PASSWORD=$(cat /var/run/secrets/nais.io/brevserverDS/password)
 fi
-if test -f /var/run/secrets/nais.io/dokarkivDS/username;
+if test -f /var/run/secrets/nais.io/nrevserverDS/url;
 then
-    echo "Setting SPRING_DATASOURCE_USERNAME"
-    export  SPRING_DATASOURCE_USERNAME=$(cat /var/run/secrets/nais.io/dokarkivDS/username)
-fi
-if test -f /var/run/secrets/nais.io/dokarkivDS/password;
-then
-    echo "Setting SPRING_DATASOURCE_PASSWORD"
-    export  SPRING_DATASOURCE_PASSWORD=$(cat /var/run/secrets/nais.io/dokarkivDS/password)
-fi
-if test -f /var/run/secrets/nais.io/ldap/username;
-then
-    echo "Setting SPRING_LDAP_USERNAME"
-    export  SPRING_LDAP_USERNAME=$(cat /var/run/secrets/nais.io/ldap/username)
-fi
-if test -f /var/run/secrets/nais.io/ldap/password;
-then
-    echo "Setting SPRING_LDAP_PASSWORD"
-    export  SPRING_LDAP_PASSWORD=$(cat /var/run/secrets/nais.io/ldap/password)
+    echo "Setting BREVSERVER_DS_URL"
+    export  BREVSERVER_DS_URL=$(cat /var/run/secrets/nais.io/brevserverDS/url)
 fi
