@@ -57,7 +57,7 @@ public abstract class AbstractDatabaseTest {
 		String password = ConfigManager.getInstance().getString(ConfigManager.DATABASE_PASSWORD, null);
 		String url = ConfigManager.getInstance().getString(ConfigManager.DATABASE_URL, null);
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
-		//dataSource.setDriverClassName("com.ibm.db2.jcc.DB2Driver");
+		dataSource.setDriverClassName("com.ibm.db2.jcc.DB2Driver");
 		dataSource.setUrl(url);
 		//dataSource.setSchema("BS475Q");
 		dataSource.setUsername(username);
