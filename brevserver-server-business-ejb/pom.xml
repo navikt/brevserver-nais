@@ -85,6 +85,7 @@
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<version>${h2.jdbc.version}</version>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>simple-jndi</groupId>
