@@ -82,12 +82,6 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-			<version>${h2.jdbc.version}</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
 			<groupId>simple-jndi</groupId>
 			<artifactId>simple-jndi</artifactId>
 			<scope>test</scope>
@@ -137,7 +131,7 @@
 					<dependency>
 						<groupId>com.h2database</groupId>
 						<artifactId>h2</artifactId>
-						<version>${h2.jdbc.version}</version>
+						<version>${h2.version}</version>
 					</dependency>
 				</dependencies>
 				<configuration>
@@ -181,7 +175,7 @@
 					<dependency>
 						<groupId>com.h2database</groupId>
 						<artifactId>h2</artifactId>
-						<version>${h2.jdbc.version}</version>
+						<version>${h2.version}</version>
 					</dependency>
 					<dependency>
 						<groupId>org.slf4j</groupId>

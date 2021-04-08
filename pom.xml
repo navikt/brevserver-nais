@@ -28,10 +28,8 @@
 	<properties>
 		<project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
 		<java.jdk.version>11</java.jdk.version>
-
 		<ibm.container.version>7.0.0</ibm.container.version>
 		<db2.jdbc.version>3.4.65</db2.jdbc.version>
-		<h2.jdbc.version>1.4.200</h2.jdbc.version>
 		<hibernate.framework.version>3.3.1.GA</hibernate.framework.version>
 		<web.context.root>/brevweb</web.context.root>
 		<powermock.version>2.0.9</powermock.version>
@@ -414,11 +412,6 @@
 				<scope>test</scope>
 			</dependency>
 			<dependency>
-				<groupId>com.h2database</groupId>
-				<artifactId>h2</artifactId>
-				<version>${h2.jdbc.version}</version>
-			</dependency>
-			<dependency>
 				<groupId>simple-jndi</groupId>
 				<artifactId>simple-jndi</artifactId>
 				<version>0.11.4.1</version>
@@ -492,6 +485,16 @@
 		<dependency>
 			<groupId>org.powermock</groupId>
 			<artifactId>powermock-api-mockito2</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
