@@ -11,6 +11,7 @@ import no.nav.brevserver.server.common.config.ConfigManager;
 import no.nav.brevserver.server.common.exception.BrevTechnicalException;
 import no.nav.brevserver.server.common.jndi.JndiHelper;
 import no.nav.brevserver.server.common.log.Log;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 /**
  * Klasse med metoder for å åpne og lukke SQL-tilkoblinger.
@@ -36,7 +37,7 @@ public abstract class SQLService {
 
 	protected Connection createSqlConnection() throws BrevTechnicalException {
 		if (datasource == null) {
-			datasource = JndiHelper.getInstance().lookup(DataSource.class, ConfigManager.DATABASE_JNDI);
+			datasource = TempJndiHelper.jndiDataSource();
 		}
 		try {
 			Connection connection = createValidSqlConnection();

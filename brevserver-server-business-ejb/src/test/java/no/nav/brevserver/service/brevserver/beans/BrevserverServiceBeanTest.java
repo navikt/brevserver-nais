@@ -9,6 +9,7 @@ import no.nav.brevserver.server.common.vo.BrevStatusVO;
 import no.nav.brevserver.server.common.vo.FilType;
 import no.nav.brevserver.server.common.vo.SysTilgangVO;
 import no.nav.brevserver.service.AbstractDatabaseTest;
+import no.nav.brevserver.service.TempJndiHelper;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -17,6 +18,7 @@ import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -38,7 +40,7 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
  * @author Joakim Bj�rnstad, Visma Consulting
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({CacheManager.class})
+@PrepareForTest({CacheManager.class, TempJndiHelper.class})
 public class BrevserverServiceBeanTest extends AbstractDatabaseTest {
 
 	private static final String BLANK = "";
@@ -67,6 +69,9 @@ public class BrevserverServiceBeanTest extends AbstractDatabaseTest {
 	public void setUp() throws Exception {
 		mockStatic(CacheManager.class);
 		brevserverService = new BrevserverServiceBean();
+		mockStatic(TempJndiHelper.class);
+		DataSource dataSourceMock = jndiDataSource();
+		when(TempJndiHelper.jndiDataSource()).thenReturn(dataSourceMock);
 		brevserverService.setDb2SingleRowOptimization(NO_DB2_OPTIMIZATION);
 	}
 
@@ -90,7 +95,7 @@ public class BrevserverServiceBeanTest extends AbstractDatabaseTest {
 	}
 
 	@Test
-	@PrepareForTest({JndiHelper.class, CacheManager.class})
+	@PrepareForTest({TempJndiHelper.class, CacheManager.class})
 	public void shouldThrowExceptionIfLagreTilgangFailsBecauseOfWrongStatement() throws Exception {
 		expectExceptionDatabaseNoDatabaseTilgjengelig();
 
@@ -176,7 +181,7 @@ public class BrevserverServiceBeanTest extends AbstractDatabaseTest {
 	}
 
 	@Test
-	@PrepareForTest({JndiHelper.class, CacheManager.class})
+	@PrepareForTest({TempJndiHelper.class, CacheManager.class})
 	public void shouldThrowExceptionIfLagreBrevStatusFailsBecauseOfWrongStatement() throws Exception {
 		expectExceptionDatabaseNoDatabaseTilgjengelig();
 
@@ -202,7 +207,7 @@ public class BrevserverServiceBeanTest extends AbstractDatabaseTest {
 	}
 
 	@Test
-	@PrepareForTest({JndiHelper.class, CacheManager.class})
+	@PrepareForTest({TempJndiHelper.class, CacheManager.class})
 	public void shouldThrowExceptionIfHentBrevStatusFailsBecauseOfWrongStatement() throws Exception {
 		expectExceptionDatabaseNoDatabaseTilgjengelig();
 
@@ -247,7 +252,7 @@ public class BrevserverServiceBeanTest extends AbstractDatabaseTest {
 	}
 
 	@Test
-	@PrepareForTest({JndiHelper.class, CacheManager.class})
+	@PrepareForTest({TempJndiHelper.class, CacheManager.class})
 	public void shouldThrowExceptionIfSjekkSystemtilgangFailsBecauseOfWrongStatement() throws Exception {
 		expectExceptionDatabaseNoDatabaseTilgjengelig();
 
@@ -280,7 +285,7 @@ public class BrevserverServiceBeanTest extends AbstractDatabaseTest {
 	}
 
 	@Test
-	@PrepareForTest({JndiHelper.class, CacheManager.class})
+	@PrepareForTest({TempJndiHelper.class, CacheManager.class})
 	public void shouldThrowExceptionIfHentTilgangFailsBecauseOfWrongStatement() throws Exception {
 		expectExceptionDatabaseNoDatabaseTilgjengelig();
 
@@ -320,14 +325,11 @@ public class BrevserverServiceBeanTest extends AbstractDatabaseTest {
 	}
 
 	private void throwExceptionWhenQueryIsExecuted() throws Exception {
-		mockStatic(JndiHelper.class);
-		JndiHelper jndiHelperMock = mock(JndiHelper.class);
-		DataSource dataSourceMock = mock(DataSource.class);
 		Connection connectionMock = mock(Connection.class);
 		PreparedStatement statementMock = mock(PreparedStatement.class);
-
-		when(JndiHelper.getInstance()).thenReturn(jndiHelperMock);
-		when(jndiHelperMock.lookup(DataSource.class, ConfigManager.DATABASE_JNDI)).thenReturn(dataSourceMock);
+		mockStatic(TempJndiHelper.class);
+		DataSource dataSourceMock = mock(DataSource.class);
+		ReflectionTestUtils.setField(brevserverService, "datasource", dataSourceMock);
 		when(dataSourceMock.getConnection(any(String.class), any(String.class))).thenReturn(connectionMock);
 		when(connectionMock.createStatement()).thenReturn(statementMock);
 		when(connectionMock.prepareStatement(any(String.class))).thenReturn(statementMock);

@@ -10,6 +10,7 @@ import no.nav.brevserver.server.common.vo.BrevStatusVO;
 import no.nav.brevserver.server.common.vo.BrevVO;
 import no.nav.brevserver.server.common.vo.FilType;
 import no.nav.brevserver.service.AbstractDatabaseTest;
+import no.nav.brevserver.service.TempJndiHelper;
 import no.nav.brevserver.service.brevserver.BrevserverService;
 import no.nav.brevserver.service.brevserver.BrevserverServiceFactory;
 import org.junit.Before;
@@ -21,6 +22,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -42,7 +45,7 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
 /**
  * Unit tests for BrevlagerServiceBean
  *
- * @author Joakim Bjørnstad, Visma Consulting
+ * @author Joakim Bjï¿½rnstad, Visma Consulting
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({BrevserverServiceFactory.class})
@@ -79,12 +82,16 @@ public class BrevlagerServiceBeanTest extends AbstractDatabaseTest {
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 		setupBrevserverServiceMock();
+		mockStatic(TempJndiHelper.class);
+		DataSource dataSourceMock = jndiDataSource();
+		when(TempJndiHelper.jndiDataSource()).thenReturn(dataSourceMock);
 		brevlagerServiceBean = new BrevlagerServiceBean();
 		brevlagerServiceBean.setDb2SingleRowOptimization(NO_DB2_OPTIMIZATION);
 	}
 
+
 	@Test
-	@PrepareForTest({BrevserverServiceFactory.class, JndiHelper.class})
+	@PrepareForTest({BrevserverServiceFactory.class, TempJndiHelper.class})
 	public void shouldThrowExceptionForFailedQueryInGetBrev() throws Exception {
 		expectExceptionDatabaseNoDatabaseTilgjengelig();
 
@@ -94,7 +101,7 @@ public class BrevlagerServiceBeanTest extends AbstractDatabaseTest {
 	}
 
 	@Test
-	@PrepareForTest({BrevserverServiceFactory.class, JndiHelper.class})
+	@PrepareForTest({BrevserverServiceFactory.class, TempJndiHelper.class})
 	public void shouldThrowExceptionForFailedQueryInLagreBrev() throws Exception {
 		expectExceptionDatabaseNoDatabaseTilgjengelig();
 
@@ -104,7 +111,7 @@ public class BrevlagerServiceBeanTest extends AbstractDatabaseTest {
 	}
 
 	@Test
-	@PrepareForTest({BrevserverServiceFactory.class, JndiHelper.class})
+	@PrepareForTest({BrevserverServiceFactory.class, TempJndiHelper.class})
 	public void shouldThrowExceptionForFailedQueryInFerdigstillBrev() throws Exception {
 		expectExceptionDatabaseNoDatabaseTilgjengelig();
 
@@ -114,6 +121,7 @@ public class BrevlagerServiceBeanTest extends AbstractDatabaseTest {
 	}
 
 	@Test
+	@PrepareForTest({TempJndiHelper.class, BrevserverServiceFactory.class})
 	public void shouldLagreNyttBrevAndVerifyLagret() throws Exception {
 		BrevStatusVO brevStatus = defaultBrevStatus().build();
 		BrevVO brev = defaultBrev().build();
@@ -134,6 +142,7 @@ public class BrevlagerServiceBeanTest extends AbstractDatabaseTest {
 	}
 
 	@Test
+	@PrepareForTest({TempJndiHelper.class, BrevserverServiceFactory.class})
 	public void shouldOppdatereEksisterendeBrevAndVerifyOppdatert() throws Exception {
 		brevlagerServiceBean.lagreBrev(defaultBrev().build(), new BrevStatusVO());
 		BrevStatusVO initialBrevStatus = defaultBrevStatus().build();
@@ -155,6 +164,7 @@ public class BrevlagerServiceBeanTest extends AbstractDatabaseTest {
 	}
 
 	@Test
+	@PrepareForTest({TempJndiHelper.class, BrevserverServiceFactory.class})
 	public void shouldThrowExceptionIfBrevStatusIsFerdig() throws Exception {
 		thrown.expect(BrevTechnicalException.class);
 		thrown.expectMessage("Brevet har status = 'FERDIG' og kan ikke endres");
@@ -164,6 +174,7 @@ public class BrevlagerServiceBeanTest extends AbstractDatabaseTest {
 	}
 
 	@Test
+	@PrepareForTest({TempJndiHelper.class, BrevserverServiceFactory.class})
 	public void shouldFerdigstilleNyttBrevAndVerifyLagret() throws Exception {
 		BrevStatusVO brevStatus = defaultBrevStatus().build();
 		BrevVO redBrev = defaultBrev().contentType(FilType.RTF.getContentType()).build();
@@ -184,6 +195,7 @@ public class BrevlagerServiceBeanTest extends AbstractDatabaseTest {
 	}
 
 	@Test
+	@PrepareForTest({TempJndiHelper.class, BrevserverServiceFactory.class})
 	public void shouldFerdigstilleEksisterendeBrevAndVerifyLagret() throws Exception {
 		BrevVO redBrev = defaultBrev().contentType(FilType.RTF.getContentType()).build();
 		BrevVO pdfBrev = defaultBrev().lagerStatus(Konstanter.BREVLAGER_STATUS_FERDIG)
@@ -203,6 +215,7 @@ public class BrevlagerServiceBeanTest extends AbstractDatabaseTest {
 	}
 
 	@Test
+	@PrepareForTest({TempJndiHelper.class, BrevserverServiceFactory.class})
 	public void shouldHandleDocx() throws Exception {
 		BrevVO redBrev = defaultBrev().contentType(FilType.DOCX.getContentType()).build();
 		BrevVO pdfBrev = defaultBrev().lagerStatus(Konstanter.BREVLAGER_STATUS_FERDIG)
@@ -223,6 +236,7 @@ public class BrevlagerServiceBeanTest extends AbstractDatabaseTest {
 	}
 
 	@Test
+	@PrepareForTest({TempJndiHelper.class, BrevserverServiceFactory.class})
 	public void shouldPingBrevlager() {
 		brevlagerServiceBean.ping();
 	}
@@ -246,14 +260,11 @@ public class BrevlagerServiceBeanTest extends AbstractDatabaseTest {
 	}
 
 	private void throwExceptionWhenQueryIsExecuted() throws Exception {
-		mockStatic(JndiHelper.class);
-		JndiHelper jndiHelperMock = mock(JndiHelper.class);
-		DataSource dataSourceMock = mock(DataSource.class);
 		Connection connectionMock = mock(Connection.class);
 		PreparedStatement statementMock = mock(PreparedStatement.class);
-
-		when(JndiHelper.getInstance()).thenReturn(jndiHelperMock);
-		when(jndiHelperMock.lookup(DataSource.class, ConfigManager.DATABASE_JNDI)).thenReturn(dataSourceMock);
+		mockStatic(TempJndiHelper.class);
+		DataSource dataSourceMock = mock(DataSource.class);
+		ReflectionTestUtils.setField(brevlagerServiceBean, "datasource", dataSourceMock);
 		when(dataSourceMock.getConnection(any(String.class), any(String.class))).thenReturn(connectionMock);
 		when(connectionMock.createStatement()).thenReturn(statementMock);
 		when(connectionMock.prepareStatement(any(String.class))).thenReturn(statementMock);
