@@ -35,6 +35,7 @@
 		<powermock.version>2.0.9</powermock.version>
 		<stelvio.version>2.2.0</stelvio.version>
 		<slf4j.version>1.7.5</slf4j.version>
+		<h2.version>1.4.195</h2.version>
 	</properties>
 
 	<distributionManagement>
