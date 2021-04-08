@@ -119,8 +119,9 @@ public abstract class AbstractDatabaseTest {
 
 	protected Connection getConnection() {
 		try {
+			Class.forName ("org.h2.Driver");
 			return DriverManager.getConnection(CONNECTION_URL, USERNAME, PASSWORD);
-		} catch (SQLException e) {
+		} catch (SQLException | ClassNotFoundException e) {
 			e.printStackTrace();
 			fail("Unable to get connection");
 			throw new RuntimeException(e);
