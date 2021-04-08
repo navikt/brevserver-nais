@@ -1,17 +1,14 @@
 package no.nav.brevserver.service;
 
+import no.nav.brevserver.server.common.config.ConfigManager;
+import no.nav.brevserver.server.common.exception.BrevTechnicalException;
+import no.nav.brevserver.server.common.log.Log;
+
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-
-import javax.sql.DataSource;
-
-import no.nav.brevserver.server.common.config.ConfigManager;
-import no.nav.brevserver.server.common.exception.BrevTechnicalException;
-import no.nav.brevserver.server.common.jndi.JndiHelper;
-import no.nav.brevserver.server.common.log.Log;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 /**
  * Klasse med metoder for å åpne og lukke SQL-tilkoblinger.
