@@ -1,5 +1,5 @@
 {
   "NAMESPACE": "q1",
   "INGRESSES": ["https://brevserver-q1.nais.preprod.local", "https://brevserver-q1.dev.adeo.no", "https://brevserver.dev-fss-pub.nais.io"],
-  "BREVSERVER_DS": "/secret/dokument/brevserver/q1"
+  "BREVSERVER_DS": "secrets/secret/dokument/brevserver/q1"
 }
