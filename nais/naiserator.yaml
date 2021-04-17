@@ -8,11 +8,7 @@ metadata:
 spec:
   env:
     - name: BREVSERVER_DS_URL
-      value: {{ BREVSERVER_DS_URL }}
-    - name: BREVSERVER_DS_USERNAME
-      value: {{ BREVSERVER_DS_USERNAME }}
-    - name: BREVSERVER_DS_PASSWORD
-      value: {{ BREVSERVER_DS_PASSWORD }}
+      value: TEST
   image: {{ image }}
   ingresses:
     {{#each INGRESSES}}
