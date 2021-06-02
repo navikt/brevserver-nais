@@ -606,10 +606,6 @@
 				<plugin>
 					<artifactId>maven-scm-plugin</artifactId>
 					<version>1.8.1</version>
-					<configuration>
-						<username>srvBrevOgArkiv</username>
-						<password>h4jro2vi352</password>
-					</configuration>
 				</plugin>
 				<plugin>
 					<artifactId>maven-release-plugin</artifactId>
@@ -620,8 +616,6 @@
 						<goals>deploy</goals>
 						<preparationGoals>clean install</preparationGoals>
 						<pomFileName>pom.xml</pomFileName>
-						<username>srvBrevOgArkiv</username>
-						<password>h4jro2vi352</password>
 					</configuration>
 				</plugin>
 				<plugin>
