@@ -31,13 +31,13 @@ public class Brevtilgang {
 	@Column(name = "ID", nullable = false)
 	private Long journalpostId;
 
-	@Column(name = "OPPRETTET_DATO")
+	@Column(name = "TIMESTAMP")
 	private LocalDateTime opprettetDato;
 
  	@Column(name = "TOKEN")
 	private String token;
 
-	@Column(name = "SYSTEM_ID")
+	@Column(name = "SYSTEMID")
 	private String systemId;
 
 	@Column(name = "BREVREFERANSE")

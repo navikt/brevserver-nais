@@ -34,12 +34,16 @@
 			<artifactId>spring-data-commons</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.oracle</groupId>
-			<artifactId>ojdbc8</artifactId>
+			<groupId>com.ibm.db2</groupId>
+			<artifactId>db2jcc4</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.oracle</groupId>
-			<artifactId>ucp</artifactId>
+			<groupId>com.ibm.db2</groupId>
+			<artifactId>db2jcc_license_cu</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.ibm.db2</groupId>
+			<artifactId>db2jcc_license_cisuz</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>

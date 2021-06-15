@@ -65,8 +65,6 @@ public class BrevlagerServiceBean implements BrevlagerService {
 
 	@Override
 	public BrevVO getBrev(String systemID, String brevReferanse) throws BrevTechnicalException {
-		String methSig = "BrevlagerServiceBean.getBrev(" + brevReferanse + ")";
-		PerformanceLogger p = new PerformanceLogger(methSig);
 		BrevVO brevVO = null;
 		try {
 			List<Brev> brevListe = brevRepository.findBySystemIdAndBrevreferanse(systemID, brevReferanse);
@@ -76,8 +74,6 @@ public class BrevlagerServiceBean implements BrevlagerService {
 			}
 		} catch (Exception e) {
 			throw new BrevTechnicalException(BrevTechnicalException.DATABASE_IKKE_TILGJENGELIG, e);
-		} finally {
-			p.stop();
 		}
 		return brevVO;
 	}

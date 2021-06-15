@@ -39,17 +39,9 @@ public class DokumentbehandlingResource {
 
 	@GetMapping("/hent")
 	public @ResponseBody HentDokumentResponse hentDokument(HentDokumentRequest hentDokumentRequest) {
-		//hentDokumentRequest.validate();
+		hentDokumentRequest.validate();
 		try {
-			//FIXME: TEST Data
-			HentDokumentRequest request = new HentDokumentRequest();
-			BrevStatusVO v0 = new BrevStatusVO();
-			v0.setStatus("FERDIG");
-			v0.setSystemID("FS10");
-			v0.setToken("1093");
-			v0.setBrevreferanse("1096");
-			request.setBrevStatus(v0);
-			return dokumentbehandlingProvider.hentDokument(request);
+			return dokumentbehandlingProvider.hentDokument(hentDokumentRequest);
 		} catch (RuntimeException e) {
 			if (e.getCause() != null && e.getCause() instanceof BrevSecurityException) {
 				throw e;

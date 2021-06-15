@@ -17,14 +17,14 @@
 		<module>brevserver-server-common-java</module>
 		<module>brevserver-core</module>
 		<module>brevserver-consumer-joark-ejb</module>
-		<module>brevserver-j2ee</module>
-		<module>brevserver-service</module>
+		<!--<module>brevserver-j2ee</module>-->
 		<module>brevserver-repository</module>
+		<module>brevserver-service</module>
 		<module>brevserver-app</module>
 		<module>brevserver-klient-applet</module>
-		<module>brevserver-server-business-ejb</module>
+		<!--<module>brevserver-server-business-ejb</module>-->
 		<!--module>brevserver-server-comptest</module-->
-		<module>brevserver-provider-ws</module>
+		<!--<module>brevserver-provider-ws</module>-->
 		<module>brevserver-asposeconfig</module>
 
 	</modules>
@@ -38,9 +38,9 @@
 		<stelvio.version>2.2.0</stelvio.version>
 		<slf4j.version>1.7.5</slf4j.version>
 		<h2.version>1.4.195</h2.version>
-		<oracle.version>12.2.0.1</oracle.version>
 		<swagger.version>2.9.2</swagger.version>
 		<swagger-ui.version>3.9.2</swagger-ui.version>
+		<db2.jdbc.version>3.4.65</db2.jdbc.version>
 	</properties>
 
 	<distributionManagement>
@@ -353,19 +353,40 @@
 				<classifier>jaxws</classifier>
 			</dependency>
 			<dependency>
-				<groupId>com.oracle</groupId>
-				<artifactId>ojdbc8</artifactId>
-				<version>${oracle.version}</version>
+				<groupId>com.ibm.db2</groupId>
+				<artifactId>db2jcc4</artifactId>
+				<version>4.21.29</version>
 			</dependency>
 			<dependency>
-				<groupId>com.oracle</groupId>
-				<artifactId>ucp</artifactId>
-				<version>${oracle.version}</version>
+				<groupId>com.ibm.db2</groupId>
+				<artifactId>db2jcc_license_cu</artifactId>
+				<version>${db2.jdbc.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.ibm.db2</groupId>
+				<artifactId>db2jcc_license_cisuz</artifactId>
+				<version>${db2.jdbc.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>io.springfox</groupId>
 				<artifactId>springfox-boot-starter</artifactId>
 				<version>3.0.0</version>
+			</dependency>
+			<dependency>
+				<groupId>org.webjars</groupId>
+				<artifactId>swagger-ui</artifactId>
+				<version>${swagger-ui.version}</version>
+			</dependency>
+			<!--Swagger-->
+			<dependency>
+				<groupId>io.springfox</groupId>
+				<artifactId>springfox-swagger2</artifactId>
+				<version>${swagger.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.springfox</groupId>
+				<artifactId>springfox-swagger-ui</artifactId>
+				<version>${swagger.version}</version>
 			</dependency>
 			<!-- Test dependencies -->
 			<dependency>
@@ -448,11 +469,6 @@
 				<artifactId>querydsl-sql</artifactId>
 				<version>3.3.0</version>
 				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>com.google.guava</groupId>
-				<artifactId>guava</artifactId>
-				<version>13.0.1</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sun.xml.ws</groupId>

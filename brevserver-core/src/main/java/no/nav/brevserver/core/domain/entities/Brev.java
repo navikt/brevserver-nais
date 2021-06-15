@@ -9,11 +9,12 @@ import lombok.Setter;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 import java.sql.Timestamp;
 
 @Entity
-@Table(name = "T_BREVSTATUS")
+@Table(name = "T_BREVLAGER5")
 @Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
@@ -38,10 +39,10 @@ public class Brev {
 	@Column(name = "BRUKERID")
 	private String brukerId;
 
-	//TODO: Fix Blobstore
 	@Column(name = "BREVDATA")
-	private String brevdata;
+	@Lob
+	private byte[] brevdata;
 
-	@Column(name = "ENDRET")
+	@Column(name = "TIMESTAMP")
 	private Timestamp endret;
 }

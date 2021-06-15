@@ -11,8 +11,7 @@ public class BrevTilVoConverter implements Converter<Brev, BrevVO> {
 	@Override
 	public BrevVO convert(Brev brev) {
 		BrevVO brevVO = new BrevVO();
-		//TODO: FIX BLOB
-		brevVO.setBrevdata(brev.getBrevdata()!=null?brev.getBrevdata().getBytes():null);
+		brevVO.setBrevdata(brev.getBrevdata()!=null?brev.getBrevdata():null);
 		brevVO.setBrevreferanse(brev.getBrevreferanse());
 		brevVO.setBrukerID(brev.getBrukerId());
 		brevVO.setContentType(brev.getContentType());
