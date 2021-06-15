@@ -8,12 +8,14 @@ import no.nav.brevserver.server.common.vo.BrevVO;
 import no.nav.brevserver.service.dokumentbehandling.HentDokumentService;
 import no.nav.brevserver.service.dokumentbehandling.to.HentDokumentRequest;
 import no.nav.brevserver.service.dokumentbehandling.to.HentDokumentResponse;
+import org.springframework.stereotype.Service;
 
 /**
  * Default implementation of HentDokumentService
  * 
  * @author Joakim Bjørnstad, Visma Consulting
  */
+@Service
 public class DefaultHentDokumentService implements HentDokumentService {
 
 	private ControllerBi controller;

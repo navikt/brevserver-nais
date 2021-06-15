@@ -15,27 +15,32 @@
 		<module>brevserver-appconfig</module>
 		<module>brevserver-config</module>
 		<module>brevserver-server-common-java</module>
+		<module>brevserver-core</module>
 		<module>brevserver-consumer-joark-ejb</module>
 		<module>brevserver-j2ee</module>
+		<module>brevserver-service</module>
+		<module>brevserver-repository</module>
 		<module>brevserver-app</module>
 		<module>brevserver-klient-applet</module>
 		<module>brevserver-server-business-ejb</module>
 		<!--module>brevserver-server-comptest</module-->
 		<module>brevserver-provider-ws</module>
 		<module>brevserver-asposeconfig</module>
+
 	</modules>
 
 	<properties>
 		<project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
 		<java.jdk.version>11</java.jdk.version>
 		<ibm.container.version>7.0.0</ibm.container.version>
-		<db2.jdbc.version>3.4.65</db2.jdbc.version>
-		<hibernate.framework.version>3.3.1.GA</hibernate.framework.version>
 		<web.context.root>/brevweb</web.context.root>
 		<powermock.version>2.0.9</powermock.version>
 		<stelvio.version>2.2.0</stelvio.version>
 		<slf4j.version>1.7.5</slf4j.version>
 		<h2.version>1.4.195</h2.version>
+		<oracle.version>12.2.0.1</oracle.version>
+		<swagger.version>2.9.2</swagger.version>
+		<swagger-ui.version>3.9.2</swagger-ui.version>
 	</properties>
 
 	<distributionManagement>
@@ -111,6 +116,21 @@
 			<dependency>
 				<groupId>no.nav.brevserver</groupId>
 				<artifactId>nav-brevserver-resource-config</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>no.nav.brevserver</groupId>
+				<artifactId>brevserver-service</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>no.nav.brevserver</groupId>
+				<artifactId>brevserver-repository</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>no.nav.brevserver</groupId>
+				<artifactId>brevserver-core</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
@@ -205,21 +225,6 @@
 				<groupId>aspose</groupId>
 				<artifactId>aspose-words-jdk15</artifactId>
 				<version>11.2.0</version>
-			</dependency>
-			<dependency>
-				<groupId>com.ibm.db2</groupId>
-				<artifactId>db2jcc</artifactId>
-				<version>${db2.jdbc.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.ibm.db2</groupId>
-				<artifactId>db2jcc_license_cu</artifactId>
-				<version>${db2.jdbc.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.ibm.db2</groupId>
-				<artifactId>db2jcc_license_cisuz</artifactId>
-				<version>${db2.jdbc.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.ibm</groupId>
@@ -347,7 +352,21 @@
 				<version>1.1.0</version>
 				<classifier>jaxws</classifier>
 			</dependency>
-
+			<dependency>
+				<groupId>com.oracle</groupId>
+				<artifactId>ojdbc8</artifactId>
+				<version>${oracle.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.oracle</groupId>
+				<artifactId>ucp</artifactId>
+				<version>${oracle.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.springfox</groupId>
+				<artifactId>springfox-boot-starter</artifactId>
+				<version>3.0.0</version>
+			</dependency>
 			<!-- Test dependencies -->
 			<dependency>
 				<groupId>no.nav.brevserver</groupId>
@@ -373,7 +392,7 @@
 			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
-				<version>4.11</version>
+				<version>4.12</version>
 				<scope>test</scope>
 			</dependency>
 			<dependency>
@@ -434,7 +453,6 @@
 				<groupId>com.google.guava</groupId>
 				<artifactId>guava</artifactId>
 				<version>13.0.1</version>
-				<scope>test</scope>
 			</dependency>
 			<dependency>
 				<groupId>com.sun.xml.ws</groupId>

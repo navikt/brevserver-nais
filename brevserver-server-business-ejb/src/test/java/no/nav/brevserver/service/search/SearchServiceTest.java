@@ -14,6 +14,7 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import java.util.ArrayList;
 import java.util.List;
 
+import no.nav.brevserver.core.domain.entities.Brevstatus;
 import no.nav.brevserver.server.common.config.ConfigManager;
 import no.nav.brevserver.server.common.config.Konstanter;
 import no.nav.brevserver.server.common.exception.BrevTechnicalException;
@@ -295,8 +296,8 @@ public class SearchServiceTest {
         return brev;
     }
 
-    private BrevStatusVO createBrevstatus(String status) {
-        BrevStatusVO brevStatus = new BrevStatusVO();
+    private Brevstatus createBrevstatus(String status) {
+        Brevstatus brevStatus = new Brevstatus();
         brevStatus.setStatus(status);
         brevStatus.setBrevmal(BREVMAL);
         return brevStatus;

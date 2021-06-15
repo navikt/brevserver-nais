@@ -2,12 +2,14 @@ package no.nav.brevserver.controller;
 
 import no.nav.brevserver.consumer.joark.JoarkServiceBi;
 import no.nav.brevserver.consumer.joark.factory.JoarkServiceBeanFactory;
+import no.nav.brevserver.core.domain.entities.Brevstatus;
 import no.nav.brevserver.server.common.config.KnappStatus;
 import no.nav.brevserver.server.common.exception.BrevException;
 import no.nav.brevserver.server.common.exception.BrevFunctionalException;
 import no.nav.brevserver.server.common.exception.BrevTechnicalException;
 import no.nav.brevserver.server.common.type.SystemType;
 import no.nav.brevserver.server.common.utility.ArgumentValidator;
+import no.nav.brevserver.server.common.utility.KnappStatusUtil;
 import no.nav.brevserver.server.common.utility.PerformanceLogger;
 import no.nav.brevserver.server.common.vo.BrevStatusVO;
 import no.nav.brevserver.server.common.vo.BrevVO;
@@ -57,7 +59,7 @@ public class HentControllerDelegate extends AbstractControllerDelegate {
      */
     public KnappStatus hentKnappStatus(String systemId, String brevreferanse) throws BrevException {
         String methSig = "BrevEJB.hentKnappStatus(" + brevreferanse + ")";
-        BrevStatusVO result = null;
+        Brevstatus result = null;
         PerformanceLogger p = new PerformanceLogger(methSig);
         try {
             result = BrevserverServiceFactory.getInstance().createBrevserverService()
@@ -68,7 +70,7 @@ public class HentControllerDelegate extends AbstractControllerDelegate {
         } finally {
             p.stop();
         }
-        return result.getKnappStatus();
+        return KnappStatusUtil.getKnappStatus(result.getBrevmal());
     }
 
 

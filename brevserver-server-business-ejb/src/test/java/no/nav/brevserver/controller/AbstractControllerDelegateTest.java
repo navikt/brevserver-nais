@@ -4,9 +4,13 @@ import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
+
+import no.nav.brevserver.core.domain.entities.Brevstatus;
 import no.nav.brevserver.server.common.config.ConfigManager;
 import no.nav.brevserver.server.common.config.Konstanter;
 import no.nav.brevserver.server.common.exception.BrevException;
@@ -34,7 +38,8 @@ public class AbstractControllerDelegateTest {
 	private static final String TOKEN = "SOME BREVREFERANSE";
 
 	private BrevserverService brevserverServiceBeanMock;
-	private BrevStatusVO brevStatusMock;
+	private BrevStatusVO brevStatusVOMock;
+	private Brevstatus brevstatusMock;
 
 	private AbstractControllerDelegate abstractControllerDelegate;
 
@@ -45,7 +50,8 @@ public class AbstractControllerDelegateTest {
 		ControllerBeanDelegateTestUtility.mockConfigManager();
 		ControllerBeanDelegateTestUtility.mockPerformanceLogger();
 		mockStatic(BrevStatusVO.class);
-		brevStatusMock = ControllerBeanDelegateTestUtility.mockBrevStatusVO(SYSTEM_ID, BREVREFERANSE, TOKEN, null);
+		brevstatusMock = mock(Brevstatus.class);
+		brevStatusVOMock = ControllerBeanDelegateTestUtility.mockBrevStatusVO(SYSTEM_ID, BREVREFERANSE, TOKEN, null);
 		brevserverServiceBeanMock = ControllerBeanDelegateTestUtility.mockBrevserverService();
 		abstractControllerDelegate = new AbstractControllerDelegate() {
 		};
@@ -53,24 +59,24 @@ public class AbstractControllerDelegateTest {
 
 	@Test
 	public void shouldSaveDocument() throws BrevException {
-		abstractControllerDelegate.lagreDokumentStatus(brevStatusMock);
-		verify(brevserverServiceBeanMock).lagreBrevStatus(brevStatusMock);
+		abstractControllerDelegate.lagreDokumentStatus(brevStatusVOMock);
+		verify(brevserverServiceBeanMock).lagreBrevStatus(brevstatusMock, any());
 	}
 
 	@Test
 	public void shouldVerifyAndAllowNewDocuments() throws BrevException {
 		when(brevserverServiceBeanMock.hentBrevStatus(SYSTEM_ID, BREVREFERANSE)).thenReturn(null);
 	
-		abstractControllerDelegate.verifyChangeRequest(brevStatusMock);
+		abstractControllerDelegate.verifyChangeRequest(brevStatusVOMock);
 	}
 
 	@Test
 	public void shouldVerifyAccess() throws BrevException {
 		when(brevserverServiceBeanMock.sjekkTilgang(SYSTEM_ID, BREVREFERANSE, TOKEN)).thenReturn(false);
-		when(brevserverServiceBeanMock.hentBrevStatus(SYSTEM_ID, BREVREFERANSE)).thenReturn(brevStatusMock);
+		when(brevserverServiceBeanMock.hentBrevStatus(SYSTEM_ID, BREVREFERANSE)).thenReturn(brevstatusMock);
 
 		try {
-			abstractControllerDelegate.verifyChangeRequest(brevStatusMock);
+			abstractControllerDelegate.verifyChangeRequest(brevStatusVOMock);
 		} catch (BrevSecurityException e) {
 			assertTrue(e.isFeilkode(BrevSecurityException.IKKE_TILGANG_I_BREVSERVER));
 			return;
@@ -80,12 +86,12 @@ public class AbstractControllerDelegateTest {
 	
 	@Test
 	public void shouldVerifyEditable() throws BrevException {
-		brevStatusMock = ControllerBeanDelegateTestUtility.mockBrevStatusVO(SYSTEM_ID, BREVREFERANSE, TOKEN, Konstanter.BREVSTATUS_FERDIG);
+		brevStatusVOMock = ControllerBeanDelegateTestUtility.mockBrevStatusVO(SYSTEM_ID, BREVREFERANSE, TOKEN, Konstanter.BREVSTATUS_FERDIG);
 		when(brevserverServiceBeanMock.sjekkTilgang(SYSTEM_ID, BREVREFERANSE, TOKEN)).thenReturn(true);
-		when(brevserverServiceBeanMock.hentBrevStatus(SYSTEM_ID, BREVREFERANSE)).thenReturn(brevStatusMock);
+		when(brevserverServiceBeanMock.hentBrevStatus(SYSTEM_ID, BREVREFERANSE)).thenReturn(brevstatusMock);
 
 		try {
-			abstractControllerDelegate.verifyChangeRequest(brevStatusMock);
+			abstractControllerDelegate.verifyChangeRequest(brevStatusVOMock);
 		} catch (BrevFunctionalException e) {
 			assertThat(e.getMessage(), containsString(Konstanter.BREVSTATUS_FERDIG));
 			return;

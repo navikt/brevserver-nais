@@ -1,8 +1,8 @@
 package no.nav.brevserver.service;
 
-import no.nav.brevserver.server.common.config.ConfigManager;
 import no.nav.brevserver.server.common.exception.BrevTechnicalException;
 import no.nav.brevserver.server.common.log.Log;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -22,19 +22,15 @@ public abstract class SQLService {
 	private Log log = new Log(this.getClass());
 
 	private DataSource datasource;
-	private String username;
-	private String password;
 
 	private String db2SingleRowOptimization = " for read only optimize for 1 row with UR";
 
 	protected SQLService() {
-		username = ConfigManager.getInstance().getString(ConfigManager.DATABASE_USERNAME, null);
-		password = ConfigManager.getInstance().getString(ConfigManager.DATABASE_PASSWORD, null);
 	}
 
 	protected Connection createSqlConnection() throws BrevTechnicalException {
 		if (datasource == null) {
-			datasource = TempJndiHelper.jndiDataSource();
+			throw new BrevTechnicalException(BrevTechnicalException.DATABASE_IKKE_TILGJENGELIG, "Datasource ikke opprettet");
 		}
 		try {
 			Connection connection = createValidSqlConnection();
@@ -50,32 +46,11 @@ public abstract class SQLService {
 
 		Connection con = null;
 		for (int i = 1; !isValid && i <= MAX_CONNECTION_ATTEMPTS; i++) {
-			con = datasource.getConnection(username, password);
-			if (validate(con)) {
-				con.setAutoCommit(false);
-				isValid = true;
-			} else {
-				close(methSig, con, Log.DEBUG);
-				log.debug(methSig, "Tilkoblingen er ikke gyldig, forsøker å lukke og hente ny, forsøk " + i + "/"
-						+ MAX_CONNECTION_ATTEMPTS);
-			}
-		}
-		if (!isValid) {
-			throw new BrevTechnicalException(BrevTechnicalException.DATABASE_IKKE_TILGJENGELIG,
-					"Tilkobling til DB2 feilet, ga opp etter " + MAX_CONNECTION_ATTEMPTS + " forsøk");
+			con = datasource.getConnection();
+			con.setAutoCommit(false);
+			isValid = true;
 		}
 		return con;
-	}
-
-	private boolean validate(Connection con) {
-		try {
-			Statement stmt = con.createStatement();
-			boolean success = stmt.execute("SELECT 1 FROM SYSIBM.SYSDUMMY1");
-			stmt.close();
-			return success;
-		} catch (Exception e) {
-			return false;
-		}
 	}
 
 	protected void close(String methSig, Statement statement) {

@@ -1,5 +1,7 @@
 package no.nav.brevserver.command;
 
+import no.nav.brevserver.converter.VoTilBrevstatusConverter;
+import no.nav.brevserver.core.domain.entities.Brevstatus;
 import no.nav.brevserver.server.common.config.Konstanter;
 import no.nav.brevserver.server.common.exception.BrevException;
 import no.nav.brevserver.server.common.exception.BrevTechnicalException;
@@ -24,6 +26,7 @@ import java.io.StringReader;
  */
 public class PEBestillBrevCommand extends AbstractCommand {
 	private BrevStatusVO brevStatusVo;
+	private VoTilBrevstatusConverter voTilBrevstatus = new VoTilBrevstatusConverter();
 
 	public PEBestillBrevCommand(MessageVO messageVO) {
 		super(messageVO);
@@ -92,8 +95,7 @@ public class PEBestillBrevCommand extends AbstractCommand {
 	private void bestillBrev(String brevReferanse, String methSig, MessageProducer producer,
 							 BrevserverService brevserverService)
 			throws BrevTechnicalException {
-		BrevStatusVO brevEksisterer = brevserverService.hentBrevStatus(brevStatusVo.getSystemID(),
-				brevStatusVo.getBrevreferanse());
+		Brevstatus brevEksisterer = brevserverService.hentBrevStatus(brevStatusVo.getSystemID(), brevStatusVo.getBrevreferanse());
 
 		if (brevEksisterer != null) {
 			log.warning(methSig, "Brevet eksisterer fra før " + brevReferanse);
@@ -101,7 +103,7 @@ public class PEBestillBrevCommand extends AbstractCommand {
 			producer.sendReturMelding(brevStatusVo.getReturKoe(), false, messageVo.getCorrelationID(), feilmelding);
 		} else {
 			brevStatusVo.setStatus(Konstanter.BREVSTATUS_BREVPAKKE);
-			brevserverService.lagreBrevStatus(brevStatusVo);
+			brevserverService.lagreBrevStatus(voTilBrevstatus.convert(brevStatusVo), brevStatusVo.getToken());
 			producer.sendToDialogue(messageVo);
 			log.info(methSig, "Brevet er sendt til bestilling/opprettelse i Dialogue");
 		}

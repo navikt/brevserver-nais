@@ -10,6 +10,10 @@ import java.sql.Timestamp;
 
 import javax.sql.rowset.serial.SerialBlob;
 
+import no.nav.brevserver.converter.BrevstatusTilVoConverter;
+import no.nav.brevserver.core.domain.entities.Brev;
+import no.nav.brevserver.core.domain.entities.Brevstatus;
+import no.nav.brevserver.repository.BrevRepository;
 import no.nav.brevserver.server.common.config.Konstanter;
 import no.nav.brevserver.server.common.exception.BrevRuntimeException;
 import no.nav.brevserver.server.common.exception.BrevTechnicalException;
@@ -21,6 +25,7 @@ import no.nav.brevserver.service.SQLService;
 import no.nav.brevserver.service.brevlager.BrevlagerService;
 import no.nav.brevserver.service.brevserver.BrevserverService;
 import no.nav.brevserver.service.brevserver.BrevserverServiceFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Metoder for å hente, lagre og ta backup av brev i Brevlageret (IBM DB2).
@@ -28,7 +33,12 @@ import no.nav.brevserver.service.brevserver.BrevserverServiceFactory;
  * @author Marius Thøring, Visma Consulting
  */
 public class BrevlagerServiceBean extends SQLService implements BrevlagerService {
-	
+
+	@Autowired
+	private BrevRepository brevRepository;
+	@Autowired
+	private BrevstatusTilVoConverter converter = new BrevstatusTilVoConverter();
+
 	@Override
 	public BrevVO getBrev(String systemID, String brevReferanse) throws BrevTechnicalException {
 		String methSig = "BrevlagerServiceBean.getBrev(" + brevReferanse + ")";
@@ -55,7 +65,7 @@ public class BrevlagerServiceBean extends SQLService implements BrevlagerService
 		return brevVO;
 	}
 
-	public BrevStatusVO lagreBrev(BrevVO brev, BrevStatusVO brevstatus) throws BrevTechnicalException {
+	public BrevStatusVO lagreBrev(BrevVO brev, Brevstatus brevstatus, String token) throws BrevTechnicalException {
 		String methSig = "BrevlagerServiceBean.lagreDokument(" + brev.getBrevreferanse() + ")";
 		PerformanceLogger p = new PerformanceLogger(methSig);
 
@@ -64,7 +74,7 @@ public class BrevlagerServiceBean extends SQLService implements BrevlagerService
 			con = createSqlConnection();
 			boolean isExistingBrev = backupIfExistingBrev(con, brev.getBrevreferanse(), brev.getSystemID());
 			BrevserverService service = BrevserverServiceFactory.getInstance().createBrevserverService();
-			BrevStatusVO gmlStatus = service.lagreBrevStatus(brevstatus, con);
+			Brevstatus gmlStatus = service.lagreBrevStatus(brevstatus, token);
 			
 			translateContentTypeDocxToDb2(brev);
 			if (isExistingBrev) {
@@ -72,7 +82,8 @@ public class BrevlagerServiceBean extends SQLService implements BrevlagerService
 			} else {
 				insertBrev(con, brev);
 			}
-			return gmlStatus;
+
+			return converter.convert(gmlStatus);
 		} catch (SQLException e) {
 			throw new BrevTechnicalException(BrevTechnicalException.DATABASE_IKKE_TILGJENGELIG, e);
 		} finally {
@@ -81,16 +92,15 @@ public class BrevlagerServiceBean extends SQLService implements BrevlagerService
 		}
 	}
 
-	public void ferdigstillBrev(BrevStatusVO brevstatus, BrevVO redBrevVO, BrevVO pdfBrevVO) throws BrevTechnicalException {
+	public void ferdigstillBrev(Brevstatus brevstatus, BrevVO redBrevVO, BrevVO pdfBrevVO, String token) throws BrevTechnicalException {
 		String methSig = "BrevlagerServiceBean.lagreDokument(" + brevstatus.getBrevreferanse() + ")";
 		PerformanceLogger p = new PerformanceLogger(methSig);
 
 		Connection con = null;
 		try {
-			con = createSqlConnection();
 			boolean isExistingBrev = backupIfExistingBrev(con, pdfBrevVO.getBrevreferanse(), pdfBrevVO.getSystemID());
 			BrevserverService service = BrevserverServiceFactory.getInstance().createBrevserverService();
-			service.lagreBrevStatus(brevstatus, con);
+			service.lagreBrevStatus(brevstatus, token);
 
 			translateContentTypeDocxToDb2(redBrevVO);
 			insertHistorikk(con, redBrevVO);
@@ -150,6 +160,10 @@ public class BrevlagerServiceBean extends SQLService implements BrevlagerService
 		} finally {
 			close(methSig, stmt);
 		}
+	}
+
+	private void insertBrev(Brev brev){
+
 	}
 
 	private void insertBrev(Connection con, BrevVO brev) throws SQLException, BrevTechnicalException {

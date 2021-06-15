@@ -1,5 +1,6 @@
 package no.nav.brevserver.service.brevlager;
 
+import no.nav.brevserver.core.domain.entities.Brevstatus;
 import no.nav.brevserver.server.common.exception.BrevTechnicalException;
 import no.nav.brevserver.server.common.vo.BrevStatusVO;
 import no.nav.brevserver.server.common.vo.BrevVO;
@@ -27,7 +28,7 @@ public interface BrevlagerService {
 	 * @return
 	 * @throws BrevTechnicalException
 	 */
-	BrevStatusVO lagreBrev(BrevVO brev, BrevStatusVO brevstatus) throws BrevTechnicalException;
+	BrevStatusVO lagreBrev(BrevVO brev, Brevstatus brevstatus, String token) throws BrevTechnicalException;
 
 	/**
 	 * Ferdigstiller et brev. Både kladd og ferdigstilt brev lagres i Brevlageret (DB2).
@@ -37,7 +38,7 @@ public interface BrevlagerService {
 	 * @param brev
 	 * @throws BrevTechnicalException
 	 */
-	void ferdigstillBrev(BrevStatusVO brevstatus, BrevVO brevVORtf, BrevVO brev) throws BrevTechnicalException;
+	void ferdigstillBrev(Brevstatus brevstatus, BrevVO brevVORtf, BrevVO brev, String token) throws BrevTechnicalException;
 
 	/**
 	 * Checks if a call to the brevlager can be made

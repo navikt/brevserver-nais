@@ -49,18 +49,6 @@
 			<artifactId>com.ibm.ws.ejb.thinclient</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.ibm.db2</groupId>
-			<artifactId>db2jcc</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.ibm.db2</groupId>
-			<artifactId>db2jcc_license_cu</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.ibm.db2</groupId>
-			<artifactId>db2jcc_license_cisuz</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>com.ibm</groupId>
 			<artifactId>com.ibm.mqjms</artifactId>
 		</dependency>

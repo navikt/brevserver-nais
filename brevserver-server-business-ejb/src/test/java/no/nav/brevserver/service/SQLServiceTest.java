@@ -55,16 +55,14 @@ public class SQLServiceTest {
 		MockitoAnnotations.initMocks(this);
 		mockLog();
 		mockConfigManager();
-		mockStatic(TempJndiHelper.class);
-		when(TempJndiHelper.jndiDataSource()).thenReturn(dataSourceMock);
-		when(dataSourceMock.getConnection(null, null)).thenReturn(connectionMock);
+		when(dataSourceMock.getConnection()).thenReturn(connectionMock);
 		when(connectionMock.createStatement()).thenReturn(statementMock);
 		sqlService = new SQLService() {
 		};
 	}
 
 	@Test
-	@PrepareForTest({TempJndiHelper.class, Log.class, ConfigManager.class})
+	@PrepareForTest({Log.class, ConfigManager.class})
 	public void shouldGetDatabaseInfoFromConfig() {
 		verify(configManagerMock).getString(ConfigManager.DATABASE_USERNAME, null);
 		verify(configManagerMock).getString(ConfigManager.DATABASE_PASSWORD, null);
@@ -92,7 +90,7 @@ public class SQLServiceTest {
 	}
 	
 	@Test
-	@PrepareForTest({TempJndiHelper.class, Log.class, ConfigManager.class})
+	@PrepareForTest({Log.class, ConfigManager.class})
 	public void shouldReturnValidConnection() throws Exception {
 		when(statementMock.execute(any(String.class))).thenReturn(true);
 		assertThat(sqlService.createSqlConnection(), is(connectionMock));
@@ -101,7 +99,7 @@ public class SQLServiceTest {
 	}
 	
 	@Test
-	@PrepareForTest({TempJndiHelper.class, Log.class, ConfigManager.class})
+	@PrepareForTest({Log.class, ConfigManager.class})
 	public void shouldReconnectInvalidConnection() throws Exception {
 		when(statementMock.execute(any(String.class))).thenThrow(new SQLException()).thenReturn(false, true);
 		sqlService.createSqlConnection();
@@ -110,7 +108,7 @@ public class SQLServiceTest {
 	}
 	
 	@Test
-	@PrepareForTest({TempJndiHelper.class, Log.class, ConfigManager.class})
+	@PrepareForTest({Log.class, ConfigManager.class})
 	public void shouldFailIfMaximumReconnectsReached() throws Exception {
 		when(statementMock.execute(any(String.class))).thenThrow(new SQLException());
 		try {

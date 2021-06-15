@@ -1,5 +1,6 @@
 package no.nav.brevserver.command;
 
+import no.nav.brevserver.core.domain.entities.Brevstatus;
 import no.nav.brevserver.server.common.config.ConfigManager;
 import no.nav.brevserver.server.common.config.Konstanter;
 import no.nav.brevserver.server.common.exception.BrevTechnicalException;
@@ -57,7 +58,9 @@ public class ArkiverBrevCommandTest {
 	@Mock
 	private MessageVO messageMock;
 	@Captor
-	private ArgumentCaptor<BrevStatusVO> brevStatusCaptor;
+	private ArgumentCaptor<BrevStatusVO> brevStatusVOCaptor;
+	@Captor
+	private ArgumentCaptor<Brevstatus> brevstatusCaptor;
 	@Captor
 	private ArgumentCaptor<KvitteringVO> kvitteringCaptor;
 
@@ -118,14 +121,14 @@ public class ArkiverBrevCommandTest {
 		kvitt.setContentType(FilType.RTF.getContentType());
 		when(DialogueXMLParser.lagKvitteringVOFraDialogueMelding(any())).thenReturn(kvitt);
 		when(brevserverServiceMock.hentBrevStatus(systemId, brevReferanse)).thenReturn(createDefaultBrevstatus());
-		when(brevlagerServiceMock.lagreBrev(any(BrevVO.class), any(BrevStatusVO.class))).thenReturn(null);
+		when(brevlagerServiceMock.lagreBrev(any(BrevVO.class), any(Brevstatus.class), any(String.class))).thenReturn(null);
 
 		arkiverBrevCommand.execute();
 
-		verify(brevlagerServiceMock).lagreBrev(kvitteringCaptor.capture(), brevStatusCaptor.capture());
-		verify(messageProducerMock).sendKvittering(brevStatusCaptor.getValue(), messageMock, kvitteringCaptor.getValue());
+		verify(brevlagerServiceMock).lagreBrev(kvitteringCaptor.capture(), brevstatusCaptor.capture(), any());
+		verify(messageProducerMock).sendKvittering(brevStatusVOCaptor.getValue(), messageMock, kvitteringCaptor.getValue());
 		KvitteringVO kvittering = kvitteringCaptor.getValue();
-		BrevStatusVO brevStatus = brevStatusCaptor.getValue();
+		BrevStatusVO brevStatus = brevStatusVOCaptor.getValue();
 
 		assertThat(kvittering.getLagerStatus(), is(Konstanter.BREVLAGER_STATUS_KLADD));
 		assertThat(brevStatus.getStatus(), is(Konstanter.BREVSTATUS_LAGRET_KLADD));
@@ -135,15 +138,15 @@ public class ArkiverBrevCommandTest {
 	public void shouldLagrePdfFerdigBrevIBrevlageret() throws Exception {
 		when(DialogueXMLParser.lagKvitteringVOFraDialogueMelding(any())).thenReturn(createDefaultKvittering());
 		when(brevserverServiceMock.hentBrevStatus(systemId, brevReferanse)).thenReturn(createDefaultBrevstatus());
-		when(brevlagerServiceMock.lagreBrev(any(BrevVO.class), any(BrevStatusVO.class))).thenReturn(null);
+		when(brevlagerServiceMock.lagreBrev(any(BrevVO.class), any(Brevstatus.class), any(String.class))).thenReturn(null);
 
 		arkiverBrevCommand.execute();
 
-		verify(brevlagerServiceMock).lagreBrev(kvitteringCaptor.capture(), brevStatusCaptor.capture());
-		verify(messageProducerMock).sendKvittering(brevStatusCaptor.getValue(), messageMock, kvitteringCaptor.getValue());
+		verify(brevlagerServiceMock).lagreBrev(kvitteringCaptor.capture(), brevstatusCaptor.capture(), any());
+		verify(messageProducerMock).sendKvittering(brevStatusVOCaptor.getValue(), messageMock, kvitteringCaptor.getValue());
 
 		KvitteringVO kvittering = kvitteringCaptor.getValue();
-		BrevStatusVO brevStatus = brevStatusCaptor.getValue();
+		BrevStatusVO brevStatus = brevStatusVOCaptor.getValue();
 
 		assertThat(kvittering.getLagerStatus(), is(Konstanter.BREVLAGER_STATUS_FERDIG));
 		assertThat(brevStatus.getStatus(), is(Konstanter.BREVSTATUS_FERDIG));
@@ -158,29 +161,29 @@ public class ArkiverBrevCommandTest {
 
 		arkiverBrevCommand.execute();
 
-		verify(brevserverServiceMock).lagreBrevStatus(brevStatusCaptor.capture());
-		verify(brevlagerServiceMock, never()).lagreBrev(any(KvitteringVO.class), any(BrevStatusVO.class));
-		verify(messageProducerMock).sendKvittering(brevStatusCaptor.getValue(), messageMock, kvittering);
+		verify(brevserverServiceMock).lagreBrevStatus(brevstatusCaptor.capture(), any());
+		verify(brevlagerServiceMock, never()).lagreBrev(any(KvitteringVO.class), any(Brevstatus.class), any(String.class));
+		verify(messageProducerMock).sendKvittering(brevStatusVOCaptor.getValue(), messageMock, kvittering);
 
-		BrevStatusVO brevStatus = brevStatusCaptor.getValue();
+		BrevStatusVO brevStatus = brevStatusVOCaptor.getValue();
 
 		assertThat(brevStatus.getStatus(), is(Konstanter.BREVSTATUS_FEIL));
 	}
 
 	@Test
 	public void shouldOppdatereBrevStatusIfBrevetEksisterer() throws Exception {
-		BrevStatusVO retBrevstatus = createDefaultBrevstatus();
+		Brevstatus retBrevstatus = createDefaultBrevstatus();
 		retBrevstatus.setStatus(Konstanter.BREVSTATUS_FERDIG);
 		when(DialogueXMLParser.lagKvitteringVOFraDialogueMelding(any())).thenReturn(createDefaultKvittering());
 		when(brevserverServiceMock.hentBrevStatus(systemId, brevReferanse)).thenReturn(retBrevstatus);
 
 		arkiverBrevCommand.execute();
 
-		verify(brevserverServiceMock, never()).lagreBrevStatus(any(BrevStatusVO.class));
-		verify(brevlagerServiceMock, never()).lagreBrev(any(KvitteringVO.class), any(BrevStatusVO.class));
-		verify(messageProducerMock).sendKvittering(brevStatusCaptor.capture(), any(MessageVO.class), kvitteringCaptor.capture());
+		verify(brevserverServiceMock, never()).lagreBrevStatus(any(Brevstatus.class), any(String.class));
+		verify(brevlagerServiceMock, never()).lagreBrev(any(KvitteringVO.class), any(Brevstatus.class), any(String.class));
+		verify(messageProducerMock).sendKvittering(brevStatusVOCaptor.capture(), any(MessageVO.class), kvitteringCaptor.capture());
 
-		BrevStatusVO brevStatus = brevStatusCaptor.getValue();
+		BrevStatusVO brevStatus = brevStatusVOCaptor.getValue();
 		KvitteringVO kvittering = kvitteringCaptor.getValue();
 
 		assertThat(brevStatus.getStatus(), is(Konstanter.BREVSTATUS_FEIL));
@@ -204,8 +207,8 @@ public class ArkiverBrevCommandTest {
 		return kvittering;
 	}
 
-	private BrevStatusVO createDefaultBrevstatus() {
-		BrevStatusVO brevstatus = new BrevStatusVO();
+	private Brevstatus createDefaultBrevstatus() {
+		Brevstatus brevstatus = new Brevstatus();
 		brevstatus.setStatus(Konstanter.BREVSTATUS_BREVPAKKE);
 		return brevstatus;
 	}

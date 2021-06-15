@@ -1,5 +1,7 @@
 package no.nav.brevserver.command;
 
+import no.nav.brevserver.converter.VoTilBrevstatusConverter;
+import no.nav.brevserver.core.domain.entities.Brevstatus;
 import no.nav.brevserver.server.common.config.Konstanter;
 import no.nav.brevserver.server.common.exception.BrevException;
 import no.nav.brevserver.server.common.exception.BrevTechnicalException;
@@ -27,6 +29,7 @@ import java.io.StringReader;
  */
 public class BestillBrevCommand extends AbstractCommand {
 	BrevStatusVO brevStatusVo;
+	private VoTilBrevstatusConverter converter = new VoTilBrevstatusConverter();
 
 	public BestillBrevCommand(MessageVO message) {
 		super(message);
@@ -107,7 +110,7 @@ public class BestillBrevCommand extends AbstractCommand {
 				}
 				// Bestille brevet fra Dialogue
 			} else {
-				BrevStatusVO tmp = brevserverService
+				Brevstatus tmp = brevserverService
 						.hentBrevStatus(brevStatusVo.getSystemID(), brevStatusVo.getBrevreferanse());
 				if (tmp != null) {
 					// Brevet eksisterer fra før, returner feilmelding
@@ -118,7 +121,7 @@ public class BestillBrevCommand extends AbstractCommand {
 				}
 
 				brevStatusVo.setStatus(Konstanter.BREVSTATUS_BREVPAKKE);
-				brevserverService.lagreBrevStatus(brevStatusVo);
+				brevserverService.lagreBrevStatus(converter.convert(brevStatusVo), brevStatusVo.getToken());
 
 				// Sende meldingen videre til Dialogue
 				producer.sendToDialogue(messageVo);

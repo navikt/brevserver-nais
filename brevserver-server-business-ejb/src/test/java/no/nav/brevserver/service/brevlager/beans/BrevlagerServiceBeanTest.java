@@ -1,16 +1,13 @@
 package no.nav.brevserver.service.brevlager.beans;
 
 import no.nav.brevserver.builder.BrevBuilder;
-import no.nav.brevserver.builder.BrevStatusBuilder;
-import no.nav.brevserver.server.common.config.ConfigManager;
+import no.nav.brevserver.core.domain.entities.Brevstatus;
 import no.nav.brevserver.server.common.config.Konstanter;
 import no.nav.brevserver.server.common.exception.BrevTechnicalException;
-import no.nav.brevserver.server.common.jndi.JndiHelper;
 import no.nav.brevserver.server.common.vo.BrevStatusVO;
 import no.nav.brevserver.server.common.vo.BrevVO;
 import no.nav.brevserver.server.common.vo.FilType;
 import no.nav.brevserver.service.AbstractDatabaseTest;
-import no.nav.brevserver.service.TempJndiHelper;
 import no.nav.brevserver.service.brevserver.BrevserverService;
 import no.nav.brevserver.service.brevserver.BrevserverServiceFactory;
 import org.junit.Before;
@@ -18,11 +15,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import javax.sql.DataSource;
@@ -31,7 +28,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import static no.nav.brevserver.builder.BrevBuilder.getBrevBuilder;
-import static no.nav.brevserver.builder.BrevStatusBuilder.getBrevStatusBuilder;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
@@ -73,6 +69,10 @@ public class BrevlagerServiceBeanTest extends AbstractDatabaseTest {
 	@Mock
 	private BrevserverService brevserverServiceMock;
 
+	@Mock
+	private DataSource dataSourceMock;
+
+	@InjectMocks
 	private BrevlagerServiceBean brevlagerServiceBean;
 
 	@Rule
@@ -82,16 +82,16 @@ public class BrevlagerServiceBeanTest extends AbstractDatabaseTest {
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 		setupBrevserverServiceMock();
-		mockStatic(TempJndiHelper.class);
-		DataSource dataSourceMock = jndiDataSource();
-		when(TempJndiHelper.jndiDataSource()).thenReturn(dataSourceMock);
 		brevlagerServiceBean = new BrevlagerServiceBean();
+		ReflectionTestUtils.setField(brevlagerServiceBean, "datasource", dataSourceMock);
+		Connection connectionMock = mock(Connection.class);
+		when(dataSourceMock.getConnection(any(String.class), any(String.class))).thenReturn(connectionMock);
 		brevlagerServiceBean.setDb2SingleRowOptimization(NO_DB2_OPTIMIZATION);
 	}
 
 
 	@Test
-	@PrepareForTest({BrevserverServiceFactory.class, TempJndiHelper.class})
+	@PrepareForTest({BrevserverServiceFactory.class})
 	public void shouldThrowExceptionForFailedQueryInGetBrev() throws Exception {
 		expectExceptionDatabaseNoDatabaseTilgjengelig();
 
@@ -101,35 +101,35 @@ public class BrevlagerServiceBeanTest extends AbstractDatabaseTest {
 	}
 
 	@Test
-	@PrepareForTest({BrevserverServiceFactory.class, TempJndiHelper.class})
+	@PrepareForTest({BrevserverServiceFactory.class})
 	public void shouldThrowExceptionForFailedQueryInLagreBrev() throws Exception {
 		expectExceptionDatabaseNoDatabaseTilgjengelig();
 
 		throwExceptionWhenQueryIsExecuted();
 
-		brevlagerServiceBean.lagreBrev(defaultBrev().build(), new BrevStatusVO());
+		brevlagerServiceBean.lagreBrev(defaultBrev().build(), new Brevstatus(), "123456");
 	}
 
 	@Test
-	@PrepareForTest({BrevserverServiceFactory.class, TempJndiHelper.class})
+	@PrepareForTest({BrevserverServiceFactory.class})
 	public void shouldThrowExceptionForFailedQueryInFerdigstillBrev() throws Exception {
 		expectExceptionDatabaseNoDatabaseTilgjengelig();
 
 		throwExceptionWhenQueryIsExecuted();
 
-		brevlagerServiceBean.ferdigstillBrev(new BrevStatusVO(), defaultBrev().build(), defaultBrev().build());
+		brevlagerServiceBean.ferdigstillBrev(new Brevstatus(), defaultBrev().build(), defaultBrev().build(), "123456");
 	}
 
 	@Test
-	@PrepareForTest({TempJndiHelper.class, BrevserverServiceFactory.class})
+	@PrepareForTest({BrevserverServiceFactory.class})
 	public void shouldLagreNyttBrevAndVerifyLagret() throws Exception {
-		BrevStatusVO brevStatus = defaultBrevStatus().build();
+		Brevstatus brevStatus = defaultBrevStatus().build();
 		BrevVO brev = defaultBrev().build();
-		when(brevserverServiceMock.lagreBrevStatus(eq(brevStatus), any(Connection.class))).thenReturn(null);
+		when(brevserverServiceMock.lagreBrevStatus(eq(brevStatus), any(String.class))).thenReturn(null);
 
-		BrevStatusVO oldBrevStatus = brevlagerServiceBean.lagreBrev(brev, brevStatus);
+		BrevStatusVO oldBrevStatus = brevlagerServiceBean.lagreBrev(brev, brevStatus, TOKEN);
 
-		verify(brevserverServiceMock).lagreBrevStatus(eq(brevStatus), any(Connection.class));
+		verify(brevserverServiceMock).lagreBrevStatus(eq(brevStatus), any(String.class));
 		BrevVO persistedBrev = brevlagerServiceBean.getBrev(SYSTEM_ID, BREVREFERANSE);
 
 		assertThat(oldBrevStatus, nullValue());
@@ -142,15 +142,15 @@ public class BrevlagerServiceBeanTest extends AbstractDatabaseTest {
 	}
 
 	@Test
-	@PrepareForTest({TempJndiHelper.class, BrevserverServiceFactory.class})
+	@PrepareForTest({BrevserverServiceFactory.class})
 	public void shouldOppdatereEksisterendeBrevAndVerifyOppdatert() throws Exception {
-		brevlagerServiceBean.lagreBrev(defaultBrev().build(), new BrevStatusVO());
-		BrevStatusVO initialBrevStatus = defaultBrevStatus().build();
+		brevlagerServiceBean.lagreBrev(defaultBrev().build(), new Brevstatus(), TOKEN);
+		Brevstatus initialBrevStatus = defaultBrevStatus().build();
 		BrevVO updatedBrev = defaultBrev().contentType(FilType.PDF.getContentType()).brevdata(BREVDATA2).build();
-		when(brevserverServiceMock.lagreBrevStatus(any(BrevStatusVO.class), any(Connection.class))).thenReturn(
+		when(brevserverServiceMock.lagreBrevStatus(any(Brevstatus.class), any(String.class))).thenReturn(
 				initialBrevStatus);
 
-		BrevStatusVO oldBrevStatus = brevlagerServiceBean.lagreBrev(updatedBrev, new BrevStatusVO());
+		BrevStatusVO oldBrevStatus = brevlagerServiceBean.lagreBrev(updatedBrev, new Brevstatus(), TOKEN);
 
 		assertThat(oldBrevStatus, is(initialBrevStatus));
 
@@ -164,25 +164,25 @@ public class BrevlagerServiceBeanTest extends AbstractDatabaseTest {
 	}
 
 	@Test
-	@PrepareForTest({TempJndiHelper.class, BrevserverServiceFactory.class})
+	@PrepareForTest({BrevserverServiceFactory.class})
 	public void shouldThrowExceptionIfBrevStatusIsFerdig() throws Exception {
 		thrown.expect(BrevTechnicalException.class);
 		thrown.expectMessage("Brevet har status = 'FERDIG' og kan ikke endres");
 
-		brevlagerServiceBean.lagreBrev(defaultBrev().lagerStatus(Konstanter.BREVLAGER_STATUS_FERDIG).build(), new BrevStatusVO());
-		brevlagerServiceBean.lagreBrev(defaultBrev().build(), new BrevStatusVO());
+		brevlagerServiceBean.lagreBrev(defaultBrev().lagerStatus(Konstanter.BREVLAGER_STATUS_FERDIG).build(), new Brevstatus(), TOKEN);
+		brevlagerServiceBean.lagreBrev(defaultBrev().build(), new Brevstatus(), TOKEN);
 	}
 
 	@Test
-	@PrepareForTest({TempJndiHelper.class, BrevserverServiceFactory.class})
+	@PrepareForTest({BrevserverServiceFactory.class})
 	public void shouldFerdigstilleNyttBrevAndVerifyLagret() throws Exception {
-		BrevStatusVO brevStatus = defaultBrevStatus().build();
+		Brevstatus brevStatus = defaultBrevStatus().build();
 		BrevVO redBrev = defaultBrev().contentType(FilType.RTF.getContentType()).build();
 		BrevVO pdfBrev = defaultBrev().lagerStatus(Konstanter.BREVLAGER_STATUS_FERDIG).contentType(FilType.PDF.getContentType()).build();
 
-		brevlagerServiceBean.ferdigstillBrev(brevStatus, redBrev, pdfBrev);
+		brevlagerServiceBean.ferdigstillBrev(brevStatus, redBrev, pdfBrev, TOKEN);
 
-		verify(brevserverServiceMock).lagreBrevStatus(eq(brevStatus), any(Connection.class));
+		verify(brevserverServiceMock).lagreBrevStatus(eq(brevStatus), TOKEN);
 
 		BrevVO persistedBrev = brevlagerServiceBean.getBrev(SYSTEM_ID, BREVREFERANSE);
 
@@ -195,14 +195,14 @@ public class BrevlagerServiceBeanTest extends AbstractDatabaseTest {
 	}
 
 	@Test
-	@PrepareForTest({TempJndiHelper.class, BrevserverServiceFactory.class})
+	@PrepareForTest({BrevserverServiceFactory.class})
 	public void shouldFerdigstilleEksisterendeBrevAndVerifyLagret() throws Exception {
 		BrevVO redBrev = defaultBrev().contentType(FilType.RTF.getContentType()).build();
 		BrevVO pdfBrev = defaultBrev().lagerStatus(Konstanter.BREVLAGER_STATUS_FERDIG)
 				.contentType(FilType.PDF.getContentType()).brevdata(BREVDATA2).build();
 
-		brevlagerServiceBean.lagreBrev(redBrev, new BrevStatusVO());
-		brevlagerServiceBean.ferdigstillBrev(new BrevStatusVO(), redBrev, pdfBrev);
+		brevlagerServiceBean.lagreBrev(redBrev, new Brevstatus(), TOKEN);
+		brevlagerServiceBean.ferdigstillBrev(new Brevstatus(), redBrev, pdfBrev, TOKEN);
 
 		BrevVO persistedBrev = brevlagerServiceBean.getBrev(SYSTEM_ID, BREVREFERANSE);
 
@@ -215,17 +215,17 @@ public class BrevlagerServiceBeanTest extends AbstractDatabaseTest {
 	}
 
 	@Test
-	@PrepareForTest({TempJndiHelper.class, BrevserverServiceFactory.class})
+	@PrepareForTest({BrevserverServiceFactory.class})
 	public void shouldHandleDocx() throws Exception {
 		BrevVO redBrev = defaultBrev().contentType(FilType.DOCX.getContentType()).build();
 		BrevVO pdfBrev = defaultBrev().lagerStatus(Konstanter.BREVLAGER_STATUS_FERDIG)
 				.contentType(FilType.PDF.getContentType()).brevdata(BREVDATA2).build();
 
-		brevlagerServiceBean.lagreBrev(redBrev, new BrevStatusVO());
+		brevlagerServiceBean.lagreBrev(redBrev, new Brevstatus(), TOKEN);
 		BrevVO persistedBrev = brevlagerServiceBean.getBrev(SYSTEM_ID, BREVREFERANSE);
 		assertThat(persistedBrev.getContentType(), is(FilType.DOCX.getContentType()));
 
-		brevlagerServiceBean.ferdigstillBrev(new BrevStatusVO(), redBrev, pdfBrev);
+		brevlagerServiceBean.ferdigstillBrev(new Brevstatus(), redBrev, pdfBrev, TOKEN);
 		persistedBrev = brevlagerServiceBean.getBrev(SYSTEM_ID, BREVREFERANSE);
 		assertThat(persistedBrev.getBrevreferanse(), is(BREVREFERANSE));
 		assertThat(persistedBrev.getSystemID(), is(SYSTEM_ID));
@@ -236,7 +236,7 @@ public class BrevlagerServiceBeanTest extends AbstractDatabaseTest {
 	}
 
 	@Test
-	@PrepareForTest({TempJndiHelper.class, BrevserverServiceFactory.class})
+	@PrepareForTest({BrevserverServiceFactory.class})
 	public void shouldPingBrevlager() {
 		brevlagerServiceBean.ping();
 	}
@@ -246,8 +246,8 @@ public class BrevlagerServiceBeanTest extends AbstractDatabaseTest {
 				.lagerStatus(Konstanter.BREVLAGER_STATUS_KLADD).brukerID(BRUKERID).brevdata(BREVDATA);
 	}
 
-	private BrevStatusBuilder defaultBrevStatus() {
-		return getBrevStatusBuilder().brevreferanse(BREVREFERANSE).systemID(SYSTEM_ID).token(TOKEN).returKoe(RETURKOE)
+	private Brevstatus.BrevstatusBuilder defaultBrevStatus() {
+		return Brevstatus.builder().brevreferanse(BREVREFERANSE).systemID(SYSTEM_ID).returKoe(RETURKOE)
 				.bestillerBrukerID(BRUKERID).brevmal(BREVMAL).status(STATUS).format(FORMAT).skrivertype(SKRIVERTYPE)
 				.skriver(SKRIVER).arkiver(ARKIVER).skuff(SKUFF);
 	}
@@ -262,7 +262,6 @@ public class BrevlagerServiceBeanTest extends AbstractDatabaseTest {
 	private void throwExceptionWhenQueryIsExecuted() throws Exception {
 		Connection connectionMock = mock(Connection.class);
 		PreparedStatement statementMock = mock(PreparedStatement.class);
-		mockStatic(TempJndiHelper.class);
 		DataSource dataSourceMock = mock(DataSource.class);
 		ReflectionTestUtils.setField(brevlagerServiceBean, "datasource", dataSourceMock);
 		when(dataSourceMock.getConnection(any(String.class), any(String.class))).thenReturn(connectionMock);

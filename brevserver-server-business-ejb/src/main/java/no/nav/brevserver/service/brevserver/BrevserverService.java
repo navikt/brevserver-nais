@@ -2,9 +2,10 @@ package no.nav.brevserver.service.brevserver;
 
 import java.sql.Connection;
 
+import no.nav.brevserver.core.domain.entities.BrevSystemTilgang;
+import no.nav.brevserver.core.domain.entities.Brevstatus;
 import no.nav.brevserver.server.common.exception.BrevTechnicalException;
 import no.nav.brevserver.server.common.vo.BrevStatusVO;
-import no.nav.brevserver.server.common.vo.SysTilgangVO;
 
 /**
  * BrevserverService interface. Se implementasjonen for detaljer.
@@ -20,15 +21,12 @@ public interface BrevserverService {
 	boolean sjekkSystemTilgang(String systemID, String passord)
 			throws BrevTechnicalException;
 
-	BrevStatusVO hentBrevStatus(String systemID, String brevReferanse)
+	Brevstatus hentBrevStatus(String systemID, String brevReferanse)
 			throws BrevTechnicalException;
 
-	BrevStatusVO lagreBrevStatus(BrevStatusVO brevStatus, Connection con)
+	Brevstatus lagreBrevStatus(Brevstatus brevStatus, String token)
 			throws BrevTechnicalException;
 
-	BrevStatusVO lagreBrevStatus(BrevStatusVO brevStatus)
-			throws BrevTechnicalException;
-
-	SysTilgangVO hentTilgang(String systemid, boolean useCache)
+	BrevSystemTilgang hentTilgang(String systemid, boolean useCache)
 			throws BrevTechnicalException;
 }

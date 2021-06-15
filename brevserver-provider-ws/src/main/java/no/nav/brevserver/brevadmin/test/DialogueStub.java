@@ -1,5 +1,6 @@
 package no.nav.brevserver.brevadmin.test;
 
+import no.nav.brevserver.core.domain.entities.BrevSystemTilgang;
 import no.nav.brevserver.server.common.config.ConfigManager;
 import no.nav.brevserver.server.common.config.Konstanter;
 import no.nav.brevserver.server.common.exception.BrevException;
@@ -90,7 +91,7 @@ public class DialogueStub {
 
 		// Gi tilgang til brevet
 		BrevserverService brevService = BrevserverServiceFactory.getInstance().createBrevserverService();
-		SysTilgangVO tilgang = brevService.hentTilgang(data.system, true);
+		BrevSystemTilgang tilgang = brevService.hentTilgang(data.system, true);
 
 		JMSAccessor jmsAccessor = null;
 		try {
