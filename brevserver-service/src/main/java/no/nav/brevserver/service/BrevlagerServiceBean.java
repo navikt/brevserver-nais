@@ -131,7 +131,7 @@ public class BrevlagerServiceBean implements BrevlagerService {
 
 			XMLService service = XMLServiceFactory.getInstance().createXMLService();
 			String xmlKvittering = service.unmarshal(kvittering, brevStatus);
-//TODO:FIXME
+//TODO:Sendkvittering
 			//sendKvittering(brevStatus.getReturKoe(), false, null, xmlKvittering);
 		}
 
