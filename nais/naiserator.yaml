@@ -6,9 +6,6 @@ metadata:
   labels:
     team: teamdokumenthandtering
 spec:
-  env:
-    - name: BREVSERVER_DS_URL
-      value: TEST
   image: {{ image }}
   ingresses:
     {{#each INGRESSES}}
