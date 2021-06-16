@@ -3,6 +3,7 @@ package no.nav.brevserver.service;
 import no.nav.brevserver.server.common.exception.BrevException;
 import no.nav.brevserver.server.common.exception.BrevFunctionalException;
 import no.nav.brevserver.server.common.exception.BrevTechnicalException;
+import no.nav.brevserver.server.common.to.AvbrytDokumentRequest;
 import no.nav.brevserver.server.common.to.LagreDokumentRequest;
 import no.nav.brevserver.server.common.vo.BrevStatusVO;
 import no.nav.brevserver.server.common.vo.BrevVO;
@@ -16,4 +17,6 @@ public interface BrevlagerService {
 	void ping();
 
 	void lagreDokument(LagreDokumentRequest map) throws BrevException;
+
+	void avbrytDokument(AvbrytDokumentRequest map) throws BrevException;
 }

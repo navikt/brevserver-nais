@@ -1,5 +1,6 @@
 package no.nav.brevserver.nais;
 
+import no.nav.brevserver.nais.support.AvbrytDokumentRequestMapper;
 import no.nav.brevserver.nais.support.LagreDokumentRequestMapper;
 import no.nav.brevserver.server.common.exception.BrevException;
 import no.nav.brevserver.server.common.exception.BrevFunctionalException;
@@ -9,6 +10,7 @@ import no.nav.brevserver.server.common.to.HentDokumentResponse;
 import no.nav.brevserver.server.common.vo.BrevStatusVO;
 import no.nav.brevserver.server.common.vo.BrevVO;
 import no.nav.brevserver.service.BrevlagerService;
+import no.nav.tjenester.brevogarkiv.dokumentbehandling.AvbrytDokumentRequest;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.LagreDokumentRequest;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.PingRequest;
 import org.apache.log4j.MDC;
@@ -25,12 +27,15 @@ public class DokumentbehandlingProvider {
 
 	private final BrevlagerService brevlagerService;
 	private final LagreDokumentRequestMapper lagreDokumentRequestMapper;
+	private final AvbrytDokumentRequestMapper avbrytDokumentRequestMapper;
 
 	@Autowired
 	public DokumentbehandlingProvider(BrevlagerService brevlagerService,
-									  LagreDokumentRequestMapper lagreDokumentRequestMapper){
+									  LagreDokumentRequestMapper lagreDokumentRequestMapper,
+									  AvbrytDokumentRequestMapper avbrytDokumentRequestMapper){
 		this.brevlagerService = brevlagerService;
 		this.lagreDokumentRequestMapper = lagreDokumentRequestMapper;
+		this.avbrytDokumentRequestMapper = avbrytDokumentRequestMapper;
 	}
 
 	public HentDokumentResponse hentDokument(HentDokumentRequest request) throws BrevTechnicalException, BrevFunctionalException {
@@ -61,12 +66,11 @@ public class DokumentbehandlingProvider {
 			MDC.remove(brevreferanseKey);
 		}
 	}
-	/*
-		@Override
-		public void avbrytDokument(AvbrytDokumentRequest avbrytDokumentRequest) {
-			dokumentbehandlingService.avbrytDokument(avbrytDokumentRequestMapper.map(avbrytDokumentRequest));
+
+		public void avbrytDokument(AvbrytDokumentRequest avbrytDokumentRequest) throws BrevException {
+			brevlagerService.avbrytDokument(avbrytDokumentRequestMapper.map(avbrytDokumentRequest));
 		}
-	
+	/*
 		@Override
 		public void ferdigstillDokument(FerdigstillDokumentRequest ferdigstillDokumentRequest) {
 			dokumentbehandlingService.ferdigstillDokument(ferdigstillDokumentRequestMapper.map(ferdigstillDokumentRequest));

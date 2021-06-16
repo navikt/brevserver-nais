@@ -9,6 +9,7 @@ import no.nav.brevserver.server.common.config.Konstanter;
 import no.nav.brevserver.server.common.exception.BrevException;
 import no.nav.brevserver.server.common.exception.BrevFunctionalException;
 import no.nav.brevserver.server.common.exception.BrevTechnicalException;
+import no.nav.brevserver.server.common.to.AvbrytDokumentRequest;
 import no.nav.brevserver.server.common.to.LagreDokumentRequest;
 import no.nav.brevserver.server.common.type.SystemType;
 import no.nav.brevserver.server.common.utility.ArgumentValidator;
@@ -16,12 +17,15 @@ import no.nav.brevserver.server.common.utility.PerformanceLogger;
 import no.nav.brevserver.server.common.vo.BrevStatusVO;
 import no.nav.brevserver.server.common.vo.BrevVO;
 import no.nav.brevserver.server.common.vo.FilType;
+import no.nav.brevserver.server.common.vo.KvitteringVO;
 import no.nav.brevserver.service.converter.BrevTilVoConverter;
 import no.nav.brevserver.service.converter.BrevstatusTilVoConverter;
 import no.nav.brevserver.service.converter.FileConverter;
 import no.nav.brevserver.service.converter.VoTilBrevConverter;
 import no.nav.brevserver.service.converter.VoTilBrevstatusConverter;
 import no.nav.brevserver.service.queue.KoService;
+import no.nav.brevserver.service.queue.xml.XMLService;
+import no.nav.brevserver.service.queue.xml.XMLServiceFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -108,6 +112,29 @@ public class BrevlagerServiceBean implements BrevlagerService {
 		brevStatus.setStatus(Konstanter.BREVSTATUS_LAGRET_KLADD);
 
 		lagreDokument(brev, brevStatus, systemType);
+	}
+
+	@Override
+	public void avbrytDokument(AvbrytDokumentRequest avbrytDokumentRequest) throws BrevException {
+		avbrytDokumentRequest.validate();
+		BrevStatusVO brevStatus = avbrytDokumentRequest.getBrevStatus();
+		verifyChangeRequest(brevStatus);
+		brevStatus.setStatus(Konstanter.BREVSTATUS_AVBRUTT);
+		//TODO: FIX
+		//brevstatusServiceBean.lagreDokumentStatus(brevStatus);
+
+		if (brevStatus.getReturKoe() != null) {
+			KvitteringVO kvittering = new KvitteringVO();
+			kvittering.setSystemID(brevStatus.getSystemID());
+			kvittering.setBrevreferanse(brevStatus.getBrevreferanse());
+			brevStatus.setStatus(Konstanter.BREVSTATUS_AVBRUTT);
+
+			XMLService service = XMLServiceFactory.getInstance().createXMLService();
+			String xmlKvittering = service.unmarshal(kvittering, brevStatus);
+//TODO:FIXME
+			//sendKvittering(brevStatus.getReturKoe(), false, null, xmlKvittering);
+		}
+
 	}
 
 	private void lagreDokument(BrevVO brev, BrevStatusVO brevStatusVO, SystemType systemType) throws BrevException {
