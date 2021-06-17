@@ -6,6 +6,9 @@ metadata:
   labels:
     team: teamdokumenthandtering
 spec:
+  env:
+    - name: SPRING_DATASOURCE_URL
+      value: { { SPRING_DATASOURCE_URL } }
   image: {{ image }}
   ingresses:
     {{#each INGRESSES}}
