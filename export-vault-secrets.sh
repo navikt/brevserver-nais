@@ -10,8 +10,3 @@ then
     echo "Setting BREVSERVER_DS_PASSWORD"
     export  BREVSERVER_DS_PASSWORD=$(cat /var/run/secrets/nais.io/vault/brevserver_ds_password)
 fi
-if test -f /var/run/secrets/nais.io/vault/brevserver_ds_url;
-then
-    echo "Setting BREVSERVER_DS_URL"
-    export  BREVSERVER_DS_URL=$(cat /var/run/secrets/nais.io/vault/brevserver_ds_url)
-fi
