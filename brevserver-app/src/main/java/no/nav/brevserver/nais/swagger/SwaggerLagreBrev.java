@@ -15,7 +15,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @ApiOperation(
-		value = "Oppretter en journalpost i fagarkivet, med eller uten dokumenter")
+		value = "Oppretter brev i midlertidig brevlager")
 @ApiResponses(value = {
 		@ApiResponse(code = 201, message = "Created"),
 		@ApiResponse(code = 400, message = "* Kan ikke opprette journalpost"),
