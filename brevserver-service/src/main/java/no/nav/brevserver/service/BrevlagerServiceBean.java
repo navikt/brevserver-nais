@@ -74,7 +74,7 @@ public class BrevlagerServiceBean implements BrevlagerService {
 			List<Brev> brevListe = brevRepository.findBySystemIdAndBrevreferanse(systemID, brevReferanse);
 			if (brevListe.size() > 0) {
 				brevVO = brevTilVoConverter.convert(brevListe.get(0));
-				// translateContentTypeDocxFromDb2(brevVO);
+				translateContentTypeDocxFromDb2(brevVO);
 			}
 		} catch (Exception e) {
 			throw new BrevTechnicalException(BrevTechnicalException.DATABASE_IKKE_TILGJENGELIG, e);
@@ -98,7 +98,7 @@ public class BrevlagerServiceBean implements BrevlagerService {
 
 	@Override
 	public void ping() {
-
+		//Return databasecheck
 	}
 
 	@Override
