@@ -38,6 +38,6 @@ spec:
   vault:
     enabled: true
     paths:
-      - kvPath: {{ BREVSERVER_DS }}
-        mountPath: "/var/run/secrets/nais.io/brevserverDS"
+      - kvPath: {{ BREVSERVER_VAULT }}
+        mountPath: "/var/run/secrets/nais.io/vault"
   webproxy: true
