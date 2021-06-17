@@ -40,7 +40,4 @@ spec:
       memory: 1920Mi
   vault:
     enabled: true
-    paths:
-      - kvPath: {{ BREVSERVER_VAULT }}
-        mountPath: "/var/run/secrets/nais.io/vault"
   webproxy: true
