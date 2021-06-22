@@ -1,6 +1,6 @@
 package no.nav.brevserver.server.common.to;
 
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 
 /**
  * Domain request object for avbryt dokument operations on the service layer

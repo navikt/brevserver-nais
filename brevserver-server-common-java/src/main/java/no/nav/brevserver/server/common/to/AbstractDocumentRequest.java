@@ -3,7 +3,7 @@ package no.nav.brevserver.server.common.to;
 import no.nav.brevserver.server.common.vo.BrevStatusVO;
 import no.nav.brevserver.server.common.vo.BrevVO;
 import no.nav.brevserver.server.common.vo.FilType;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 
 /**
  * Common domain request object properties and operations on the service layer

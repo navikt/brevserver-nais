@@ -29,6 +29,7 @@ public final class NaisContract {
 
 	@Autowired
 	public NaisContract() {
+		//TODO: Legg på meterregistry
 		//Gauge.builder("dok_app_is_ready", isReady, AtomicInteger::get).register(meterRegistry);
 	}
 
