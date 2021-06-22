@@ -18,9 +18,9 @@
 		<module>brevserver-core</module>
 		<module>brevserver-consumer-joark-ejb</module>
 		<!--<module>brevserver-j2ee</module>-->
-		<module>brevserver-repository</module>
-		<module>brevserver-service</module>
-		<module>brevserver-app</module>
+		<module>repository</module>
+		<module>service</module>
+		<module>app</module>
 		<module>brevserver-klient-applet</module>
 		<!--<module>brevserver-server-business-ejb</module>-->
 		<!--module>brevserver-server-comptest</module-->
