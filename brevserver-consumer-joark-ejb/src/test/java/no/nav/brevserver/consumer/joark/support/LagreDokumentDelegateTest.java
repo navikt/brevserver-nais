@@ -38,7 +38,7 @@ import static org.mockito.Mockito.when;
 /**
  * Unit tests for LagreDokumentDelegate.
  *
- * @author Thomas Eugen Bjørge, Visma Sirius
+ * @author Thomas Eugen Bjorge, Visma Sirius
  */
 public class LagreDokumentDelegateTest {
 

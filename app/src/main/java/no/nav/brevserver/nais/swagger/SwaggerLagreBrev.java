@@ -19,8 +19,8 @@ import java.lang.annotation.Target;
 @ApiResponses(value = {
 		@ApiResponse(code = 201, message = "Created"),
 		@ApiResponse(code = 400, message = "* Kan ikke opprette journalpost"),
-		@ApiResponse(code = 401, message = "* Mangler tilgang til å opprette ny journalpost.\n* Ugyldig OIDC token. Denne feilen gis dersom tokenet ikke har riktig format eller er utgått."),
-		@ApiResponse(code = 403, message = "Bruker mangler tilgang til å opprette journalpost på tema"),
+		@ApiResponse(code = 401, message = "* Mangler tilgang til Ã¥ opprette ny journalpost.\n* Ugyldig OIDC token. Denne feilen gis dersom tokenet ikke har riktig format eller er utgï¿½tt."),
+		@ApiResponse(code = 403, message = "Bruker mangler tilgang til Ã¥ opprette journalpost pÃ¥ tema"),
 		@ApiResponse(code = 409, message = "Journalpost med angitt eksternReferanseId finnes allerede for angitt kanal.\nGjelder bare kanal SKAN_IM og HELSENETTET"),
 		@ApiResponse(code = 500, message = "Internal server error")})
 public @interface SwaggerLagreBrev {

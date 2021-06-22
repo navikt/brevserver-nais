@@ -10,7 +10,7 @@ import static org.junit.Assert.assertThat;
  * Unit tests for {@link BrevStatusVO}
  *
  * @author Roar Bjurstrom, Visma Consulting.
- * @author Thomas Kåsene, Visma Consulting AS
+ * @author Thomas Kasene, Visma Consulting AS
  */
 public class BrevStatusVOTest {
 

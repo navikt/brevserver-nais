@@ -13,7 +13,7 @@ import no.nav.brevserver.server.common.log.Log;
 /**
  * SOAPHandler that logs WS requests and responses.
  *
- * @author Thomas Eugen Bjørge, Visma Sirius
+ * @author Thomas Eugen BjÃ¸rge, Visma Sirius
  */
 public class RequestResponseLoggingHandler implements SOAPHandler<SOAPMessageContext> {
 

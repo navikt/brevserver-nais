@@ -66,11 +66,11 @@ public class SwaggerConfig {
 		return new ApiInfo(
 				"Dokarkiv APIer",
 				"Her dokumenteres REST-grensesnittene til brevserver (Brevserver). Til autentisering skal etterhvert brukes to OIDC-token (JWT via OAuth2.0) i hver sin header" +
-						"\nmed `Nav-Consumer-Token` (applikasjonsbrukeren sitt token) og `Authorization` (saksbehandleren sitt token). Eksempel på kall med to tokens:\n" +
+						"\nmed `Nav-Consumer-Token` (applikasjonsbrukeren sitt token) og `Authorization` (saksbehandleren sitt token). Eksempel pÃ¥ kall med to tokens:\n" +
 						"\n" +
 						"curl -X PUT \"https://dokarkiv-q1.nais.preprod.local/rest/journalpostapi/v1/journalpost/111\" -H \"accept: */*\" -H \"Authorization: Bearer eyAidH...\", -H \"Nav-Consumer-Token: Bearer eyJraWQi...\" -H \"Content-Type: application/json\" -d \"{ \\\"avsenderMottaker\\\": { \\\"id\\\": \\\"string\\\", \\\"land\\\": \\\"string\\\",...}\"\n" +
 						"\n" +
-						"Hvis disse tjenestene blir kalt direkte fra en annen applikasjon hvor saksbehandlertoken ikke er tilgjengjelig er det mulig å autentisere seg med èn OIDC token. Da skal`Authorization` header inneholde applikasjonsbrukeren sitt token og `Nav-Consumer-Token` header ikke settes" +
+						"Hvis disse tjenestene blir kalt direkte fra en annen applikasjon hvor saksbehandlertoken ikke er tilgjengjelig er det mulig Ã¥ autentisere seg med Ã¨n OIDC token. Da skal`Authorization` header inneholde applikasjonsbrukeren sitt token og `Nav-Consumer-Token` header ikke settes" +
 						"",
 				version,
 				"",

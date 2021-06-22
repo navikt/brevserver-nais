@@ -8,7 +8,7 @@ import org.apache.commons.lang3.Validate;
 /**
  * Common domain request object properties and operations on the service layer
  *
- * @author Marius Thøring, Visma Consulting
+ * @author Marius ThÃ¸ring, Visma Consulting
  */
 public class AbstractDocumentRequest {
 

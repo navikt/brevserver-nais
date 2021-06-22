@@ -216,7 +216,7 @@ public class BrevlagerServiceBean implements BrevlagerService {
 			result.setBrevdata(FileConverter.getInstance().convertToPdf(result.getBrevdata()));
 			result.setContentType(FilType.PDF.getContentType());
 		} catch (Exception e) {
-			throw new BrevTechnicalException("Greide ikke å konvertere dokument med brevreferanse " + brevreferanse
+			throw new BrevTechnicalException("Greide ikke Ã¥ konvertere dokument med brevreferanse " + brevreferanse
 					+ " til pdf", e);
 		}
 	}
@@ -324,7 +324,7 @@ public class BrevlagerServiceBean implements BrevlagerService {
 
 			if (stmt.executeUpdate() != 1) {
 				con.rollback();
-				throw new BrevTechnicalException("Feil antall rader ble forsøkt oppdatert i " + Konstanter.BREVLAGER_TABELL
+				throw new BrevTechnicalException("Feil antall rader ble forsÃ¸kt oppdatert i " + Konstanter.BREVLAGER_TABELL
 						+ " for: " + brev.getSystemID() + ":" + brev.getBrevreferanse());
 			}
 			con.commit();
@@ -353,7 +353,7 @@ public class BrevlagerServiceBean implements BrevlagerService {
 
 			if (stmt.executeUpdate() != 1) {
 				con.rollback();
-				throw new BrevTechnicalException("Feil antall rader ble forsøkt opprettet i " + Konstanter.BREVLAGER_TABELL
+				throw new BrevTechnicalException("Feil antall rader ble forsÃ¸kt opprettet i " + Konstanter.BREVLAGER_TABELL
 						+ " for: " + brev.getSystemID() + ":" + brev.getBrevreferanse());
 			}
 			con.commit();
@@ -408,7 +408,7 @@ public class BrevlagerServiceBean implements BrevlagerService {
 
 			if (stmt.executeUpdate() != 1) {
 				con.rollback();
-				throw new BrevTechnicalException("Feil antall rader ble forsøkt opprettet i "
+				throw new BrevTechnicalException("Feil antall rader ble forsÃ¸kt opprettet i "
 						+ Konstanter.BREVLAGER_HISTORIKK_TABELL + " for: " + brev.getSystemID() + ":" + brev.getBrevreferanse());
 			}
 			con.commit();

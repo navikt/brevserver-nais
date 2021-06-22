@@ -34,7 +34,7 @@ public class BIMessageProducer extends MessageProducer {
 	}
 
 	/**
-	 * Sender en melding til deadletter køen for BiSys.
+	 * Sender en melding til deadletter kÃ¸en for BiSys.
 	 *
 	 * @param msgVO meldingen som skal sendes
 	 * @throws BrevTechnicalException ved alle feil
@@ -64,7 +64,7 @@ public class BIMessageProducer extends MessageProducer {
 		String methSig = "ArkiverBrevCommand.sendKvittering(" + brevStatusVo.getBrevreferanse() + ")";
 
 		if (brevStatusVo.getReturKoe() == null || "".equals(brevStatusVo.getReturKoe())) {
-			log.warning(methSig, "Kan ikke sende kvittering da returkø mangler");
+			log.warning(methSig, "Kan ikke sende kvittering da returkÃ¸ mangler");
 			return;
 		}
 
@@ -83,9 +83,9 @@ public class BIMessageProducer extends MessageProducer {
 	}
 
 	/**
-	 * Sender statusinformasjon til returkø definert ved bestilling av brev.
+	 * Sender statusinformasjon til returkÃ¸ definert ved bestilling av brev.
 	 *
-	 * @param queueName     - navn på kø hvor statusmeldingen sendes.
+	 * @param queueName     - navn pÃ¥ kÃ¸ hvor statusmeldingen sendes.
 	 * @param useJndi       - om JNDI skal benyttes
 	 * @param correlationID - meldingens correlactionID
 	 * @param kvittering    - kvitteringsinformasjon
@@ -94,7 +94,7 @@ public class BIMessageProducer extends MessageProducer {
 	public void sendReturMelding(String queueName, boolean useJndi, String correlationID, String kvittering)
 			throws BrevTechnicalException {
 		if (queueName == null || "".equals(queueName)) {
-			log.debug("MessageProducer.sendReturMelding()", "Forsøkte å sende melding til en kø uten navn");
+			log.debug("MessageProducer.sendReturMelding()", "ForsÃ¸kte Ã¥ sende melding til en kÃ¸ uten navn");
 		} else {
 			produserTextMelding(queueName, useJndi, null, correlationID, kvittering);
 		}

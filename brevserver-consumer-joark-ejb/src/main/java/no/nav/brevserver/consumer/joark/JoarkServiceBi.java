@@ -6,7 +6,7 @@ import no.nav.brevserver.server.common.vo.BrevVO;
 /**
  * Interface defining operations against Joark.
  * 
- * @author Thomas Eugen Bjørge, Visma Sirius
+ * @author Thomas Eugen BjÃ¸rge, Visma Sirius
  */
 public interface JoarkServiceBi {
 

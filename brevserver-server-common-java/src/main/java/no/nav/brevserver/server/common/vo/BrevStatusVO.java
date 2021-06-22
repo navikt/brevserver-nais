@@ -7,7 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.Serializable;
 
 /**
- * @author Thomas Kåsene, Visma Consulting AS
+ * @author Thomas KÃ¥sene, Visma Consulting AS
  */
 public class BrevStatusVO implements Serializable {
 	private static final long serialVersionUID = 7514533773610729921L;
@@ -78,7 +78,7 @@ public class BrevStatusVO implements Serializable {
 
 	/**
 	 * Modus er i utgangspunktet blank, Dersom modus="frabrevlager" forutsetter vi at dokumentet skal hentes fra brevlageret.
-	 * Bestilling om generering av nytt brev til Dialogue vil ikke gjøres.
+	 * Bestilling om generering av nytt brev til Dialogue vil ikke gjÃ¸res.
 	 *
 	 * @return Returns a String
 	 */
@@ -88,7 +88,7 @@ public class BrevStatusVO implements Serializable {
 
 	/**
 	 * Modus er i utgangspunktet blank, Dersom modus="frabrevlager" forutsetter vi at dokumentet skal hentes fra brevlageret.
-	 * Bestilling om generering av nytt brev til Dialogue vil ikke gjøres.
+	 * Bestilling om generering av nytt brev til Dialogue vil ikke gjÃ¸res.
 	 *
 	 * @param modus The modus to set
 	 */

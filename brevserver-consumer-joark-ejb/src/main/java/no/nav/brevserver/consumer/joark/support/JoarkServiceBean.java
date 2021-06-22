@@ -30,7 +30,7 @@ import no.stelvio.common.context.support.SimpleRequestContext;
 /**
  * EJB 3 implementation of JoarkServiceBi.
  *
- * @author Thomas Eugen Bjørge, Visma Sirius
+ * @author Thomas Eugen BjÃ¸rge, Visma Sirius
  */
 @Stateless
 @TransactionManagement(TransactionManagementType.CONTAINER)

@@ -12,7 +12,7 @@ import no.nav.brevserver.server.common.vo.TilleggsinfoVO;
 /**
  * Builder of Journalposts
  * 
- * @author Joakim Bjørnstad, Visma Consulting
+ * @author Joakim Bjornstad, Visma Consulting
  * 
  */
 public class JournalpostBuilder implements Builder<JournalpostVO> {

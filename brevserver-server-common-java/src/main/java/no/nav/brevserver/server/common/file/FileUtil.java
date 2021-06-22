@@ -10,7 +10,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
- * @author Rune Røren, Accenture
+ * @author Rune RÃ¸ren, Accenture
  * @version $Revision: 868 $ $Author: rra2920 $ $Date: 2005-11-21 08:24:54 +0100 (ma, 21 nov 2005) $
  */
 public class FileUtil {

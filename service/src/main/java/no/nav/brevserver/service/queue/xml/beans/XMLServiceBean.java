@@ -13,7 +13,7 @@ import java.io.StringReader;
 
 public class XMLServiceBean implements XMLService {
     /**
-     * Unmarshal er prosessen å generere XML fra businessobjekter
+     * Unmarshal er prosessen Ã¥ generere XML fra businessobjekter
      * 
      * @param kvittering
      * @return String ferdig generert xml

@@ -38,7 +38,7 @@ import static org.mockito.Mockito.when;
 /**
  * Integration tests of JoarkServiceBean with mocked out Joark WS calls.
  *
- * @author Marius Thøring, Visma Sirius
+ * @author Marius Thoring, Visma Sirius
  */
 public class JoarkServiceBeanTest {
 

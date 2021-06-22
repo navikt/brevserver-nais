@@ -16,7 +16,7 @@ import no.nav.virksomhet.tjenester.arkiv.journal.v2.binding.HentJournalpostJourn
 /**
  * Class supporting retrieval of Document from Joark based on brevreferanse (journalpostId).
  *
- * @author Marius Thøring, Visma Sirius
+ * @author Marius ThÃ¸ring, Visma Sirius
  */
 public class HentDokumentDelegate extends AbstractJoarkDelegate {
 
@@ -98,11 +98,11 @@ public class HentDokumentDelegate extends AbstractJoarkDelegate {
 				filUuidAndContentType[1] = FilType.DOCX.getContentType();
 			} else {
 				throw new BrevTechnicalException("Ukjent filtype '" + filtype + "' for " + VARIANT_FORMAT_PRODUKSJON
-						+ "på journalpost med brevreferanse " + journalpost.getJournalpostId());
+						+ "pÃ¥ journalpost med brevreferanse " + journalpost.getJournalpostId());
 			}
 		} else {
 			throw new BrevTechnicalException("Fant ikke filUuid for variantformat " + VARIANT_FORMAT_PRODUKSJON + " eller "
-					+ VARIANT_FORMAT_ARKIV + "på journalpost med brevreferanse " + journalpost.getJournalpostId());
+					+ VARIANT_FORMAT_ARKIV + "pÃ¥ journalpost med brevreferanse " + journalpost.getJournalpostId());
 		}
 		return filUuidAndContentType;
 	}
@@ -126,7 +126,7 @@ public class HentDokumentDelegate extends AbstractJoarkDelegate {
 			hentDokumentResponse = journalService.hentDokument(hentDokumentRequest);
 		} catch (HentDokumentFilUuidFinnesIkke e) {
 			throw new BrevTechnicalException("Fant ikke filUuid " + hentDokumentRequest.getFilUuId()
-					+ " på journalpost med brevreferanse " + hentDokumentRequest.getJournalpostId(), e);
+					+ " pÃ¥ journalpost med brevreferanse " + hentDokumentRequest.getJournalpostId(), e);
 		} catch (HentDokumentJournalpostIkkeFunnet e) {
 			throw new BrevTechnicalException("Fant ikke journalpost med brevreferanse "
 					+ hentDokumentRequest.getJournalpostId(), e);

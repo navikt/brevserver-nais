@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * @author Joakim Bjørnstad, Jbit AS
+ * @author Joakim BjÃ¸rnstad, Jbit AS
  */
 @Slf4j
 @Unprotected
@@ -29,7 +29,7 @@ public final class NaisContract {
 
 	@Autowired
 	public NaisContract() {
-		//TODO: Legg på meterregistry
+		//TODO: Legg pÃ¥ meterregistry
 		//Gauge.builder("dok_app_is_ready", isReady, AtomicInteger::get).register(meterRegistry);
 	}
 

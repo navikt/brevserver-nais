@@ -27,7 +27,7 @@ import static org.mockito.Mockito.when;
 /**
  * Unit tests for HentDokumentDelegate.
  *
- * @author Marius Thøring, Visma Sirius
+ * @author Marius Thoring, Visma Sirius
  */
 public class HentDokumentDelegateTest {
 

@@ -34,9 +34,9 @@ public class PEMessageProducer extends MessageProducer {
 	}
 
 	/**
-	 * Sender en melding til deadletter køen
+	 * Sender en melding til deadletter kÃ¸en
 	 *
-	 * @param msgVO MeldingsVO Inneholder meldingsinformasjon som sendes til feilkø.
+	 * @param msgVO MeldingsVO Inneholder meldingsinformasjon som sendes til feilkÃ¸.
 	 * @throws BrevTechnicalException
 	 */
 	public void deadLetter(MessageVO msgVO) throws BrevTechnicalException {
@@ -67,7 +67,7 @@ public class PEMessageProducer extends MessageProducer {
 		String methSig = "PEMessageProducer.sendKvittering(" + peBrevStatusVO.getBrevreferanse() + ")";
 
 		if (peBrevStatusVO.getReturKoe() == null || "".equals(peBrevStatusVO.getReturKoe())) {
-			log.debug(methSig, "Returkø mangler, bruker standard: " + Konstanter.KONF_SEND_REPLY_PE);
+			log.debug(methSig, "Returkï¿½ mangler, bruker standard: " + Konstanter.KONF_SEND_REPLY_PE);
 			peBrevStatusVO.setReturKoe(Konstanter.KONF_SEND_REPLY_PE);
 			useJndi = true;
 		}
@@ -86,9 +86,9 @@ public class PEMessageProducer extends MessageProducer {
 	}
 
 	/**
-	 * Sender statusinformasjon til returkø definert ved bestilling av brev.
+	 * Sender statusinformasjon til returkÃ¸ definert ved bestilling av brev.
 	 *
-	 * @param queueName     - navn på kø hvor statusmeldingen sendes.
+	 * @param queueName     - navn pÃ¥ kÃ¸ hvor statusmeldingen sendes.
 	 * @param useJndi       - om JNDI skal benyttes
 	 * @param correlationID - meldingens correlactionID
 	 * @param kvittering    - kvitteringsinformasjon
@@ -99,7 +99,7 @@ public class PEMessageProducer extends MessageProducer {
 		String methSig = "PEMessageProducer.sendReturMelding";
 
 		if (queueName == null || "".equals(queueName)) {
-			log.debug(methSig, "Returkø mangler, bruker standard: " + Konstanter.KONF_SEND_REPLY_PE);
+			log.debug(methSig, "ReturkÃ¸ mangler, bruker standard: " + Konstanter.KONF_SEND_REPLY_PE);
 			queueName = Konstanter.KONF_SEND_REPLY_PE;
 			useJndi = true;
 		}

@@ -9,7 +9,7 @@ import java.io.StringReader;
 
 public interface XMLService {
 	/**
-	 * Unmarshal er prosessen å generere XML fra businessobjekter
+	 * Unmarshal er prosessen Ã¥ generere XML fra businessobjekter
 	 * 
 	 * @param kvittering
 	 *            kvittering
@@ -17,7 +17,7 @@ public interface XMLService {
 	String unmarshal(KvitteringVO kvittering, BrevStatusVO status);
 
 	/**
-	 * Metode for å populere mq-header Marshalling er prosessen der en populerer businessobjekter fra XML
+	 * Metode for Ã¥ populere mq-header Marshalling er prosessen der en populerer businessobjekter fra XML
 	 * 
 	 * @param xmlInput
 	 *            xmlInput
@@ -26,7 +26,7 @@ public interface XMLService {
 	KvitteringVO marshalHeader(InputStream xmlInput) throws BrevTechnicalException;
 
 	/**
-	 * Metode for å populere brevstatus objekt. Marshalling er prosessen der en populerer businessobjekter fra XML
+	 * Metode for Ã¥ populere brevstatus objekt. Marshalling er prosessen der en populerer businessobjekter fra XML
 	 * 
 	 * @param xmlInput
 	 *            xmlInput

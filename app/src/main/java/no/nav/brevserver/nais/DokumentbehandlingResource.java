@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-@Api(description = "Tjenester for å arkivere i brevserver")
+@Api(description = "Tjenester for Ã¥ arkivere i brevserver")
 @RequestMapping("rest")
 public class DokumentbehandlingResource {
 

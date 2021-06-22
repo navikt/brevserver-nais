@@ -3,7 +3,7 @@ package no.nav.brevserver.server.common.exception;
 /**
  * Exception som kastes ved funksjonelle feil
  * 
- * @author Rune Røren, Accenture
+ * @author Rune RÃ¸ren, Accenture
  * @version $Revision: 72 $ $Author: rra2920 $ $Date: 2005-07-01 11:41:34 +0200 (fr, 01 jul 2005) $
  */
 public class BrevFunctionalException extends BrevException {

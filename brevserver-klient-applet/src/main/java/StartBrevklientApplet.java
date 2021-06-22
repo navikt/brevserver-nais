@@ -14,7 +14,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- * Applet for å starte brevklienten fra IE.
+ * Applet for Ã¥ starte brevklienten fra IE.
  * <p/>
  * Parametre :
  * <APPLET code="StartBrevklientApplet.class" height="50" width="250">
@@ -26,7 +26,7 @@ import java.util.Date;
  * <PARAM NAME="ENVIRONMENT" VALUE="<%= env %>">
  * </APPLET>
  * <p/>
- * For at appletten skal kunne starte brevklienten og logge til fil må følgende tillatelse gis.
+ * For at appletten skal kunne starte brevklienten og logge til fil mÃ¥ fÃ¸lgende tillatelse gis.
  * <p/>
  * grant {
  * permission java.io.FilePermission "C:\\programfiler\\datasentral\\brev\\StartBrevklient.bat", "execute";
@@ -35,18 +35,18 @@ import java.util.Date;
  * };
  * <p/>
  * Dette er definert i brevklient/src/resources/brev.policy
- * I tillegg må java.security-filen som benyttes linkes opp til denne filen igjen.
+ * I tillegg mÃ¥ java.security-filen som benyttes linkes opp til denne filen igjen.
  * <p/>
- * Denne .class-filen må legges i samme katalog som jsp/html-filen med <APPLET> koden
+ * Denne .class-filen mÃ¥ legges i samme katalog som jsp/html-filen med <APPLET> koden
  * <p/>
- * Tips : Feilmeldinger havner i javakonsollet i IE (Verktøy / Sun Java Console )
+ * Tips : Feilmeldinger havner i javakonsollet i IE (VerktÃ¸y / Sun Java Console )
  *
- * @author Rune Røren, Accenture
+ * @author Rune RÃ¸ren, Accenture
  * @version $Id: StartBrevklientApplet.java 928 2006-03-02 11:17:28Z skb2930 $
  */
 public class StartBrevklientApplet extends Applet {
 	private static final long serialVersionUID = -8667593014766998127L;
-	// Disse må være i java.policy-filen til Java VM'et IE benytter
+	// Disse mÃ¥ vÃ¦re i java.policy-filen til Java VM'et IE benytter
 	private static final String PRG_FILE_LOCATION = "C:\\Progra~1\\datasentral\\brev\\StartBrevklient.bat";
 	private static final String LOG_FILE_LOCATION = "C:\\Progra~1\\datasentral\\brev\\logs\\brevklient_";
 	private static String logFileLocation = null;
@@ -54,7 +54,7 @@ public class StartBrevklientApplet extends Applet {
 	static final String[] PARAMETERS = {"SERVER", "SYSTEMID", "TOKEN", "DOKID"};
 	private static final String PARAMETER_SEPARATOR = ":";
 
-	static final String RUN_OK = "Brevklient kjører...";
+	static final String RUN_OK = "Brevklient kjÃ¸rer...";
 	static final String RUN_NOT_OK = "Brevklient startet ikke.";
 	static final String RUN_FINISHED = "Brevklient har avsluttet.";
 	static final String RUN_NO_ACCESS = "Ikke tilgang til Brevklient.";
@@ -102,7 +102,7 @@ public class StartBrevklientApplet extends Applet {
 			cmd[i + 1] = list.get(i);
 		}
 
-		// Marker at kjøring er ok.
+		// Marker at kjÃ¸ring er ok.
 		if (paramErrors == 0) {
 			runProgram = true;
 		} else {
@@ -111,7 +111,7 @@ public class StartBrevklientApplet extends Applet {
 	}
 
 	/**
-	 * Kjør brevklienten
+	 * KjÃ¸r brevklienten
 	 */
 	public void start() {
 		try {
@@ -264,7 +264,7 @@ public class StartBrevklientApplet extends Applet {
 
 
 	/**
-	 * Indre klasse for å skrive ut output fra StartBrevklient.bat
+	 * Indre klasse for Ã¥ skrive ut output fra StartBrevklient.bat
 	 */
 	class ProcessListener extends Thread {
 

@@ -32,9 +32,8 @@
 
 
 	<properties>
-		<project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
-		<java.jdk.version>11</java.jdk.version>
-		<ibm.container.version>7.0.0</ibm.container.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<java.version>11</java.version>
 		<web.context.root>/brevweb</web.context.root>
 		<powermock.version>2.0.9</powermock.version>
 		<stelvio.version>2.2.0</stelvio.version>
@@ -559,8 +558,8 @@
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>3.1</version>
 					<configuration>
-						<source>${java.jdk.version}</source>
-						<target>${java.jdk.version}</target>
+						<source>${java.version}</source>
+						<target>${java.version}</target>
 					</configuration>
 				</plugin>
 				<plugin>

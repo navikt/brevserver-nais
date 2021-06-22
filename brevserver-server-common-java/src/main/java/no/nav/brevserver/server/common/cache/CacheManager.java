@@ -7,7 +7,7 @@ import no.nav.brevserver.server.common.config.ConfigManager;
 /**
  * Klasse som cacher objekter evig eller i et visst antall ms.
  * 
- * @author Rune Røren, Accenture
+ * @author Rune RÃ¸ren, Accenture
  * @version $Revision: 2148 $ $Author: t133126 $ $Date: 2013-07-23 14:24:36 +0200 (ti, 23 jul 2013) $
  */
 public class CacheManager {
