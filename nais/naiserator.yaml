@@ -1,7 +1,7 @@
 kind: Application
 apiVersion: nais.io/v1alpha1
 metadata:
-  name: brevserver
+  name: brevserver-nais
   namespace: {{ NAMESPACE }}
   labels:
     team: teamdokumenthandtering
@@ -29,8 +29,8 @@ spec:
     initialDelay: 30
     timeout: 3
   replicas:
-    min: 6
-    max: 12
+    min: 2
+    max: 4
     cpuThresholdPercentage: 50
   resources:
     limits:
@@ -40,4 +40,3 @@ spec:
       memory: 1920Mi
   vault:
     enabled: true
-  webproxy: true
