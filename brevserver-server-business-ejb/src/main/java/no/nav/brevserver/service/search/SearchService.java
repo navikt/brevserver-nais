@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import no.nav.brevserver.core.domain.entities.Brevstatus;
 import no.nav.brevserver.server.common.config.ConfigManager;
 import no.nav.brevserver.server.common.config.Konstanter;
 import no.nav.brevserver.server.common.exception.BrevTechnicalException;
@@ -151,7 +152,7 @@ public class SearchService {
 
             // Sjekk status på brevet
             BrevserverService brevlagerService = BrevserverServiceFactory.getInstance().createBrevserverService();
-            BrevStatusVO status = brevlagerService.hentBrevStatus(systemId, brevreferanse);
+            Brevstatus status = brevlagerService.hentBrevStatus(systemId, brevreferanse);
 
             if (status != null) {
                 result.setStatus("Brevet har status " + status.getStatus() + " og mal " + status.getBrevmal()

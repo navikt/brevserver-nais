@@ -31,14 +31,14 @@ public class JoarkServiceStub implements JoarkServiceBi {
 
 	@Override
 	public void lagreDokument(String brevreferanse, String contentType, byte[] brevData) throws BrevTechnicalException {
-		log.debug("JoarkServiceStub:lagreDokument(" + brevreferanse + ")", "Mellomlagret dokument. Størrelse på rtf: "
+		log.debug("JoarkServiceStub:lagreDokument(" + brevreferanse + ")", "Mellomlagret dokument. StÃ¸rrelse pÃ¥ rtf: "
 				+ brevData.length + " bytes");
 	}
 
 	@Override
 	public void lagreFerdigstiltDokument(String brevreferanse, BrevVO redBrevVO, BrevVO pdfBrevVO) throws BrevTechnicalException {
 		log.debug("JoarkServiceStub:lagreFerdigstiltDokument(" + brevreferanse + ")",
-				"Lagret ferdigstilt dokument. Størrelse på rtf:" + redBrevVO.getBrevdata().length + ", pdf:" + pdfBrevVO.getBrevdata().length
+				"Lagret ferdigstilt dokument. StÃ¸rrelse pÃ¥ rtf:" + redBrevVO.getBrevdata().length + ", pdf:" + pdfBrevVO.getBrevdata().length
 						+ " bytes");
 	}
 

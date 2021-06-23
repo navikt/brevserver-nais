@@ -42,7 +42,7 @@ public final class JMSAccessor {
 	private static final Log log = new Log(JMSAccessor.class);
 
 	/**
-	 * Oppretter en JMSAccessor basert på et kø-jndi-navn
+	 * Oppretter en JMSAccessor basert pÃ¥ et kÃ¸-jndi-navn
 	 *
 	 * @param queueDestJndiName Jndi-navn til Queue
 	 * @return JMSAccessor
@@ -80,7 +80,7 @@ public final class JMSAccessor {
 	}
 
 	/**
-	 * Oppretter en JMSAccessor basert på et ekte kønavn (må være definert i WAS'en
+	 * Oppretter en JMSAccessor basert pÃ¥ et ekte kÃ¸navn (mÃ¥ vÃ¦re definert i WAS'en
 	 *
 	 * @param queueDestName Jndi-navn til Queue
 	 * @return JMSAccessor
@@ -159,9 +159,9 @@ public final class JMSAccessor {
 	}
 
 	/**
-	 * Kontrollerer om køen er tilgjengelig ved å forsøke å lese fra den (browse)
+	 * Kontrollerer om kÃ¸en er tilgjengelig ved Ã¥ forsÃ¸ke Ã¥ lese fra den (browse)
 	 *
-	 * @return sann hvis køen er lesbar, false ellers
+	 * @return sann hvis kÃ¸en er lesbar, false ellers
 	 * @throws BrevTechnicalException
 	 */
 	public String testQueue() throws BrevTechnicalException {
@@ -172,7 +172,7 @@ public final class JMSAccessor {
 		boolean logSuccessfulClose = false;
 
 		try {
-			log.debug("JMSAccessor.testQueue(" + destName + ")", "Tester kø : " + dest.getQueueName());
+			log.debug("JMSAccessor.testQueue(" + destName + ")", "Tester kÃ¸ : " + dest.getQueueName());
 
 			queueName = dest.getQueueName();
 			qBrowser = session.createBrowser(dest);
@@ -182,8 +182,8 @@ public final class JMSAccessor {
 				messages.nextElement();
 			}
 
-			// String result = "Kø " + destName + " fungerer! " + getQueueName() + " - Antall : " + teller;
-			String result = "Kø " + destName + " (" + getQueueName() + ")" + " fungerer! ";
+			// String result = "KÃ¸ " + destName + " fungerer! " + getQueueName() + " - Antall : " + teller;
+			String result = "KÃ¸ " + destName + " (" + getQueueName() + ")" + " fungerer! ";
 
 			return result;
 
@@ -195,7 +195,7 @@ public final class JMSAccessor {
 		} catch (Exception e) {
 			logSuccessfulClose = true;
 
-			throw new BrevTechnicalException("Fikk ikke testet kø! Jndi-navn : " + destName + ", kønavn : " + queueName, e);
+			throw new BrevTechnicalException("Fikk ikke testet kÃ¸! Jndi-navn : " + destName + ", kÃ¸navn : " + queueName, e);
 
 		} finally {
 			if (qBrowser != null) {
@@ -203,19 +203,19 @@ public final class JMSAccessor {
 					qBrowser.close();
 
 					if (logSuccessfulClose) {
-						log.debug(methSig, "Forbindelse til kø-browser ble lukket");
+						log.debug(methSig, "Forbindelse til kÃ¸-browser ble lukket");
 					}
 
 				} catch (JMSException je) {
 					throw new BrevTechnicalException(
-							"Fikk ikke lukket kø! Jndi-navn : " + destName + ", kønavn : " + queueName, je);
+							"Fikk ikke lukket kÃ¸! Jndi-navn : " + destName + ", kÃ¸navn : " + queueName, je);
 				}
 			}
 		}
 	}
 
 	/**
-	 * Åpner en browser mot destinasjonen
+	 * Ã…pner en browser mot destinasjonen
 	 *
 	 * @return queueBrowser
 	 * @throws BrevTechnicalException
@@ -231,9 +231,9 @@ public final class JMSAccessor {
 	}
 
 	/**
-	 * Forsøker å verifisere om kølytter er oppe, men denne implementasjonen er svak og bør rettes eller tas bort
+	 * ForsÃ¸ker Ã¥ verifisere om kÃ¸lytter er oppe, men denne implementasjonen er svak og bÃ¸r rettes eller tas bort
 	 *
-	 * @return false hvis lytter ser ut til å være nede, true ellers
+	 * @return false hvis lytter ser ut til Ã¥ vÃ¦re nede, true ellers
 	 * @throws BrevTechnicalException
 	 */
 	public boolean isListenerRunning() throws BrevTechnicalException {
@@ -268,17 +268,17 @@ public final class JMSAccessor {
 		} catch (JMSException je) {
 			log.error(methSig, "Testing feilet: " + je.getLinkedException());
 			throw new BrevTechnicalException("Fikk ikke testet lytter! Jndi-navn : " +
-					destName + ", kønavn : " + queueName, je);
+					destName + ", kÃ¸navn : " + queueName, je);
 		} catch (Exception e) {
 			throw new BrevTechnicalException("Fikk ikke testet lytter! Jndi-navn : " +
-					destName + ", kønavn : " + queueName, e);
+					destName + ", kÃ¸navn : " + queueName, e);
 		} finally {
 
 			if (qBrowser != null) {
 				try {
 					qBrowser.close();
 				} catch (JMSException e) {
-					log.warning(methSig, "Fikk ikke lukket kø-browser", e);
+					log.warning(methSig, "Fikk ikke lukket kÃ¸-browser", e);
 				}
 			}
 
@@ -318,9 +318,9 @@ public final class JMSAccessor {
 	}
 
 	/**
-	 * Henter ut kønavnet fra destinasjonsnavnet
+	 * Henter ut kÃ¸navnet fra destinasjonsnavnet
 	 *
-	 * @return kønavnet
+	 * @return kÃ¸navnet
 	 * @throws BrevTechnicalException
 	 */
 	public String getQueueName() throws BrevTechnicalException {
@@ -358,16 +358,15 @@ public final class JMSAccessor {
 	}
 
 	/**
-	 * Oppretter en tilkobling til en ny kø
+	 * Oppretter en tilkobling til en ny kÃ¸
 	 *
 	 * @param queueName
-	 * @return køen
+	 * @return kÃ¸en
 	 * @throws BrevTechnicalException
 	 */
 	public Queue createQueue(String queueName) throws BrevTechnicalException {
 		if (session == null) {
-			throw new BrevTechnicalException("QueueConnectionFactory må være opprettet før køen opprettes");
-		}
+			throw new BrevTechnicalException("QueueConnectionFactory mÃ¥ vÃ¦re opprettet fÃ¸r kÃ¸en opprettes");		}
 		try {
 			// Queue result = session.createQueue(queueName);
 			if (!queueName.contains("targetClient")) {
@@ -455,7 +454,7 @@ public final class JMSAccessor {
 			sender.setPriority(priority);
 			sender.send(message);
 		} catch (JMSException je) {
-			throw new BrevTechnicalException(BrevTechnicalException.MQ_IKKE_TILGJENGELIG, "Feil ved sending til kø: "
+			throw new BrevTechnicalException(BrevTechnicalException.MQ_IKKE_TILGJENGELIG, "Feil ved sending til kÃ¸: "
 					+ destName, je);
 		}
 	}
@@ -484,7 +483,7 @@ public final class JMSAccessor {
 				session.close();
 				session = null;
 			} catch (JMSException e) {
-				log.warning(methSig, "Greide ikke å lukke QueueSession", e);
+				log.warning(methSig, "Greide ikke Ã¥ lukke QueueSession", e);
 			}
 		}
 		if (connection != null) {
@@ -492,7 +491,7 @@ public final class JMSAccessor {
 				connection.close();
 				connection = null;
 			} catch (JMSException e) {
-				log.warning(methSig, "Greide ikke å lukke QueueConnection", e);
+				log.warning(methSig, "Greide ikke Ã¥ lukke QueueConnection", e);
 			}
 		}
 		connectionFactory = null;

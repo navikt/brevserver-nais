@@ -1,5 +1,8 @@
 package no.nav.brevserver.command;
 
+import no.nav.brevserver.converter.BrevstatusTilVoConverter;
+import no.nav.brevserver.converter.VoTilBrevstatusConverter;
+import no.nav.brevserver.core.domain.entities.Brevstatus;
 import no.nav.brevserver.server.common.config.Konstanter;
 import no.nav.brevserver.server.common.exception.BrevException;
 import no.nav.brevserver.server.common.exception.BrevTechnicalException;
@@ -25,6 +28,8 @@ import no.nav.brevserver.service.jms.MessageProducerFactory;
 public class ArkiverBrevCommand extends AbstractCommand {
 	BrevStatusVO brevStatusVo;
 	private KvitteringVO kvittering;
+	private VoTilBrevstatusConverter converter = new VoTilBrevstatusConverter();
+	private BrevstatusTilVoConverter converterToVo = new BrevstatusTilVoConverter();
 
 	public ArkiverBrevCommand(MessageVO msg) {
 		super(msg);
@@ -67,23 +72,23 @@ public class ArkiverBrevCommand extends AbstractCommand {
 
 		try {
 			BrevserverService brevserverService = BrevserverServiceFactory.getInstance().createBrevserverService();
-			brevStatusVo = brevserverService.hentBrevStatus(kvittering.getSystemID(), kvittering.getBrevreferanse());
+			Brevstatus brevstatus = brevserverService.hentBrevStatus(kvittering.getSystemID(), kvittering.getBrevreferanse());
 
 			// Hvis ingen status så opprett en basert på det man vet
-			if (brevStatusVo == null) {
-				brevStatusVo = new BrevStatusVO();
+			if (brevstatus == null) {
+				brevstatus = new Brevstatus();
 			}
-			if (brevStatusVo.getSystemID() == null) {
-				brevStatusVo.setSystemID(kvittering.getSystemID());
+			if (brevstatus.getSystemID() == null) {
+				brevstatus.setSystemID(kvittering.getSystemID());
 			}
-			if (brevStatusVo.getBrevreferanse() == null) {
-				brevStatusVo.setBrevreferanse(kvittering.getBrevreferanse());
+			if (brevstatus.getBrevreferanse() == null) {
+				brevstatus.setBrevreferanse(kvittering.getBrevreferanse());
 			}
-			if (brevStatusVo.getBrevmal() == null) {
-				brevStatusVo.setBrevmal(kvittering.getTmpMalpakke());
+			if (brevstatus.getBrevmal() == null) {
+				brevstatus.setBrevmal(kvittering.getTmpMalpakke());
 			}
-			if (brevStatusVo.getReturKoe() == null) {
-				brevStatusVo.setReturKoe(messageVo.getReplyQueueName());
+			if (brevstatus.getReturKoe() == null) {
+				brevstatus.setReturKoe(messageVo.getReplyQueueName());
 			}
 
 			// Hvis feilnivå er 0x så endre til x
@@ -93,36 +98,37 @@ public class ArkiverBrevCommand extends AbstractCommand {
 			}
 
 			// Hvis brevet eksisterer allerede så gi feilmelding
-			if (Konstanter.BREVSTATUS_FERDIG.equals(brevStatusVo.getStatus())) {
+			if (Konstanter.BREVSTATUS_FERDIG.equals(brevstatus.getStatus())) {
 				kvittering.setFeilkode(Konstanter.FEIL_BREV_EKSISTERER);
-				brevStatusVo.setStatus(Konstanter.BREVSTATUS_FEIL);
+				brevstatus.setStatus(Konstanter.BREVSTATUS_FEIL);
 
 				// Ved feilmelding fra dialogue så gi feilmelding
 			} else if (kvittering.getFeilniva() == null ||
 					kvittering.getFeilniva().equals(Konstanter.BREVPAKKE_FEILNIVA_FEIL)) {
-				brevStatusVo.setStatus(Konstanter.BREVSTATUS_FEIL);
+				brevstatus.setStatus(Konstanter.BREVSTATUS_FEIL);
 
-				if (brevStatusVo.getBrevreferanse() != null && brevStatusVo.getSystemID() != null) {
-					brevserverService.lagreBrevStatus(brevStatusVo);
+				if (brevstatus.getBrevreferanse() != null && brevstatus.getSystemID() != null) {
+					brevserverService.lagreBrevStatus(brevstatus, brevStatusVo.getToken());
 				}
 
 				// Alt gikk bra
 			} else {
 				if (FilType.PDF.getContentType().equals(kvittering.getContentType())) {
 					kvittering.setLagerStatus(Konstanter.BREVLAGER_STATUS_FERDIG);
-					brevStatusVo.setStatus(Konstanter.BREVSTATUS_FERDIG);
+					brevstatus.setStatus(Konstanter.BREVSTATUS_FERDIG);
 				} else {
 					kvittering.setLagerStatus(Konstanter.BREVLAGER_STATUS_KLADD);
-					brevStatusVo.setStatus(Konstanter.BREVSTATUS_LAGRET_KLADD);
+					brevstatus.setStatus(Konstanter.BREVSTATUS_LAGRET_KLADD);
 				}
 				// Lagre i Brevlageret
 				BrevlagerService brevlagerService = BrevlagerServiceFactory.getInstance().createBrevlagerService();
-				brevlagerService.lagreBrev(kvittering, brevStatusVo);
+				brevlagerService.lagreBrev(kvittering, brevstatus, brevStatusVo.getToken());
 
 				log.info(sig, "Brevet er arkivert i Brevlageret");
 			}
 
 			MessageProducer producer = MessageProducerFactory.getInstance().createMessageProducer(SystemType.BI);
+			//TODO: Update brevstatusVO Object
 			producer.sendKvittering(brevStatusVo, messageVo, kvittering);
 
 		} finally {

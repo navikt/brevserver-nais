@@ -1,7 +1,7 @@
 package no.nav.brevserver.server.common.vo;
 
 /**
- * @author Rune Røren, Accenture
+ * @author Rune RÃ¸ren, Accenture
  * @version $Revision: 1991 $ $Author: t133126 $ $Date: 2012-06-14 11:20:26 +0200 (to, 14 jun 2012) $
  */
 public class SysTilgangVO {

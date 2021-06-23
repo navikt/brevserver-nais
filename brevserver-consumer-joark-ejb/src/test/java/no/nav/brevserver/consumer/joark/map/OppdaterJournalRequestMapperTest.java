@@ -16,7 +16,7 @@ import org.junit.Test;
 /**
  * Unit tests for OppdaterJournalRequestMapper. 
  * 
- * @author Marius Thøring, Visma Sirius
+ * @author Marius Thoring, Visma Sirius
  */
 public class OppdaterJournalRequestMapperTest {
 

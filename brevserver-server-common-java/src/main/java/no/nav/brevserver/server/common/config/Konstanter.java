@@ -1,7 +1,7 @@
 package no.nav.brevserver.server.common.config;
 
 /**
- * Klasse som inneholder felles konstanter for Brevløsningen.
+ * Klasse som inneholder felles konstanter for BrevlÃ¸sningen.
  *
  * @author Holger Zobel, Accenture
  */
@@ -64,13 +64,13 @@ public final class Konstanter {
 	public static final String SKRIVERTYPE_SENTRAL = "sentral";
 	public static final String SKRIVERTYPE_LOKAL = "lokal";
 
-	// Feilnivåer fra brevpakken
+	// FeilnivÃ¥er fra brevpakken
 	public static final String BREVPAKKE_FEILNIVA_FEIL = "8";
 
 	// Standard tegnsett
 	public static final String TEGNSETT_ISO = "ISO-8859-1";
 
-	// SQL for å hente ut timestamp
+	// SQL for Ã¥ hente ut timestamp
 	public static final String TIMESTAMP_SQL = "current timestamp";
 
 	// Joark sikkerhetsrolle

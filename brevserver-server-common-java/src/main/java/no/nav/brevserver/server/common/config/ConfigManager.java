@@ -34,10 +34,11 @@ public final class ConfigManager {
 	public static final String JOARK_JOURNAL_WS_URL = "joarkJournalUrl.url";
 	public static final String JOARK_JOURNALBEHANDLING_WS_URL = "joarkJournalBehandlingUrl.url";
 
-	public static final String DATABASE_USERNAME = "brevserverDS.username";
-	public static final String DATABASE_PASSWORD = "brevserverDS.password";
+	public static final String DATABASE_USERNAME = "BREVSERVER_DS_USERNAME";
+	public static final String DATABASE_PASSWORD = "BREVSERVER_DS_PASSWORD";
 
 	public static final String XML_LOGGER_ON = "XmlLogger.On";
+	public static final String DATABASE_URL = "BREVSERVER_DS_URL";
 
 	private static ConfigManager instance = null;
 	private Properties properties = null;

@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Lett innpakning av Log4J
  *
- * @author Rune Røren, Accenture
+ * @author Rune RÃ¸ren, Accenture
  */
 public class Log {
 	public static final int DEBUG = 1;

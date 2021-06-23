@@ -1,5 +1,30 @@
 package no.nav.brevserver.server.common.jms;
 
+import no.nav.brevserver.server.common.cache.CacheManager;
+import no.nav.brevserver.server.common.config.ConfigManager;
+import no.nav.brevserver.server.common.exception.BrevTechnicalException;
+import no.nav.brevserver.server.common.jndi.JndiHelper;
+import no.nav.brevserver.server.common.utility.PerformanceLogger;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.core.classloader.annotations.SuppressStaticInitializationFor;
+import org.powermock.modules.junit4.PowerMockRunner;
+
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.Queue;
+import javax.jms.QueueBrowser;
+import javax.jms.QueueConnection;
+import javax.jms.QueueConnectionFactory;
+import javax.jms.QueueSession;
+import javax.jms.Session;
+import java.util.Enumeration;
+
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
@@ -10,35 +35,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.verifyStatic;
-
-import java.util.Enumeration;
-
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.Queue;
-import javax.jms.QueueBrowser;
-import javax.jms.QueueConnection;
-import javax.jms.QueueConnectionFactory;
-import javax.jms.QueueSession;
-import javax.jms.Session;
-
-import no.nav.brevserver.server.common.cache.CacheManager;
-import no.nav.brevserver.server.common.config.ConfigManager;
-import no.nav.brevserver.server.common.exception.BrevTechnicalException;
-import no.nav.brevserver.server.common.jndi.JndiHelper;
-import no.nav.brevserver.server.common.utility.PerformanceLogger;
-
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.core.classloader.annotations.SuppressStaticInitializationFor;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ PerformanceLogger.class, JndiHelper.class, CacheManager.class, ConfigManager.class })
@@ -70,7 +66,6 @@ public class JMSAccessorTest {
 
     @Before
     public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
         setUpConfigManagerMock();
         setupJndiHelperMock();
         mockStatic(CacheManager.class);
@@ -156,7 +151,7 @@ public class JMSAccessorTest {
 
         boolean listenerRunning = jmsAccessor.isListenerRunning();
 
-        verifyStatic();
+        //verifyStatic(JMSAccessor.class);
         String cacheId = "JMSAccessor." + TEST_QUEUE + ".id";
         CacheManager.getObject(cacheId);
         CacheManager.addObject(cacheId, MESSAGE_ID);
@@ -186,7 +181,7 @@ public class JMSAccessorTest {
 
         boolean listenerRunning = jmsAccessor.isListenerRunning();
 
-        verifyStatic();
+        //verifyStatic(JMSAccessor.class);
         CacheManager.getObject(cacheId);
 
         assertThat(listenerRunning, is(false));
@@ -235,6 +230,7 @@ public class JMSAccessorTest {
         when(jndiHelperMock.lookup(Queue.class, TEST_QUEUE_JNDI)).thenReturn(queueMock);
         when(jndiHelperMock.lookup(eq(QueueConnectionFactory.class), any(String.class))).thenReturn(
                 queueConnectionFactoryMock);
+        when(queueMock.getQueueName()).thenReturn(TEST_QUEUE_JNDI);
     }
 
 }

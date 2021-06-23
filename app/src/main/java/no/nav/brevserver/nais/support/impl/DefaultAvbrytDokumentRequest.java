@@ -1,0 +1,15 @@
+package no.nav.brevserver.nais.support.impl;
+
+import no.nav.brevserver.nais.support.AbstractProviderDozerMapper;
+import no.nav.brevserver.nais.support.AvbrytDokumentRequestMapper;
+import no.nav.brevserver.server.common.to.AvbrytDokumentRequest;
+
+public class DefaultAvbrytDokumentRequest extends AbstractProviderDozerMapper implements AvbrytDokumentRequestMapper {
+
+	@Override
+	public AvbrytDokumentRequest map(
+			no.nav.tjenester.brevogarkiv.dokumentbehandling.AvbrytDokumentRequest avbrytDokumentRequest) {
+		return getDozerMapper().map(avbrytDokumentRequest, AvbrytDokumentRequest.class);
+	}
+
+}

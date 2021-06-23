@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat;
 /**
  * Date util class
  *
- * @author Rune Røren, Accenture
+ * @author Rune RÃ¸ren, Accenture
  */
 public class DateUtil {
 	/**

@@ -4,6 +4,7 @@ import no.nav.brevserver.command.PEArkiverBrevCommand;
 import no.nav.brevserver.consumer.joark.factory.JoarkServiceBeanFactory;
 import no.nav.brevserver.consumer.joark.support.JoarkServiceBean;
 import no.nav.brevserver.consumer.joark.util.JournalServiceTestdataUtils;
+import no.nav.brevserver.core.domain.entities.Brevstatus;
 import no.nav.brevserver.server.common.config.ConfigManager;
 import no.nav.brevserver.server.common.config.Konstanter;
 import no.nav.brevserver.server.common.exception.BrevException;
@@ -47,6 +48,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.mock;
@@ -74,7 +76,9 @@ public class PEArkiverBrevCommandTest {
 	@Mock(extraInterfaces = BindingProvider.class)
 	private Journalbehandling journalbehandlingServiceMock;
 	@Captor
-	private ArgumentCaptor<BrevStatusVO> brevStatusCaptor;
+	private ArgumentCaptor<BrevStatusVO> brevStatusVOCaptor;
+	@Captor
+	private ArgumentCaptor<Brevstatus> brevstatusCaptor;
 	@Captor
 	private ArgumentCaptor<KvitteringVO> kvitteringCaptor;
 	@Captor
@@ -126,9 +130,9 @@ public class PEArkiverBrevCommandTest {
 
 		new PEArkiverBrevCommand(messageMock).execute();
 
-		verify(messageProducerMock).sendKvittering(brevStatusCaptor.capture(), eq(messageMock), kvitteringCaptor.capture());
+		verify(messageProducerMock).sendKvittering(brevStatusVOCaptor.capture(), eq(messageMock), kvitteringCaptor.capture());
 
-		assertThat(brevStatusCaptor.getValue().getStatus(), is(Konstanter.BREVSTATUS_LAGRET_KLADD));
+		assertThat(brevStatusVOCaptor.getValue().getStatus(), is(Konstanter.BREVSTATUS_LAGRET_KLADD));
 		assertThat(kvitteringCaptor.getValue().getLagerStatus(), is(Konstanter.BREVLAGER_STATUS_KLADD));
 	}
 
@@ -139,9 +143,9 @@ public class PEArkiverBrevCommandTest {
 
 		new PEArkiverBrevCommand(messageMock).execute();
 
-		verify(messageProducerMock).sendKvittering(brevStatusCaptor.capture(), eq(messageMock), kvitteringCaptor.capture());
+		verify(messageProducerMock).sendKvittering(brevStatusVOCaptor.capture(), eq(messageMock), kvitteringCaptor.capture());
 
-		assertThat(brevStatusCaptor.getValue().getStatus(), is(Konstanter.BREVSTATUS_LAGRET_KLADD));
+		assertThat(brevStatusVOCaptor.getValue().getStatus(), is(Konstanter.BREVSTATUS_LAGRET_KLADD));
 		assertThat(kvitteringCaptor.getValue().getLagerStatus(), is(Konstanter.BREVLAGER_STATUS_KLADD));
 	}
 
@@ -152,9 +156,9 @@ public class PEArkiverBrevCommandTest {
 
 		new PEArkiverBrevCommand(messageMock).execute();
 
-		verify(messageProducerMock).sendKvittering(brevStatusCaptor.capture(), eq(messageMock), kvitteringCaptor.capture());
+		verify(messageProducerMock).sendKvittering(brevStatusVOCaptor.capture(), eq(messageMock), kvitteringCaptor.capture());
 
-		assertThat(brevStatusCaptor.getValue().getStatus(), is(Konstanter.BREVSTATUS_FERDIG));
+		assertThat(brevStatusVOCaptor.getValue().getStatus(), is(Konstanter.BREVSTATUS_FERDIG));
 		assertThat(kvitteringCaptor.getValue().getLagerStatus(), is(Konstanter.BREVLAGER_STATUS_FERDIG));
 	}
 
@@ -167,9 +171,9 @@ public class PEArkiverBrevCommandTest {
 
 		new PEArkiverBrevCommand(messageMock).execute();
 
-		verify(brevserverServiceMock).lagreBrevStatus(brevStatusCaptor.capture());
+		verify(brevserverServiceMock).lagreBrevStatus(brevstatusCaptor.capture(), any());
 
-		BrevStatusVO brevStatus = brevStatusCaptor.getValue();
+		Brevstatus brevStatus = brevstatusCaptor.getValue();
 		assertThat(brevStatus.getBrevreferanse(), is(brevReferanse));
 		assertThat(brevStatus.getSystemID(), is(systemId));
 		assertThat(brevStatus.getReturKoe(), is(replyQueueName));

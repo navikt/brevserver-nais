@@ -12,6 +12,7 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 import java.io.StringReader;
 
+import no.nav.brevserver.core.domain.entities.Brevstatus;
 import no.nav.brevserver.server.common.config.ConfigManager;
 import no.nav.brevserver.server.common.config.Konstanter;
 import no.nav.brevserver.server.common.exception.BrevTechnicalException;
@@ -68,7 +69,9 @@ public class PEBestillBrevCommandTest {
     @Mock
     private MessageVO messageMock; 
     @Captor
-    private ArgumentCaptor<BrevStatusVO> brevStatusCaptor;
+    private ArgumentCaptor<BrevStatusVO> brevStatusVOCaptor;
+    @Captor
+    private ArgumentCaptor<Brevstatus> brevstatusCaptor;
     @Captor
     private ArgumentCaptor<KvitteringVO> kvitteringCaptor;
     @Captor
@@ -157,17 +160,17 @@ public class PEBestillBrevCommandTest {
         
         bestillBrevCommand.execute();
         
-        verify(brevserverServiceMock).lagreBrevStatus(brevStatusCaptor.capture());
+        verify(brevserverServiceMock).lagreBrevStatus(brevstatusCaptor.capture(), any());
         verify(messageProducerMock).sendToDialogue(any(MessageVO.class));
         
-        assertThat(brevStatusCaptor.getValue().getStatus(), is(Konstanter.BREVSTATUS_BREVPAKKE));
+        assertThat(brevStatusVOCaptor.getValue().getStatus(), is(Konstanter.BREVSTATUS_BREVPAKKE));
     }
     
     @Test
     public void shouldBestilleBrevFraDialogueIfBrevDoesExist() throws Exception {
         when(messageMock.isTilgangsXML()).thenReturn(false);
         when(xmlServiceMock.marshalBrevStatus(any(StringReader.class))).thenReturn(createDefaultBrevstatus());
-        when(brevserverServiceMock.hentBrevStatus(SYSTEM_ID, BREVREFERANSE)).thenReturn(new BrevStatusVO());
+        when(brevserverServiceMock.hentBrevStatus(SYSTEM_ID, BREVREFERANSE)).thenReturn(new Brevstatus());
         when(xmlServiceMock.unmarshal(any(KvitteringVO.class), any(BrevStatusVO.class))).thenReturn(KVITTERING_XML_EXISTS);
 
         bestillBrevCommand.execute();

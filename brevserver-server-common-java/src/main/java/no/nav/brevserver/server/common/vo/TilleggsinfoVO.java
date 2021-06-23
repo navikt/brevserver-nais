@@ -6,9 +6,9 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 /**
  * Representation of Tilleggsinfo in a Journalpost
  * 
- * @author Joakim Bjørnstad, Visma Consulting
- * @author Rune Røren, Accenture
- */
+ * @author Joakim BjÃ¸rnstad, Visma Consulting
+ * @author Rune RÃ¸ren, Accenture */
+
 public class TilleggsinfoVO {
     private String type;
     private String verdi;

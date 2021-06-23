@@ -4,7 +4,7 @@ import no.nav.brevserver.server.common.config.ConfigManager;
 import no.nav.brevserver.server.common.config.KnappStatus;
 
 /**
- * @author Rune Røren, Accenture
+ * @author Rune RÃ¸ren, Accenture
  * @version $Revision: 2145 $ $Author: t133126 $ $Date: 2013-07-23 12:06:48 +0200 (ti, 23 jul 2013) $
  */
 public class KnappStatusUtil {

@@ -1,7 +1,7 @@
 package no.nav.brevserver.server.common.utility;
 
 /**
- * @author Rune Røren, Accenture
+ * @author Rune RÃ¸ren, Accenture
  * @version $Revision: 315 $ $Author: rra2920 $ $Date: 2005-08-09 14:26:03 +0200 (ti, 09 aug 2005) $
  */
 public class ArgumentValidator {

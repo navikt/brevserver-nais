@@ -8,7 +8,7 @@ public class KvitteringVO extends BrevVO {
     private static final long serialVersionUID = 9096941770385857411L;
     private String feilkode;
     private String feilniva;
-    // Dette er et workaround for å kunne hente ut malpakke av kvitteringen.
+    // Dette er et workaround for Ã¥ kunne hente ut malpakke av kvitteringen.
     private String tmpMalpakke; 
     private JournalpostVO journalpost;
 
@@ -32,7 +32,7 @@ public class KvitteringVO extends BrevVO {
     }
 
     /**
-     * Feilnivå er 0 for alt OK, og 8 for feil.
+     * FeilnivÃ¥ er 0 for alt OK, og 8 for feil.
      * 
      * @return Returns a String
      */
@@ -41,7 +41,7 @@ public class KvitteringVO extends BrevVO {
     }
 
     /**
-     * Feilnivå er 0 for alt OK, og 8 for feil.
+     * FeilnivÃ¥ er 0 for alt OK, og 8 for feil.
      * 
      * @param feilniva
      *            The feilniva to set

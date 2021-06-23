@@ -11,6 +11,8 @@ import no.nav.brevserver.service.dokumentbehandling.to.FerdigstillDokumentReques
 import no.nav.brevserver.service.dokumentbehandling.to.HentDokumentRequest;
 import no.nav.brevserver.service.dokumentbehandling.to.HentDokumentResponse;
 import no.nav.brevserver.service.dokumentbehandling.to.LagreDokumentRequest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * Default implementation of DokumentbehandlingService
@@ -18,6 +20,7 @@ import no.nav.brevserver.service.dokumentbehandling.to.LagreDokumentRequest;
  *
  * @author Joakim Bjørnstad, Visma Consulting
  */
+@Service
 public class DefaultDokumentbehandlingService implements DokumentbehandlingService {
 	private HentDokumentService hentDokumentService;
 	private LagreDokumentService lagreDokumentService;
@@ -25,8 +28,9 @@ public class DefaultDokumentbehandlingService implements DokumentbehandlingServi
 	private FerdigstillDokumentService ferdigstillDokumentService;
 	private PingService pingService;
 
-	public DefaultDokumentbehandlingService() {
-		hentDokumentService = new DefaultHentDokumentService();
+	@Autowired
+	public DefaultDokumentbehandlingService(HentDokumentService hentDokumentService) {
+		this.hentDokumentService = hentDokumentService;
 		lagreDokumentService = new DefaultLagreDokumentService();
 		avbrytDokumentService = new DefaultAvbrytDokumentService();
 		ferdigstillDokumentService = new DefaultFerdigstillDokumentService();

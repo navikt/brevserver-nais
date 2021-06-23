@@ -1,58 +1,63 @@
 package no.nav.brevserver.service.brevserver.beans;
 
+import no.nav.brevserver.core.domain.entities.BrevSystemTilgang;
+import no.nav.brevserver.core.domain.entities.Brevstatus;
+import no.nav.brevserver.core.domain.entities.Brevtilgang;
+import no.nav.brevserver.repository.BrevSystemTilgangRepository;
+import no.nav.brevserver.repository.BrevstatusRepository;
+import no.nav.brevserver.repository.BrevtilgangRepository;
+import no.nav.brevserver.server.common.cache.CacheManager;
+import no.nav.brevserver.server.common.exception.BrevTechnicalException;
+import no.nav.brevserver.server.common.utility.PerformanceLogger;
+import no.nav.brevserver.server.common.vo.SysTilgangVO;
+import no.nav.brevserver.service.brevserver.BrevserverService;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.transaction.Transactional;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-
-import no.nav.brevserver.server.common.cache.CacheManager;
-import no.nav.brevserver.server.common.config.Konstanter;
-import no.nav.brevserver.server.common.exception.BrevTechnicalException;
-import no.nav.brevserver.server.common.utility.KnappStatusUtil;
-import no.nav.brevserver.server.common.utility.PerformanceLogger;
-import no.nav.brevserver.server.common.vo.BrevStatusVO;
-import no.nav.brevserver.server.common.vo.SysTilgangVO;
-import no.nav.brevserver.service.SQLService;
-import no.nav.brevserver.service.brevserver.BrevserverService;
+import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Implementasjonen av brevserveren. Se metodebeskrivelsene for detaljer.
- * 
  */
-public class BrevserverServiceBean extends SQLService implements BrevserverService {
-	
+public class BrevserverServiceBean implements BrevserverService {
+
+	@Autowired
+	private BrevtilgangRepository brevtilgangRepository;
+	@Autowired
+	private BrevstatusRepository brevstatusRepository;
+	@Autowired
+	private BrevSystemTilgangRepository brevSystemTilgangRepository;
+
+	public BrevserverServiceBean() {
+	}
+
 	/**
 	 * Lagrer token i t_brevtilgang
 	 */
+	@Transactional
 	public boolean lagreTilgang(String systemId, String brevreferanse, String token) throws BrevTechnicalException {
 		String methSig = "BrevserverServiceBean.lagreTilgang(" + brevreferanse + ")";
 
-		Connection con = null;
-		PreparedStatement stmt = null;
+		Brevtilgang brevtilgang = Brevtilgang.builder()
+				.brevreferanse(brevreferanse)
+				.systemId(systemId)
+				.token(token)
+				.opprettetDato(LocalDateTime.now())
+				.build();
+
 
 		PerformanceLogger p = new PerformanceLogger(methSig);
 
 		try {
-			con = createSqlConnection();
-			stmt = con.prepareStatement("INSERT INTO T_BREVTILGANG (BREVREFERANSE,SystemID,Token,Timestamp) VALUES (?,?,?,"
-					+ Konstanter.TIMESTAMP_SQL + ")");
-			stmt.setString(1, brevreferanse);
-			stmt.setString(2, systemId);
-			stmt.setString(3, token);
-			if (stmt.executeUpdate() != 1) {
-				con.rollback();
-				throw new BrevTechnicalException("Feil antall rader ble forsøkt opprettet i T_BREVTILGANG for: " + systemId
-						+ ":" + brevreferanse);
-			}
-			con.commit();
+			brevtilgangRepository.save(brevtilgang);
 			return true;
-
-		} catch (java.sql.SQLException e) {
+		} catch (Exception e) {
 			throw new BrevTechnicalException(BrevTechnicalException.DATABASE_IKKE_TILGJENGELIG, e);
-
 		} finally {
-			close(methSig, stmt);
-			close(methSig, con);
-
 			p.stop();
 		}
 	}
@@ -61,39 +66,19 @@ public class BrevserverServiceBean extends SQLService implements BrevserverServi
 	 * Sjekker tilgang.
 	 */
 	public boolean sjekkTilgang(String systemId, String brevreferanse, String token) throws BrevTechnicalException {
-
 		String methodSig = "BrevserverServiceBean.sjekkTilgang(" + brevreferanse + ")";
-
-		Connection con = null;
-		PreparedStatement stmt = null;
-		ResultSet rs = null;
-
 		boolean result = false;
-
 		PerformanceLogger p = new PerformanceLogger(methodSig);
-
 		try {
-			con = createSqlConnection();
-			stmt = con.prepareStatement("SELECT token FROM T_Brevtilgang where BREVREFERANSE = ?" + " and systemid= ?"
-					+ getDb2SingleRowOptimization());
-			stmt.setString(1, brevreferanse);
-			stmt.setString(2, systemId);
-			rs = stmt.executeQuery();
-
-			while (rs.next()) {
-				if (token != null && token.equals(rs.getString("token"))) {
-					result = true;
+			List<Brevtilgang> tokenList = brevtilgangRepository.findBySystemIdAndBrevreferanse(systemId, brevreferanse);
+			for (Brevtilgang brevtilgang : tokenList) {
+				if (token != null && token.equals(brevtilgang.getToken())) {
+					return true;
 				}
 			}
-
-		} catch (java.sql.SQLException e) {
+		} catch (Exception e) {
 			throw new BrevTechnicalException(BrevTechnicalException.DATABASE_IKKE_TILGJENGELIG, e);
-
 		} finally {
-			close(methodSig, rs);
-			close(methodSig, stmt);
-			close(methodSig, con);
-
 			p.stop();
 		}
 		return result;
@@ -103,115 +88,45 @@ public class BrevserverServiceBean extends SQLService implements BrevserverServi
 	 * Sjekker tilgang for saksbehandlingssystemer
 	 */
 	public boolean sjekkSystemTilgang(String systemId, String passord) throws BrevTechnicalException {
-
 		String methodSig = "BrevserverServiceBean.sjekkSystemTilgang(" + systemId + ")";
 		PerformanceLogger p = new PerformanceLogger(methodSig);
-
-		Connection con = null;
-		PreparedStatement stmt = null;
-		ResultSet rs = null;
-
 		String passordCached = (String) CacheManager.getObject(methodSig);
 		if (passordCached != null) {
 			return passordCached.equals(passord);
 		} else {
 			try {
-				con = createSqlConnection();
-				stmt = con.prepareStatement("SELECT systempassord FROM T_BrevSysTilgang where systemid=?"
-						+ getDb2SingleRowOptimization());
+				List<BrevSystemTilgang> brevSystemTilgangList = brevSystemTilgangRepository.findBySysId(systemId);
 
-				stmt.setString(1, systemId);
-				rs = stmt.executeQuery();
-
-				if (rs.next()) {
-					String syspassord = rs.getString("systempassord");
+				if (brevSystemTilgangList!=null&&brevSystemTilgangList.size()>0) {
+					String syspassord = brevSystemTilgangList.get(0).getPwd();
 					CacheManager.addObject(methodSig, syspassord);
 					return syspassord.equals(passord);
 				} else {
 					return false;
 				}
-			} catch (java.sql.SQLException e) {
+			} catch (Exception e) {
 				throw new BrevTechnicalException(BrevTechnicalException.DATABASE_IKKE_TILGJENGELIG, e);
 			} finally {
-				close(methodSig, rs);
-				close(methodSig, stmt);
-				close(methodSig, con);
 				p.stop();
 			}
 		}
 	}
 
-	private BrevStatusVO hentBrevStatus(String systemId, String brevreferanse, Connection con) throws BrevTechnicalException {
+	public Brevstatus hentBrevStatus(String systemId, String brevreferanse) throws BrevTechnicalException {
 		String methodSig = "BrevserverServiceBean.hentBrevStatus(" + brevreferanse + ")";
 		PerformanceLogger p = new PerformanceLogger(methodSig);
 
-		BrevStatusVO brevStatus = null;
-
-		PreparedStatement stmt = null;
-		ResultSet rs = null;
-
 		try {
-			stmt = con.prepareStatement("SELECT * FROM T_BrevStatus WHERE brevreferanse = ?" + " AND systemid=?"
-					+ getDb2SingleRowOptimization());
-
-			stmt.setString(1, brevreferanse);
-			stmt.setString(2, systemId);
-			rs = stmt.executeQuery();
-
-			boolean fantStatus = rs.next();
-
-			if (fantStatus) {
-				brevStatus = new BrevStatusVO();
-				brevStatus.setBrevreferanse(brevreferanse);
-				brevStatus.setSystemID(systemId);
-				brevStatus.setReturKoe(rs.getString("RETURKOE"));
-				brevStatus.setBestillerBrukerID(rs.getString("bestillerbrukerid"));
-				brevStatus.setBrevmal(rs.getString("brevmal"));
-				brevStatus.setStatus(rs.getString("STATUS"));
-				brevStatus.setArkiver(rs.getString("ARKIVER"));
-				brevStatus.setFormat(rs.getString("FORMAT"));
-				brevStatus.setSkriver(rs.getString("SKRIVER"));
-				brevStatus.setSkrivertype(rs.getString("SKRIVERTYPE"));
-				brevStatus.setSkuff(rs.getString("SKUFF"));
-
-				brevStatus.setKnappStatus(KnappStatusUtil.getKnappStatus(brevStatus.getBrevmal()));
+			List<Brevstatus> brevstatusList = brevstatusRepository.findByBrevreferanseAndSystemID(brevreferanse, systemId);
+			if (brevstatusList.size() == 0) {
+				return null;
+			} else {
+				return brevstatusList.get(0);
+				//brevstatus.setKnappStatus(KnappStatusUtil.getKnappStatus(brevStatus.getBrevmal()));
 			}
-		} catch (java.sql.SQLException e) {
+		} catch (Exception e) {
 			throw new BrevTechnicalException(BrevTechnicalException.DATABASE_IKKE_TILGJENGELIG, e);
 		} finally {
-			close(methodSig, rs);
-			close(methodSig, stmt);
-
-			p.stop();
-		}
-
-		return brevStatus;
-	}
-	
-	public BrevStatusVO hentBrevStatus(String systemId, String brevreferanse) throws BrevTechnicalException {
-		String methSig = "BrevserverServiceBean.hentBrevStatus(" + brevreferanse + ")";
-		PerformanceLogger p = new PerformanceLogger(methSig);
-
-		Connection con = null;
-		try {
-			con = createSqlConnection();
-			return hentBrevStatus(systemId, brevreferanse, con);
-		} finally {
-			close(methSig, con);
-			p.stop();
-		}
-	}
-	
-	public BrevStatusVO lagreBrevStatus(BrevStatusVO brevStatus) throws BrevTechnicalException {
-		String methSig = "BrevserverServiceBean.hentBrevStatus(" + brevStatus.getBrevreferanse() + ")";
-		PerformanceLogger p = new PerformanceLogger(methSig);
-
-		Connection con = null;
-		try {
-			con = createSqlConnection();
-			return lagreBrevStatus(brevStatus, con);
-		} finally {
-			close(methSig, con);
 			p.stop();
 		}
 	}
@@ -220,17 +135,13 @@ public class BrevserverServiceBean extends SQLService implements BrevserverServi
 	 * Lagrer brevstatus. Hvis brevstatus allerede eksistere blir den oppdatert. Hvis token er inkludert i brevstatusVO vil
 	 * denne bli lagret
 	 */
-	public BrevStatusVO lagreBrevStatus(BrevStatusVO brevStatus, Connection con) throws BrevTechnicalException {
-
+	public Brevstatus lagreBrevStatus(Brevstatus brevStatus, String token) throws BrevTechnicalException {
 		String methSig = "BrevserverServiceBean.lagreBrevStatus(" + brevStatus.getBrevreferanse() + ")";
 		PerformanceLogger p = new PerformanceLogger(methSig);
-
-		PreparedStatement stmt = null;
-
-		BrevStatusVO gmlStatus = null;
+		Brevstatus gmlStatus = null;
 		try {
 			// Sjekk om vi allerede har status.
-			gmlStatus = hentBrevStatus(brevStatus.getSystemID(), brevStatus.getBrevreferanse(), con);
+			gmlStatus = hentBrevStatus(brevStatus.getSystemID(), brevStatus.getBrevreferanse());
 			if (gmlStatus != null) {
 
 				// vi har status, sjekk om det er noen felter som ikke er satt i brevStatus, legg inn gamle verdier hvis ikke
@@ -260,70 +171,18 @@ public class BrevserverServiceBean extends SQLService implements BrevserverServi
 				}
 			}
 
-			if (gmlStatus == null) {
-				stmt = con
-						.prepareStatement("INSERT INTO T_BREVSTATUS (brevreferanse,systemid,returkoe,bestillerbrukerid,brevmal,status,format,skrivertype,skriver,arkiver,skuff,timestamp) VALUES (?,?,?,?,?,?,?,?,?,?,?,"
-								+ Konstanter.TIMESTAMP_SQL + ")");
+			Brevstatus brevstatus = brevstatusRepository.save(brevStatus);
+				//TODO: Fix default verdi
+				//stmt.setString(10, getValueOrDefault(brevStatus.getArkiver(), "JA"));
 
-				String koe = (brevStatus.getReturKoe() == null) ? "" : brevStatus.getReturKoe();
-				String mal = (brevStatus.getBrevmal() == null) ? "" : brevStatus.getBrevmal();
-
-				stmt.setString(1, brevStatus.getBrevreferanse());
-				stmt.setString(2, brevStatus.getSystemID());
-				stmt.setString(3, koe);
-				stmt.setString(4, brevStatus.getBestillerBrukerID());
-				stmt.setString(5, mal);
-				stmt.setString(6, brevStatus.getStatus());
-				stmt.setString(7, brevStatus.getFormat());
-				stmt.setString(8, brevStatus.getSkrivertype());
-				stmt.setString(9, brevStatus.getSkriver());
-				stmt.setString(10, getValueOrDefault(brevStatus.getArkiver(), "JA"));
-				stmt.setString(11, brevStatus.getSkuff());
-
-				if (stmt.executeUpdate() != 1) {
-					con.rollback();
-					throw new BrevTechnicalException("Feil antall rader ble forsøkt opprettet i T_BREVSTATUS for: "
-							+ brevStatus.getSystemID() + ":" + brevStatus.getBrevreferanse());
-				}
-				con.commit();
-			} else {
-				stmt = con
-						.prepareStatement("UPDATE T_BREVSTATUS set returkoe=? ,bestillerbrukerid=?, brevmal=?,status=?,format=?,skrivertype=?,skriver=?,arkiver=?,skuff=?,timestamp="
-								+ Konstanter.TIMESTAMP_SQL + " " + " WHERE brevreferanse=? and systemid=?");
-
-				String koe = (brevStatus.getReturKoe() == null) ? "" : brevStatus.getReturKoe();
-				String mal = (brevStatus.getBrevmal() == null) ? "" : brevStatus.getBrevmal();
-
-				stmt.setString(1, koe);
-				stmt.setString(2, brevStatus.getBestillerBrukerID());
-				stmt.setString(3, mal);
-				stmt.setString(4, brevStatus.getStatus());
-				stmt.setString(5, brevStatus.getFormat());
-				stmt.setString(6, brevStatus.getSkrivertype());
-				stmt.setString(7, brevStatus.getSkriver());
-				stmt.setString(8, brevStatus.getArkiver());
-				stmt.setString(9, brevStatus.getSkuff());
-
-				stmt.setString(10, brevStatus.getBrevreferanse());
-				stmt.setString(11, brevStatus.getSystemID());
-
-				if (stmt.executeUpdate() != 1) {
-					con.rollback();
-					throw new BrevTechnicalException("Feil antall rader ble forsøkt oppdatert i T_BREVSTATUS for: "
-							+ brevStatus.getSystemID() + ":" + brevStatus.getBrevreferanse());
-				}
-				con.commit();
+			if (token != null) {
+				lagreTilgang(brevStatus.getSystemID(), brevStatus.getBrevreferanse(), token);
 			}
 
-			if (brevStatus.getToken() != null) {
-				lagreTilgang(brevStatus.getSystemID(), brevStatus.getBrevreferanse(), brevStatus.getToken());
-			}
-
-		} catch (java.sql.SQLException e) {
+		} catch (Exception e) {
 			throw new BrevTechnicalException(BrevTechnicalException.DATABASE_IKKE_TILGJENGELIG, e);
 
 		} finally {
-			close(methSig, stmt);
 			p.stop();
 		}
 
@@ -338,7 +197,7 @@ public class BrevserverServiceBean extends SQLService implements BrevserverServi
 		}
 	}
 
-	public SysTilgangVO hentTilgang(String systemid, boolean useCache) throws BrevTechnicalException {
+	public BrevSystemTilgang hentTilgang(String systemid, boolean useCache) throws BrevTechnicalException {
 		String methSig = "BrevserverServiceBean.hentTilgang(" + systemid + ")";
 		PerformanceLogger p = new PerformanceLogger(methSig);
 
@@ -350,38 +209,25 @@ public class BrevserverServiceBean extends SQLService implements BrevserverServi
 		try {
 			// First check the cache
 			if (useCache) {
-				SysTilgangVO tmp = (SysTilgangVO) CacheManager.getObject(methSig);
+				BrevSystemTilgang tmp = (BrevSystemTilgang) CacheManager.getObject(methSig);
 				if (tmp != null) {
-					return (SysTilgangVO) tmp.clone();
+					return tmp;
 				}
 			}
-
-			// Check the database
-			con = createSqlConnection();
-			stmt = con.prepareStatement("SELECT * FROM T_BrevSysTilgang WHERE SYSTEMID = ?");
-			stmt.setString(1, systemid);
-			rs = stmt.executeQuery();
-
-			if (rs.next()) {
-				result = new SysTilgangVO();
-				result.setSysId(rs.getString("systemid"));
-				result.setPwd(rs.getString("systempassord"));
-
-				// Add to cache
-				CacheManager.addObject(methSig, result);
+			List<BrevSystemTilgang> brevSystemTilgangList = brevSystemTilgangRepository.findBySysId(systemid);
+			if(brevSystemTilgangList.size()==0){
+				return null;
 			}
+			BrevSystemTilgang brevSystemTilgang = brevSystemTilgangList.get(0);
+			// Add to cache
+			CacheManager.addObject(methSig, brevSystemTilgang);
 
-		} catch (java.sql.SQLException e) {
+			return brevSystemTilgang;
+		} catch (Exception e) {
 			throw new BrevTechnicalException(BrevTechnicalException.DATABASE_IKKE_TILGJENGELIG, e);
 
 		} finally {
-			close(methSig, rs);
-			close(methSig, stmt);
-			close(methSig, con);
-
 			p.stop();
 		}
-
-		return result;
 	}
 }

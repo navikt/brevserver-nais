@@ -28,7 +28,7 @@ import java.util.List;
 /**
  * Utility class for use with JournalService domain objects.
  *
- * @author Marius Thøring, Visma Sirius
+ * @author Marius Thoring, Visma Sirius
  */
 public final class JournalServiceTestdataUtils {
 

@@ -15,10 +15,12 @@ import org.h2.jdbcx.JdbcDataSource;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -30,7 +32,7 @@ import static org.junit.Assert.fail;
  * Abstract database testclass. Bootstraps an in-memory H2 database, attaching it to the JNDI context.
  * Performs DDL and cleans up for each test. Also provides convenience methods for database query and updates.
  *
- * @author Joakim Bjørnstad, Visma Consulting
+ * @author Joakim Bjï¿½rnstad, Visma Consulting
  */
 public abstract class AbstractDatabaseTest {
 
@@ -47,6 +49,20 @@ public abstract class AbstractDatabaseTest {
 		System.setProperty("org.osjava.sj.jndi.shared", "true");
 		System.setProperty(ConfigManager.DATABASE_USERNAME, USERNAME);
 		System.setProperty(ConfigManager.DATABASE_PASSWORD, PASSWORD);
+		System.setProperty(ConfigManager.DATABASE_URL, CONNECTION_URL);
+	}
+
+	public DataSource jndiDataSource() {
+		String username = ConfigManager.getInstance().getString(ConfigManager.DATABASE_USERNAME, null);
+		String password = ConfigManager.getInstance().getString(ConfigManager.DATABASE_PASSWORD, null);
+		String url = ConfigManager.getInstance().getString(ConfigManager.DATABASE_URL, null);
+		DriverManagerDataSource dataSource = new DriverManagerDataSource();
+		dataSource.setDriverClassName("com.ibm.db2.jcc.DB2Driver");
+		dataSource.setUrl(url);
+		//dataSource.setSchema("BS475Q");
+		dataSource.setUsername(username);
+		dataSource.setPassword(password);
+		return dataSource;
 	}
 
 	@Before
@@ -103,8 +119,9 @@ public abstract class AbstractDatabaseTest {
 
 	protected Connection getConnection() {
 		try {
+			Class.forName ("org.h2.Driver");
 			return DriverManager.getConnection(CONNECTION_URL, USERNAME, PASSWORD);
-		} catch (SQLException e) {
+		} catch (SQLException | ClassNotFoundException e) {
 			e.printStackTrace();
 			fail("Unable to get connection");
 			throw new RuntimeException(e);

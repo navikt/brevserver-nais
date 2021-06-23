@@ -1,5 +1,7 @@
 package no.nav.brevserver.controller;
 
+import no.nav.brevserver.converter.VoTilBrevstatusConverter;
+import no.nav.brevserver.core.domain.entities.Brevstatus;
 import no.nav.brevserver.server.common.config.Konstanter;
 import no.nav.brevserver.server.common.exception.BrevException;
 import no.nav.brevserver.server.common.exception.BrevFunctionalException;
@@ -18,6 +20,7 @@ import no.nav.brevserver.service.brevserver.BrevserverServiceFactory;
  */
 public abstract class AbstractControllerDelegate {
 	protected Log log = null;
+	private VoTilBrevstatusConverter converter = new VoTilBrevstatusConverter();
 
 	/**
 	 * Refer to {@link ControllerBi#lagreDokumentStatus}
@@ -29,7 +32,7 @@ public abstract class AbstractControllerDelegate {
 		PerformanceLogger p = new PerformanceLogger(methSig);
 
 		try {
-			BrevserverServiceFactory.getInstance().createBrevserverService().lagreBrevStatus(brevStatus);
+			BrevserverServiceFactory.getInstance().createBrevserverService().lagreBrevStatus(converter.convert(brevStatus), brevStatus.getToken());
 		} finally {
 			p.stop();
 		}
@@ -37,7 +40,7 @@ public abstract class AbstractControllerDelegate {
 	
 	protected void verifyChangeRequest(BrevStatusVO brevStatus) throws BrevException {
 		checkRequiredFields(brevStatus.getSystemID(), brevStatus.getBrevreferanse(), brevStatus.getToken());
-		BrevStatusVO oldBrevStatus = BrevserverServiceFactory.getInstance().createBrevserverService()
+		Brevstatus oldBrevStatus = BrevserverServiceFactory.getInstance().createBrevserverService()
 				.hentBrevStatus(brevStatus.getSystemID(), brevStatus.getBrevreferanse());
 		if (oldBrevStatus != null) {
 			sjekkSystemTokenTilgang(brevStatus.getSystemID(), brevStatus.getBrevreferanse(), brevStatus.getToken());
@@ -45,7 +48,7 @@ public abstract class AbstractControllerDelegate {
 		}
 	}
 
-	private void verifyEditableStatus(BrevStatusVO brevStatus) throws BrevException {
+	private void verifyEditableStatus(Brevstatus brevStatus) throws BrevException {
 		if (Konstanter.BREVSTATUS_FERDIG.equals(brevStatus.getStatus()) 
 				|| Konstanter.BREVSTATUS_UTSKRIFT.equals(brevStatus.getStatus())) {
 			throw new BrevFunctionalException("Brevet med brevreferanse " + brevStatus.getBrevreferanse() + " har status " + brevStatus.getStatus() + " og kan ikke endres");

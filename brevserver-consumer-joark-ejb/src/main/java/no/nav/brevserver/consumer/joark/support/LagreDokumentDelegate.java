@@ -14,7 +14,7 @@ import no.stelvio.common.context.RequestContextHolder;
 /**
  * Implementation of the lagreDokument brevserver service.
  *
- * @author Thomas Eugen Bjørge, Visma Sirius
+ * @author Thomas Eugen BjÃ¸rge, Visma Sirius
  */
 public class LagreDokumentDelegate extends AbstractJoarkDelegate {
 
@@ -63,7 +63,7 @@ public class LagreDokumentDelegate extends AbstractJoarkDelegate {
 	private void verifyJournalStatus(Journalpost journalpost) throws BrevTechnicalException {
 		for (String invalidJournalstatus : JOURNALSTATUS_LAGRE_INVALID_LIST) {
 			if (journalpost.getJournalstatus().getKode().equals(invalidJournalstatus)) {
-				String msg = "Feil ved lagring/arkivering av dokument på journalpost med id '" + journalpost.getJournalpostId()
+				String msg = "Feil ved lagring/arkivering av dokument pÃ¥ journalpost med id '" + journalpost.getJournalpostId()
 						+ "'. Journalstatus '" + journalpost.getJournalstatus().getKode()
 						+ "' tillater ikke lagring/arkivering";
 				throw new BrevTechnicalException(BrevTechnicalException.UGYLDIG_JOURNALSTATUS, msg, new Exception(msg));
@@ -93,7 +93,7 @@ public class LagreDokumentDelegate extends AbstractJoarkDelegate {
 		}
 		if (fildetaljer == null) {
 			throw new BrevTechnicalException("Fant ikke filDetaljer for filtype " + contentType
-					+ " på journalpost med brevreferanse " + oppdaterJournalRequest.getJournalpostId());
+					+ " pÃ¥ journalpost med brevreferanse " + oppdaterJournalRequest.getJournalpostId());
 		}
 		fildetaljer.setFil(brevData);
 	}
@@ -116,12 +116,12 @@ public class LagreDokumentDelegate extends AbstractJoarkDelegate {
 			dokumentInfoRelasjon = oppdaterJournalRequest.getJournalpostDokumentInfoRelasjonListe().iterator().next();
 		}
 		if (dokumentInfoRelasjon == null) {
-			throw new BrevTechnicalException("Fant ikke JournalpostDokumentInfoRelasjon på journalpost med brevreferanse "
+			throw new BrevTechnicalException("Fant ikke JournalpostDokumentInfoRelasjon pÃ¥ journalpost med brevreferanse "
 					+ oppdaterJournalRequest.getJournalpostId());
 		}
 		DokumentInfo dokumentInfo = dokumentInfoRelasjon.getDokumentInfo();
 		if (dokumentInfo == null) {
-			throw new BrevTechnicalException("Fant ikke DokumentInfo på journalpost med brevreferanse "
+			throw new BrevTechnicalException("Fant ikke DokumentInfo pÃ¥ journalpost med brevreferanse "
 					+ oppdaterJournalRequest.getJournalpostId());
 		}
 		return dokumentInfo;

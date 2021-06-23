@@ -13,6 +13,7 @@ import static org.mockito.Mockito.when;
 
 import no.nav.brevserver.consumer.joark.JoarkServiceBi;
 import no.nav.brevserver.consumer.joark.factory.JoarkServiceBeanFactory;
+import no.nav.brevserver.core.domain.entities.Brevstatus;
 import no.nav.brevserver.server.common.config.ConfigManager;
 import no.nav.brevserver.server.common.config.KnappStatus;
 import no.nav.brevserver.server.common.exception.BrevException;
@@ -62,7 +63,8 @@ public class HentControllerDelegateTest {
     private BrevlagerService brevlagerServiceBeanMock;
     private JoarkServiceBi joarkServiceBiMock;
     private FileConverter fileConverterMock;
-    private BrevStatusVO brevStatusMock;
+    private BrevStatusVO brevStatusVOMock;
+    private Brevstatus brevstatusMock;
     private HentControllerDelegate controllerBean;
 
     @Captor
@@ -80,7 +82,8 @@ public class HentControllerDelegateTest {
         joarkServiceBiMock = ControllerBeanDelegateTestUtility.mockJoarkService();
         fileConverterMock = ControllerBeanDelegateTestUtility.mockFileConverter();
         when(fileConverterMock.convertToPdf(BREVDATA_RTF)).thenReturn(BREVDATA_KONVERTERT);
-        brevStatusMock = ControllerBeanDelegateTestUtility.mockBrevStatusVO(SYSTEM_ID_PE, BREVREFERANSE, TOKEN, null);
+        brevStatusVOMock = ControllerBeanDelegateTestUtility.mockBrevStatusVO(SYSTEM_ID_PE, BREVREFERANSE, TOKEN, null);
+        brevstatusMock = mock(Brevstatus.class);
         controllerBean = new HentControllerDelegate();
         controllerBean.setLog(mock(Log.class));
     }
@@ -99,7 +102,7 @@ public class HentControllerDelegateTest {
     public void shouldFailIfNoAccess() throws BrevException {
         giveAccess(false);
         try {
-            controllerBean.hentDokument(brevStatusMock);
+            controllerBean.hentDokument(brevStatusVOMock);
             fail("Should disallow access");
         } catch (BrevSecurityException e) {
             assertTrue(e.isFeilkode(BrevSecurityException.IKKE_TILGANG_I_BREVSERVER));
@@ -109,12 +112,12 @@ public class HentControllerDelegateTest {
 
     @Test
     public void hentDokumentBiShouldCallJoarkCorrectly() throws BrevException {
-        brevStatusMock = ControllerBeanDelegateTestUtility.mockBrevStatusVO(SYSTEM_ID_PE, BREVREFERANSE, TOKEN, STATUS_KASSERT);
+        brevStatusVOMock = ControllerBeanDelegateTestUtility.mockBrevStatusVO(SYSTEM_ID_PE, BREVREFERANSE, TOKEN, STATUS_KASSERT);
         BrevVO brevVOMock = ControllerBeanDelegateTestUtility.mockBrevVO(SYSTEM_ID_PE, JOURNALSTATUS_NORMAL,
                 FilType.RTF.getContentType(), BREVDATA_RTF);
         when(joarkServiceBiMock.hentDokument(isA(String.class))).thenReturn(brevVOMock);
 
-        BrevVO resultBrevVO = controllerBean.hentDokument(brevStatusMock);
+        BrevVO resultBrevVO = controllerBean.hentDokument(brevStatusVOMock);
 
         verify(joarkServiceBiMock).hentDokument(BREVREFERANSE);
         assertThat(resultBrevVO, equalTo(brevVOMock));
@@ -132,7 +135,7 @@ public class HentControllerDelegateTest {
                 FilType.RTF.getContentType(), BREVDATA_RTF);
         when(joarkServiceBiMock.hentDokument(isA(String.class))).thenReturn(brevVOMock);
 
-        controllerBean.hentDokument(brevStatusMock);
+        controllerBean.hentDokument(brevStatusVOMock);
         verify(fileConverterMock).convertToPdf(BREVDATA_RTF);
         verify(brevVOMock, times(1)).setBrevdata(BREVDATA_KONVERTERT);
         verify(brevVOMock, times(1)).setContentType(FilType.PDF.getContentType());
@@ -142,7 +145,7 @@ public class HentControllerDelegateTest {
         BrevVO brevVOMock = ControllerBeanDelegateTestUtility.mockBrevVO(SYSTEM_ID_PE, JOURNALSTATUS_NORMAL,
                 FilType.RTF.getContentType(), BREVDATA_RTF);
         when(joarkServiceBiMock.hentDokument(isA(String.class))).thenReturn(brevVOMock);
-        controllerBean.hentDokument(brevStatusMock);
+        controllerBean.hentDokument(brevStatusVOMock);
         verify(brevVOMock, times(0)).setBrevdata(isA(byte[].class));
         verify(brevVOMock, times(0)).setContentType(isA(String.class));
     }
@@ -152,18 +155,18 @@ public class HentControllerDelegateTest {
                 FilType.PDF.getContentType(), BREVDATA_PDF);
         when(joarkServiceBiMock.hentDokument(isA(String.class))).thenReturn(brevVOMock);
 
-        controllerBean.hentDokument(brevStatusMock);
+        controllerBean.hentDokument(brevStatusVOMock);
         verify(brevVOMock, times(0)).setBrevdata(isA(byte[].class));
         verify(brevVOMock, times(0)).setContentType(isA(String.class));
     }
 
     @Test
     public void hentDokumentBiShouldCallBrevlagerServiceCorrectly() throws Exception {
-        brevStatusMock = ControllerBeanDelegateTestUtility.mockBrevStatusVO(SYSTEM_ID_BI, BREVREFERANSE, TOKEN, null);
+        brevStatusVOMock = ControllerBeanDelegateTestUtility.mockBrevStatusVO(SYSTEM_ID_BI, BREVREFERANSE, TOKEN, null);
         BrevVO brevVOMock = mock(BrevVO.class);
         when(brevlagerServiceBeanMock.getBrev(SYSTEM_ID_BI, BREVREFERANSE)).thenReturn(brevVOMock);
 
-        BrevVO resultBrevVO = controllerBean.hentDokument(brevStatusMock);
+        BrevVO resultBrevVO = controllerBean.hentDokument(brevStatusVOMock);
 
         verify(brevlagerServiceBeanMock).getBrev(SYSTEM_ID_BI, BREVREFERANSE);
         assertThat(resultBrevVO, equalTo(brevVOMock));
@@ -171,11 +174,11 @@ public class HentControllerDelegateTest {
 
     @Test
     public void hentDokumentShouldFailIfBrevlagerServiceReturnsNull() throws BrevTechnicalException {
-        brevStatusMock = ControllerBeanDelegateTestUtility.mockBrevStatusVO(SYSTEM_ID_BI, BREVREFERANSE, TOKEN, null);
+        brevStatusVOMock = ControllerBeanDelegateTestUtility.mockBrevStatusVO(SYSTEM_ID_BI, BREVREFERANSE, TOKEN, null);
         when(brevlagerServiceBeanMock.getBrev(SYSTEM_ID_BI, BREVREFERANSE)).thenReturn(null);
 
         try {
-            controllerBean.hentDokument(brevStatusMock);
+            controllerBean.hentDokument(brevStatusVOMock);
         } catch (BrevException e) {
             verify(brevlagerServiceBeanMock).getBrev(SYSTEM_ID_BI, BREVREFERANSE);
             return;
@@ -185,12 +188,12 @@ public class HentControllerDelegateTest {
 
     @Test
     public void hentDokumentBiShouldFailIfStatusKassert() throws BrevException {
-        brevStatusMock = ControllerBeanDelegateTestUtility.mockBrevStatusVO(SYSTEM_ID_BI, BREVREFERANSE, TOKEN, STATUS_KASSERT);
+        brevStatusVOMock = ControllerBeanDelegateTestUtility.mockBrevStatusVO(SYSTEM_ID_BI, BREVREFERANSE, TOKEN, STATUS_KASSERT);
         BrevVO brevVOMock = ControllerBeanDelegateTestUtility.mockBrevVO(SYSTEM_ID_BI, STATUS_KASSERT, "dummy", "dummy".getBytes());
         when(brevlagerServiceBeanMock.getBrev(SYSTEM_ID_BI, BREVREFERANSE)).thenReturn(brevVOMock);
 
         try {
-            controllerBean.hentDokument(brevStatusMock);
+            controllerBean.hentDokument(brevStatusVOMock);
         } catch (BrevFunctionalException e) {
             assertTrue(e.isFeilkode(BrevFunctionalException.DOKUMENTET_ER_FLAGGET_FOR_KASSASJON));
             return;
@@ -200,10 +203,10 @@ public class HentControllerDelegateTest {
 
     @Test
     public void hentKnappStatusShouldReturnKnappStatus() throws BrevException {
-        when(brevserverServiceBeanMock.hentBrevStatus(SYSTEM_ID_BI, BREVREFERANSE)).thenReturn(brevStatusMock);
+        when(brevserverServiceBeanMock.hentBrevStatus(SYSTEM_ID_BI, BREVREFERANSE)).thenReturn(brevstatusMock);
 
         KnappStatus knappStatus = controllerBean.hentKnappStatus(SYSTEM_ID_BI, BREVREFERANSE);
-        assertThat(knappStatus, is(brevStatusMock.getKnappStatus()));
+        assertThat(knappStatus, is(brevStatusVOMock.getKnappStatus()));
     }
 
     @Test

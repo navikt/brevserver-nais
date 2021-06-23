@@ -9,6 +9,7 @@ import no.nav.brevserver.querydsl.TBrevlager5;
 import no.nav.brevserver.querydsl.TBrevstatus;
 import no.nav.brevserver.querydsl.TBrevtilgang;
 import no.nav.brevserver.service.AbstractDatabaseTest;
+import no.nav.brevserver.service.TempJndiHelper;
 import no.nav.brevserver.service.brevlager.BrevlagerServiceFactory;
 import no.nav.brevserver.service.brevlager.beans.BrevlagerServiceBean;
 import no.nav.brevserver.service.brevserver.BrevserverServiceFactory;
@@ -23,6 +24,7 @@ import org.mockito.MockitoAnnotations;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import javax.sql.DataSource;
 import javax.xml.ws.BindingProvider;
 
 import static org.mockito.Mockito.when;
@@ -32,10 +34,10 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
 /**
  * Abstract provider testclass. Provides setup and utilities for provider integration tests.
  *
- * @author Joakim Bjørnstad, Visma Consulting
+ * @author Joakim Bjï¿½rnstad, Visma Consulting
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({BrevserverServiceFactory.class, BrevlagerServiceFactory.class, JoarkServiceBeanFactory.class})
+@PrepareForTest({BrevserverServiceFactory.class, BrevlagerServiceFactory.class, JoarkServiceBeanFactory.class, TempJndiHelper.class})
 public abstract class AbstractProviderTest extends AbstractDatabaseTest {
 
 	private static final String NO_DB2_OPTIMIZATION = "";
@@ -59,7 +61,9 @@ public abstract class AbstractProviderTest extends AbstractDatabaseTest {
 
 		brevlagerServiceBean.setDb2SingleRowOptimization(NO_DB2_OPTIMIZATION);
 		brevserverService.setDb2SingleRowOptimization(NO_DB2_OPTIMIZATION);
-
+		mockStatic(TempJndiHelper.class);
+		DataSource dataSourceMock = jndiDataSource();
+		when(TempJndiHelper.jndiDataSource()).thenReturn(dataSourceMock);
 		setupBrevserverService();
 		setupBrevlagerService();
 		setupJoarkMock();

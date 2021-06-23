@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<artifactId>brevserver</artifactId>
@@ -45,14 +46,6 @@
 			<artifactId>servlet-api</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>websphere</groupId>
-			<artifactId>com.ibm.jaxws.thinclient</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>websphere</groupId>
-			<artifactId>com.ibm.ws.runtime</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>net.sf.dozer</groupId>
 			<artifactId>dozer</artifactId>
 		</dependency>
@@ -67,6 +60,10 @@
 		<dependency>
 			<groupId>javax.jms</groupId>
 			<artifactId>jms</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.istack</groupId>
+			<artifactId>istack-commons-runtime</artifactId>
 		</dependency>
 
 		<!-- Test dependencies -->
@@ -133,7 +130,8 @@
 								<artifactItem>
 									<groupId>no.nav.brevserver</groupId>
 									<artifactId>brevserver-klient-applet</artifactId>
-									<outputDirectory>${project.build.directory}/${project.build.finalName}</outputDirectory>
+									<outputDirectory>${project.build.directory}/${project.build.finalName}
+									</outputDirectory>
 									<destFileName>StartBrevklientApplet.jar</destFileName>
 								</artifactItem>
 							</artifactItems>

@@ -1,7 +1,7 @@
 package no.nav.brevserver.server.common.cache;
 
 /**
- * @author Rune Røren, Accenture
+ * @author Rune RÃ¸ren, Accenture
  */
 public class CacheObject {
 

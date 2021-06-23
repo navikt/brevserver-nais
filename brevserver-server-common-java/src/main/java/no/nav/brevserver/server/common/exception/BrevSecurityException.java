@@ -3,7 +3,7 @@ package no.nav.brevserver.server.common.exception;
 /**
  * Exception som kastes ved sikkerhetproblemer
  * 
- * @author Rune Røren, Accenture
+ * @author Rune RÃ¸ren, Accenture
  * @version $Revision: 1989 $ $Author: t133126 $ $Date: 2012-06-14 09:51:55 +0200 (to, 14 jun 2012) $
  */
 

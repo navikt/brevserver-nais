@@ -1,6 +1,7 @@
 package no.nav.brevserver.controller;
 
 import no.nav.brevserver.consumer.joark.factory.JoarkServiceBeanFactory;
+import no.nav.brevserver.core.domain.entities.Brevstatus;
 import no.nav.brevserver.server.common.config.ConfigManager;
 import no.nav.brevserver.server.common.config.Konstanter;
 import no.nav.brevserver.server.common.exception.BrevException;
@@ -36,6 +37,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.mock;
@@ -60,6 +62,7 @@ public class LagreControllerDelegateTest {
 	private BrevlagerService brevlagerServiceBeanMock;
 	private FileConverter fileConverterMock;
 	private BrevStatusVO brevStatusVOMock;
+	private Brevstatus brevstatusMock;
 	private LagreControllerDelegate controllerBean;
 	private XMLService xmlServiceMock;
 	private MessageProducer messageProducerMock;
@@ -78,6 +81,7 @@ public class LagreControllerDelegateTest {
 		ControllerBeanDelegateTestUtility.mockPerformanceLogger();
 		brevserverServiceBeanMock = ControllerBeanDelegateTestUtility.mockBrevserverService();
 		when(brevserverServiceBeanMock.sjekkTilgang(isA(String.class), isA(String.class), isA(String.class))).thenReturn(true);
+		brevstatusMock = mock(Brevstatus.class);
 		brevlagerServiceBeanMock = ControllerBeanDelegateTestUtility.mockBrevlagerService();
 		ControllerBeanDelegateTestUtility.mockJoarkService();
 		fileConverterMock = ControllerBeanDelegateTestUtility.mockFileConverter();
@@ -119,11 +123,11 @@ public class LagreControllerDelegateTest {
 	@Test
 	public void lagreBrevlagerDokumentShouldCallBrevlagerServiceCorrectly() throws BrevException {
 		brevStatusVOMock = ControllerBeanDelegateTestUtility.mockBrevStatusVO(SYSTEM_ID_BI, BREVREFERANSE, TOKEN, null);
-		when(brevlagerServiceBeanMock.lagreBrev(brevVOMock, brevStatusVOMock)).thenReturn(mock(BrevStatusVO.class));
+		when(brevlagerServiceBeanMock.lagreBrev(brevVOMock, brevstatusMock, any())).thenReturn(mock(BrevStatusVO.class));
 
 		controllerBean.lagreDokument(brevVOMock, brevStatusVOMock, SystemType.BI);
 
-		verify(brevlagerServiceBeanMock).lagreBrev(brevVOMock, brevStatusVOMock);
+		verify(brevlagerServiceBeanMock).lagreBrev(brevVOMock, brevstatusMock, any());
 	}
 
 	@Test
@@ -133,7 +137,7 @@ public class LagreControllerDelegateTest {
 		BrevStatusVO brevStatusVOMock = ControllerBeanDelegateTestUtility.mockBrevStatusVO(SYSTEM_ID_BI, BREVREFERANSE, TOKEN, null);
 		BrevStatusVO oldBrevStatusVOMock = mock(BrevStatusVO.class);
 
-		when(brevlagerServiceBeanMock.lagreBrev(brevVOMock, brevStatusVOMock)).thenReturn(oldBrevStatusVOMock);
+		when(brevlagerServiceBeanMock.lagreBrev(brevVOMock, brevstatusMock, any())).thenReturn(oldBrevStatusVOMock);
 		when(xmlServiceMock.unmarshal(isA(KvitteringVO.class), isA(BrevStatusVO.class))).thenReturn(RECEIPT);
 
 		controllerBean.lagreDokument(brevVOMock, brevStatusVOMock, SystemType.BI);
@@ -153,14 +157,14 @@ public class LagreControllerDelegateTest {
 		brevStatusVOMock = ControllerBeanDelegateTestUtility.mockBrevStatusVO(SYSTEM_ID_BI, BREVREFERANSE, TOKEN, Konstanter.BREVSTATUS_LAGRET_KLADD);
 		BrevVO brevVORtfMock = mock(BrevVO.class);
 		BrevVO brevVOPdfMock = mock(BrevVO.class);
-		when(brevserverServiceBeanMock.hentBrevStatus(SYSTEM_ID_BI, BREVREFERANSE)).thenReturn(brevStatusVOMock);
+		when(brevserverServiceBeanMock.hentBrevStatus(SYSTEM_ID_BI, BREVREFERANSE)).thenReturn(brevstatusMock);
 		controllerBean.ferdigstillDokument(brevStatusVOMock, brevVORtfMock, brevVOPdfMock, SystemType.BI);
 
-		verify(brevlagerServiceBeanMock).ferdigstillBrev(brevStatusVOMock, brevVORtfMock, brevVOPdfMock);
+		verify(brevlagerServiceBeanMock).ferdigstillBrev(brevstatusMock, brevVORtfMock, brevVOPdfMock, any());
 	}
 
 	private void giveAccess(boolean access) throws BrevTechnicalException {
-		when(brevserverServiceBeanMock.hentBrevStatus(SYSTEM_ID_PE, BREVREFERANSE)).thenReturn(brevStatusVOMock);
+		when(brevserverServiceBeanMock.hentBrevStatus(SYSTEM_ID_PE, BREVREFERANSE)).thenReturn(brevstatusMock);
 		when(brevserverServiceBeanMock.sjekkTilgang(SYSTEM_ID_PE, BREVREFERANSE, TOKEN)).thenReturn(access);
 	}
 }

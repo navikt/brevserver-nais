@@ -11,7 +11,7 @@ import no.nav.virksomhet.tjenester.arkiv.journalbehandling.v1.binding.Journalbeh
 /**
  * Base class for Joark delegates, contains common functionality.
  *
- * @author Thomas Eugen Bjørge, Visma Sirius
+ * @author Thomas Eugen BjÃ¸rge, Visma Sirius
  */
 public abstract class AbstractJoarkDelegate {
 

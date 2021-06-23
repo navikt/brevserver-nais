@@ -1,6 +1,6 @@
 package no.nav.brevserver.provider.map.converters;
 
-import com.sun.istack.internal.ByteArrayDataSource;
+import com.sun.istack.ByteArrayDataSource;
 import no.nav.brevserver.server.common.vo.FilType;
 import org.junit.Before;
 import org.junit.Rule;
@@ -15,7 +15,7 @@ import static org.junit.Assert.assertThat;
 /**
  * Unit tests for DatahandlerCustomConverter
  *
- * @author Joakim Bjørnstad, Visma Consulting
+ * @author Joakim Bjï¿½rnstad, Visma Consulting
  */
 public class DataHandlerCustomConvertTest {
 

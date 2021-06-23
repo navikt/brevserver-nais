@@ -9,7 +9,7 @@ import org.dozer.Mapper;
 /**
  * Base class for Dozer mappers. Incapsulates the creation of a Dozer Mapper.
  * 
- * @author Thomas Eugen Bjørge, Visma Sirius
+ * @author Thomas Eugen BjÃ¸rge, Visma Sirius
  */
 public abstract class AbstractDozerMapper {
 

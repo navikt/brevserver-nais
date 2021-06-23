@@ -11,6 +11,7 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 import java.io.StringReader;
 
+import no.nav.brevserver.core.domain.entities.Brevstatus;
 import no.nav.brevserver.server.common.config.ConfigManager;
 import no.nav.brevserver.server.common.config.Konstanter;
 import no.nav.brevserver.server.common.exception.BrevTechnicalException;
@@ -58,7 +59,9 @@ public class BestillBrevCommandTest {
 	@Mock
 	private MessageVO messageMock; 
 	@Captor
-	private ArgumentCaptor<BrevStatusVO> brevStatusCaptor;
+	private ArgumentCaptor<BrevStatusVO> brevStatusVOCaptor;
+	@Captor
+	private ArgumentCaptor<Brevstatus> brevstatusCaptor;
 	@Captor
 	private ArgumentCaptor<KvitteringVO> kvitteringCaptor;
 	@Captor
@@ -143,10 +146,10 @@ public class BestillBrevCommandTest {
 		
 		bestillBrevCommand.execute();
 		
-		verify(brevserverServiceMock).lagreBrevStatus(brevStatusCaptor.capture());
+		verify(brevserverServiceMock).lagreBrevStatus(brevstatusCaptor.capture(), any());
 		verify(messageProducerMock).sendToDialogue(any(MessageVO.class));
 		
-		BrevStatusVO brevstatus = brevStatusCaptor.getValue();
+		BrevStatusVO brevstatus = brevStatusVOCaptor.getValue();
 		assertThat(brevstatus.getStatus(), is(Konstanter.BREVSTATUS_BREVPAKKE));
 		assertThat(brevstatus.getSystemID(), is(systemId));
 		assertThat(brevstatus.getBrevreferanse(), is(brevreferanse));
@@ -198,7 +201,7 @@ public class BestillBrevCommandTest {
 	public void shouldSendReturmeldingIfBrevetEksisterer() throws Exception {
 		when(xmlServiceMock.marshalBrevStatus(any(StringReader.class))).thenReturn(createDefaultBrevstatus());
 		when(brevserverServiceMock.sjekkSystemTilgang(systemId, passord)).thenReturn(true);
-		when(brevserverServiceMock.hentBrevStatus(systemId, brevreferanse)).thenReturn(new BrevStatusVO());
+		when(brevserverServiceMock.hentBrevStatus(systemId, brevreferanse)).thenReturn(new Brevstatus());
 		when(xmlServiceMock.unmarshal(any(KvitteringVO.class), any(BrevStatusVO.class))).thenReturn(xmlKvitteringBrevEksisterer);
 		
 		bestillBrevCommand.execute();

@@ -9,7 +9,7 @@ import no.nav.brevserver.server.common.jndi.JndiHelper;
 /**
  * Factory for obtaining an instance of {@link JoarkServiceBi}.
  * 
- * @author Thomas Eugen Bjørge, Visma Sirius
+ * @author Thomas Eugen BjÃ¸rge, Visma Sirius
  */
 public enum JoarkServiceBeanFactory {
 

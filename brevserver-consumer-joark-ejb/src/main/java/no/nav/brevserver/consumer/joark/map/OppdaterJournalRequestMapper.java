@@ -6,7 +6,7 @@ import no.nav.virksomhet.tjenester.arkiv.journalbehandling.meldinger.v1.Oppdater
 /**
  * Mapper for OppdaterJournalRequest.
  *
- * @author Marius Thøring, Visma Sirius
+ * @author Marius ThÃ¸ring, Visma Sirius
  */
 public class OppdaterJournalRequestMapper extends AbstractDozerMapper {
 

@@ -8,7 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * @author Rune Røren, Accenture
+ * @author Rune RÃ¸ren, Accenture
  */
 public class LogCache {
 
@@ -24,7 +24,7 @@ public class LogCache {
 	private static final String[] IMPORTANCE = {"DEBUG", "INFO ", "WARN ", "ERROR", "FATAL", "INFO "};
 
 	/**
-	 * Metode for å hente ut de siste logg-meldingene (fra minnet).
+	 * Metode for Ã¥ hente ut de siste logg-meldingene (fra minnet).
 	 *
 	 * @return de siste logg-meldingene (fra minnet).
 	 */
@@ -57,7 +57,7 @@ public class LogCache {
 	}
 
 	/**
-	 * Metode for å legge en logg-melding inn i minnet
+	 * Metode for Ã¥ legge en logg-melding inn i minnet
 	 *
 	 * @param msg        Melding
 	 * @param importance Viktighet

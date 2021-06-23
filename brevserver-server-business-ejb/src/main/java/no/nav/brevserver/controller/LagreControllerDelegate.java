@@ -2,6 +2,8 @@ package no.nav.brevserver.controller;
 
 import no.nav.brevserver.consumer.joark.JoarkServiceBi;
 import no.nav.brevserver.consumer.joark.factory.JoarkServiceBeanFactory;
+import no.nav.brevserver.converter.VoTilBrevstatusConverter;
+import no.nav.brevserver.core.domain.entities.Brevstatus;
 import no.nav.brevserver.server.common.config.Konstanter;
 import no.nav.brevserver.server.common.exception.BrevException;
 import no.nav.brevserver.server.common.exception.BrevTechnicalException;
@@ -25,6 +27,8 @@ import no.nav.brevserver.service.xml.XMLServiceFactory;
  * @author Marius Thøring, Visma Consulting
  */
 public class LagreControllerDelegate extends AbstractControllerDelegate {
+
+	private VoTilBrevstatusConverter converter = new VoTilBrevstatusConverter();
 
 	/**
 	 * Refer to {@link ControllerBi#lagreDokument}
@@ -111,15 +115,17 @@ public class LagreControllerDelegate extends AbstractControllerDelegate {
 		joarkService.lagreDokument(brevstatus.getBrevreferanse(), brev.getContentType(), brev.getBrevdata());
 	}
 
-	private void lagreBrevlagerDokument(BrevVO brev, BrevStatusVO brevstatus, SystemType systemType)
+	private void lagreBrevlagerDokument(BrevVO brev, BrevStatusVO brevStatusVO, SystemType systemType)
 			throws BrevTechnicalException {
 		BrevlagerService service = BrevlagerServiceFactory.getInstance().createBrevlagerService();
-		service.lagreBrev(brev, brevstatus);
+		Brevstatus brevstatus = converter.convert(brevStatusVO);
+		service.lagreBrev(brev, brevstatus,  brevStatusVO.getToken());
 	}
 
-	private void ferdigstillJoarkDokument(BrevStatusVO brevstatus, BrevVO redBrevVO, BrevVO pdfBrevVO)
+	private void ferdigstillJoarkDokument(BrevStatusVO brevStatusVO, BrevVO redBrevVO, BrevVO pdfBrevVO)
 			throws BrevTechnicalException {
-		BrevserverServiceFactory.getInstance().createBrevserverService().lagreBrevStatus(brevstatus);
+		Brevstatus brevstatus = converter.convert(brevStatusVO);
+		BrevserverServiceFactory.getInstance().createBrevserverService().lagreBrevStatus(brevstatus, brevStatusVO.getToken());
 		JoarkServiceBi joarkService = JoarkServiceBeanFactory.getInstance().getJoarkService();
 		joarkService.lagreFerdigstiltDokument(brevstatus.getBrevreferanse(), redBrevVO, pdfBrevVO);
 	}
@@ -127,7 +133,7 @@ public class LagreControllerDelegate extends AbstractControllerDelegate {
 	private void ferdigstillBrevlagerDokument(BrevStatusVO brevstatus, BrevVO redBrevVO, BrevVO pdfBrevVO)
 			throws BrevTechnicalException {
 		BrevlagerService brevlagerService = BrevlagerServiceFactory.getInstance().createBrevlagerService();
-		brevlagerService.ferdigstillBrev(brevstatus, redBrevVO, pdfBrevVO);
+		brevlagerService.ferdigstillBrev(converter.convert(brevstatus), redBrevVO, pdfBrevVO, brevstatus.getToken());
 	}
 
 	private void sendKvittering(BrevVO brev, BrevStatusVO brevstatus, SystemType systemType, String returKoe)
