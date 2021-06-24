@@ -1,5 +1,5 @@
 package no.nav.brevserver.service.queue.jms;
-
+//TODO: Eksempel: Her
 import no.nav.brevserver.server.common.config.ConfigManager;
 import no.nav.brevserver.server.common.config.Konstanter;
 import no.nav.brevserver.server.common.exception.BrevTechnicalException;
