@@ -8,11 +8,9 @@ import no.nav.brevserver.server.common.vo.BrevStatusVO;
 import no.nav.brevserver.server.common.vo.KvitteringVO;
 import no.nav.brevserver.server.common.vo.MessageVO;
 
-import javax.jms.BytesMessage;
-import javax.jms.JMSException;
-import javax.jms.TextMessage;
 import java.io.ByteArrayOutputStream;
 
+//TODO: Bytt med route/*
 /**
  * Beskrivelse av klassen
  * 
@@ -39,7 +37,7 @@ public abstract class MessageProducer {
 	 * @param sendQueueName
 	 * @param useJndi
 	 * @throws BrevTechnicalException
-	 */
+
 	public final void sendByteMelding(byte[] bytearray, String sendQueueName, boolean useJndi) throws BrevTechnicalException {
 		String methodSig = "MessageProducer.sendByteMelding(" + sendQueueName + ")";
 
@@ -65,7 +63,7 @@ public abstract class MessageProducer {
 			JMSAccessor.close(jmsAccessor);
 			p.stop();
 		}
-	}
+	}*/
 
 	/**
 	 * Denne metoden sender et redigert rtf-dokument til brevpakken
@@ -82,7 +80,7 @@ public abstract class MessageProducer {
 	 */
 	public final void sendRTF(ByteArrayOutputStream bos, String sendQueueJndiName, boolean useJndi)
 			throws BrevTechnicalException {
-		sendByteMelding(bos.toByteArray(), sendQueueJndiName, useJndi);
+		//sendByteMelding(bos.toByteArray(), sendQueueJndiName, useJndi);
 	}
 
 	/**
@@ -100,7 +98,7 @@ public abstract class MessageProducer {
 	 *            - melding vi ønsker å sende. TextMessage må være null for at denne skal benyttes.
 	 * @throws BrevTechnicalException
 	 *             - ved alle feil
-	 */
+
 	protected void produserTextMelding(String queueName, boolean useJndi, TextMessage textMessage, String correlationID,
 			String melding) throws BrevTechnicalException {
 
@@ -135,7 +133,7 @@ public abstract class MessageProducer {
 			JMSAccessor.close(jmsAccessor);
 			p.stop();
 		}
-	}
+	}*/
 
 	/**
 	 * Sends a message to the dead-letter queue
@@ -145,7 +143,7 @@ public abstract class MessageProducer {
 	 * @param setReplyQueue
 	 * @param jmsAccessor
 	 * @throws BrevTechnicalException
-	 */
+
 	protected final void sendToDeadLetter(MessageVO msgVO, PerformanceLogger p, boolean setReplyQueue, JMSAccessor jmsAccessor)
 			throws BrevTechnicalException {
 		try {
@@ -175,14 +173,14 @@ public abstract class MessageProducer {
 			JMSAccessor.close(jmsAccessor);
 			p.stop();
 		}
-	}
+	}*/
 
 	/**
 	 * Builds status logg message for kvittering
 	 * @param kvittering
 	 * @param brevStatus
 	 * @return Status message for logging
-	 */
+
 	public static String getReturstatusString(KvitteringVO kvittering, BrevStatusVO brevStatus) {
 		StringBuffer sb = new StringBuffer();
 		if (brevStatus.getStatus() != null) {
@@ -198,5 +196,5 @@ public abstract class MessageProducer {
 			sb.append(" feilnivå: ").append(kvittering.getFeilniva());
 		}
 		return sb.toString();
-	}
+	}*/
 }

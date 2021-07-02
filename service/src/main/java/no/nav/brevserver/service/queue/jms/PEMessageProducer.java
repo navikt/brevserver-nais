@@ -29,8 +29,8 @@ public class PEMessageProducer extends MessageProducer {
 	 * @throws BrevTechnicalException ved alle feil
 	 */
 	public void sendToDialogue(MessageVO message) throws BrevTechnicalException {
-		produserTextMelding(Konstanter.KONF_SEND_DIALOGUE_ONLINE_PE, true, null, message.getCorrelationID(),
-				message.getStringBody());
+		//produserTextMelding(Konstanter.KONF_SEND_DIALOGUE_ONLINE_PE, true, null, message.getCorrelationID(),
+		//		message.getStringBody());
 	}
 
 	/**
@@ -46,7 +46,7 @@ public class PEMessageProducer extends MessageProducer {
 		boolean setReplyQueue = ConfigManager.getInstance().getBool(ConfigManager.DEADLETTER_REPLY_QUEUE_PE, true)
 				&& msgVO.getReplyQueueName() != null;
 
-		sendToDeadLetter(msgVO, p, setReplyQueue, JMSAccessor.getAccessorUsingQueueJndiName(Konstanter.KONF_DEAD_LETTER_PE));
+		//sendToDeadLetter(msgVO, p, setReplyQueue, JMSAccessor.getAccessorUsingQueueJndiName(Konstanter.KONF_DEAD_LETTER_PE));
 	}
 
 	/**
@@ -76,8 +76,8 @@ public class PEMessageProducer extends MessageProducer {
 			// Sende kvitteringsmelding til saksbehandlingsystemet
 			XMLService service = XMLServiceFactory.getInstance().createXMLService();
 			String xmlKvittering = service.unmarshal(kvittering, peBrevStatusVO);
-			String logMsg = "Sender kvittering, brevStatus: " + getReturstatusString(kvittering, peBrevStatusVO);
-			log.info(methSig, logMsg);
+			//String logMsg = "Sender kvittering, brevStatus: " + getReturstatusString(kvittering, peBrevStatusVO);
+		//	log.info(methSig, logMsg);
 			sendReturMelding(peBrevStatusVO.getReturKoe(), useJndi, messageVo.getCorrelationID(), xmlKvittering);
 		} catch (BrevTechnicalException bte) {
 			log.error(methSig, "Fikk ikke sendt kvittering til " + peBrevStatusVO.getReturKoe());
@@ -104,6 +104,6 @@ public class PEMessageProducer extends MessageProducer {
 			useJndi = true;
 		}
 
-		produserTextMelding(queueName, useJndi, null, correlationID, kvittering);
+		//produserTextMelding(queueName, useJndi, null, correlationID, kvittering);
 	}
 }
