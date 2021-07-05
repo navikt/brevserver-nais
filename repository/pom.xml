@@ -14,7 +14,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>no.nav.brevserver</groupId>
-			<artifactId>brevserver-core</artifactId>
+			<artifactId>core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>commons-dbcp</groupId>

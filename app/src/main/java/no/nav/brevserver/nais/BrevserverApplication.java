@@ -3,9 +3,11 @@ package no.nav.brevserver.nais;
 import no.nav.brevserver.service.config.ServiceConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 
 @SpringBootApplication
+@ComponentScan
 @Import({DokumentbehandlingResource.class, JmsConsumerConfig.class, ServiceConfig.class})
 public class BrevserverApplication {
 

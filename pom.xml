@@ -16,7 +16,7 @@
 		<module>brevserver-appconfig</module>
 		<module>brevserver-config</module>
 		<module>brevserver-server-common-java</module>
-		<module>brevserver-core</module>
+		<module>core</module>
 		<module>brevserver-consumer-joark-ejb</module>
 		<!--<module>brevserver-j2ee</module>-->
 		<module>repository</module>
@@ -128,7 +128,7 @@
 			</dependency>
 			<dependency>
 				<groupId>no.nav.brevserver</groupId>
-				<artifactId>brevserver-core</artifactId>
+				<artifactId>core</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
@@ -490,13 +490,14 @@
 				<artifactId>commons-dbcp</artifactId>
 				<version>1.4</version>
 			</dependency>
-			<!-- bnruker jakarta
+
+			<!--
 			<dependency>
 				<groupId>javax.persistence</groupId>
 				<artifactId>persistence-api</artifactId>
 				<version>1</version>
-			</dependency>-->
-
+			</dependency>
+			-->
 
 
 
@@ -535,7 +536,6 @@
 				<artifactId>jakarta.persistence-api</artifactId>
 				<version>${jakarta.validation.version}</version>
 			</dependency>
-
 
 			<!-- Ny MQ -->
 			<dependency>

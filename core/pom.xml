@@ -9,7 +9,7 @@
 		<version>10.2.1-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>brevserver-core</artifactId>
+	<artifactId>core</artifactId>
 
 	<dependencies>
 		<dependency>
@@ -20,6 +20,7 @@
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
 		</dependency>
+
 		<!--mq-->
 		<dependency>
 			<groupId>com.ibm.mq</groupId>
