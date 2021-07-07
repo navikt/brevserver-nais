@@ -16,7 +16,7 @@ import no.nav.brevserver.service.brevserver.BrevserverServiceFactory;
 /**
  * Base class for {@link ControllerBi} delegates, contains common functionality.
  * 
- * @author Marius Thøring, Visma Consulting
+ * @author Marius Thï¿½ring, Visma Consulting
  */
 public abstract class AbstractControllerDelegate {
 	protected Log log = null;
@@ -58,7 +58,7 @@ public abstract class AbstractControllerDelegate {
 	protected void sjekkSystemTokenTilgang(String systemId, String brevreferanse, String token) 
 			throws BrevSecurityException, BrevTechnicalException {
 		if (!BrevserverServiceFactory.getInstance().createBrevserverService().sjekkTilgang(systemId, brevreferanse, token)) {
-			throw new BrevSecurityException("Tilgang til dokumentet avslått", BrevSecurityException.IKKE_TILGANG_I_BREVSERVER);
+			throw new BrevSecurityException("Tilgang til dokumentet avslï¿½tt", BrevSecurityException.IKKE_TILGANG_I_BREVSERVER);
 		}
 	}
 

@@ -21,8 +21,8 @@ import no.nav.brevserver.service.xml.XMLServiceFactory;
 import java.io.StringReader;
 
 /**
- * Klassen håndterer bestilling av brev fra saksbehandlingssystemene. Bestillingene videresendes til Dialogue.
- * Klassen håndterer også tilgang til brev fra brevklient.
+ * Klassen hï¿½ndterer bestilling av brev fra saksbehandlingssystemene. Bestillingene videresendes til Dialogue.
+ * Klassen hï¿½ndterer ogsï¿½ tilgang til brev fra brevklient.
  *
  * @author Holger Zobel, Accenture
  * @author Morten Lileng, Cap Gemini Ernst & Young
@@ -63,7 +63,7 @@ public class BestillBrevCommand extends AbstractCommand {
 		try {
 			notEmpty("Brevreferanse", brevStatusVo.getBrevreferanse(), false);
 			notEmpty("Systemid", brevStatusVo.getSystemID(), false);
-			notEmpty("Returkø", brevStatusVo.getReturKoe(), false);
+			notEmpty("Returkï¿½", brevStatusVo.getReturKoe(), false);
 		} catch (BrevException e) {
 			log.error(methSig, "Ugyldig XML mottatt for brevreferanse " + messageVo.getBrevreferanse(), e);
 			throw new BrevTechnicalException(BrevTechnicalException.FEIL_I_XML, e);
@@ -71,7 +71,7 @@ public class BestillBrevCommand extends AbstractCommand {
 	}
 
 	/**
-	 * Forespørsel lagres i databasen. Deretter sendes den originale meldingen videre på definert kø.
+	 * Forespï¿½rsel lagres i databasen. Deretter sendes den originale meldingen videre pï¿½ definert kï¿½.
 	 *
 	 * @throws BrevException
 	 * @see AbstractCommand#execute()
@@ -95,7 +95,7 @@ public class BestillBrevCommand extends AbstractCommand {
 				return;
 			}
 
-			// Hvis modus="frabrevlager" ønsker et fagsystem å gi en tilgang til brevet fra brevklient med en token
+			// Hvis modus="frabrevlager" ï¿½nsker et fagsystem ï¿½ gi en tilgang til brevet fra brevklient med en token
 			if (brevStatusVo.getModus() != null && Konstanter.BREVMODUS_FRALAGER.equals(brevStatusVo.getModus())) {
 				// Lagre token
 				boolean ok = brevserverService.lagreTilgang(brevStatusVo.getSystemID(), brevStatusVo.getBrevreferanse(),
@@ -113,8 +113,8 @@ public class BestillBrevCommand extends AbstractCommand {
 				Brevstatus tmp = brevserverService
 						.hentBrevStatus(brevStatusVo.getSystemID(), brevStatusVo.getBrevreferanse());
 				if (tmp != null) {
-					// Brevet eksisterer fra før, returner feilmelding
-					log.warning(sig, "Brevet eksisterer fra før " + brevStatusVo.getBrevreferanse());
+					// Brevet eksisterer fra fï¿½r, returner feilmelding
+					log.warning(sig, "Brevet eksisterer fra fï¿½r " + brevStatusVo.getBrevreferanse());
 					String xmlKvittering = lagFeilmelding(Konstanter.FEIL_BREV_EKSISTERER);
 					producer.sendReturMelding(brevStatusVo.getReturKoe(), false, messageVo.getCorrelationID(), xmlKvittering);
 					return;
@@ -134,7 +134,7 @@ public class BestillBrevCommand extends AbstractCommand {
 	}
 
 	/**
-	 * Lager feilmelding basert på feiltype.
+	 * Lager feilmelding basert pï¿½ feiltype.
 	 *
 	 * @param feilType
 	 * @return Feilmeldings-XML

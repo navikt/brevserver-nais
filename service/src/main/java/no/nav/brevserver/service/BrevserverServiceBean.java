@@ -3,14 +3,15 @@ package no.nav.brevserver.service;
 import no.nav.brevserver.core.domain.entities.BrevSystemTilgang;
 import no.nav.brevserver.core.domain.entities.Brevstatus;
 import no.nav.brevserver.core.domain.entities.Brevtilgang;
-import no.nav.brevserver.repository.BrevSystemTilgangRepository;
-import no.nav.brevserver.repository.BrevstatusRepository;
-import no.nav.brevserver.repository.BrevtilgangRepository;
+import no.nav.brevserver.core.repository.BrevSystemTilgangRepository;
+import no.nav.brevserver.core.repository.BrevstatusRepository;
+import no.nav.brevserver.core.repository.BrevtilgangRepository;
 import no.nav.brevserver.server.common.cache.CacheManager;
 import no.nav.brevserver.server.common.exception.BrevTechnicalException;
 import no.nav.brevserver.server.common.utility.PerformanceLogger;
 import no.nav.brevserver.server.common.vo.SysTilgangVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -21,6 +22,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
+@ComponentScan(basePackages = {
+		"no.nav.brevserver.core.domain.entities"
+})
 public class BrevserverServiceBean {
 
 	private BrevtilgangRepository brevtilgangRepository;

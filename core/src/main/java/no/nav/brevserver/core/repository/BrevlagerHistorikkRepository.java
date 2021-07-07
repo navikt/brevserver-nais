@@ -1,4 +1,4 @@
-package no.nav.brevserver.repository;
+package no.nav.brevserver.core.repository;
 
 import no.nav.brevserver.core.domain.entities.BrevlagerHistorikk;
 import org.springframework.data.repository.CrudRepository;

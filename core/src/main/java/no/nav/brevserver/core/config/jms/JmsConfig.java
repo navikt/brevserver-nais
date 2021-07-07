@@ -59,6 +59,7 @@ public class JmsConfig {
 	}
 	@Bean
 	public Queue mottakArkiv(@Value("${brevserver_mottak_arkiv_queuename}") String mottakArkivQueueName) throws JMSException {
+		System.out.println("Aye!");
 		return new MQQueue(mottakArkivQueueName);
 	}
 	@Bean

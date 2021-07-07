@@ -1,4 +1,4 @@
-package no.nav.brevserver.repository;
+package no.nav.brevserver.core.repository;
 
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;

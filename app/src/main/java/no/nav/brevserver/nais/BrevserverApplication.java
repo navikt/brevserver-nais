@@ -7,8 +7,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 
 @SpringBootApplication
-@ComponentScan
-@Import({DokumentbehandlingResource.class, JmsConsumerConfig.class, ServiceConfig.class})
+@Import({DokumentbehandlingResource.class, ServiceConfig.class, Appconfig.class})
 public class BrevserverApplication {
 
 	public static void main(String[] args) {

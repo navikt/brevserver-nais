@@ -12,10 +12,12 @@
 	<artifactId>service</artifactId>
 
 	<dependencies>
+		<!--
 		<dependency>
 			<groupId>no.nav.brevserver</groupId>
 			<artifactId>repository</artifactId>
 		</dependency>
+		-->
 		<dependency>
 			<groupId>no.nav.brevserver</groupId>
 			<artifactId>core</artifactId>

@@ -42,7 +42,7 @@ import org.powermock.reflect.Whitebox;
 /**
  * Unit tests for BestillBrevCommand
  * 
- * @author Joakim Bjørnstad, Visma Consulting
+ * @author Joakim Bjï¿½rnstad, Visma Consulting
  *
  */
 @RunWith(PowerMockRunner.class)

@@ -19,7 +19,7 @@
 		<module>core</module>
 		<module>brevserver-consumer-joark-ejb</module>
 		<!--<module>brevserver-j2ee</module>-->
-		<module>repository</module>
+		<!--<module>repository</module>-->
 		<module>service</module>
 		<module>app</module>
 		<module>brevserver-klient-applet</module>
@@ -121,11 +121,13 @@
 				<artifactId>service</artifactId>
 				<version>${project.version}</version>
 			</dependency>
+			<!--
 			<dependency>
 				<groupId>no.nav.brevserver</groupId>
 				<artifactId>repository</artifactId>
 				<version>${project.version}</version>
 			</dependency>
+			-->
 			<dependency>
 				<groupId>no.nav.brevserver</groupId>
 				<artifactId>core</artifactId>
@@ -491,13 +493,13 @@
 				<version>1.4</version>
 			</dependency>
 
-			<!--
+
 			<dependency>
 				<groupId>javax.persistence</groupId>
 				<artifactId>persistence-api</artifactId>
 				<version>1</version>
 			</dependency>
-			-->
+
 
 
 
@@ -526,16 +528,32 @@
 				<artifactId>cxf-spring-boot-starter-jaxws</artifactId>
 				<version>${cxf.version}</version>
 			</dependency>
+
+
+			<dependency>
+				<groupId>javax.activation</groupId>
+				<artifactId>javax.activation-api</artifactId>
+				<version>1.2.0</version>
+			</dependency>
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-validator</artifactId>
+				<version>${hibernate-validator.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			<!--
 			<dependency>
 				<groupId>jakarta.validation</groupId>
 				<artifactId>jakarta.validation-api</artifactId>
 				<version>${jakarta.validation.version}</version>
 			</dependency>
+
+
 			<dependency>
-				<groupId>jakarta.persistence</groupId>
-				<artifactId>jakarta.persistence-api</artifactId>
-				<version>${jakarta.validation.version}</version>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-validation</artifactId>
 			</dependency>
+			-->
 
 			<!-- Ny MQ -->
 			<dependency>
