@@ -25,9 +25,8 @@ public class JmsConfig {
 	private static final int UTF_8_WITH_PUA = 1208;
 
 	private PooledConnectionFactory createConnectionFactory(final MqGatewayAlias mqGatewayAlias,
-													  final String channelName,
-													  final SrvAppserverProperties srvAppserverProperties,
-													  final ServiceuserAlias serviceuserAlias) throws JMSException {
+															final String channelName,
+															final SrvAppserverProperties srvAppserverProperties) throws JMSException {
 		MQConnectionFactory connectionFactory = new MQConnectionFactory();
 		connectionFactory.setHostName(mqGatewayAlias.getHostname());
 		connectionFactory.setPort(mqGatewayAlias.getPort());
@@ -45,67 +44,67 @@ public class JmsConfig {
 		pooledFactory.setMaxConnections(10);
 		pooledFactory.setMaximumActiveSessionPerConnection(10);
 
-		if (mqGatewayAlias.isTlsbroker()) {
-			// Konfigurasjon for IBM MQ broker med TLS og autorisasjon med serviceuser mot onpremise Active Directory.
-			adapter.setUsername(serviceuserAlias.getUsername());
-			adapter.setPassword(serviceuserAlias.getPassword());
-		} else {
-			// Legacy IBM MQ broker
-			connectionFactory.setBooleanProperty(JmsConstants.USER_AUTHENTICATION_MQCSP, false);
-			adapter.setUsername(srvAppserverProperties.getUsername());
-			adapter.setPassword(srvAppserverProperties.getPassword());
-		}
+		connectionFactory.setBooleanProperty(JmsConstants.USER_AUTHENTICATION_MQCSP, false);
+		adapter.setUsername(srvAppserverProperties.getUsername());
+		adapter.setPassword(srvAppserverProperties.getPassword());
+
 		return pooledFactory;
 	}
+
 	@Bean
-	public Queue mottakArkiv(@Value("${brevserver_mottak_arkiv_queuename}") String mottakArkivQueueName) throws JMSException {
-		System.out.println("Aye!");
+	public Queue mottakArkiv(@Value("${mottak_arkiv_queuename}") String mottakArkivQueueName) throws JMSException {
 		return new MQQueue(mottakArkivQueueName);
 	}
+
 	@Bean
-	public Queue mottakArkivPe(@Value("${brevserver_mottak_arkiv_pe_queuename}") String mottakArkivPeQueueName) throws JMSException {
+	public Queue mottakArkivPe(@Value("${mottak_arkiv_pe_queuename}") String mottakArkivPeQueueName) throws JMSException {
 		return new MQQueue(mottakArkivPeQueueName);
 	}
+
 	@Bean
 	public Queue dialogueOnline(@Value("${dialogue_online_queuename}") String dialogueOnline) throws JMSException {
 		return new MQQueue(dialogueOnline);
 	}
+
 	@Bean
 	public Queue dialogueOnlinePe(@Value("${dialogue_online_pe_queuename}") String dialogueOnlinePe) throws JMSException {
 		return new MQQueue(dialogueOnlinePe);
 	}
+
 	@Bean
-	public Queue brevserverOnlinebrev(@Value("${brevserverOnlinebrev_queuename}") String brevserverOnlinebrev) throws JMSException {
+	public Queue onlinebrev(@Value("${onlinebrev_queuename}") String brevserverOnlinebrev) throws JMSException {
 		return new MQQueue(brevserverOnlinebrev);
 	}
+
 	@Bean
-	public Queue brevserverOnlinebrevPe(@Value("${brevserverOnlinebrev_pe_queuename}") String brevserverOnlinebrevPe) throws JMSException {
+	public Queue onlinebrevPe(@Value("${onlinebrev_pe_queuename}") String brevserverOnlinebrevPe) throws JMSException {
 		return new MQQueue(brevserverOnlinebrevPe);
 	}
+
 	@Bean
-	public Queue brevserverMottakOnline(@Value("${brevserverMottakOnline_queuename}") String brevserverMottakOnline) throws JMSException {
+	public Queue mottakOnline(@Value("${mottak_online_queuename}") String brevserverMottakOnline) throws JMSException {
 		return new MQQueue(brevserverMottakOnline);
 	}
+
 	@Bean
-	public Queue brevserverMottakOnlinePe(@Value("${brevserverMottakOnline_pe_queuename}") String brevserverMottakOnlinePe) throws JMSException {
+	public Queue mottakOnlinePe(@Value("${mottak_online_pe_queuename}") String brevserverMottakOnlinePe) throws JMSException {
 		return new MQQueue(brevserverMottakOnlinePe);
 	}
+
 	@Bean
-	public Queue esbBrevPe(@Value("${esbBrevPe_queuename}") String esbBrevPe) throws JMSException {
-		return new MQQueue(esbBrevPe);
-	}
-	@Bean
-	public Queue brevserverDlq(@Value("${brevserverDlq_queuename}") String brevserverDlq) throws JMSException {
-		return new MQQueue(brevserverDlq);
-	}
-	@Bean
-	public Queue brevserverDlqPe(@Value("${brevserverDlqPe_queuename}") String brevserverDlqPe) throws JMSException {
-		return new MQQueue(brevserverDlqPe);
+	public Queue brevReplyPe(@Value("${brev_reply_pe_queuename}") String brevReplyPe) throws JMSException {
+		return new MQQueue(brevReplyPe);
 	}
 
+	@Bean
+	public Queue deadletter(@Value("${deadletter_queuename}") String deadletter) throws JMSException {
+		return new MQQueue(deadletter);
+	}
 
-
-
+	@Bean
+	public Queue deadletterPe(@Value("${deadletter_pe_queuename}") String deadletterPe) throws JMSException {
+		return new MQQueue(deadletterPe);
+	}
 
 
 }
