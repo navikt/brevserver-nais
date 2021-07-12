@@ -9,7 +9,7 @@ import java.io.IOException;
 /**
  * Converts between DataHandler and byte[]
  *
- * @author Joakim Bjørnstad, Visma Consulting
+ * @author Joakim BjÃ¸rnstad, Visma Consulting
  */
 public class DatahandlerCustomConverter extends DozerConverter<DataHandler, byte[]> {
 	public DatahandlerCustomConverter() {

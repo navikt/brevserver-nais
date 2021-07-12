@@ -10,7 +10,7 @@ import javax.jws.WebService;
  * Implementation of the JAX-WS generated service interface LoggmottakPortType.
  * Delegates to LoggmottakProvider at the provider layer.
  *
- * @author Joakim Bjørnstad, Visma Consulting
+ * @author Joakim BjÃ¸rnstad, Visma Consulting
  */
 @WebService(endpointInterface = "no.nav.tjenester.brevogarkiv.loggmottak.LoggmottakPortType",
 		serviceName = "Loggmottak",

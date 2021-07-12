@@ -67,7 +67,7 @@ public class PEMessageProducer extends MessageProducer {
 		String methSig = "PEMessageProducer.sendKvittering(" + peBrevStatusVO.getBrevreferanse() + ")";
 
 		if (peBrevStatusVO.getReturKoe() == null || "".equals(peBrevStatusVO.getReturKoe())) {
-			log.debug(methSig, "Returk� mangler, bruker standard: " + Konstanter.KONF_SEND_REPLY_PE);
+			log.debug(methSig, "Returkø mangler, bruker standard: " + Konstanter.KONF_SEND_REPLY_PE);
 			peBrevStatusVO.setReturKoe(Konstanter.KONF_SEND_REPLY_PE);
 			useJndi = true;
 		}

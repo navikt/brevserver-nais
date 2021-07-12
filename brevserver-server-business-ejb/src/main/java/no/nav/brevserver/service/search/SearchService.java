@@ -29,9 +29,9 @@ import no.nav.brevserver.service.brevserver.BrevserverService;
 import no.nav.brevserver.service.brevserver.BrevserverServiceFactory;
 
 /**
- * Tjeneste som leter etter brev i Brevlager og ulike MQ-k�er
+ * Tjeneste som leter etter brev i Brevlager og ulike MQ-køer
  * 
- * @author Rune R�ren, Accenture
+ * @author Rune Røren, Accenture
  */
 public class SearchService {
 
@@ -50,7 +50,7 @@ public class SearchService {
     }
 
     /**
-     * Returnerer en List med SearchObjects for ulike steder brevet kan v�re
+     * Returnerer en List med SearchObjects for ulike steder brevet kan være
      * 
      * @param args
      *            Brevargumenter
@@ -72,7 +72,7 @@ public class SearchService {
     }
 
     /**
-     * Returnerer en list med Strings med info om hvor brevet kan v�re
+     * Returnerer en list med Strings med info om hvor brevet kan være
      * 
      * @param listOfSearchObjects
      * @return The list
@@ -88,7 +88,7 @@ public class SearchService {
             SearchObject searchObject = (SearchObject) listOfSearchObjects.get(i);
 
             if (!searchObject.isChecked()) {
-                result.add("S�kte ikke etter brevet i " + searchObject.getPlace());
+                result.add("Søkte ikke etter brevet i " + searchObject.getPlace());
             } else {
                 if (searchObject.isWasFoundHere()) {
                     String msg1 = searchObject.getMuligFeil() != null ? searchObject.getMuligFeil() : "";
@@ -128,7 +128,7 @@ public class SearchService {
      * Leter i brevserver og brevlager
      * 
      * @param args
-     * @return s�keobjekt
+     * @return søkeobjekt
      */
     public SearchObject lookInBrevserver(String systemId, String brevreferanse) {
         valider(systemId, brevreferanse);
@@ -150,7 +150,7 @@ public class SearchService {
                 brevlagerStatus = ". Brevet har status " + brev.getLagerStatus() + " i brevlageret";
             }
 
-            // Sjekk status p� brevet
+            // Sjekk status på brevet
             BrevserverService brevlagerService = BrevserverServiceFactory.getInstance().createBrevserverService();
             Brevstatus status = brevlagerService.hentBrevStatus(systemId, brevreferanse);
 
@@ -352,7 +352,7 @@ public class SearchService {
     }
 
     private void valider(String systemId, String brevreferanse) {
-        ArgumentValidator.isNotNull("SystemId m� v�re satt", systemId);
-        ArgumentValidator.isNotNull("Brevreferanse m� v�re satt", brevreferanse);
+        ArgumentValidator.isNotNull("SystemId må være satt", systemId);
+        ArgumentValidator.isNotNull("Brevreferanse må være satt", brevreferanse);
     }
 }

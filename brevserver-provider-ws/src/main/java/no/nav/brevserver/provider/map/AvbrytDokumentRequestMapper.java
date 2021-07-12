@@ -5,7 +5,7 @@ import no.nav.brevserver.service.dokumentbehandling.to.AvbrytDokumentRequest;
 /**
  * Interface for mapping between webservice and domain avbrytDokument requests
  *
- * @author Joakim Bjørnstad, Visma Consulting
+ * @author Joakim BjÃ¸rnstad, Visma Consulting
  */
 public interface AvbrytDokumentRequestMapper {
 	/**

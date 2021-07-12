@@ -71,13 +71,13 @@ public abstract class MessageProducer {
 	 * Denne metoden sender et redigert rtf-dokument til brevpakken
 	 * 
 	 * @param bos
-	 *            Strøm med xml-header + *.rtf)
+	 *            StrÃ¸m med xml-header + *.rtf)
 	 * @param sendQueueJndiName
-	 *            - Info om til hvilken flytservice det skal rutes til (finnes i xml-konfigfil). Vær obs på at dersom
-	 *            nesteFlytService er noe annet enn til brevpakken (en feil har oppstått), så må meldingen konverteres til en
+	 *            - Info om til hvilken flytservice det skal rutes til (finnes i xml-konfigfil). VÃ¦r obs pÃ¥ at dersom
+	 *            nesteFlytService er noe annet enn til brevpakken (en feil har oppstÃ¥tt), sÃ¥ mÃ¥ meldingen konverteres til en
 	 *            tekstmelding og sende status til saksbehandlingssystemet.
 	 * @param useJndi
-	 *            Om JNDI skal benyttes ved oppslag av kø
+	 *            Om JNDI skal benyttes ved oppslag av kÃ¸
 	 * @throws no.nav.brevserver.server.common.exception.BrevTechnicalException
 	 */
 	public final void sendRTF(ByteArrayOutputStream bos, String sendQueueJndiName, boolean useJndi)
@@ -89,15 +89,15 @@ public abstract class MessageProducer {
 	 * Sender en JMS Text melding
 	 * 
 	 * @param queueName
-	 *            Køen meldingen skal sendes på
+	 *            kÃ¸en meldingen skal sendes pÃ¥
 	 * @param useJndi
 	 *            - Om JNDI skal benyttes
 	 * @param textMessage
-	 *            Melding vi ønsker å legge på køen. Hvis null, så benyttes teksten i meldings-argumentet
+	 *            Melding vi Ã¸nskerÃ¥legge pÃ¥ kÃ¸en. Hvis null, sÃ¥ benyttes teksten i meldings-argumentet
 	 * @param correlationID
 	 *            - meldingens korrelasjonsID
 	 * @param melding
-	 *            - melding vi ønsker å sende. TextMessage må være null for at denne skal benyttes.
+	 *            - melding vi Ã¸nskerÃ¥sende. TextMessage mÃ¥ vÃ¦re null for at denne skal benyttes.
 	 * @throws BrevTechnicalException
 	 *             - ved alle feil
 	 */
@@ -125,7 +125,7 @@ public abstract class MessageProducer {
 			}
 
 			int size = textMessage.getText() == null ? 0 : textMessage.getText().length();
-			log.debug(methodSig, "Sender textmelding på " + queueName + " Size:" + size);
+			log.debug(methodSig, "Sender textmelding pÃ¥ " + queueName + " Size:" + size);
 
 			jmsAccessor.sendMessage(textMessage, 0);
 
@@ -195,7 +195,7 @@ public abstract class MessageProducer {
 			sb.append(" feilkode: ").append(kvittering.getFeilkode());
 		}
 		if (kvittering.getFeilniva() != null ) {
-			sb.append(" feilnivå: ").append(kvittering.getFeilniva());
+			sb.append(" feilnivÃ¥: ").append(kvittering.getFeilniva());
 		}
 		return sb.toString();
 	}

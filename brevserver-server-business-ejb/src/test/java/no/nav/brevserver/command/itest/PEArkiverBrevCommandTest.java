@@ -60,7 +60,7 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
 /**
  * Integration test of PEArkiverBrevCommand, external dependencies (db, jms, ws, etc.) are mocked.
  *
- * @author Thomas Eugen Bj�rge, Visma Sirius
+ * @author Thomas Eugen Bjørge, Visma Sirius
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ConfigManager.class, BrevserverServiceFactory.class, JoarkServiceBeanFactory.class,

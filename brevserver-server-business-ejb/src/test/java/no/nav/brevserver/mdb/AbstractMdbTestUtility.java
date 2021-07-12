@@ -27,7 +27,7 @@ public class AbstractMdbTestUtility {
 	}
 
 	static void mockMessageVO(Message messageMock, MessageVO messageVOMock) throws Exception {
-		// NB!! Klassen som kaller konstruktøren må også legges til i @PrepareForTest
+		// NB!! Klassen som kaller konstruktÃ¸ren mÃ¥ ogsÃ¥ legges til i @PrepareForTest
 		mockStatic(MessageVO.class);
 		whenNew(MessageVO.class).withParameterTypes(Message.class).withArguments(messageMock)
 				.thenReturn(messageVOMock);
@@ -41,7 +41,7 @@ public class AbstractMdbTestUtility {
 	}
 
 	static void mockKvitteringVO(KvitteringVO kvitteringVOMock) throws Exception {
-		// NB!! Klassen som kaller konstruktøren må også legges til i @PrepareForTest
+		// NB!! Klassen som kaller konstruktÃ¸ren mÃ¥ ogsÃ¥ legges til i @PrepareForTest
 		mockStatic(KvitteringVO.class);
 		whenNew(KvitteringVO.class).withNoArguments().thenReturn(kvitteringVOMock);
 	}

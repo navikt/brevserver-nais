@@ -6,7 +6,7 @@ import no.nav.brevserver.service.dokumentbehandling.to.HentDokumentResponse;
 /**
  * Service that does hent dokument
  *
- * @author Joakim Bjørnstad, Visma Consulting
+ * @author Joakim BjÃ¸rnstad, Visma Consulting
  */
 public interface HentDokumentService {
 	/**

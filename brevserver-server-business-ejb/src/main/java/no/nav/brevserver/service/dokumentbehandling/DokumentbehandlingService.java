@@ -9,7 +9,7 @@ import no.nav.brevserver.service.dokumentbehandling.to.LagreDokumentRequest;
 /**
  * Service that does dokumentbehandling.
  *
- * @author Joakim Bjørnstad, Visma Consulting
+ * @author Joakim BjÃ¸rnstad, Visma Consulting
  */
 public interface DokumentbehandlingService {
 	/**

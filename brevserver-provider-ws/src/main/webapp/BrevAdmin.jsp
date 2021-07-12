@@ -114,7 +114,7 @@
 
 				JMSAccessor accessor = null;
 				BrevException ex = null;
-				String str = "Kø " + queues[i] + " feilet. Sjekk WAS oppsettet og MQ."; 								
+				String str = "kÃ¸ " + queues[i] + " feilet. Sjekk WAS oppsettet og MQ.";
 				
 				try {
 					accessor = JMSAccessor.getAccessorUsingQueueJndiName(queues[i]);
@@ -148,17 +148,17 @@
 	
 				JMSAccessor accessor = null;
 				BrevException ex = null;
-				String str = "Sjekk av "+listener[i][0] + " sin lytter på " + listener[i][1] + " feilet. Sjekk WAS oppsettet."; 								
+				String str = "Sjekk av "+listener[i][0] + " sin lytter pÃ¥ " + listener[i][1] + " feilet. Sjekk WAS oppsettet.";
 				
 				try {
 					accessor = JMSAccessor.getAccessorUsingQueueJndiName(listener[i][1]);
 					if (accessor.isListenerRunning()) {
 						unicenterList.add("LYTTER_"+listener[i][0].toUpperCase()+"_"+listener[i][1].toUpperCase()+"_OK");
-						str = listener[i][0] + " ser ut til å lytte på " + accessor.getQueueName();
+						str = listener[i][0] + " ser ut tilÃ¥lytte pÃ¥ " + accessor.getQueueName();
 						
 					} else {
 						unicenterList.add("LYTTER_"+listener[i][0].toUpperCase()+"_"+listener[i][1].toUpperCase()+"_NOT_OK");
-						str = listener[i][0] + " ser *ikke* ut til å lytte på " + accessor.getQueueName();
+						str = listener[i][0] + " ser *ikke* ut tilÃ¥lytte pÃ¥ " + accessor.getQueueName();
 						feilteller++;
 					}
 					
@@ -175,15 +175,15 @@
 			}
 			
 			if (feilteller==0) {
-				msg = "Brevløsningen er oppe!";
+				msg = "BrevlÃ¸sningen er oppe!";
 				unicenterList.add(0, "BREVLOSNING_OK");
 				
 			} else {
 				unicenterList.add(0, "BREVLOSNING_NOT_OK");
 				if (feilteller==1) {
-					msg = "Brevløsningen feilet på ett punkt";
+					msg = "BrevlÃ¸sningen feilet pÃ¥ ett punkt";
 				} else {
-					msg = "Brevløsningen feilet på " + Integer.toString(feilteller) + " punkter";
+					msg = "BrevlÃ¸sningen feilet pÃ¥ " + Integer.toString(feilteller) + " punkter";
 				}
 			}
 
@@ -237,7 +237,7 @@
 			
 			String queueName = DialogueStub.opprettBrev(data);
 			
-			msg = "Filen er lagt på " + queueName + " med korrekt XML";
+			msg = "Filen er lagt pÃ¥ " + queueName + " med korrekt XML";
 
 		// BESTILL BREV
 		} else if ("BestillBrev".equalsIgnoreCase(cmd) && utvidetAdmin) {
@@ -248,7 +248,7 @@
 			
 			String queueName = DialogueStub.bestillBrev(data);
 			
-			msg = "Bestilling er lagt på " + queueName ;
+			msg = "Bestilling er lagt pÃ¥ " + queueName ;
 
 		// GI TILGANG TIL DOKUMENT
 		} else if ("GiTilgang".equalsIgnoreCase(cmd) && utvidetAdmin) {
@@ -259,12 +259,12 @@
 
 			String queueStr = DialogueStub.giTilgangTilBrevet(data);
 			
-			msg = "Tilgangsforespørsel er sendt med token "+data.token+" til kø "+queueStr;
+			msg = "TilgangsforespÃ¥rsel er sendt med token "+data.token+" til kÃ¸ "+queueStr;
 			
-		// ÅPNE BREV
+		// Ã…PNE BREV
 		} else if ("AapneBrev".equalsIgnoreCase(cmd) ) {
 
-			// Hvis det er default dok så gi tilgang
+			// Hvis det er default dok sÃ¥ gi tilgang
 			if (defaultDokId.equals(dokid)) {
 				DialogueStubData data = new DialogueStubData();
 				data.brevref = defaultDokId;
@@ -280,10 +280,10 @@
 		} else if ("VisProperties".equalsIgnoreCase(cmd) && utvidetAdmin ) {
 			myList = ConfigManager.getInstance().getAllProperties();
 
-		// TØM CACHE OG LAST KONFIG PÅNYTT
+		// TÃ˜M CACHE OG LAST KONFIG pÃ¥NYTT
 		} else if ("ClearCache".equalsIgnoreCase(cmd) ) {
 			CacheManager.clearCache();
-			msg = ConfigManager.getInstance().clearConfig()?"Cache ble tømt og konfigurasjon ble lastet på nytt":"Cache ble tømt men konfigurasjon ble *ikke* lastet pånytt";
+			msg = ConfigManager.getInstance().clearConfig()?"Cache ble tÃ¸mt og konfigurasjon ble lastet pÃ¥ nytt":"Cache ble tÃ¸mt men konfigurasjon ble *ikke* lastet pÃ¥nytt";
 			System.gc();
 		} 
 	} catch (Exception e) {
@@ -343,11 +343,11 @@
 	
 <% } 
 
-	String[] cmds = { "FindDok", "Test", "UTGÅTT", "VisLoggSuccess", 
-		"VisLoggError", "UTGÅTT", "AapneBrev", "UTGÅTT",   
-		"OpprettBrevFraFil", "UTGÅTT", "UTGÅTT", 
-		"BestillBrev", "GiTilgang", "UTGÅTT", "ClearCache", "VisProperties", 
-		"UTGÅTT", "UTGÅTT", "UTGÅTT", "UTGÅTT" };
+	String[] cmds = { "FindDok", "Test", "UTGÃ…TT", "VisLoggSuccess",
+		"VisLoggError", "UTGÃ…TT", "AapneBrev", "UTGÃ…TT",
+		"OpprettBrevFraFil", "UTGÃ…TT", "UTGÃ…TT",
+		"BestillBrev", "GiTilgang", "UTGÃ…TT", "ClearCache", "VisProperties",
+		"UTGÃ…TT", "UTGÃ…TT", "UTGÃ…TT", "UTGÃ…TT" };
 
 	String[] cmd_default = new String[cmds.length];
 	for (int i=0; i<cmds.length; i++) {
@@ -365,11 +365,11 @@
 	<SELECT NAME="cmd">
 	<OPTION VALUE="<%= cmds[0] %>"  <%= cmd_default[0]  %>>Finn brev (DokId)</OPTION>
 	<OPTION VALUE="<%= cmds[1] %>"  <%= cmd_default[1]  %>>Test installasjon</OPTION>
-	<OPTION VALUE="<%= cmds[6] %>"  <%= cmd_default[6]  %>>Åpne brev (DokId)</OPTION>
+	<OPTION VALUE="<%= cmds[6] %>"  <%= cmd_default[6]  %>>Ã¥pne brev (DokId)</OPTION>
 	<OPTION VALUE="sep"><%= separator %></OPTION>
 	<OPTION VALUE="<%= cmds[3] %>"  <%= cmd_default[3]  %>>Vis siste suksess-meldinger</OPTION>
 	<OPTION VALUE="<%= cmds[4] %>"  <%= cmd_default[4]  %>>Vis siste feilmeldinger</OPTION>
-	<OPTION VALUE="<%= cmds[14] %>" <%= cmd_default[14] %>>Tøm cache og last konfigurasjon på nytt</OPTION> 
+	<OPTION VALUE="<%= cmds[14] %>" <%= cmd_default[14] %>>TÃ¸m cache og last konfigurasjon pÃ¥ nytt</OPTION>
 	
 <% if  (utvidetAdmin) { %>
 	<OPTION VALUE="sep"><%= separator %></OPTION>
@@ -379,7 +379,7 @@
 	<OPTION VALUE="<%= cmds[15] %>" <%= cmd_default[15] %>>Vis konfigurasjon</OPTION>
 <% } %>
 	</SELECT>
-	<INPUT TYPE="SUBMIT" VALUE="Kjør"> 
+	<INPUT TYPE="SUBMIT" VALUE="KjÃ¸r">
 	<a href="<%= dokURL %>brev/drift/brevadmin.html"> ?</a>
 	</TD>
 	</TR>

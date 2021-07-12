@@ -25,7 +25,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 /**
- * @author Rune R�ren, Accenture
+ * @author Rune Røren, Accenture
  * @version $Revision: 2145 $ $Author: t133126 $ $Date: 2013-07-23 12:06:48 +0200 (ti, 23 jul 2013) $
  */
 public class DialogueStub {
@@ -54,7 +54,7 @@ public class DialogueStub {
 					Konstanter.MELDING_HEADER_LENGTH);
 			byte[] headerSpace = lagMellomrom(headerlengde - xml.length());
 
-			// Send brev p� k�
+			// Send brev på kø
 			jmsAccessor = JMSAccessor.getAccessorUsingQueueJndiName(Konstanter.KONF_MOTTAK_DIALOGUE_ARKIV_BI);
 
 			BytesMessage bytesMessage = jmsAccessor.createBytesMessage();
@@ -87,7 +87,7 @@ public class DialogueStub {
 
 	public static String giTilgangTilBrevet(DialogueStubData data) throws BrevException {
 		ArgumentValidator.isNotNull(data);
-		ArgumentValidator.isNotNull("DokId m� v�re satt", data.brevref);
+		ArgumentValidator.isNotNull("DokId må være satt", data.brevref);
 
 		// Gi tilgang til brevet
 		BrevserverService brevService = BrevserverServiceFactory.getInstance().createBrevserverService();
@@ -122,12 +122,12 @@ public class DialogueStub {
 			ArgumentValidator.isNotNull("Dokid er ikke satt", data.brevref);
 
 			if (data.filnavn.indexOf(".xml") == -1) {
-				throw new BrevTechnicalException("Filen m� v�re en xml-fil");
+				throw new BrevTechnicalException("Filen må være en xml-fil");
 			}
 
 			StringBuffer filData = lesTextFil(data);
 
-			// Send brev p� k�
+			// Send brev på kø
 			jmsAccessor = JMSAccessor.getAccessorUsingQueueJndiName(Konstanter.KONF_MOTTAK_SAKSBEH_ONLINE_BI);
 
 			TextMessage txtMessage = jmsAccessor.createTextMessage(filData.toString());
@@ -169,7 +169,7 @@ public class DialogueStub {
 			return FilType.PDF.getContentType();
 		}
 
-		throw new BrevTechnicalException("Filen m� v�re enten .rtf eller .pdf");
+		throw new BrevTechnicalException("Filen må være enten .rtf eller .pdf");
 	}
 
 	private static byte[] lesByteFil(DialogueStubData data) throws BrevException {

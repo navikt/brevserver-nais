@@ -8,7 +8,7 @@ import java.util.Arrays;
 /**
  * Base class for Dozer mappers. Incapsulates the creation of a Dozer Mapper.
  *
- * @author Joakim Bjørnstad, Visma Consulting
+ * @author Joakim BjÃ¸rnstad, Visma Consulting
  */
 public abstract class AbstractProviderDozerMapper {
 

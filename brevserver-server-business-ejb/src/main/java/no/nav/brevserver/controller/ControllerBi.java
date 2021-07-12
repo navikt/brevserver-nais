@@ -9,7 +9,7 @@ import no.nav.brevserver.server.common.vo.BrevVO;
 /**
  * Interface som definerer tilgjengelige operasjoner for servletene (Brevklient).
  *
- * @author Marius Thøring, Visma Consulting
+ * @author Marius ThÃ¥ring, Visma Consulting
  */
 public interface ControllerBi {
 
@@ -19,24 +19,24 @@ public interface ControllerBi {
 	 * @param systemId
 	 * @param brevreferanse
 	 * @return aktive knapper for brevmal
-	 * @throws BrevException Hvis en feil oppstår
+	 * @throws BrevException Hvis en feil oppstÃ¥r
 	 */
 	KnappStatus hentKnappStatus(String systemId, String brevreferanse);
 
 	/**
 	 * Lagrer status for angitt brev.
 	 *
-	 * @param brevStatus Status på brev
-	 * @throws BrevException Hvis en feil oppstår
+	 * @param brevStatus Status pÃ¥ brev
+	 * @throws BrevException Hvis en feil oppstÃ¥r
 	 */
 	void lagreDokumentStatus(BrevStatusVO brevStatus);
 
 	/**
 	 * Henter brev.
 	 *
-	 * @param brevStatus Status på brev
+	 * @param brevStatus Status pÃ¥ brev
 	 * @return BrevVO (brev og metadata)
-	 * @throws BrevException Hvis en feil oppstår
+	 * @throws BrevException Hvis en feil oppstÃ¥r
 	 */
 	BrevVO hentDokument(BrevStatusVO brevStatus);
 
@@ -44,28 +44,28 @@ public interface ControllerBi {
 	 * Mellomlagrer brev.
 	 *
 	 * @param brev       Brev og metadata
-	 * @param brevstatus Status på brev
+	 * @param brevstatus Status pÃ¥ brev
 	 * @param systemType Type system
-	 * @throws BrevException Hvis en feil oppstår
+	 * @throws BrevException Hvis en feil oppstÃ¥r
 	 */
 	void lagreDokument(BrevVO brev, BrevStatusVO brevstatus, SystemType systemType);
 
 	/**
-	 * Ferdigstiller brev og lagrer både kladd og ferdigstilt brev.
+	 * Ferdigstiller brev og lagrer bÃ¥de kladd og ferdigstilt brev.
 	 *
-	 * @param brevStatus Status på brev
+	 * @param brevStatus Status pÃ¥ brev
 	 * @param redBrevVO  Redigerbart brev og metadata
 	 * @param pdfBrevVO  Ferdigstilt brev og metadata
 	 * @param systemType Type system
-	 * @throws BrevException Hvis en feil oppstår
+	 * @throws BrevException Hvis en feil oppstÃ¥r
 	 */
 	void ferdigstillDokument(BrevStatusVO brevStatus, BrevVO redBrevVO, BrevVO pdfBrevVO, SystemType systemType);
 
 	/**
-	 * Avbryter et brev ved å sette en avbrutt status.
+	 * Avbryter et brev vedÃ¥sette en avbrutt status.
 	 *
-	 * @param brevStatus Status på brev
-	 * @throws BrevException Hvis en feil oppstår
+	 * @param brevStatus Status pÃ¥ brev
+	 * @throws BrevException Hvis en feil oppstÃ¥r
 	 */
 	void avbrytDokument(BrevStatusVO brevStatus);
 

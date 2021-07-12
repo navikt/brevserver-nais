@@ -8,7 +8,7 @@ import no.nav.tjenester.brevogarkiv.dokumentbehandling.HentDokumentResponse2;
 /**
  * Default implementation of HentDokumentResponseMapper
  *
- * @author Joakim Bjørnstad, Visma Consulting
+ * @author Joakim BjÃ¸rnstad, Visma Consulting
  */
 public class DefaultHentDokumentResponseMapper extends AbstractProviderDozerMapper implements HentDokumentResponseMapper {
 

@@ -10,7 +10,7 @@ import no.nav.tjenester.brevogarkiv.loggmottak.LoggmottakPortType;
 /**
  * Provider that maps from and to the Loggmottak webservice model and delegates to Service layer implementations.
  *
- * @author Joakim Bjørnstad, Visma Consulting
+ * @author Joakim BjÃ¸rnstad, Visma Consulting
  */
 public class LoggmottakProvider implements LoggmottakPortType {
 

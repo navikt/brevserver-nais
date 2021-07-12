@@ -14,7 +14,7 @@ import no.nav.brevserver.service.xml.XMLServiceFactory;
  */
 public class DialogueXMLParser {
 	/**
-	 * Metode for Â skille ut meldingsheaderen og brevdata og putte disse inn i et kvitteringsobjekt.
+	 * Metode for√•skille ut meldingsheaderen og brevdata og putte disse inn i et kvitteringsobjekt.
 	 * 
 	 * @param bytesMelding
 	 *            Meldingen
@@ -47,7 +47,7 @@ public class DialogueXMLParser {
 
 		// parserer XML fra headeren
 		for (int i = 0; i < header.length; i++) {
-			// xml-parseren sliter med 0 sÂ vi simulerer et mellomrom
+			// xml-parseren sliter med 0 s√• vi simulerer et mellomrom
 			if (header[i] == 0) {
 				header[i] = ' ';
 			}
@@ -70,7 +70,7 @@ public class DialogueXMLParser {
 				Konstanter.MELDING_HEADER_LENGTH);
 		int tegnIStarten = ConfigManager.getInstance().getInt(ConfigManager.ARKIVER_HEADER_LENGDE_TEGN_I_STARTEN, 5);
 
-		// Hente ut headerlengde fra de f¯rste tegnene i meldingen
+		// Hente ut headerlengde fra de f√∏rste tegnene i meldingen
 		if (tegnIStarten > 0 && tegnIStarten < 10) {
 			if (melding.length > tegnIStarten) {
 				String strLengde = "";

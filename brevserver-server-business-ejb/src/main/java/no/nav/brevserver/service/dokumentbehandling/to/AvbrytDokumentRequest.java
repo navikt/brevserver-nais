@@ -5,7 +5,7 @@ import org.apache.commons.lang.Validate;
 /**
  * Domain request object for avbryt dokument operations on the service layer
  *
- * @author Joakim Bjørnstad, Visma Consulting
+ * @author Joakim BjÃ¸rnstad, Visma Consulting
  */
 public class AvbrytDokumentRequest extends AbstractDocumentRequest {
 

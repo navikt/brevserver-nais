@@ -5,7 +5,7 @@ import no.nav.brevserver.service.dokumentbehandling.to.LagreDokumentRequest;
 /**
  * Service that does lagre dokument
  *
- * @author Joakim Bjørnstad, Visma Consulting
+ * @author Joakim BjÃ¸rnstad, Visma Consulting
  */
 public interface LagreDokumentService {
 	/**

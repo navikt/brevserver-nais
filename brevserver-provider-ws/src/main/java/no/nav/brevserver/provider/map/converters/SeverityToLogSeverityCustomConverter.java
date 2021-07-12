@@ -7,7 +7,7 @@ import org.dozer.DozerConverter;
 /**
  * Maps from webservice Severity to a down-scaled Log.severity.
  *
- * @author Joakim Bjørnstad, Visma Consulting
+ * @author Joakim BjÃ¸rnstad, Visma Consulting
  */
 public class SeverityToLogSeverityCustomConverter extends DozerConverter<Severity, Integer> {
 

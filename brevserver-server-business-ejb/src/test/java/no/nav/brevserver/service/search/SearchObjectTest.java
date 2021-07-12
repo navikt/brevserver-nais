@@ -15,7 +15,7 @@ import org.junit.Test;
  * These type of objects tend to have alot of side-effects, so there is alot of
  * defensive testing here to ensure the correct object state
  * 
- * @author Joakim Bjørnstad, Visma Consulting
+ * @author Joakim BjÃ¸rnstad, Visma Consulting
  * 
  */
 public class SearchObjectTest {
@@ -49,7 +49,7 @@ public class SearchObjectTest {
         SearchObject searchObj = new SearchObject("Postkassa", true);
         searchObj.setChecked(false); // we are verbose on purpose
 
-        assertThat(searchObj.getResult(), is("Søkte ikke etter brevet i Postkassa"));
+        assertThat(searchObj.getResult(), is("SÃ¸kte ikke etter brevet i Postkassa"));
     }
 
     @Test

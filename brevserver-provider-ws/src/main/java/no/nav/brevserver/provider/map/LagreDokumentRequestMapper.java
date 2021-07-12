@@ -5,7 +5,7 @@ import no.nav.brevserver.service.dokumentbehandling.to.LagreDokumentRequest;
 /**
  * Interface for mapping between webservice and domain lagreDokument request
  *
- * @author Joakim Bjørnstad, Visma Consulting
+ * @author Joakim BjÃ¸rnstad, Visma Consulting
  */
 public interface LagreDokumentRequestMapper {
 	/**

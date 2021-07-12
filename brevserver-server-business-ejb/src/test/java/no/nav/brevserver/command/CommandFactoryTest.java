@@ -17,7 +17,7 @@ import org.mockito.MockitoAnnotations;
 /**
  * Unit tests for CommandFactory
  * 
- * @author Joakim Bjørnstad, Visma Consulting
+ * @author Joakim BjÃ¸rnstad, Visma Consulting
  *
  */
 public class CommandFactoryTest {

@@ -5,7 +5,7 @@ import no.nav.brevserver.service.loggmottak.to.LoggRequest;
 /**
  * Service that does logging
  *
- * @author Joakim Bjørnstad, Visma Consulting
+ * @author Joakim BjÃ¸rnstad, Visma Consulting
  */
 public interface LoggmottakService {
 	/**

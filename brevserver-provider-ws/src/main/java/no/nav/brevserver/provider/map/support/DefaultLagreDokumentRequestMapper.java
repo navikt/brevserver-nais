@@ -7,7 +7,7 @@ import no.nav.brevserver.service.dokumentbehandling.to.LagreDokumentRequest;
 /**
  * Default implementation of LagreDokumentRequestMapper
  *
- * @author Joakim Bjørnstad, Visma Consulting
+ * @author Joakim BjÃ¸rnstad, Visma Consulting
  */
 public class DefaultLagreDokumentRequestMapper extends AbstractProviderDozerMapper implements LagreDokumentRequestMapper {
 

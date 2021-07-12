@@ -7,7 +7,7 @@ import no.nav.brevserver.service.dokumentbehandling.to.AvbrytDokumentRequest;
 /**
  * Default implementation of AvbrytDokumentRequestMapper
  *
- * @author Joakim Bjørnstad, Visma Consulting
+ * @author Joakim BjÃ¸rnstad, Visma Consulting
  */
 public class DefaultAvbrytDokumentRequestMapper extends AbstractProviderDozerMapper
 		implements AvbrytDokumentRequestMapper {

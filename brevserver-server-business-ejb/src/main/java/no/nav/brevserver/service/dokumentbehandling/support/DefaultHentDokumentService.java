@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 /**
  * Default implementation of HentDokumentService
  * 
- * @author Joakim Bjørnstad, Visma Consulting
+ * @author Joakim BjÃ¸rnstad, Visma Consulting
  */
 @Service
 public class DefaultHentDokumentService implements HentDokumentService {

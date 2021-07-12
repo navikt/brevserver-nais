@@ -31,7 +31,7 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
 /**
  * Unit tests for DefaultHentDokumentService
  *
- * @author Joakim Bj�rnstad, Visma Consulting
+ * @author Joakim Bjørnstad, Visma Consulting
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ControllerBeanFactory.class})

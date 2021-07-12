@@ -6,7 +6,7 @@ import no.nav.brevserver.server.common.log.Log;
 /**
  * Klasse for å måle ytelsen/responstiden på metoder
  * 
- * @author Rune R�ren, Accenture
+ * @author Rune Røren, Accenture
  * @version $Revision: 2148 $ $Author: t133126 $ $Date: 2013-07-23 14:24:36
  *          +0200 (ti, 23 jul 2013) $
  */
@@ -23,7 +23,7 @@ public final class PerformanceLogger {
 	private long time = 0;
 
 	/**
-	 * Starter en m�ling
+	 * Starter en måling
 	 * 
 	 * @param callerName
 	 *            A name identifying the caller, used for logging
@@ -36,7 +36,7 @@ public final class PerformanceLogger {
 	}
 
 	/**
-	 * Avslutter en m�ling Logger en WARN hvis m�lingen viser at operasjonen tok
+	 * Avslutter en måling Logger en WARN hvis målingen viser at operasjonen tok
 	 * over en viss tid (ConfigManager.PERF_YTELSE_SKRANKE)
 	 * 
 	 */

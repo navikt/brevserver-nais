@@ -18,7 +18,7 @@ import no.nav.brevserver.server.common.vo.BrevVO;
 /**
  * EJB 3 implementation of {@link ControllerBi}.
  *
- * @author Marius Thøring, Visma Consulting
+ * @author Marius ThÃ¥ring, Visma Consulting
  */
 @Stateless
 @TransactionManagement(TransactionManagementType.CONTAINER)

@@ -28,9 +28,9 @@ import no.nav.brevserver.service.brevserver.BrevserverServiceFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Metoder for � hente, lagre og ta backup av brev i Brevlageret (IBM DB2).
+ * Metoder foråhente, lagre og ta backup av brev i Brevlageret (IBM DB2).
  *
- * @author Marius Th�ring, Visma Consulting
+ * @author Marius Thåring, Visma Consulting
  */
 public class BrevlagerServiceBean extends SQLService implements BrevlagerService {
 
@@ -153,7 +153,7 @@ public class BrevlagerServiceBean extends SQLService implements BrevlagerService
 
 			if (stmt.executeUpdate() != 1) {
 				con.rollback();
-				throw new BrevTechnicalException("Feil antall rader ble fors�kt oppdatert i " + Konstanter.BREVLAGER_TABELL
+				throw new BrevTechnicalException("Feil antall rader ble forsøkt oppdatert i " + Konstanter.BREVLAGER_TABELL
 						+ " for: " + brev.getSystemID() + ":" + brev.getBrevreferanse());
 			}
 			con.commit();
@@ -182,7 +182,7 @@ public class BrevlagerServiceBean extends SQLService implements BrevlagerService
 
 			if (stmt.executeUpdate() != 1) {
 				con.rollback();
-				throw new BrevTechnicalException("Feil antall rader ble fors�kt opprettet i " + Konstanter.BREVLAGER_TABELL
+				throw new BrevTechnicalException("Feil antall rader ble forsøkt opprettet i " + Konstanter.BREVLAGER_TABELL
 						+ " for: " + brev.getSystemID() + ":" + brev.getBrevreferanse());
 			}
 			con.commit();
@@ -259,7 +259,7 @@ public class BrevlagerServiceBean extends SQLService implements BrevlagerService
 
 			if (stmt.executeUpdate() != 1) {
 				con.rollback();
-				throw new BrevTechnicalException("Feil antall rader ble fors�kt opprettet i "
+				throw new BrevTechnicalException("Feil antall rader ble forsøkt opprettet i "
 						+ Konstanter.BREVLAGER_HISTORIKK_TABELL + " for: " + brev.getSystemID() + ":" + brev.getBrevreferanse());
 			}
 			con.commit();

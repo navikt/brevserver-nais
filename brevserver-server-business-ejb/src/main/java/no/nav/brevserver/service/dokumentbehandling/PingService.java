@@ -3,7 +3,7 @@ package no.nav.brevserver.service.dokumentbehandling;
 /**
  * Service that checks if lower levels can be contacted
  *
- * @author Joakim Bjørnstad, Visma Consulting
+ * @author Joakim BjÃ¸rnstad, Visma Consulting
  */
 public interface PingService {
 	/**

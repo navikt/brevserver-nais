@@ -41,7 +41,7 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
 /**
  * Unit tests for BrevlagerServiceBean
  *
- * @author Joakim Bj�rnstad, Visma Consulting
+ * @author Joakim Bjørnstad, Visma Consulting
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({BrevserverServiceFactory.class})

@@ -54,7 +54,7 @@ public class PEArkiverBrevCommand extends AbstractCommand {
 		// Sjekk om brevet finnes, hent status
 		brevstatus = brevserverService.hentBrevStatus(kvittering.getSystemID(), kvittering.getBrevreferanse());
 
-		// Hvis ingen status s� opprett en basert p� det man vet
+		// Hvis ingen status så opprett en basert på det man vet
 		if (brevstatus == null) {
 			brevstatus = new Brevstatus();
 		}
@@ -72,18 +72,18 @@ public class PEArkiverBrevCommand extends AbstractCommand {
 			brevstatus.setReturKoe(messageVo.getReplyQueueName());
 		}
 
-		// Hvis feilniv� er 0x s� endre til x
+		// Hvis feilnivå er 0x så endre til x
 		if (kvittering.getFeilniva() != null && kvittering.getFeilniva().length() > 1
 				&& kvittering.getFeilniva().charAt(0) == '0') {
 			kvittering.setFeilniva(kvittering.getFeilniva().substring(1));
 		}
 
-		// Hvis brevet eksisterer allerede s� gi feilmelding
+		// Hvis brevet eksisterer allerede så gi feilmelding
 		if (Konstanter.BREVSTATUS_FERDIG.equals(brevstatus.getStatus())) {
 			kvittering.setFeilkode(Konstanter.FEIL_BREV_EKSISTERER);
 			brevstatus.setStatus(Konstanter.BREVSTATUS_FEIL);
 
-			// Ved feilmelding fra dialogue s� gi feilmelding
+			// Ved feilmelding fra dialogue så gi feilmelding
 		} else if (kvittering.getFeilniva() == null || kvittering.getFeilniva().equals(Konstanter.BREVPAKKE_FEILNIVA_FEIL)) {
 			brevstatus.setStatus(Konstanter.BREVSTATUS_FEIL);
 

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Rune Røren, Accenture
+ * @author Rune RÃ¸ren, Accenture
  */
 public class SearchObject {
 
@@ -39,7 +39,7 @@ public class SearchObject {
     public String getResult() {
         String result = "";
         if (!checked) {
-            result = "Søkte ikke etter " + SEARCH_FOR + " i " + place;
+            result = "SÃ¸kte ikke etter " + SEARCH_FOR + " i " + place;
         } else {
             result = "Fant " + (wasFoundHere ? "" : "ikke ") + SEARCH_FOR + " i " + place;
         }

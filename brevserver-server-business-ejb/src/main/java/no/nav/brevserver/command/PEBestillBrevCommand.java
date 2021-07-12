@@ -20,7 +20,7 @@ import no.nav.brevserver.service.xml.XMLServiceFactory;
 import java.io.StringReader;
 
 /**
- * Kommando som kalles n�r det kommer en bestilling av brev fra Pensjon p� brevbestillingsk�en.
+ * Kommando som kalles når det kommer en bestilling av brev fra Pensjon på brevbestillingskøen.
  *
  * @author Dag Kristiansen
  */
@@ -33,8 +33,8 @@ public class PEBestillBrevCommand extends AbstractCommand {
 	}
 
 	/**
-	 * Validerer meldingen f�r bestilling gj�res. 'Validering' betyr � lese XML uten feil, samt hente ut brevreferanse og
-	 * returk� uten feil.
+	 * Validerer meldingen før bestilling gjøres. 'Validering' betyrålese XML uten feil, samt hente ut brevreferanse og
+	 * returkø uten feil.
 	 *
 	 * @throws BrevTechnicalException
 	 */
@@ -60,7 +60,7 @@ public class PEBestillBrevCommand extends AbstractCommand {
 		try {
 			notEmpty("Brevreferanse", brevStatusVo.getBrevreferanse(), true);
 			notEmpty("Systemid", brevStatusVo.getSystemID(), false);
-			notEmpty("Returk�", brevStatusVo.getReturKoe(), false);
+			notEmpty("Returkø", brevStatusVo.getReturKoe(), false);
 		} catch (BrevException e) {
 			log.error(methSig, "Ugyldig XML mottatt for brevreferanse " + messageVo.getBrevreferanse(), e);
 			throw new BrevTechnicalException(BrevTechnicalException.FEIL_I_XML, e);
@@ -68,7 +68,7 @@ public class PEBestillBrevCommand extends AbstractCommand {
 	}
 
 	/**
-	 * Bestill pensjonsbrev i Dialogue basert p� melding mottatt p� BREVSERVER_ONLINEBREV_PE
+	 * Bestill pensjonsbrev i Dialogue basert på melding mottatt på BREVSERVER_ONLINEBREV_PE
 	 *
 	 * @throws BrevException
 	 */
@@ -98,7 +98,7 @@ public class PEBestillBrevCommand extends AbstractCommand {
 		Brevstatus brevEksisterer = brevserverService.hentBrevStatus(brevStatusVo.getSystemID(), brevStatusVo.getBrevreferanse());
 
 		if (brevEksisterer != null) {
-			log.warning(methSig, "Brevet eksisterer fra f�r " + brevReferanse);
+			log.warning(methSig, "Brevet eksisterer fra før " + brevReferanse);
 			String feilmelding = lagFeilmelding(Konstanter.FEIL_BREV_EKSISTERER);
 			producer.sendReturMelding(brevStatusVo.getReturKoe(), false, messageVo.getCorrelationID(), feilmelding);
 		} else {
@@ -124,7 +124,7 @@ public class PEBestillBrevCommand extends AbstractCommand {
 	}
 
 	/**
-	 * Lag feilmelding som skal legges p� returk� dersom noe galt skjer.
+	 * Lag feilmelding som skal legges på returkø dersom noe galt skjer.
 	 *
 	 * @param feilType
 	 * @return

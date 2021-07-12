@@ -22,7 +22,7 @@ public abstract class AbstractMdb {
 				|| e.isFeilkode(BrevTechnicalException.DATABASE_IKKE_TILGJENGELIG)
 				|| e.isFeilkode(BrevTechnicalException.MQ_IKKE_TILGJENGELIG)) {
 			RuntimeException re = new RuntimeException(e);
-			log.error(methSig, "Stopper lytter på grunn av miljøproblemer", re);
+			log.error(methSig, "Stopper lytter pÃ¥ grunn av miljÃ¸problemer", re);
 			throw re;
 		}
 	}
@@ -38,10 +38,10 @@ public abstract class AbstractMdb {
 	private void sendMessageToDeadletter(SystemType systemType, MessageVO messageVO) {
 		String methSig = "sendMessageToDeadletter(" + getBrevreferanse(messageVO) + ")";
 		try {
-			log.error(methSig, "Sender meldingen til deadletter-kø");
+			log.error(methSig, "Sender meldingen til deadletter-kÃ¸");
 			MessageProducerFactory.getInstance().createMessageProducer(systemType).deadLetter(messageVO);
 		} catch (BrevTechnicalException e) {
-			log.error(methSig, "Greide ikke å sende melding til deadletter-kø", e);
+			log.error(methSig, "Greide ikkeÃ¥sende melding til deadletter-kÃ¸", e);
 		}
 	}
 

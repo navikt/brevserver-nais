@@ -5,7 +5,7 @@ import no.nav.brevserver.service.dokumentbehandling.to.FerdigstillDokumentReques
 /**
  * Interface for mapping between webservice and domain ferdigstillDokument requests
  *
- * @author Joakim Bjørnstad, Visma Consulting
+ * @author Joakim BjÃ¸rnstad, Visma Consulting
  */
 public interface FerdigstillDokumentRequestMapper {
 	/**

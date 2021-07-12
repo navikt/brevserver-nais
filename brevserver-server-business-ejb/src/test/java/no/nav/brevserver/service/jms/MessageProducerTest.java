@@ -42,7 +42,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 /**
  * Unit tests for MessageProducer abstract class
  * 
- * @author Joakim Bj�rnstad, Visma Consulting
+ * @author Joakim Bjørnstad, Visma Consulting
  *
  */
 @RunWith(PowerMockRunner.class)

@@ -6,7 +6,7 @@ import no.nav.tjenester.brevogarkiv.dokumentbehandling.HentDokumentResponse2;
 /**
  * Interface for mapping between webservice and domain hentDokument response
  *
- * @author Joakim Bjørnstad, Visma Consulting
+ * @author Joakim BjÃ¸rnstad, Visma Consulting
  */
 public interface HentDokumentResponseMapper {
 	/**
