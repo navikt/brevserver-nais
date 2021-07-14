@@ -6,7 +6,6 @@ import com.ibm.mq.jms.MQQueue;
 import com.ibm.msg.client.jms.JmsConstants;
 import com.ibm.msg.client.wmq.WMQConstants;
 import no.nav.brevserver.core.alias.MqGatewayAlias;
-import no.nav.brevserver.core.alias.ServiceuserAlias;
 import no.nav.brevserver.core.properties.SrvAppserverProperties;
 import org.apache.activemq.jms.pool.PooledConnectionFactory;
 import org.springframework.beans.factory.annotation.Value;
