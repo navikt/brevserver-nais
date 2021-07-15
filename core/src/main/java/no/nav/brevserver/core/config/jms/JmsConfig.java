@@ -21,7 +21,7 @@ import javax.jms.Queue;
 @Configuration
 public class JmsConfig {
 
-	private static final int UTF_8_WITH_PUA = 1208;
+	private static final int ISO_8859_1 = 819;
 
 	private PooledConnectionFactory createConnectionFactory(final MqGatewayAlias mqGatewayAlias,
 															final String channelName,
@@ -32,9 +32,9 @@ public class JmsConfig {
 		connectionFactory.setChannel(channelName);
 		connectionFactory.setQueueManager(mqGatewayAlias.getName());
 		connectionFactory.setTransportType(WMQConstants.WMQ_CM_CLIENT);
-		connectionFactory.setCCSID(UTF_8_WITH_PUA);
-		connectionFactory.setIntProperty(WMQConstants.JMS_IBM_ENCODING, MQConstants.MQENC_NATIVE);
-		connectionFactory.setIntProperty(WMQConstants.JMS_IBM_CHARACTER_SET, UTF_8_WITH_PUA);
+		connectionFactory.setCCSID(ISO_8859_1);
+		//connectionFactory.setIntProperty(WMQConstants.JMS_IBM_ENCODING, MQConstants.MQENC_NATIVE);
+		connectionFactory.setIntProperty(WMQConstants.JMS_IBM_CHARACTER_SET, ISO_8859_1);
 		UserCredentialsConnectionFactoryAdapter adapter = new UserCredentialsConnectionFactoryAdapter();
 		adapter.setTargetConnectionFactory(connectionFactory);
 
