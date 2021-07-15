@@ -133,13 +133,13 @@ public class PeAbstractMdbTest {
 	public void shouldSendErrorMessage() throws BrevException {
 		BrevStatusVO brevStatusVOMock = mock(BrevStatusVO.class);
 		when(abstractCommandMock.getResult()).thenReturn(brevStatusVOMock);
-		when(brevStatusVOMock.getReturKoe()).thenReturn("EN RETURKÿ");
+		when(brevStatusVOMock.getReturKoe()).thenReturn("EN RETURk√∏");
 		doThrow(eDead).when(abstractCommandMock).execute();
 		when(xmlServiceMock.unmarshal(kvitteringVOMock, brevStatusVOMock)).thenReturn("EN XML");
 
 		peAbstractMdb.onMessage(null, messageMock, QUEUE_TYPE);
 
 		verify(kvitteringVOMock).setFeilkode(Konstanter.FEIL_MELDING_UGYLDIG);
-		verify(messageProducerMock).sendReturMelding("EN RETURKÿ", false, null, "EN XML");
+		verify(messageProducerMock).sendReturMelding("EN RETURk√∏", false, null, "EN XML");
 	}
 }

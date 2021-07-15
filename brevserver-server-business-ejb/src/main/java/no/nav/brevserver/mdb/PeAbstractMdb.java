@@ -21,9 +21,9 @@ import no.nav.brevserver.service.xml.XMLService;
 import no.nav.brevserver.service.xml.XMLServiceFactory;
 
 /**
- * Klasse for å behandle innkommende meldinger av type Pensjon
+ * Klasse forÃ¥behandle innkommende meldinger av type Pensjon
  * 
- * @author Marius Thøring, Visma Consulting
+ * @author Marius ThÃ¥ring, Visma Consulting
  * 
  */
 public abstract class PeAbstractMdb extends AbstractMdb {
@@ -49,7 +49,7 @@ public abstract class PeAbstractMdb extends AbstractMdb {
 			message.acknowledge();
 		} catch (JMSException e) {
 			stopListenerIfApplicable(new BrevTechnicalException(BrevTechnicalException.MQ_IKKE_TILGJENGELIG,
-					"Greide ikke å ta melding av kø", e), messageVO);
+					"Greide ikkeÃ¥ta melding av kÃ¸", e), messageVO);
 		} finally {
 			p.stop();
 		}

@@ -3,7 +3,7 @@ package no.nav.brevserver.controller;
 /**
  * Factory for obtaining an instance of {@link ControllerBi}.
  *
- * @author Marius Thøring, Visma Consulting
+ * @author Marius ThÃ¥ring, Visma Consulting
  */
 public enum ControllerBeanFactory {
 

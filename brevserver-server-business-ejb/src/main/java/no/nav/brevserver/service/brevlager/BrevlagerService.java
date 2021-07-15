@@ -31,7 +31,7 @@ public interface BrevlagerService {
 	BrevStatusVO lagreBrev(BrevVO brev, Brevstatus brevstatus, String token) throws BrevTechnicalException;
 
 	/**
-	 * Ferdigstiller et brev. Både kladd og ferdigstilt brev lagres i Brevlageret (DB2).
+	 * Ferdigstiller et brev. BÃ¥de kladd og ferdigstilt brev lagres i Brevlageret (DB2).
 	 *
 	 * @param brevstatus
 	 * @param brevVORtf

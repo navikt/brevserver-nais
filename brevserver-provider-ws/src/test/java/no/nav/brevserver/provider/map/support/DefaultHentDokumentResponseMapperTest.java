@@ -14,12 +14,12 @@ import static org.junit.Assert.assertThat;
 /**
  * Unit tests for DefaultHentDokumentResponseMapperTest
  *
- * @author Joakim Bjørnstad, Visma Consulting
+ * @author Joakim BjÃ¸rnstad, Visma Consulting
  */
 public class DefaultHentDokumentResponseMapperTest {
 	private static final String CONTENT_TYPE = FilType.RTF.getContentType();
 	private static final String KNAPPSTATUS = "1";
-	private static final byte[] DOKUMENTDATA = "hei på deg".getBytes();
+	private static final byte[] DOKUMENTDATA = "hei pÃ¥ deg".getBytes();
 
 	private DefaultHentDokumentResponseMapper hentBrevResponseMapper;
 

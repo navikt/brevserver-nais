@@ -13,7 +13,7 @@ import javax.sql.rowset.serial.SerialBlob;
 import no.nav.brevserver.converter.BrevstatusTilVoConverter;
 import no.nav.brevserver.core.domain.entities.Brev;
 import no.nav.brevserver.core.domain.entities.Brevstatus;
-import no.nav.brevserver.repository.BrevRepository;
+import no.nav.brevserver.core.repository.BrevRepository;
 import no.nav.brevserver.server.common.config.Konstanter;
 import no.nav.brevserver.server.common.exception.BrevRuntimeException;
 import no.nav.brevserver.server.common.exception.BrevTechnicalException;
@@ -28,9 +28,9 @@ import no.nav.brevserver.service.brevserver.BrevserverServiceFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Metoder for å hente, lagre og ta backup av brev i Brevlageret (IBM DB2).
+ * Metoder forÃ¥hente, lagre og ta backup av brev i Brevlageret (IBM DB2).
  *
- * @author Marius Thøring, Visma Consulting
+ * @author Marius ThÃ¥ring, Visma Consulting
  */
 public class BrevlagerServiceBean extends SQLService implements BrevlagerService {
 
@@ -153,7 +153,7 @@ public class BrevlagerServiceBean extends SQLService implements BrevlagerService
 
 			if (stmt.executeUpdate() != 1) {
 				con.rollback();
-				throw new BrevTechnicalException("Feil antall rader ble forsøkt oppdatert i " + Konstanter.BREVLAGER_TABELL
+				throw new BrevTechnicalException("Feil antall rader ble forsÃ¸kt oppdatert i " + Konstanter.BREVLAGER_TABELL
 						+ " for: " + brev.getSystemID() + ":" + brev.getBrevreferanse());
 			}
 			con.commit();
@@ -182,7 +182,7 @@ public class BrevlagerServiceBean extends SQLService implements BrevlagerService
 
 			if (stmt.executeUpdate() != 1) {
 				con.rollback();
-				throw new BrevTechnicalException("Feil antall rader ble forsøkt opprettet i " + Konstanter.BREVLAGER_TABELL
+				throw new BrevTechnicalException("Feil antall rader ble forsÃ¸kt opprettet i " + Konstanter.BREVLAGER_TABELL
 						+ " for: " + brev.getSystemID() + ":" + brev.getBrevreferanse());
 			}
 			con.commit();
@@ -259,7 +259,7 @@ public class BrevlagerServiceBean extends SQLService implements BrevlagerService
 
 			if (stmt.executeUpdate() != 1) {
 				con.rollback();
-				throw new BrevTechnicalException("Feil antall rader ble forsøkt opprettet i "
+				throw new BrevTechnicalException("Feil antall rader ble forsÃ¸kt opprettet i "
 						+ Konstanter.BREVLAGER_HISTORIKK_TABELL + " for: " + brev.getSystemID() + ":" + brev.getBrevreferanse());
 			}
 			con.commit();

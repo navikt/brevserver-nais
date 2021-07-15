@@ -11,9 +11,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 /**
- * Klasse med metoder for Â Âpne og lukke SQL-tilkoblinger.
+ * Klasse med metoder for√•√•pne og lukke SQL-tilkoblinger.
  *
- * @author Marius Th¯ring, Visma Consulting
+ * @author Marius Th√•ring, Visma Consulting
  */
 public abstract class SQLService {
 
@@ -58,7 +58,7 @@ public abstract class SQLService {
 			try {
 				statement.close();
 			} catch (SQLException e) {
-				log.error(methSig, "Greide ikke Â lukke " + statement.getClass().getSimpleName(), e);
+				log.error(methSig, "Greide ikke√•lukke " + statement.getClass().getSimpleName(), e);
 			}
 		}
 	}
@@ -68,7 +68,7 @@ public abstract class SQLService {
 			try {
 				rs.close();
 			} catch (SQLException e) {
-				log.error(methSig, "Greide ikke Â lukke " + rs.getClass().getSimpleName(), e);
+				log.error(methSig, "Greide ikke√•lukke " + rs.getClass().getSimpleName(), e);
 			}
 		}
 	}
@@ -78,7 +78,7 @@ public abstract class SQLService {
 			try {
 				con.close();
 			} catch (SQLException e) {
-				log.write(methSig, "Greide ikke Â lukke " + con.getClass().getSimpleName(), importance, e);
+				log.write(methSig, "Greide ikke√•lukke " + con.getClass().getSimpleName(), importance, e);
 			}
 		}
 	}

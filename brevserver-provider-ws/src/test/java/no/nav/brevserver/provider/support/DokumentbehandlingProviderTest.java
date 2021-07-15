@@ -25,7 +25,7 @@ import static org.mockito.Mockito.when;
 /**
  * Unit tests for DokumentbehandlingProvider
  *
- * @author Joakim Bj�rnstad, Visma Consulting
+ * @author Joakim Bjørnstad, Visma Consulting
  */
 @RunWith(MockitoJUnitRunner.class)
 public class DokumentbehandlingProviderTest {

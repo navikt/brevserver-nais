@@ -10,7 +10,7 @@ import javax.mail.util.ByteArrayDataSource;
 /**
  * Converts between domain HentDokumentResponse and webservice HentDokumentResponse2
  *
- * @author Joakim Bjørnstad, Visma Consulting
+ * @author Joakim BjÃ¸rnstad, Visma Consulting
  */
 public class HentDokumentResponseCustomConverter extends DozerConverter<HentDokumentResponse, HentDokumentResponse2> {
 

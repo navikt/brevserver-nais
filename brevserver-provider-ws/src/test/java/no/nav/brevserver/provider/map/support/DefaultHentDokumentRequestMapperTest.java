@@ -11,7 +11,7 @@ import org.junit.Test;
 /**
  * Unit tests for DefaultHentDokumentRequestMapper
  *
- * @author Joakim Bjørnstad, Visma Consulting
+ * @author Joakim BjÃ¸rnstad, Visma Consulting
  */
 public class DefaultHentDokumentRequestMapperTest {
 	private static final String TOKEN = "TOKEN";

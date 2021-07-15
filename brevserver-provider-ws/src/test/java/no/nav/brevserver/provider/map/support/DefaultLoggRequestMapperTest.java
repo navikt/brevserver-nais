@@ -16,7 +16,7 @@ import org.junit.Test;
 /**
  * Unit tests for DefaultLoggRequestMapper
  *
- * @author Joakim Bjørnstad, Visma Consulting
+ * @author Joakim BjÃ¸rnstad, Visma Consulting
  */
 public class DefaultLoggRequestMapperTest {
 	private static final String SYSTEM_ID = "PE2";

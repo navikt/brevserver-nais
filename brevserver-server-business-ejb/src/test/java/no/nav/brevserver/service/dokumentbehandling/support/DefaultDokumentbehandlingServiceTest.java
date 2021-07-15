@@ -20,7 +20,7 @@ import static org.mockito.Mockito.verify;
 /**
  * Unit tests for DefaultDokumentbehandlingServiceTest
  *
- * @author Joakim Bjørnstad, Visma Consulting
+ * @author Joakim BjÃ¸rnstad, Visma Consulting
  */
 @RunWith(MockitoJUnitRunner.class)
 public class DefaultDokumentbehandlingServiceTest {

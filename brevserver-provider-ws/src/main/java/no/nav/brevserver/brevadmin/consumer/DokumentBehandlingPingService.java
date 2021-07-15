@@ -13,7 +13,7 @@ import no.nav.tjenester.brevogarkiv.dokumentbehandling.PingRequest;
 /**
  * Ping service client for DokumentBehandling.
  * 
- * @author Marius Thøring, Visma Consulting
+ * @author Marius ThÃ¥ring, Visma Consulting
  */
 public class DokumentBehandlingPingService {
 

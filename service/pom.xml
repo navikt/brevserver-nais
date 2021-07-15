@@ -12,13 +12,15 @@
 	<artifactId>service</artifactId>
 
 	<dependencies>
+		<!--
 		<dependency>
 			<groupId>no.nav.brevserver</groupId>
 			<artifactId>repository</artifactId>
 		</dependency>
+		-->
 		<dependency>
 			<groupId>no.nav.brevserver</groupId>
-			<artifactId>brevserver-core</artifactId>
+			<artifactId>core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>no.nav.brevserver</groupId>
@@ -41,11 +43,6 @@
 		<dependency>
 			<groupId>aspose</groupId>
 			<artifactId>aspose-words-jdk15</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>javax.jms</groupId>
-			<artifactId>jms</artifactId>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>xerces</groupId>

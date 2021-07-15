@@ -11,7 +11,7 @@ import no.nav.brevserver.service.dokumentbehandling.to.FerdigstillDokumentReques
 /**
  * Default implementation of FerdigstillDokumentService
  *
- * @author Joakim Bjørnstad, Visma Consulting
+ * @author Joakim BjÃ¸rnstad, Visma Consulting
  */
 public class DefaultFerdigstillDokumentService implements FerdigstillDokumentService {
 

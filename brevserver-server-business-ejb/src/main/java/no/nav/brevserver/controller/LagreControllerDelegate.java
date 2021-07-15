@@ -22,9 +22,9 @@ import no.nav.brevserver.service.xml.XMLService;
 import no.nav.brevserver.service.xml.XMLServiceFactory;
 
 /**
- * Skriveoperasjoner på brev.
+ * Skriveoperasjoner pÃ¥ brev.
  *
- * @author Marius Thøring, Visma Consulting
+ * @author Marius ThÃ¥ring, Visma Consulting
  */
 public class LagreControllerDelegate extends AbstractControllerDelegate {
 

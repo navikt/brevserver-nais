@@ -11,7 +11,7 @@ import static org.junit.Assert.assertThat;
 /**
  * Unit tests for SeverityToLogSeverityCustomConverter
  *
- * @author Joakim Bjørnstad, Visma Consulting
+ * @author Joakim BjÃ¸rnstad, Visma Consulting
  */
 public class SeverityToLogSeverityCustomConverterTest {
 

@@ -14,8 +14,8 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
- * Klasse som håndterer alle SAX eventer
- * som finnes i brevløsningen for BI(drag).
+ * Klasse som hÃ¥ndterer alle SAX eventer
+ * som finnes i brevlÃ¸sningen for BI(drag).
  */
 public class XMLHandler extends DefaultHandler {
     protected KvitteringVO kvittering = new KvitteringVO();
@@ -298,7 +298,7 @@ public class XMLHandler extends DefaultHandler {
     }
 
     /**
-     * Mottar errormelding fra parseren om feil som er håndterbare (recoverable)
+     * Mottar errormelding fra parseren om feil som er hÃ¥ndterbare (recoverable)
      *
      * @param e
      */
@@ -307,7 +307,7 @@ public class XMLHandler extends DefaultHandler {
     }
 
     /**
-     * Mottar warnings fra parseren, forsøker å logge feilen
+     * Mottar warnings fra parseren, forsÃ¸kerÃ¥logge feilen
      *
      * @param e
      */
@@ -316,12 +316,12 @@ public class XMLHandler extends DefaultHandler {
     }
 
     /**
-     * Mottar fatalErrors fra parseren, forsøker å logge feilen
+     * Mottar fatalErrors fra parseren, forsÃ¸kerÃ¥logge feilen
      *
      * @param e
      */
     public void fatalError(SAXParseException e) {
-        // log.error("XMLHandler.fatalError()", "Feil med XML", e);  // Logges høyere opp i hierarkiet
+        // log.error("XMLHandler.fatalError()", "Feil med XML", e);  // Logges hÃ¥yere opp i hierarkiet
     }
 
     /**

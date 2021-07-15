@@ -1,6 +1,6 @@
 package no.nav.brevserver.service.config;
 
-import no.nav.brevserver.repository.RepositoryConfig;
+import no.nav.brevserver.core.repository.RepositoryConfig;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;

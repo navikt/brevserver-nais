@@ -34,7 +34,7 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
 /**
  * Abstract provider testclass. Provides setup and utilities for provider integration tests.
  *
- * @author Joakim Bj�rnstad, Visma Consulting
+ * @author Joakim Bjørnstad, Visma Consulting
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({BrevserverServiceFactory.class, BrevlagerServiceFactory.class, JoarkServiceBeanFactory.class, TempJndiHelper.class})

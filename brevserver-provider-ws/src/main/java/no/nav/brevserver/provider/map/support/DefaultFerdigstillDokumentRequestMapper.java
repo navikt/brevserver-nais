@@ -7,7 +7,7 @@ import no.nav.brevserver.service.dokumentbehandling.to.FerdigstillDokumentReques
 /**
  * Default implementation of FerdigstillDokumentRequestMapper
  *
- * @author Joakim Bjørnstad, Visma Consulting
+ * @author Joakim BjÃ¸rnstad, Visma Consulting
  */
 public class DefaultFerdigstillDokumentRequestMapper extends AbstractProviderDozerMapper
 		implements FerdigstillDokumentRequestMapper {

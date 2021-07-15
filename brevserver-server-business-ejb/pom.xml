@@ -120,7 +120,7 @@
 		</dependency>
 		<dependency>
 			<groupId>no.nav.brevserver</groupId>
-			<artifactId>brevserver-core</artifactId>
+			<artifactId>core</artifactId>
 			<version>10.2.1-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>

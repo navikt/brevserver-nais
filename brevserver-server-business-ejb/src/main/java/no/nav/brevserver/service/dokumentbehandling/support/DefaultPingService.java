@@ -7,7 +7,7 @@ import no.nav.brevserver.service.dokumentbehandling.PingService;
 /**
  * Default implementation of PingService
  *
- * @author Joakim Bjørnstad, Visma Consulting
+ * @author Joakim BjÃ¸rnstad, Visma Consulting
  */
 public class DefaultPingService implements PingService {
 

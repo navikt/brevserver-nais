@@ -32,7 +32,7 @@ import static org.junit.Assert.fail;
  * Abstract database testclass. Bootstraps an in-memory H2 database, attaching it to the JNDI context.
  * Performs DDL and cleans up for each test. Also provides convenience methods for database query and updates.
  *
- * @author Joakim Bj�rnstad, Visma Consulting
+ * @author Joakim Bjørnstad, Visma Consulting
  */
 public abstract class AbstractDatabaseTest {
 

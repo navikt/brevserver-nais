@@ -14,7 +14,7 @@ import org.xml.sax.SAXException;
 
 public class XMLServiceBean implements XMLService {
     /**
-     * Unmarshal er prosessen Â generere XML fra businessobjekter
+     * Unmarshal er prosessen√•generere XML fra businessobjekter
      * 
      * @param kvittering
      * @return String ferdig generert xml

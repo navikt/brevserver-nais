@@ -43,7 +43,7 @@ import org.powermock.reflect.Whitebox;
 /**
  * Unit tests for PEBestillBrevCommand
  * 
- * @author Joakim Bjørnstad, Visma Consulting
+ * @author Joakim BjÃ¸rnstad, Visma Consulting
  *
  */
 @RunWith(PowerMockRunner.class)

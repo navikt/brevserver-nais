@@ -7,7 +7,7 @@ import no.nav.brevserver.service.dokumentbehandling.to.HentDokumentRequest;
 /**
  * Default implementation of HentDokumentRequestMapper
  *
- * @author Joakim Bjørnstad, Visma Consulting
+ * @author Joakim BjÃ¸rnstad, Visma Consulting
  */
 public class DefaultHentDokumentRequestMapper extends AbstractProviderDozerMapper implements HentDokumentRequestMapper {
 

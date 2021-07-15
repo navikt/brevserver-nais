@@ -5,7 +5,7 @@ import no.nav.brevserver.server.common.log.Log;
 import no.nav.brevserver.server.common.vo.MessageVO;
 
 /**
- * Definerer en Command. Det inneholder tilstanden til en operasjon, data og navn pÂ operasjon. Navnet er brukt for Â mappe en
+ * Definerer en Command. Det inneholder tilstanden til en operasjon, data og navn p√• operasjon. Navnet er brukt for√•mappe en
  * Command til den rette business handler.
  *
  * @author Morten Lileng, Cap Gemini Ernst & Young Copyright (c) Trygdeetaten, 2002
@@ -26,7 +26,7 @@ public abstract class AbstractCommand {
 	public abstract void execute() throws BrevException;
 
 	/**
-	 * Brukes for Â hente ut resultatet av en operasjon
+	 * Brukes for√•hente ut resultatet av en operasjon
 	 *
 	 * @return Object
 	 */

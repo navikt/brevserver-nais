@@ -77,10 +77,10 @@ public class MQStabTest extends AbstractComponentTest {
 	
 	
 	
-	//Sender meldingene pÂ k¯
+	//Sender meldingene p√• k√∏
 	public void sendMessagesToMQ(){
 		
-		System.out.println("STARTER ≈ SENDE MELDINGER TIL Kÿ MED ET INTERVALL P≈ "+intervall/1000+" SEKUNDER");
+		System.out.println("STARTER√•SENDE MELDINGER TIL k√∏ MED ET INTERVALL p√• "+intervall/1000+" SEKUNDER");
 		
 		final Timer timer = new Timer();
 		
@@ -91,13 +91,13 @@ public class MQStabTest extends AbstractComponentTest {
 				
 				//Sjekk om listen er ferdiglest
 				if(fileList.length <= counter){
-					System.out.println("ALLE MELDINGENE ER SENDT TIL Kÿ. Intervall stoppet.");
+					System.out.println("ALLE MELDINGENE ER SENDT TIL k√∏. Intervall stoppet.");
 					timer.cancel();
 //					System.exit(0);
 					finished = true;
 				}else{
-					//Start ny trÂd
-					System.out.println("Ny trÂd...");
+					//Start ny tr√•d
+					System.out.println("Ny tr√•d...");
 					
 					String message = fileList[counter];
 					

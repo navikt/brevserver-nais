@@ -33,7 +33,7 @@ public class FileConverterTest {
 		byte[] output = FileConverter.getInstance().convertToPdf(ConverterTestUtils.getRealRft(new ClassPathResource("aspose/rtf/RTF.rtf").getFile().toPath()));
 
 		assertFalse("Generert PDF er null", output == null);
-		assertTrue("Generert PDF har st�rrelse 0", output.length > 0);
+		assertTrue("Generert PDF har størrelse 0", output.length > 0);
 		Path outputPath = new File("target", "RTF.pdf").toPath();
 		ConverterTestUtils.saveByteArrayToDisk(output, outputPath);
 	}

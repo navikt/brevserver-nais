@@ -76,7 +76,7 @@ public class SearchServiceTest {
     @Test
     public void shouldThrowExceptionIfValiderHasMissingBrevreferanse() throws Exception {
         thrown.expect(IllegalArgumentException.class);
-        thrown.expectMessage("Brevreferanse må være satt");
+        thrown.expectMessage("Brevreferanse mÃ¥ vÃ¦re satt");
 
         Whitebox.<Void> invokeMethod(searchService, "valider", SYSTEM_ID, null);
     }
@@ -84,7 +84,7 @@ public class SearchServiceTest {
     @Test
     public void shouldThrowExceptionIfValiderHasMissingSystemId() throws Exception {
         thrown.expect(IllegalArgumentException.class);
-        thrown.expectMessage("SystemId må være satt");
+        thrown.expectMessage("SystemId mÃ¥ vÃ¦re satt");
 
         Whitebox.<Void> invokeMethod(searchService, "valider", new Object[] {null, BREVREFERANSE});
     }
@@ -232,7 +232,7 @@ public class SearchServiceTest {
 
         List<String> analyzed = searchService.analyze(searchObjects);
 
-        assertThat(analyzed.get(0), is("Søkte ikke etter brevet i Place1"));
+        assertThat(analyzed.get(0), is("SÃ¸kte ikke etter brevet i Place1"));
         assertThat(analyzed.get(1), is("Feil   : Error"));
         assertThat(analyzed.get(2), is("Status : Status"));
         assertThat(analyzed.get(3), is("Konkl. : Conclusion"));

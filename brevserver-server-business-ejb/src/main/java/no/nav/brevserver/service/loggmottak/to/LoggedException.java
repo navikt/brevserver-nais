@@ -3,7 +3,7 @@ package no.nav.brevserver.service.loggmottak.to;
 /**
  * Class that can hold data about an exception thrown in brevklient
  *
- * @author Joakim Bjørnstad, Visma Consulting
+ * @author Joakim BjÃ¸rnstad, Visma Consulting
  */
 public class LoggedException {
 	private String message;

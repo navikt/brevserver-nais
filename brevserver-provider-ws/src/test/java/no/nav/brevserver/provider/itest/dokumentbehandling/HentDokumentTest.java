@@ -29,7 +29,7 @@ import static org.mockito.Mockito.when;
 /**
  * Integration tests for the hentDokument operation dokumentbehandling
  *
- * @author Joakim Bj�rnstad, Visma Consulting
+ * @author Joakim Bjørnstad, Visma Consulting
  */
 public class HentDokumentTest extends AbstractProviderTest {
 

@@ -11,7 +11,7 @@ import no.nav.brevserver.service.dokumentbehandling.to.LagreDokumentRequest;
 /**
  * Default implementation of LagreDokumentService
  *
- * @author Joakim Bjørnstad, Visma Consulting
+ * @author Joakim BjÃ¸rnstad, Visma Consulting
  */
 public class DefaultLagreDokumentService implements LagreDokumentService {
 

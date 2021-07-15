@@ -22,7 +22,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 /**
  * Unit tests for DefaultAvbrytDokumentService
  *
- * @author Joakim Bjørnstad, Visma Consulting
+ * @author Joakim BjÃ¸rnstad, Visma Consulting
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ControllerBeanFactory.class})

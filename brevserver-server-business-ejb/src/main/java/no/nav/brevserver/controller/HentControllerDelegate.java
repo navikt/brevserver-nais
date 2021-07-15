@@ -20,9 +20,9 @@ import no.nav.brevserver.service.brevserver.BrevserverServiceFactory;
 import no.nav.brevserver.service.converter.FileConverter;
 
 /**
- * Leseoperasjoner på brev.
+ * Leseoperasjoner pÃ¥ brev.
  *
- * @author Marius Thøring, Visma Consulting
+ * @author Marius ThÃ¥ring, Visma Consulting
  */
 public class HentControllerDelegate extends AbstractControllerDelegate {
 
@@ -89,7 +89,7 @@ public class HentControllerDelegate extends AbstractControllerDelegate {
             result.setBrevdata(FileConverter.getInstance().convertToPdf(result.getBrevdata()));
             result.setContentType(FilType.PDF.getContentType());
         } catch (Exception e) {
-            throw new BrevTechnicalException("Greide ikke å konvertere dokument med brevreferanse " + brevreferanse
+            throw new BrevTechnicalException("Greide ikkeÃ¥konvertere dokument med brevreferanse " + brevreferanse
                     + " til pdf", e);
         }
     }

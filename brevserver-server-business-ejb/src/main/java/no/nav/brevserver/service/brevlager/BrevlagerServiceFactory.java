@@ -5,7 +5,7 @@ import no.nav.brevserver.service.brevlager.beans.BrevlagerServiceBean;
 /**
  * Factory for obtaining an instance of {@link BrevlagerService}.
  * 
- * @author Marius Thøring, Visma Consulting
+ * @author Marius ThÃ¥ring, Visma Consulting
  */
 public enum BrevlagerServiceFactory {
 

@@ -1,5 +1,5 @@
 package no.nav.brevserver.service.queue.jms;
-
+//TODO: Eksempel: Her
 import no.nav.brevserver.server.common.config.ConfigManager;
 import no.nav.brevserver.server.common.config.Konstanter;
 import no.nav.brevserver.server.common.exception.BrevTechnicalException;
@@ -29,8 +29,8 @@ public class BIMessageProducer extends MessageProducer {
 	 * @throws BrevTechnicalException ved alle feil
 	 */
 	public void sendToDialogue(MessageVO message) throws BrevTechnicalException {
-		produserTextMelding(Konstanter.KONF_SEND_DIALOGUE_ONLINE_BI, true, null, message.getCorrelationID(),
-				message.getStringBody());
+	/*	produserTextMelding(Konstanter.KONF_SEND_DIALOGUE_ONLINE_BI, true, null, message.getCorrelationID(),
+				message.getStringBody());*/
 	}
 
 	/**
@@ -46,7 +46,7 @@ public class BIMessageProducer extends MessageProducer {
 		boolean setReplyQueue = ConfigManager.getInstance().getBool(ConfigManager.DEADLETTER_REPLY_QUEUE_BI, true)
 				&& msgVO.getReplyQueueName() != null;
 
-		sendToDeadLetter(msgVO, p, setReplyQueue, JMSAccessor.getAccessorUsingQueueJndiName(Konstanter.KONF_DEAD_LETTER_BI));
+		//sendToDeadLetter(msgVO, p, setReplyQueue, JMSAccessor.getAccessorUsingQueueJndiName(Konstanter.KONF_DEAD_LETTER_BI));
 	}
 
 	/**
@@ -73,8 +73,8 @@ public class BIMessageProducer extends MessageProducer {
 			XMLService service = XMLServiceFactory.getInstance().createXMLService();
 			String xmlKvittering = service.unmarshal(kvittering, brevStatusVo);
 			log.debug(methSig, "ReturQueue: " + brevStatusVo.getReturKoe());
-			String logMsg = "Sender kvittering, brevStatus: " + getReturstatusString(kvittering, brevStatusVo);
-			log.info(methSig, logMsg);
+			//String logMsg = "Sender kvittering, brevStatus: " + getReturstatusString(kvittering, brevStatusVo);
+			//log.info(methSig, logMsg);
 			sendReturMelding(brevStatusVo.getReturKoe(), false, messageVo.getCorrelationID(), xmlKvittering);
 		} catch (BrevTechnicalException bte) {
 			log.error(methSig, "Fikk ikke sendt kvittering til " + brevStatusVo.getReturKoe());
@@ -96,7 +96,7 @@ public class BIMessageProducer extends MessageProducer {
 		if (queueName == null || "".equals(queueName)) {
 			log.debug("MessageProducer.sendReturMelding()", "Forsøkte å sende melding til en kø uten navn");
 		} else {
-			produserTextMelding(queueName, useJndi, null, correlationID, kvittering);
+		//	produserTextMelding(queueName, useJndi, null, correlationID, kvittering);
 		}
 	}
 }

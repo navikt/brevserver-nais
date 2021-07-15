@@ -21,7 +21,7 @@ import no.nav.brevserver.service.jms.MessageProducer;
 import no.nav.brevserver.service.jms.MessageProducerFactory;
 
 /**
- * Håndterer meldinger fra Dialogue. Lagrer brev og setter status og sender kvittering til saksbehandlingsystemet.
+ * hÃ¥ndterer meldinger fra Dialogue. Lagrer brev og setter status og sender kvittering til saksbehandlingsystemet.
  *
  * @author Holger Zobel, Accenture
  */
@@ -56,7 +56,7 @@ public class ArkiverBrevCommand extends AbstractCommand {
 	}
 
 	/**
-	 * Forespørsel lagres i databasen. Deretter sendes den originale meldingen videre på definert kø.
+	 * ForespÃ¥rsel lagres i databasen. Deretter sendes den originale meldingen videre pÃ¥ definert kÃ¸.
 	 *
 	 * @see AbstractCommand#execute()
 	 */
@@ -74,7 +74,7 @@ public class ArkiverBrevCommand extends AbstractCommand {
 			BrevserverService brevserverService = BrevserverServiceFactory.getInstance().createBrevserverService();
 			Brevstatus brevstatus = brevserverService.hentBrevStatus(kvittering.getSystemID(), kvittering.getBrevreferanse());
 
-			// Hvis ingen status så opprett en basert på det man vet
+			// Hvis ingen status sÃ¥ opprett en basert pÃ¥ det man vet
 			if (brevstatus == null) {
 				brevstatus = new Brevstatus();
 			}
@@ -91,18 +91,18 @@ public class ArkiverBrevCommand extends AbstractCommand {
 				brevstatus.setReturKoe(messageVo.getReplyQueueName());
 			}
 
-			// Hvis feilnivå er 0x så endre til x
+			// Hvis feilnivÃ¥ er 0x sÃ¥ endre til x
 			if (kvittering.getFeilniva() != null && kvittering.getFeilniva().length() > 1
 					&& kvittering.getFeilniva().charAt(0) == '0') {
 				kvittering.setFeilniva(kvittering.getFeilniva().substring(1));
 			}
 
-			// Hvis brevet eksisterer allerede så gi feilmelding
+			// Hvis brevet eksisterer allerede sÃ¥ gi feilmelding
 			if (Konstanter.BREVSTATUS_FERDIG.equals(brevstatus.getStatus())) {
 				kvittering.setFeilkode(Konstanter.FEIL_BREV_EKSISTERER);
 				brevstatus.setStatus(Konstanter.BREVSTATUS_FEIL);
 
-				// Ved feilmelding fra dialogue så gi feilmelding
+				// Ved feilmelding fra dialogue sÃ¥ gi feilmelding
 			} else if (kvittering.getFeilniva() == null ||
 					kvittering.getFeilniva().equals(Konstanter.BREVPAKKE_FEILNIVA_FEIL)) {
 				brevstatus.setStatus(Konstanter.BREVSTATUS_FEIL);
@@ -137,7 +137,7 @@ public class ArkiverBrevCommand extends AbstractCommand {
 	}
 
 	/**
-	 * Returnerer status-objekt. Dette innholder bla. brevref og returkø og kan benyttes for å sende feilmeldinger.
+	 * Returnerer status-objekt. Dette innholder bla. brevref og returkÃ¸ og kan benyttes forÃ¥sende feilmeldinger.
 	 */
 	public Object getResult() {
 		return brevStatusVo;

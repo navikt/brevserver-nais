@@ -15,7 +15,7 @@ import static org.junit.Assert.assertThat;
 /**
  * Unit tests for DatahandlerCustomConverter
  *
- * @author Joakim Bj�rnstad, Visma Consulting
+ * @author Joakim Bjørnstad, Visma Consulting
  */
 public class DataHandlerCustomConvertTest {
 

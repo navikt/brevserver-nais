@@ -3,7 +3,7 @@ package no.nav.brevserver.service.brevserver;
 import no.nav.brevserver.service.brevserver.beans.BrevserverServiceBean;
 
 /**
- * Factory for Â lage BrevserverService klasser.
+ * Factory for√•lage BrevserverService klasser.
  */
 public enum BrevserverServiceFactory {
 

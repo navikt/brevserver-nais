@@ -15,7 +15,7 @@ import static org.mockito.Mockito.when;
 /**
  * Unit tests for LoggmottakProvider
  *
- * @author Joakim Bjørnstad, Visma Consulting
+ * @author Joakim BjÃ¸rnstad, Visma Consulting
  */
 @RunWith(MockitoJUnitRunner.class)
 public class LoggmottakProviderTest {

@@ -3,7 +3,7 @@ package no.nav.brevserver.service.dokumentbehandling.to;
 /**
  * Domain response object for hent dokument operations on the service layer
  *
- * @author Joakim Bjørnstad, Visma Consulting
+ * @author Joakim BjÃ¸rnstad, Visma Consulting
  */
 public class HentDokumentResponse {
 	private byte[] dokumentData;

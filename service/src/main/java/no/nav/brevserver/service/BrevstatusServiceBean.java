@@ -1,7 +1,7 @@
 package no.nav.brevserver.service;
 
 import no.nav.brevserver.core.domain.entities.Brevstatus;
-import no.nav.brevserver.repository.BrevstatusRepository;
+import no.nav.brevserver.core.repository.BrevstatusRepository;
 import no.nav.brevserver.server.common.exception.BrevTechnicalException;
 import no.nav.brevserver.server.common.utility.PerformanceLogger;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -9,7 +9,7 @@ import no.nav.brevserver.server.common.vo.KvitteringVO;
 
 public interface XMLService {
 	/**
-	 * Unmarshal er prosessen Â generere XML fra businessobjekter
+	 * Unmarshal er prosessen√•generere XML fra businessobjekter
 	 * 
 	 * @param kvittering
 	 *            kvittering
@@ -17,7 +17,7 @@ public interface XMLService {
 	String unmarshal(KvitteringVO kvittering, BrevStatusVO status);
 
 	/**
-	 * Metode for Â populere mq-header Marshalling er prosessen der en populerer businessobjekter fra XML
+	 * Metode for√•populere mq-header Marshalling er prosessen der en populerer businessobjekter fra XML
 	 * 
 	 * @param xmlInput
 	 *            xmlInput
@@ -26,7 +26,7 @@ public interface XMLService {
 	KvitteringVO marshalHeader(InputStream xmlInput) throws BrevTechnicalException;
 
 	/**
-	 * Metode for Â populere brevstatus objekt. Marshalling er prosessen der en populerer businessobjekter fra XML
+	 * Metode for√•populere brevstatus objekt. Marshalling er prosessen der en populerer businessobjekter fra XML
 	 * 
 	 * @param xmlInput
 	 *            xmlInput

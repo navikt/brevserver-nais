@@ -17,7 +17,7 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
 /**
  * Unit tests for DefaultPingService
  *
- * @author Joakim Bjørnstad, Visma Consulting
+ * @author Joakim BjÃ¸rnstad, Visma Consulting
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({BrevlagerServiceFactory.class})

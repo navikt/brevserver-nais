@@ -9,6 +9,38 @@ spec:
   env:
     - name: SPRING_DATASOURCE_URL
       value: {{ SPRING_DATASOURCE_URL }}
+      - name: MQGATEWAY01_HOSTNAME
+        value: { { MQGATEWAY01_HOSTNAME } }
+      - name: MQGATEWAY01_PORT
+        value: {{ MQGATEWAY01_PORT }}
+      - name: MQGATEWAY01_NAME
+        value: { { MQGATEWAY01_NAME } }
+      - name: MOTTAK_ARKIV_QUEUENAME
+        value: { { MOTTAK_ARKIV_QUEUENAME } }
+      - name: MOTTAK_ARKIV_PE_QUEUENAME
+        value: { { MOTTAK_ARKIV_PE_QUEUENAME } }
+      - name: DIALOGUE_ONLINE_QUEUENAME
+        value: { { DIALOGUE_ONLINE_QUEUENAME } }
+      - name: DIALOGUE_ONLINE_PE_QUEUENAME
+        value: { { DIALOGUE_ONLINE_PE_QUEUENAME } }
+      - name: ONLINEBREV_QUEUENAME
+        value: { { ONLINEBREV_QUEUENAME } }
+      - name: ONLINEBREV_PE_QUEUENAME
+        value: { { ONLINEBREV_PE_QUEUENAME } }
+      - name: MOTTAK_ONLINE_QUEUENAME
+        value: { { MOTTAK_ONLINE_QUEUENAME } }
+      - name: MOTTAK_ONLINE_PE_QUEUENAME
+        value: { { MOTTAK_ONLINE_PE_QUEUENAME } }
+      - name: DLQ_QUEUENAME
+        value: { { DLQ_QUEUENAME } }
+      - name: DLQ_PE_QUEUENAME
+        value: { { DLQ_PE_QUEUENAME } }
+      - name: BREV_REPLY_PE_QUEUENAME
+        value: { { BREV_REPLY_PE_QUEUENAME } }
+      - name: DEADLETTER_QUEUENAME
+        value: { { DEADLETTER_QUEUENAME }}
+      - name: DEADLETTER_PE_QUEUENAME
+        value: DEADLETTER_PE_QUEUENAME
   image: {{ image }}
   ingresses:
     {{#each INGRESSES}}

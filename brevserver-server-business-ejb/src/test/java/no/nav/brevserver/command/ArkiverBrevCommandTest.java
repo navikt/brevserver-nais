@@ -42,7 +42,7 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
 /**
  * Unit tests for ArkiverBrevCommand
  *
- * @author Joakim Bj�rnstad, Visma Consulting
+ * @author Joakim Bjørnstad, Visma Consulting
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ConfigManager.class, BrevserverServiceFactory.class, BrevlagerServiceFactory.class,

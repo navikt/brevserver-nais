@@ -18,7 +18,7 @@ import com.aspose.words.SaveFormat;
  * Converts documents to different types using the aspose library.
  * 
  * @author Stian Landsnes, Visma Sirius
- * @author Marius Thøring, Visma Consulting
+ * @author Marius ThÃ¥ring, Visma Consulting
  * 
  */
 public final class FileConverter {
@@ -83,7 +83,7 @@ public final class FileConverter {
 					+ "Sjekk at filen som er angitt i konfigurasjonen eksisterer: " + licenseLocation, e);
 		} catch (Exception e) {
 			throw new RuntimeException("Feil ved lasting av lisens for Aspose! "
-					+ "Sjekk at stien i konfigurasjonen peker på riktig fil og at lisensen ikke er utgått på dato", e);
+					+ "Sjekk at stien i konfigurasjonen peker pÃ¥ riktig fil og at lisensen ikke er UTGÃ…TT pÃ¥ dato", e);
 		}
 	}
 

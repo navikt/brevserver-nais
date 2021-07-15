@@ -10,7 +10,7 @@ import no.nav.brevserver.service.dokumentbehandling.to.AvbrytDokumentRequest;
 /**
  * Default implementation of AvbrytDokumentService
  *
- * @author Joakim Bjørnstad, Visma Consulting
+ * @author Joakim BjÃ¸rnstad, Visma Consulting
  */
 public class DefaultAvbrytDokumentService implements AvbrytDokumentService {
 

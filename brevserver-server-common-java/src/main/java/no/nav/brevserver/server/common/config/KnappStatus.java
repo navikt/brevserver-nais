@@ -7,7 +7,7 @@ package no.nav.brevserver.server.common.config;
  * @version $Revision: 501 $ $Author: rra2920 $ $Date: 2005-08-30 14:54:19 +0200 (ti, 30 aug 2005) $
  */
 public class KnappStatus {
-	// Disse tallene m� tolkes bin�rt for � forst�s
+	// Disse tallene må tolkes binært for å forstås
 	public static final int SKRIV_UT_KLADD = 0b0001;
 	public static final int LAGRE_KLADD = 0b0010;
 	public static final int FERDIGSTILL_LOKAL_UTSKRIFT = 0b0100;

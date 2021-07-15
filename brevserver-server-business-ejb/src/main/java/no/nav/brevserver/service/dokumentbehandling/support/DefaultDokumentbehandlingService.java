@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
  * Default implementation of DokumentbehandlingService
  * Delegates to subservices for the different operations
  *
- * @author Joakim Bjørnstad, Visma Consulting
+ * @author Joakim BjÃ¸rnstad, Visma Consulting
  */
 @Service
 public class DefaultDokumentbehandlingService implements DokumentbehandlingService {

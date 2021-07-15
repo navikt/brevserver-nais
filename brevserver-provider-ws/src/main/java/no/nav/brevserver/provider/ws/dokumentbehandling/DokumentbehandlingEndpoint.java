@@ -18,7 +18,7 @@ import no.nav.tjenester.brevogarkiv.dokumentbehandling.PingRequest;
  * Implementation of the JAX-WS generated service interface DokumentbehandlingPortType.
  * Delegates to DokumentbehandlingProvider at the provider layer.
  *
- * @author Joakim Bjørnstad, Visma Consulting
+ * @author Joakim BjÃ¸rnstad, Visma Consulting
  */
 @MTOM
 @WebService(targetNamespace = "http://dokumentbehandling.brevogarkiv.tjenester.nav.no/",
