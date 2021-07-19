@@ -1,7 +1,7 @@
 package no.nav.brevserver.nais.support;
 
 
-import no.nav.brevserver.server.common.to.LagreDokumentRequest;
+import no.nav.brevserver.service.dokumentbehandling.to.LagreDokumentRequest;
 
 public interface LagreDokumentRequestMapper {
 

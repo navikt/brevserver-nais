@@ -1,5 +1,9 @@
 package no.nav.brevserver.provider.support;
 
+import no.nav.brevserver.service.BrevlagerService;
+import no.nav.brevserver.service.BrevserverServiceBean;
+import no.nav.brevserver.service.dokumentbehandling.DokumentbehandlingService;
+import no.nav.brevserver.service.dokumentbehandling.support.DefaultDokumentbehandlingService;
 import org.slf4j.MDC;
 
 import no.nav.brevserver.provider.map.AvbrytDokumentRequestMapper;
@@ -12,8 +16,6 @@ import no.nav.brevserver.provider.map.support.DefaultFerdigstillDokumentRequestM
 import no.nav.brevserver.provider.map.support.DefaultHentDokumentRequestMapper;
 import no.nav.brevserver.provider.map.support.DefaultHentDokumentResponseMapper;
 import no.nav.brevserver.provider.map.support.DefaultLagreDokumentRequestMapper;
-import no.nav.brevserver.service.dokumentbehandling.DokumentbehandlingService;
-import no.nav.brevserver.service.dokumentbehandling.support.DefaultDokumentbehandlingService;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.AvbrytDokumentRequest;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.DokumentbehandlingPortType;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.FerdigstillDokumentRequest;
@@ -21,36 +23,32 @@ import no.nav.tjenester.brevogarkiv.dokumentbehandling.HentDokumentRequest;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.HentDokumentResponse2;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.LagreDokumentRequest;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.PingRequest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * Provider that maps from and to the Dokumentbehandling webservice model and delegates to Service layer implementations.
  *
  * @author Joakim Bjørnstad, Visma Consulting
  */
+@Service
 public class DokumentbehandlingProvider implements DokumentbehandlingPortType {
 
-	private DokumentbehandlingService dokumentbehandlingService;
+	private final BrevlagerService brevlagerService;
+	private final HentDokumentRequestMapper hentDokumentRequestMapper;
+	private final HentDokumentResponseMapper hentDokumentResponseMapper;
+	private final LagreDokumentRequestMapper lagreDokumentRequestMapper;
+	private final AvbrytDokumentRequestMapper avbrytDokumentRequestMapper;
+	private final FerdigstillDokumentRequestMapper ferdigstillDokumentRequestMapper;
 
-	private HentDokumentRequestMapper hentDokumentRequestMapper;
-	private HentDokumentResponseMapper hentDokumentResponseMapper;
-	private LagreDokumentRequestMapper lagreDokumentRequestMapper;
-	private AvbrytDokumentRequestMapper avbrytDokumentRequestMapper;
-	private FerdigstillDokumentRequestMapper ferdigstillDokumentRequestMapper;
-
+	@Autowired
 	public DokumentbehandlingProvider() {
-		dokumentbehandlingService = new DefaultDokumentbehandlingService();
-
-		hentDokumentRequestMapper = new DefaultHentDokumentRequestMapper();
-		hentDokumentResponseMapper = new DefaultHentDokumentResponseMapper();
-		lagreDokumentRequestMapper = new DefaultLagreDokumentRequestMapper();
-		avbrytDokumentRequestMapper = new DefaultAvbrytDokumentRequestMapper();
-		ferdigstillDokumentRequestMapper = new DefaultFerdigstillDokumentRequestMapper();
 	}
 
 	@Override
 	public HentDokumentResponse2 hentDokument(HentDokumentRequest hentDokumentRequest) {
 		return hentDokumentResponseMapper.map(
-				dokumentbehandlingService.hentDokument(hentDokumentRequestMapper.map(hentDokumentRequest)));
+				brevlagerService.hentDokumentFromBrevlagerOrJoark(hentDokumentRequestMapper.map(hentDokumentRequest)));
 	}
 
 	@Override

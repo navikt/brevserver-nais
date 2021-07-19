@@ -1,5 +1,6 @@
 package no.nav.brevserver.provider.map.converters;
 
+import com.sun.istack.ByteArrayDataSource;
 import no.nav.brevserver.service.dokumentbehandling.to.HentDokumentResponse;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.HentDokumentResponse2;
 import org.dozer.DozerConverter;

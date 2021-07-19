@@ -12,14 +12,6 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>com.ibm.mq</groupId>
-			<artifactId>jmqi</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.ibm</groupId>
-			<artifactId>com.ibm.mq</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>javax.ejb</groupId>
 			<artifactId>ejb</artifactId>
 		</dependency>

@@ -1,7 +1,6 @@
 package no.nav.brevserver.nais.support;
 
-import no.nav.brevserver.server.common.to.AvbrytDokumentRequest;
-import org.springframework.stereotype.Component;
+import no.nav.brevserver.service.dokumentbehandling.to.AvbrytDokumentRequest;
 
 
 public interface AvbrytDokumentRequestMapper {

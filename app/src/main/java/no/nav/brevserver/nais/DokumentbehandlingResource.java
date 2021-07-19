@@ -7,9 +7,8 @@ import no.nav.brevserver.server.common.exception.BrevFunctionalException;
 import no.nav.brevserver.server.common.exception.BrevSecurityException;
 
 import no.nav.brevserver.server.common.exception.BrevTechnicalException;
-import no.nav.brevserver.server.common.to.HentDokumentRequest;
-import no.nav.brevserver.server.common.to.HentDokumentResponse;
-import no.nav.brevserver.server.common.vo.BrevStatusVO;
+import no.nav.brevserver.service.dokumentbehandling.to.HentDokumentRequest;
+import no.nav.brevserver.service.dokumentbehandling.to.HentDokumentResponse;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.LagreDokumentRequest;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.PingRequest;
 import org.slf4j.Logger;
@@ -19,9 +18,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 @Api(description = "Tjenester for å arkivere i brevserver")
 @RequestMapping("rest")
+@RestController
 public class DokumentbehandlingResource {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -98,6 +99,4 @@ public class DokumentbehandlingResource {
 			throw e;
 		}
 	}
-
-
 }

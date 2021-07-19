@@ -13,6 +13,7 @@ import no.nav.tjenester.brevogarkiv.dokumentbehandling.HentDokumentRequest;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.HentDokumentResponse2;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.LagreDokumentRequest;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.PingRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Implementation of the JAX-WS generated service interface DokumentbehandlingPortType.
@@ -32,6 +33,7 @@ public class DokumentbehandlingEndpoint implements DokumentbehandlingPortType {
 
 	private DokumentbehandlingProvider dokumentbehandlingProvider;
 
+	@Autowired
 	public DokumentbehandlingEndpoint() {
 		dokumentbehandlingProvider = new DokumentbehandlingProvider();
 	}

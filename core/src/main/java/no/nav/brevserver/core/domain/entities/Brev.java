@@ -43,6 +43,6 @@ public class Brev {
 	@Lob
 	private byte[] brevdata;
 
-	@Column(name = "TIMESTAMP")
+	@Column(name = "OPPRETTET_TID")
 	private Timestamp endret;
 }

@@ -9,42 +9,54 @@ spec:
   env:
     - name: SPRING_DATASOURCE_URL
       value: {{ SPRING_DATASOURCE_URL }}
-      - name: MQGATEWAY01_HOSTNAME
-        value: { { MQGATEWAY01_HOSTNAME } }
-      - name: MQGATEWAY01_PORT
-        value: {{ MQGATEWAY01_PORT }}
-      - name: MQGATEWAY01_NAME
-        value: { { MQGATEWAY01_NAME } }
-      - name: MOTTAK_ARKIV_QUEUENAME
-        value: { { MOTTAK_ARKIV_QUEUENAME } }
-      - name: MOTTAK_ARKIV_PE_QUEUENAME
-        value: { { MOTTAK_ARKIV_PE_QUEUENAME } }
-      - name: DIALOGUE_ONLINE_QUEUENAME
-        value: { { DIALOGUE_ONLINE_QUEUENAME } }
-      - name: DIALOGUE_ONLINE_PE_QUEUENAME
-        value: { { DIALOGUE_ONLINE_PE_QUEUENAME } }
-      - name: ONLINEBREV_QUEUENAME
-        value: { { ONLINEBREV_QUEUENAME } }
-      - name: ONLINEBREV_PE_QUEUENAME
-        value: { { ONLINEBREV_PE_QUEUENAME } }
-      - name: MOTTAK_ONLINE_QUEUENAME
-        value: { { MOTTAK_ONLINE_QUEUENAME } }
-      - name: MOTTAK_ONLINE_PE_QUEUENAME
-        value: { { MOTTAK_ONLINE_PE_QUEUENAME } }
-      - name: DLQ_QUEUENAME
-        value: { { DLQ_QUEUENAME } }
-      - name: DLQ_PE_QUEUENAME
-        value: { { DLQ_PE_QUEUENAME } }
-      - name: BREV_REPLY_PE_QUEUENAME
-        value: { { BREV_REPLY_PE_QUEUENAME } }
-      - name: DEADLETTER_QUEUENAME
-        value: { { DEADLETTER_QUEUENAME }}
-      - name: DEADLETTER_PE_QUEUENAME
-        value: DEADLETTER_PE_QUEUENAME
+    - name: MQGATEWAY01_HOSTNAME
+      value: {{ MQGATEWAY01_HOSTNAME }}
+    - name: MQGATEWAY01_PORT
+      value: "{{ MQGATEWAY01_PORT }}"
+    - name: MQGATEWAY01_NAME
+      value: {{ MQGATEWAY01_NAME }}
+    - name: MOTTAK_ARKIV_QUEUENAME
+      value: {{ MOTTAK_ARKIV_QUEUENAME }}
+    - name: MOTTAK_ARKIV_PE_QUEUENAME
+      value: {{ MOTTAK_ARKIV_PE_QUEUENAME }}
+    - name: DIALOGUE_ONLINE_QUEUENAME
+      value: {{ DIALOGUE_ONLINE_QUEUENAME }}
+    - name: DIALOGUE_ONLINE_PE_QUEUENAME
+      value: {{ DIALOGUE_ONLINE_PE_QUEUENAME }}
+    - name: ONLINEBREV_QUEUENAME
+      value: {{ ONLINEBREV_QUEUENAME }}
+    - name: ONLINEBREV_PE_QUEUENAME
+      value: {{ ONLINEBREV_PE_QUEUENAME }}
+    - name: MOTTAK_ONLINE_QUEUENAME
+      value: {{ MOTTAK_ONLINE_QUEUENAME }}
+    - name: MOTTAK_ONLINE_PE_QUEUENAME
+      value: {{ MOTTAK_ONLINE_PE_QUEUENAME }}
+    - name: DLQ_QUEUENAME
+      value: {{ DLQ_QUEUENAME }}
+    - name: DLQ_PE_QUEUENAME
+      value: {{ DLQ_PE_QUEUENAME }}
+    - name: BREV_REPLY_PE_QUEUENAME
+      value: {{ BREV_REPLY_PE_QUEUENAME }}
+    - name: DEADLETTER_QUEUENAME
+      value: {{ DEADLETTER_QUEUENAME }}
+    - name: DEADLETTER_PE_QUEUENAME
+      value: {{ DEADLETTER_PE_QUEUENAME }}
+    - name: FAGARKIV_ENDPOINTS_FAGARKIV
+      value: {{ FAGARKIV_ENDPOINTS_FAGARKIV }}
+    - name: FAGARKIV_PROXY_HOST
+      value: {{ FAGARKIV_PROXY_HOST }}
+    - name: FAGARKIV_PROXY_PORT
+      value: "{{ FAGARKIV_PROXY_PORT }}"
+    - name: FAGARKIV_ENDPOINTS_DOKARKIV
+      value: {{ FAGARKIV_ENDPOINTS_DOKARKIV }}
+    - name: SECURITY_TOKEN_SERVICE_TOKEN_URL
+      value: {{ SECURITY_TOKEN_SERVICE_TOKEN_URL }}
+    - name: SAF_ENDPOINT_URL
+      value: {{ SAF_ENDPOINT_URL }}
   image: {{ image }}
   ingresses:
     {{#each INGRESSES}}
-    - {{this }}
+        - {{ this }}
     {{/each}}
   liveness:
     path: /isAlive
@@ -72,3 +84,8 @@ spec:
       memory: 1920Mi
   vault:
     enabled: true
+    paths:
+      - kvPath: {{ SRVBREVSERVER }}
+        mountPath: /var/run/secrets/nais.io/srvbrevserver
+      - kvPath: {{ BREVSERVER_VAULT }}
+        mountPath: /var/run/secrets/nais.io/vault

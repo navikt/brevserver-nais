@@ -2,13 +2,15 @@ package no.nav.brevserver.provider.map.support;
 
 import no.nav.brevserver.provider.map.AbstractProviderDozerMapper;
 import no.nav.brevserver.provider.map.AvbrytDokumentRequestMapper;
-import no.nav.brevserver.service.dokumentbehandling.to.AvbrytDokumentRequest;
+import no.nav.brevserver.server.common.to.AvbrytDokumentRequest;
+import org.springframework.stereotype.Component;
 
 /**
  * Default implementation of AvbrytDokumentRequestMapper
  *
  * @author Joakim Bjørnstad, Visma Consulting
  */
+@Component
 public class DefaultAvbrytDokumentRequestMapper extends AbstractProviderDozerMapper
 		implements AvbrytDokumentRequestMapper {
 

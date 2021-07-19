@@ -3,6 +3,7 @@ package no.nav.brevserver.provider.ws.loggmottak;
 import no.nav.brevserver.provider.support.LoggmottakProvider;
 import no.nav.tjenester.brevogarkiv.loggmottak.LoggRequest;
 import no.nav.tjenester.brevogarkiv.loggmottak.LoggmottakPortType;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.jws.WebService;
 
@@ -17,10 +18,11 @@ import javax.jws.WebService;
 		portName = "LoggmottakPort")
 public class LoggmottakEndpoint implements LoggmottakPortType {
 
-	private LoggmottakProvider loggmottakProvider;
+	private final LoggmottakProvider loggmottakProvider;
 
-	public LoggmottakEndpoint() {
-		loggmottakProvider = new LoggmottakProvider();
+	@Autowired
+	public LoggmottakEndpoint(LoggmottakProvider loggmottakProvider) {
+		this.loggmottakProvider = loggmottakProvider;
 	}
 
 	@Override

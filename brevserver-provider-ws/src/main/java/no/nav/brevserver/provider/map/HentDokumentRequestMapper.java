@@ -1,6 +1,7 @@
 package no.nav.brevserver.provider.map;
 
-import no.nav.brevserver.service.dokumentbehandling.to.HentDokumentRequest;
+
+import no.nav.brevserver.server.common.to.HentDokumentRequest;
 
 /**
  * Interface for mapping between webservice and domain hentDokument requests

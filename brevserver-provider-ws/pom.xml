@@ -13,9 +13,14 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>com.sun.xml.ws</groupId>
+			<artifactId>jaxws-ri</artifactId>
+			<version>2.3.3</version>
+			<type>pom</type>
+		</dependency>
+		<dependency>
 			<groupId>no.nav.brevserver</groupId>
-			<artifactId>brevserver-server-business-ejb</artifactId>
-			<type>ejb</type>
+			<artifactId>service</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>no.nav.brevserver</groupId>
@@ -37,11 +42,6 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>no.nav.brevserver</groupId>
-			<artifactId>brevserver-consumer-joark-ejb</artifactId>
-			<type>ejb</type>
-		</dependency>
-		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
 		</dependency>
@@ -56,10 +56,6 @@
 		<dependency>
 			<groupId>javax.servlet.jsp</groupId>
 			<artifactId>jsp-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>javax.jms</groupId>
-			<artifactId>jms</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.sun.istack</groupId>
@@ -138,21 +134,6 @@
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-war-plugin</artifactId>
-				<configuration>
-					<packagingExcludes>WEB-INF/lib/*.jar</packagingExcludes>
-					<archive>
-						<manifest>
-							<classpathPrefix>lib/</classpathPrefix>
-							<addClasspath>true</addClasspath>
-							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-						</manifest>
-					</archive>
-					<exportManifestToDir>${basedir}/META-INF</exportManifestToDir>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>

@@ -26,7 +26,7 @@ public class Brevstatus {
 	@Column(name = "BREVREFERANSE")
 	private String brevreferanse;
 
-	@Column(name = "SYSTEM_ID")
+	@Column(name = "SYSTEMID")
 	private String systemID;
 
 	@Column(name = "RETURKOE")

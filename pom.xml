@@ -17,15 +17,11 @@
 		<module>brevserver-config</module>
 		<module>brevserver-server-common-java</module>
 		<module>core</module>
-		<module>brevserver-consumer-joark-ejb</module>
-		<!--<module>brevserver-j2ee</module>-->
-		<!--<module>repository</module>-->
+		<module>dokarkiv-consumer</module>
 		<module>service</module>
 		<module>app</module>
+		<!--module>brevserver-provider-ws</module-->
 		<module>brevserver-klient-applet</module>
-		<!--<module>brevserver-server-business-ejb</module>-->
-		<!--module>brevserver-server-comptest</module-->
-		<!--<module>brevserver-provider-ws</module>-->
 		<module>brevserver-asposeconfig</module>
 
 	</modules>
@@ -49,12 +45,13 @@
 		<lombok.version>1.18.20</lombok.version>
 		<cxf.version>3.4.4</cxf.version>
 		<spring.version>2.3.7.RELEASE</spring.version>
+		<postgresql.version>9.4.1208</postgresql.version>
 	</properties>
 
 	<scm>
-		<connection>scm:git:https://github.com/navikt/brevserver.git</connection>
-		<developerConnection>scm:git:https://github.com/navikt/brevserver.git</developerConnection>
-		<url>https://github.com/navikt/brevserver.git</url>
+		<connection>scm:git:https://github.com/navikt/brevserver-nais.git</connection>
+		<developerConnection>scm:git:https://github.com/navikt/brevserver-nais.git</developerConnection>
+		<url>https://github.com/navikt/brevserver-nais.git</url>
 		<tag>HEAD</tag>
 	</scm>
 
@@ -88,12 +85,6 @@
 			</dependency>
 			<dependency>
 				<groupId>no.nav.brevserver</groupId>
-				<artifactId>brevserver-consumer-joark-ejb</artifactId>
-				<version>${project.version}</version>
-				<type>ejb</type>
-			</dependency>
-			<dependency>
-				<groupId>no.nav.brevserver</groupId>
 				<artifactId>brevserver-provider-ws</artifactId>
 				<version>${project.version}</version>
 				<type>war</type>
@@ -116,6 +107,11 @@
 			<dependency>
 				<groupId>no.nav.brevserver</groupId>
 				<artifactId>service</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>no.nav.brevserver</groupId>
+				<artifactId>dokarkiv-consumer</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
@@ -218,6 +214,7 @@
 				<artifactId>aspose-words-jdk15</artifactId>
 				<version>11.2.0</version>
 			</dependency>
+			<!--
 			<dependency>
 				<groupId>com.ibm</groupId>
 				<artifactId>com.ibm.mq</artifactId>
@@ -238,6 +235,7 @@
 				<artifactId>jmqi</artifactId>
 				<version>7.0</version>
 			</dependency>
+			-->
 			<dependency>
 				<groupId>commons-io</groupId>
 				<artifactId>commons-io</artifactId>
@@ -532,6 +530,16 @@
 				<groupId>org.apache.activemq</groupId>
 				<artifactId>activemq-jms-pool</artifactId>
 				<version>${activemq.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.postgresql</groupId>
+				<artifactId>postgresql</artifactId>
+				<version>${postgresql.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>wsdl4j</groupId>
+				<artifactId>wsdl4j</artifactId>
+				<version>1.6.3</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

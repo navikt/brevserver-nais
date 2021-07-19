@@ -1,6 +1,7 @@
 package no.nav.brevserver.provider.map;
 
-import no.nav.brevserver.service.dokumentbehandling.to.FerdigstillDokumentRequest;
+
+import no.nav.brevserver.server.common.to.FerdigstillDokumentRequest;
 
 /**
  * Interface for mapping between webservice and domain ferdigstillDokument requests

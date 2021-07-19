@@ -1,5 +1,6 @@
 package no.nav.brevserver.provider.map;
 
+
 import no.nav.brevserver.service.loggmottak.to.LoggRequest;
 
 /**

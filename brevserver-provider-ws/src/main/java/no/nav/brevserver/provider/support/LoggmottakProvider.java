@@ -1,11 +1,10 @@
 package no.nav.brevserver.provider.support;
 
 import no.nav.brevserver.provider.map.LoggRequestMapper;
-import no.nav.brevserver.provider.map.support.DefaultLoggRequestMapper;
 import no.nav.brevserver.service.loggmottak.LoggmottakService;
-import no.nav.brevserver.service.loggmottak.support.DefaultLoggmottakService;
 import no.nav.tjenester.brevogarkiv.loggmottak.LoggRequest;
 import no.nav.tjenester.brevogarkiv.loggmottak.LoggmottakPortType;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Provider that maps from and to the Loggmottak webservice model and delegates to Service layer implementations.
@@ -14,12 +13,13 @@ import no.nav.tjenester.brevogarkiv.loggmottak.LoggmottakPortType;
  */
 public class LoggmottakProvider implements LoggmottakPortType {
 
-	private LoggmottakService loggmottakService;
-	private LoggRequestMapper loggRequestMapper;
+	private final LoggmottakService loggmottakService;
+	private final LoggRequestMapper loggRequestMapper;
 
-	public LoggmottakProvider() {
-		loggmottakService = new DefaultLoggmottakService();
-		loggRequestMapper = new DefaultLoggRequestMapper();
+	@Autowired
+	public LoggmottakProvider(LoggmottakService loggmottakService, LoggRequestMapper loggRequestMapper) {
+		this.loggmottakService = loggmottakService;
+		this.loggRequestMapper = loggRequestMapper;
 	}
 
 	@Override

@@ -31,7 +31,7 @@ public class Brevtilgang {
 	@Column(name = "ID", nullable = false)
 	private Long journalpostId;
 
-	@Column(name = "TIMESTAMP")
+	@Column(name = "OPPRETTET_TID")
 	private LocalDateTime opprettetDato;
 
  	@Column(name = "TOKEN")

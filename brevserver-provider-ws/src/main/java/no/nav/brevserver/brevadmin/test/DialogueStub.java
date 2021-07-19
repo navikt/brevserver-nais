@@ -11,7 +11,6 @@ import no.nav.brevserver.server.common.utility.ArgumentValidator;
 import no.nav.brevserver.server.common.vo.FilType;
 import no.nav.brevserver.server.common.vo.SysTilgangVO;
 import no.nav.brevserver.service.brevserver.BrevserverService;
-import no.nav.brevserver.service.brevserver.BrevserverServiceFactory;
 
 import javax.jms.BytesMessage;
 import javax.jms.JMSException;

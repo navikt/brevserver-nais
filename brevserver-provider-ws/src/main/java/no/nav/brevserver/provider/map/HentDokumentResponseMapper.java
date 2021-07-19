@@ -1,6 +1,6 @@
 package no.nav.brevserver.provider.map;
 
-import no.nav.brevserver.service.dokumentbehandling.to.HentDokumentResponse;
+import no.nav.brevserver.server.common.to.HentDokumentResponse;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.HentDokumentResponse2;
 
 /**

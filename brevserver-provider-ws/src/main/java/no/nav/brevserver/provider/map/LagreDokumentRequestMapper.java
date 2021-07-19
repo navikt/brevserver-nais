@@ -1,6 +1,7 @@
 package no.nav.brevserver.provider.map;
 
-import no.nav.brevserver.service.dokumentbehandling.to.LagreDokumentRequest;
+
+import no.nav.brevserver.server.common.to.LagreDokumentRequest;
 
 /**
  * Interface for mapping between webservice and domain lagreDokument request

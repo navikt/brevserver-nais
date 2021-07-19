@@ -32,8 +32,7 @@
 		</dependency>
 		<dependency>
 			<groupId>no.nav.brevserver</groupId>
-			<artifactId>brevserver-consumer-joark-ejb</artifactId>
-			<type>ejb</type>
+			<artifactId>dokarkiv-consumer</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>no.nav.tjenester.brevogarkiv</groupId>
@@ -47,6 +46,11 @@
 		<dependency>
 			<groupId>xerces</groupId>
 			<artifactId>xercesImpl</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.5.13</version>
 		</dependency>
 	</dependencies>
 </project>

@@ -1,6 +1,7 @@
 package no.nav.brevserver.provider.map;
 
-import no.nav.brevserver.service.dokumentbehandling.to.AvbrytDokumentRequest;
+
+import no.nav.brevserver.server.common.to.AvbrytDokumentRequest;
 
 /**
  * Interface for mapping between webservice and domain avbrytDokument requests
