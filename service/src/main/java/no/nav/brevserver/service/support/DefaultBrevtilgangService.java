@@ -52,7 +52,6 @@ public class DefaultBrevtilgangService implements BrevtilgangService {
 	@Override
 	public boolean sjekkSystemTilgang(String systemId, String passord) throws BrevTechnicalException {
 		String methodSig = "BrevserverServiceBean.sjekkSystemTilgang(" + systemId + ")";
-		PerformanceLogger p = new PerformanceLogger(methodSig);
 		String passordCached = (String) CacheManager.getObject(methodSig);
 		if (passordCached != null) {
 			return passordCached.equals(passord);
@@ -69,8 +68,6 @@ public class DefaultBrevtilgangService implements BrevtilgangService {
 				}
 			} catch (Exception e) {
 				throw new BrevTechnicalException(BrevTechnicalException.DATABASE_IKKE_TILGJENGELIG, e);
-			} finally {
-				p.stop();
 			}
 		}
 	}
