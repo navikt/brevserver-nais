@@ -6,12 +6,11 @@ import no.nav.brevserver.core.repository.BrevSystemTilgangRepository;
 import no.nav.brevserver.core.repository.BrevtilgangRepository;
 import no.nav.brevserver.server.common.cache.CacheManager;
 import no.nav.brevserver.server.common.exception.BrevTechnicalException;
-import no.nav.brevserver.server.common.utility.PerformanceLogger;
 import no.nav.brevserver.service.BrevtilgangService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 import java.util.List;
 
 @Service
@@ -81,7 +80,7 @@ public class DefaultBrevtilgangService implements BrevtilgangService {
 				.brevreferanse(brevreferanse)
 				.systemId(systemId)
 				.token(token)
-				.opprettetDato(LocalDateTime.now())
+				.opprettetDato(new Timestamp(System.currentTimeMillis()))
 				.build();
 		try {
 			brevtilgangRepository.save(brevtilgang);

@@ -1,6 +1,6 @@
 {
   "NAMESPACE": "q1",
-  "INGRESSES": ["https://brevserver-q1.nais.preprod.local", "https://brevserver-q1.dev.adeo.no", "https://brevserver.dev-fss-pub.nais.io"],
+  "INGRESSES": ["https://brevserver-nais-q1.nais.preprod.local", "https://brevserver-nais-q1.dev.adeo.no", "https://brevserver-nais.dev-fss-pub.nais.io"],
   "MQGATEWAY01_HOSTNAME": "b27apvl172.preprod.local",
   "MQGATEWAY01_PORT": "1413",
   "MQGATEWAY01_NAME": "MQLS01",
@@ -26,5 +26,6 @@
   "FAGARKIV_ENDPOINTS_DOKARKIV": "https://dokarkiv-q1.dev.adeo.no/hentjournalsakinfo",
   "SECURITY_TOKEN_SERVICE_TOKEN_URL": "https://security-token-service.nais.preprod.local/rest/v1/sts",
   "SAF_ENDPOINT_URL": "https://saf-q1.nais.preprod.local/",
-  "SRVBREVSERVER": "/serviceuser/data/dev/srvbrevserver"
+  "SRVBREVSERVER": "/serviceuser/data/dev/srvbrevserver",
+  "BREVSERVER_SERVER": "https://brevserver-nais-q1.dev.adeo.no"
 }

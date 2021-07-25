@@ -1,5 +1,6 @@
 package no.nav.brevserver.service.support;
 
+import lombok.extern.slf4j.Slf4j;
 import no.nav.brevserver.core.domain.entities.Brev;
 import no.nav.brevserver.core.domain.entities.Brevstatus;
 import no.nav.brevserver.core.repository.BrevRepository;
@@ -11,6 +12,8 @@ import no.nav.brevserver.server.common.exception.BrevFunctionalException;
 import no.nav.brevserver.server.common.exception.BrevTechnicalException;
 import no.nav.brevserver.server.common.type.SystemType;
 import no.nav.brevserver.server.common.utility.ArgumentValidator;
+import no.nav.brevserver.service.queue.jms.BIMessageProducer;
+import no.nav.brevserver.service.utility.KnappStatusUtil;
 import no.nav.brevserver.server.common.vo.BrevStatusVO;
 import no.nav.brevserver.server.common.vo.BrevVO;
 import no.nav.brevserver.server.common.vo.FilType;
@@ -29,16 +32,21 @@ import no.nav.brevserver.service.dokumentbehandling.to.LagreDokumentRequest;
 import no.nav.brevserver.service.queue.KoService;
 import no.nav.brevserver.service.queue.xml.XMLService;
 import no.nav.brevserver.service.queue.xml.XMLServiceFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional
+@Slf4j
 public class DefaultBrevlagerService implements BrevlagerService {
 
 	private static String LAGER_STATUS_A = "A";
-	private final DefaultBrevserverService defaultBrevserverService;
+
 	private final BrevstatusService brevstatusService;
 	private final BrevRepository brevRepository;
 	private final DefaultBrevlagerHistorikkService defaultBrevlagerHistorikkService;
@@ -50,10 +58,11 @@ public class DefaultBrevlagerService implements BrevlagerService {
 	private final KoService koService;
 	private final DokarkivConsumer dokarkivConsumer;
 	private final SafConsumer safConsumer;
+	private final KnappStatusUtil knappStatusUtil;
+	private final BIMessageProducer biMessageProducer;
 
 	@Autowired
 	public DefaultBrevlagerService(BrevTilVoConverter brevTilVoConverter,
-								   DefaultBrevserverService defaultBrevserverService,
 								   BrevstatusService brevstatusService,
 								   BrevRepository brevRepository,
 								   VoTilBrevConverter voTilBrevConverter,
@@ -62,9 +71,10 @@ public class DefaultBrevlagerService implements BrevlagerService {
 								   BrevstatusTilVoConverter brevstatusTilVoConverter,
 								   BrevtilgangService brevtilgangService, KoService koService,
 								   DokarkivConsumer dokarkivConsumer,
-								   SafConsumer safConsumer) {
+								   SafConsumer safConsumer,
+								   KnappStatusUtil knappStatusUtil,
+								   BIMessageProducer biMessageProducer) {
 		this.brevRepository = brevRepository;
-		this.defaultBrevserverService = defaultBrevserverService;
 		this.brevTilVoConverter = brevTilVoConverter;
 		this.voTilBrevstatusConverter = voTilBrevstatusConverter;
 		this.defaultBrevlagerHistorikkService = defaultBrevlagerHistorikkService;
@@ -75,6 +85,8 @@ public class DefaultBrevlagerService implements BrevlagerService {
 		this.brevstatusService = brevstatusService;
 		this.dokarkivConsumer = dokarkivConsumer;
 		this.safConsumer = safConsumer;
+		this.knappStatusUtil = knappStatusUtil;
+		this.biMessageProducer = biMessageProducer;
 	}
 
 
@@ -115,7 +127,6 @@ public class DefaultBrevlagerService implements BrevlagerService {
 	@Override
 	public void ferdigstillDokument(FerdigstillDokumentRequest request) throws BrevException {
 		BrevStatusVO brevStatus = request.getBrevStatus();
-		SystemType type = brevStatus.getSystemID().startsWith("PE") ? SystemType.PE : SystemType.BI;
 		BrevVO redBrev = request.getBrev();
 		BrevVO pdfBrev = request.getPdfBrev();
 
@@ -143,6 +154,7 @@ public class DefaultBrevlagerService implements BrevlagerService {
 
 	@Override
 	public void lagreDokument(LagreDokumentRequest request) throws BrevException {
+		request.validate();
 		BrevVO brev = request.getBrev();
 		BrevStatusVO brevStatus = request.getBrevStatus();
 
@@ -158,10 +170,10 @@ public class DefaultBrevlagerService implements BrevlagerService {
 	public void avbrytDokument(AvbrytDokumentRequest avbrytDokumentRequest) throws BrevException {
 		avbrytDokumentRequest.validate();
 		BrevStatusVO brevStatus = avbrytDokumentRequest.getBrevStatus();
+		ArgumentValidator.isNotNull(brevStatus);
 		verifyChangeRequest(brevStatus);
 		brevStatus.setStatus(Konstanter.BREVSTATUS_AVBRUTT);
-		//TODO: FIX
-		//brevstatusServiceBean.lagreDokumentStatus(brevStatus);
+		brevstatusService.lagreBrevStatus(voTilBrevstatusConverter.convert(brevStatus), brevStatus.getToken());
 
 		if (brevStatus.getReturKoe() != null) {
 			KvitteringVO kvittering = new KvitteringVO();
@@ -171,10 +183,20 @@ public class DefaultBrevlagerService implements BrevlagerService {
 
 			XMLService service = XMLServiceFactory.getInstance().createXMLService();
 			String xmlKvittering = service.unmarshal(kvittering, brevStatus);
-//TODO:Sendkvittering
-			//sendKvittering(brevStatus.getReturKoe(), false, null, xmlKvittering);
+			biMessageProducer.sendReturMelding(brevStatus.getReturKoe(), false, null, xmlKvittering);
 		}
+		log.info("Brevet ble avbrutt");
+	}
 
+	@Override
+	public BrevStatusVO hentBrevStatus(String systemId, String brevreferanse) throws BrevTechnicalException {
+		Brevstatus brevstatus = brevstatusService.hentBrevStatus(systemId, brevreferanse);
+		if(brevstatus!=null){
+			BrevStatusVO brevStatusVO = brevstatusTilVoConverter.convert(brevstatus);
+			brevStatusVO.setKnappStatus(knappStatusUtil.getKnappStatus(brevStatusVO.getBrevmal()));
+			return brevStatusVO;
+		}
+		return null;
 	}
 
 	private void lagreDokument(BrevVO brev, BrevStatusVO brevStatusVO, SystemType systemType) throws BrevException {

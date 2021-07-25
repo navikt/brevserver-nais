@@ -53,13 +53,15 @@ spec:
       value: {{ SECURITY_TOKEN_SERVICE_TOKEN_URL }}
     - name: SAF_ENDPOINT_URL
       value: {{ SAF_ENDPOINT_URL }}
+    - name: BREVSERVER_SERVER
+      value: {{ BREVSERVER_SERVER }}
   image: {{ image }}
   ingresses:
     {{#each INGRESSES}}
         - {{ this }}
     {{/each}}
   liveness:
-    path: /isAlive
+    path: brevweb/isAlive
     port: 8080
     initialDelay: 30
     failureThreshold: 10
@@ -68,7 +70,7 @@ spec:
     enabled: true
     path: /actuator/prometheus
   readiness:
-    path: /isReady
+    path: brevweb/isReady
     port: 8080
     initialDelay: 30
     timeout: 3

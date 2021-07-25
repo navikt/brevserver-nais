@@ -13,6 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Entity
@@ -24,15 +25,12 @@ import java.time.LocalDateTime;
 public class Brevtilgang {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "brevtilgang_seq")
-	@GenericGenerator(name = "brevtilgang_seq", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator", parameters = {
-			@Parameter(name = "sequence_name", value = "T_BREVTILGANG_SEQ"),
-			@Parameter(name = "initial_value", value = "200000000")})
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID", nullable = false)
 	private Long journalpostId;
 
-	@Column(name = "OPPRETTET_TID")
-	private LocalDateTime opprettetDato;
+	@Column(name = "TIMESTAMP")
+	private Timestamp opprettetDato;
 
  	@Column(name = "TOKEN")
 	private String token;
