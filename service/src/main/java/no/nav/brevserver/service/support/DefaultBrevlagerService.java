@@ -11,11 +11,13 @@ import no.nav.brevserver.server.common.exception.BrevFunctionalException;
 import no.nav.brevserver.server.common.exception.BrevTechnicalException;
 import no.nav.brevserver.server.common.type.SystemType;
 import no.nav.brevserver.server.common.utility.ArgumentValidator;
+import no.nav.brevserver.server.common.utility.PerformanceLogger;
 import no.nav.brevserver.server.common.vo.BrevStatusVO;
 import no.nav.brevserver.server.common.vo.BrevVO;
 import no.nav.brevserver.server.common.vo.FilType;
 import no.nav.brevserver.server.common.vo.KvitteringVO;
 import no.nav.brevserver.service.BrevlagerService;
+import no.nav.brevserver.service.BrevserverService;
 import no.nav.brevserver.service.BrevstatusService;
 import no.nav.brevserver.service.BrevtilgangService;
 import no.nav.brevserver.service.converter.BrevTilVoConverter;
@@ -32,6 +34,8 @@ import no.nav.brevserver.service.queue.xml.XMLServiceFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
 
 @Service
@@ -152,6 +156,15 @@ public class DefaultBrevlagerService implements BrevlagerService {
 		brevStatus.setStatus(Konstanter.BREVSTATUS_LAGRET_KLADD);
 
 		lagreDokument(brev, brevStatus, systemType);
+	}
+
+	//TODO: fix
+	public void lagreBrev(BrevVO brev, BrevStatusVO brevstatus) throws BrevException {
+
+	}
+	//TODO: fix
+	public void lagreBrevStatus(BrevStatusVO brevStatus) throws BrevTechnicalException {
+
 	}
 
 	@Override

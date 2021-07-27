@@ -4,8 +4,12 @@ import no.nav.brevserver.core.domain.entities.Brevstatus;
 import no.nav.brevserver.core.repository.BrevstatusRepository;
 import no.nav.brevserver.core.repository.BrevtilgangRepository;
 import no.nav.brevserver.server.common.exception.BrevTechnicalException;
+import no.nav.brevserver.server.common.vo.BrevStatusVO;
 import no.nav.brevserver.service.BrevstatusService;
 import no.nav.brevserver.service.BrevtilgangService;
+import no.nav.brevserver.service.converter.BrevTilVoConverter;
+import no.nav.brevserver.service.converter.VoTilBrevConverter;
+import no.nav.brevserver.service.converter.VoTilBrevstatusConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -93,5 +97,14 @@ public class DefaultBrevstatusService implements BrevstatusService {
 
 		}
 		return gmlStatus;
+	}
+
+	@Override
+	public BrevStatusVO lagreBrevStatus(BrevStatusVO brevStatus) throws BrevTechnicalException {
+		VoTilBrevstatusConverter converter = new VoTilBrevstatusConverter();
+		lagreBrevStatus(converter.convert(brevStatus), null);
+
+		//TODO: Hvorfor returnere denne noe?
+		return brevStatus;
 	}
 }

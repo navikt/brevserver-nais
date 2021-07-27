@@ -21,6 +21,7 @@
 		<module>app</module>
 		<module>brevserver-klient-applet</module>
 		<module>brevserver-asposeconfig</module>
+		<module>arkiverBrev</module>
 
 	</modules>
 
@@ -43,6 +44,10 @@
 		<lombok.version>1.18.20</lombok.version>
 		<cxf.version>3.4.4</cxf.version>
 		<spring.version>2.3.7.RELEASE</spring.version>
+		<javax.inject.version>1</javax.inject.version>
+		<xmlbeans.version>5.0.1</xmlbeans.version>
+		<spring-cloud-contract-wiremock.version>3.0.3</spring-cloud-contract-wiremock.version>
+		<wiremock.standalone.version>2.27.2</wiremock.standalone.version>
 	</properties>
 
 	<scm>
@@ -114,6 +119,11 @@
 			<dependency>
 				<groupId>no.nav.brevserver</groupId>
 				<artifactId>core</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>no.nav.brevserver</groupId>
+				<artifactId>arkiverBrev</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
@@ -257,11 +267,6 @@
 				<groupId>rtv-brev</groupId>
 				<artifactId>odapi</artifactId>
 				<version>1.0</version>
-			</dependency>
-			<dependency>
-				<groupId>xerces</groupId>
-				<artifactId>xercesImpl</artifactId>
-				<version>2.9.1</version>
 			</dependency>
 			<dependency>
 				<groupId>net.sf.dozer</groupId>
@@ -492,12 +497,48 @@
 				<version>${lombok.version}</version>
 				<scope>provided</scope>
 			</dependency>
+			<!--camel-->
 			<dependency>
 				<groupId>org.apache.camel.springboot</groupId>
-				<artifactId>camel-spring-boot-bom</artifactId>
+				<artifactId>camel-spring-boot-starter</artifactId>
 				<version>${camel.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.camel</groupId>
+				<artifactId>camel-core</artifactId>
+				<version>${camel.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.camel</groupId>
+				<artifactId>camel-jaxb</artifactId>
+				<version>${camel.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.camel</groupId>
+				<artifactId>camel-jms</artifactId>
+				<version>${camel.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.camel</groupId>
+				<artifactId>camel-quartz</artifactId>
+				<version>${camel.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.camel.springboot</groupId>
+				<artifactId>camel-stax-starter</artifactId>
+				<version>${camel.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>xerces</groupId>
+				<artifactId>xercesImpl</artifactId>
+				<version>2.9.1</version>
+			</dependency>
+
+
+			<dependency>
+				<groupId>javax.inject</groupId>
+				<artifactId>javax.inject</artifactId>
+				<version>${javax.inject.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.cxf</groupId>
@@ -575,6 +616,18 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.github.tomakehurst</groupId>
+			<artifactId>wiremock-standalone</artifactId>
+			<version>2.27.2</version><!--${wiremock.standalone.version}</version>-->
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>activemq-broker</artifactId>
+			<version>${activemq.version}</version>
 			<scope>test</scope>
 		</dependency>
 
