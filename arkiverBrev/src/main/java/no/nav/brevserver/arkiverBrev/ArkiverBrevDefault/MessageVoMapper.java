@@ -20,7 +20,7 @@ public class MessageVoMapper {
 
 	JmsBinding binding = new JmsBinding();
 
-	//TODO: Tviler på at denne vil funke. Må ryddes i
+	//TODO: Tviler på at denne vil funke. Må ryddes en del i. Evt endre måten det gjøres på
 	@Handler
 	public MessageVO mapMessageVo(Exchange exchange) throws BrevTechnicalException, BrevFunctionalException, JMSException {
 
@@ -30,6 +30,7 @@ public class MessageVoMapper {
 		return mzg;
 	}
 
+	//veldig halvtenkt
 	private static ActiveMQMessage createActiveMQMessage(Exchange exchange) throws JMSException, BrevFunctionalException {
 		Object body = exchange.getIn().getBody();
 		if( body != null)

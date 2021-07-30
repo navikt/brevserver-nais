@@ -86,26 +86,15 @@ public class ArkiverBrevRoute extends RouteBuilder {
 				.log(LoggingLevel.INFO, log, ARKIVER_BREV_ROUTE + " starter behandling av en mq melding")
 				.bean(messageVoMapper)
 				.bean(arkiverBrevService)
+				//Denne må settes til dynamisk out-kø.
+				//Det er vel mulig å sette en property på exchange så man kan ta
+				//.to("jms:" + exchange.getProperty("outko") - usikker på syntaxen akkurat her
 				.to("jms:" + deadletter.getQueueName());
 		//TODO: Trenger vi denne?
-		//.process(new IdsProcessor())
-
-		//.to("stax:no.nav.brevserver.arkiverBrev.XMLHandler")
-				/*.process(new Processor(){
-					public void process(Exchange exchange) throws Exception {
-						XMLHandler handler = exchange.getIn().getBody(XMLHandler.class);
-						handler.
-				}*/
 				//LoggID'er + logForsendelseId())
 				//TODO: xsd for brevserver? ETter hvert?
-				//.to("validator:no/nav/meldinger/virksomhet/dokdistfordeling/xsd/qdist008/out/distribuertilkanal.xsd")
-				//TODO: kan nok ikke kjøre en default unmarshal når formatene er så rare
+				//.to("validator:no.nav.brevserver.....brevserver.xsd")
+				//TODO: Vi kan vel ikke kjøre deault unmarshal når formatene er så rare
 				//.unmarshal(new JaxbDataFormat(JAXBContext.newInstance(DistribuerTilKanal.class)))
-				/*.bean(distribuerForsendelseTilDpiMapper)
-				.bean(qdist011Service)
-				.log(LoggingLevel.INFO, log, "qdist011 har sendt forsendelse med " + getIdsForLogging() + " til DPI")
-				.bean(dokdistAdministrerForsendelseUpdater, "updateStatusAndConversationId")
-				.log();*/
-
 	}
 }
