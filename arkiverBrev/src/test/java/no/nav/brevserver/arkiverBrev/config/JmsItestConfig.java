@@ -29,8 +29,8 @@ public class JmsItestConfig {
     }
 
     @Bean
-    public Queue deadletter(@Value("${deadletter_pe.queuename}") String deadletterPe){
-        return new ActiveMQQueue(deadletterPe);
+    public Queue deadletter(){
+        return new ActiveMQQueue("ActiveMQ.DLQ");
     }
 
     @Bean(initMethod = "start", destroyMethod = "stop")

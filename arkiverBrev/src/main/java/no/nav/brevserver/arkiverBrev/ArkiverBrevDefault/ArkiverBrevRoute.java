@@ -1,20 +1,23 @@
 package no.nav.brevserver.arkiverBrev.ArkiverBrevDefault;
 
 import com.ibm.msg.client.jms.DetailedJMSException;
+import no.nav.brevserver.service.queue.xml.beans.XMLHandler;
+import org.apache.camel.Exchange;
 import org.apache.camel.ExchangePattern;
 import org.apache.camel.LoggingLevel;
+import org.apache.camel.Processor;
 import org.apache.camel.ValidationException;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.stereotype.Component;
 
-import javax.jms.Queue;
 import javax.inject.Inject;
+import javax.jms.Queue;
 
 import static org.apache.camel.LoggingLevel.ERROR;
 
 @Component
 public class ArkiverBrevRoute extends RouteBuilder {
-	public static final String ARKIVER_BREV_ROUTE = "arkiverBrev";
+	public static final String ARKIVER_BREV_ROUTE = "direct:arkiverBrev";
 
 
 	private final Queue mottakArkiv;
@@ -56,7 +59,7 @@ public class ArkiverBrevRoute extends RouteBuilder {
 				.logExhaustedMessageBody(false)
 				//TODO: add logging
 				//.log(LoggingLevel.WARN, log, "${exception}; " )
-				.to("jms" + deadletter.getQueueName());
+				.to("jms:" + deadletter.getQueueName());
 
 		onException(DetailedJMSException.class)
 				.log(LoggingLevel.WARN, "DetailedJMSException oppstått i bestillBrev for forsendelse med  getIdsForLogging() . Melding sendt til funksjonell feilkø.")
@@ -65,31 +68,34 @@ public class ArkiverBrevRoute extends RouteBuilder {
 				.logExhaustedMessageHistory(false)
 				.logStackTrace(false)
 				.handled(true)
-				.to("jms" + deadletter.getQueueName());
+				.to("jms:" + deadletter.getQueueName());
 
 
-		from("jms" + mottakArkiv.getQueueName() + "?transacted=true&concurrentConsumers=1")
+		from("jms:" + mottakArkiv.getQueueName() + "?transacted=true&concurrentConsumers=1")
 				.to(ARKIVER_BREV_ROUTE);
-		from("jms" + mottakOnline.getQueueName() + "?transacted=true&concurrentConsumers=1")
+		from("jms:" + mottakOnline.getQueueName() + "?transacted=true&concurrentConsumers=1")
 				.to(ARKIVER_BREV_ROUTE);
 
 		from(ARKIVER_BREV_ROUTE)
+				.process(exchange -> {
+					System.out.println("test");
+				})
 				.routeId(ARKIVER_BREV_ROUTE)
 				.routePolicy(arkiverBrevMetricsRoutePolicy)
 				.setExchangePattern(ExchangePattern.InOnly)
 				.log(LoggingLevel.INFO, log, ARKIVER_BREV_ROUTE + " starter behandling av en mq melding")
-				//TODO: Trenger vi denne?
-				//.process(new IdsProcessor())
-				.log(LoggingLevel.INFO, log, " har mottatt forsendelse ")
-				//.to("stax:no.nav.brevserver.arkiverBrev.XMLHandler")
+				.bean(messageVoMapper)
+				.bean(arkiverBrevService)
+				.to("jms:" + deadletter.getQueueName());
+		//TODO: Trenger vi denne?
+		//.process(new IdsProcessor())
+
+		//.to("stax:no.nav.brevserver.arkiverBrev.XMLHandler")
 				/*.process(new Processor(){
 					public void process(Exchange exchange) throws Exception {
 						XMLHandler handler = exchange.getIn().getBody(XMLHandler.class);
 						handler.
 				}*/
-				.bean(messageVoMapper)
-				.bean(arkiverBrevService)
-				.to("jms:somewhere");
 				//LoggID'er + logForsendelseId())
 				//TODO: xsd for brevserver? ETter hvert?
 				//.to("validator:no/nav/meldinger/virksomhet/dokdistfordeling/xsd/qdist008/out/distribuertilkanal.xsd")

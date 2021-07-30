@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 
 @Configuration
-@Profile(("itest"))
+@Profile("itest")
 @EnableConfigurationProperties({
 		MqGatewayAlias.class,
 		SrvAppserverProperties.class
