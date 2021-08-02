@@ -12,10 +12,12 @@ import no.nav.brevserver.server.common.vo.KvitteringVO;
 import no.nav.brevserver.server.common.vo.MessageVO;
 import no.nav.brevserver.service.queue.xml.XMLService;
 import no.nav.brevserver.service.queue.xml.XMLServiceFactory;
+import org.springframework.stereotype.Component;
 
 /**
  * Produserer JMS tekstmeldinger, fortrinnsvis i XML.
  */
+@Component
 public class BIMessageProducer extends MessageProducer {
 
 	public BIMessageProducer() {

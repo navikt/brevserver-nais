@@ -2,17 +2,23 @@ package no.nav.brevserver.nais;
 
 import no.nav.brevserver.nais.support.AvbrytDokumentRequestMapper;
 import no.nav.brevserver.nais.support.FerdigstillDokumentRequestMapper;
+import no.nav.brevserver.nais.support.HentDokumentRequestMapper;
+import no.nav.brevserver.nais.support.HentDokumentResponseMapper;
 import no.nav.brevserver.nais.support.LagreDokumentRequestMapper;
+import no.nav.brevserver.server.common.config.KnappStatus;
 import no.nav.brevserver.server.common.exception.BrevException;
 import no.nav.brevserver.server.common.exception.BrevFunctionalException;
+import no.nav.brevserver.server.common.exception.BrevRuntimeException;
 import no.nav.brevserver.server.common.exception.BrevTechnicalException;
-import no.nav.brevserver.service.dokumentbehandling.to.HentDokumentRequest;
-import no.nav.brevserver.service.dokumentbehandling.to.HentDokumentResponse;
+import no.nav.brevserver.server.common.utility.PerformanceLogger;
 import no.nav.brevserver.server.common.vo.BrevStatusVO;
 import no.nav.brevserver.server.common.vo.BrevVO;
 import no.nav.brevserver.service.BrevlagerService;
+import no.nav.brevserver.service.dokumentbehandling.to.HentDokumentResponse;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.AvbrytDokumentRequest;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.FerdigstillDokumentRequest;
+import no.nav.tjenester.brevogarkiv.dokumentbehandling.HentDokumentRequest;
+import no.nav.tjenester.brevogarkiv.dokumentbehandling.HentDokumentResponse2;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.LagreDokumentRequest;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.PingRequest;
 import org.apache.log4j.MDC;
@@ -31,30 +37,51 @@ public class DokumentbehandlingProvider {
 	private final LagreDokumentRequestMapper lagreDokumentRequestMapper;
 	private final AvbrytDokumentRequestMapper avbrytDokumentRequestMapper;
 	private final FerdigstillDokumentRequestMapper ferdigstillDokumentRequestMapper;
+	private final HentDokumentRequestMapper hentDokumentRequestMapper;
+	private final HentDokumentResponseMapper hentDokumentResponseMapper;
 
 	@Autowired
 	public DokumentbehandlingProvider(BrevlagerService brevlagerService,
 									  LagreDokumentRequestMapper lagreDokumentRequestMapper,
 									  AvbrytDokumentRequestMapper avbrytDokumentRequestMapper,
-									  FerdigstillDokumentRequestMapper ferdigstillDokumentRequestMapper){
+									  FerdigstillDokumentRequestMapper ferdigstillDokumentRequestMapper,
+									  HentDokumentRequestMapper hentDokumentRequestMapper,
+									  HentDokumentResponseMapper hentDokumentResponseMapper){
 		this.brevlagerService = brevlagerService;
 		this.lagreDokumentRequestMapper = lagreDokumentRequestMapper;
 		this.avbrytDokumentRequestMapper = avbrytDokumentRequestMapper;
 		this.ferdigstillDokumentRequestMapper = ferdigstillDokumentRequestMapper;
+		this.hentDokumentRequestMapper = hentDokumentRequestMapper;
+		this.hentDokumentResponseMapper = hentDokumentResponseMapper;
 	}
 
-	public HentDokumentResponse hentDokument(HentDokumentRequest request) throws BrevTechnicalException, BrevFunctionalException {
-		BrevStatusVO brevStatus = request.getBrevStatus();
+	public HentDokumentResponse2 hentDokument(HentDokumentRequest request) throws BrevTechnicalException, BrevFunctionalException {
+		no.nav.brevserver.service.dokumentbehandling.to.HentDokumentRequest hentDokumentRequest = hentDokumentRequestMapper.map(request);
+		hentDokumentRequest.validate();
+		BrevStatusVO brevStatus = hentDokumentRequest.getBrevStatus();
 		BrevVO brev = brevlagerService.hentDokumentFromBrevlagerOrJoark(brevStatus);
-		return createResponse(brevStatus, brev);
+		return hentDokumentResponseMapper.map(createResponse(brevStatus, brev));
 	}
 
 	private HentDokumentResponse createResponse(BrevStatusVO brevStatus, BrevVO brev) {
 		HentDokumentResponse response = new HentDokumentResponse();
 		response.setContentType(brev.getContentType());
 		response.setDokumentData(brev.getBrevdata());
-		//response.setKnappStatus(controller.hentKnappStatus(brevStatus.getSystemID(), brevStatus.getBrevreferanse()).toString());
+		response.setKnappStatus(hentKnappStatus(brevStatus.getSystemID(), brevStatus.getBrevreferanse()).toString());
 		return response;
+	}
+
+	public KnappStatus hentKnappStatus(String systemId, String brevreferanse) {
+		BrevStatusVO result = null;
+		try {
+			result = brevlagerService.hentBrevStatus(systemId, brevreferanse);
+			if (result == null) {
+				return KnappStatus.getDefault();
+			}
+		} catch (BrevException e) {
+			throw new BrevRuntimeException(e.getMessage(), e);
+		}
+		return result.getKnappStatus();
 	}
 
 

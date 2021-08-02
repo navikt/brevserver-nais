@@ -22,4 +22,6 @@ public interface BrevlagerService {
 	void lagreDokument(LagreDokumentRequest map) throws BrevException;
 
 	void avbrytDokument(AvbrytDokumentRequest map) throws BrevException;
+
+	BrevStatusVO hentBrevStatus(String systemId, String brevreferanse) throws BrevTechnicalException;
 }

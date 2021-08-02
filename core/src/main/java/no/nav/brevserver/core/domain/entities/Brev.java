@@ -8,6 +8,8 @@ import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.Table;
@@ -22,8 +24,11 @@ import java.sql.Timestamp;
 @Setter
 public class Brev {
 
-	//TODO: Fix composite ID from brevreferanse og systemId
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "BLOBID", nullable = false)
+	private Long blobId;
+
 	@Column(name = "BREVREFERANSE")
 	private String brevreferanse;
 
@@ -43,6 +48,7 @@ public class Brev {
 	@Lob
 	private byte[] brevdata;
 
-	@Column(name = "OPPRETTET_TID")
+	@Column(name = "TIMESTAMP")
 	private Timestamp endret;
+
 }

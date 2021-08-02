@@ -18,8 +18,8 @@
 		<module>core</module>
 		<module>fagarkiv-consumer</module>
 		<module>service</module>
-		<module>app</module>
 		<module>brevserver-klient-applet</module>
+		<module>app</module>
 		<module>brevserver-asposeconfig</module>
 
 	</modules>
@@ -490,7 +490,6 @@
 				<groupId>org.projectlombok</groupId>
 				<artifactId>lombok</artifactId>
 				<version>${lombok.version}</version>
-				<scope>provided</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.camel.springboot</groupId>

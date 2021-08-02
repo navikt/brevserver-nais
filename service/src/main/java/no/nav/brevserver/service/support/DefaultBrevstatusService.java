@@ -33,7 +33,6 @@ public class DefaultBrevstatusService implements BrevstatusService {
 				return null;
 			} else {
 				return brevstatusList.get(0);
-				//brevstatus.setKnappStatus(KnappStatusUtil.getKnappStatus(brevStatus.getBrevmal()));
 			}
 		} catch (Exception e) {
 			throw new BrevTechnicalException(BrevTechnicalException.DATABASE_IKKE_TILGJENGELIG, e);
