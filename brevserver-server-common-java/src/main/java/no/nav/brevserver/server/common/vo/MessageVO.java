@@ -6,7 +6,7 @@ import java.io.UnsupportedEncodingException;
 
 import javax.jms.BytesMessage;
 import javax.jms.JMSException;
-import org.apache.activemq.command.ActiveMQMessage;
+import javax.jms.Message;
 import javax.jms.Queue;
 import javax.jms.TextMessage;
 

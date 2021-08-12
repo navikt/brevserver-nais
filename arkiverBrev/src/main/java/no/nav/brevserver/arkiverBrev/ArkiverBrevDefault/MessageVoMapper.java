@@ -24,16 +24,16 @@ public class MessageVoMapper {
 	@Handler
 	public MessageVO mapMessageVo(Exchange exchange) throws BrevTechnicalException, BrevFunctionalException, JMSException {
 
-		ActiveMQTextMessage message = createActiveMQMessage(exchange);
+		ActiveMQMessage message = createActiveMQMessage(exchange);
 		binding.appendJmsProperties(message, exchange);
-		MessageVO mzg = MessageVO(message);
+		MessageVO mzg = new MessageVO(message);
 		return mzg;
 	}
 
 	//veldig halvtenkt
 	private static ActiveMQMessage createActiveMQMessage(Exchange exchange) throws JMSException, BrevFunctionalException {
 		Object body = exchange.getIn().getBody();
-		if( body != null)
+		if( body != null) {
 			ActiveMQTextMessage answer = new ActiveMQTextMessage();
 			answer.setText((String) body);
 			return answer;

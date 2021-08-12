@@ -2,25 +2,20 @@ package no.nav.brevserver.arkiverBrev.ArkiverBrevDefault;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.brevserver.arkiverBrev.DialogueXMLParser;
-import no.nav.brevserver.core.domain.entities.Brevstatus;
 import no.nav.brevserver.server.common.config.Konstanter;
 import no.nav.brevserver.server.common.exception.BrevException;
 import no.nav.brevserver.server.common.exception.BrevTechnicalException;
 import no.nav.brevserver.server.common.type.SystemType;
 import no.nav.brevserver.server.common.utility.ArgumentValidator;
-import no.nav.brevserver.server.common.utility.PerformanceLogger;
 import no.nav.brevserver.server.common.vo.BrevStatusVO;
 import no.nav.brevserver.server.common.vo.FilType;
 import no.nav.brevserver.server.common.vo.KvitteringVO;
 import no.nav.brevserver.server.common.vo.MessageVO;
 import no.nav.brevserver.service.BrevlagerService;
-import no.nav.brevserver.service.BrevserverService;
 import no.nav.brevserver.service.BrevstatusService;
-import no.nav.brevserver.service.converter.BrevTilVoConverter;
 import no.nav.brevserver.service.converter.BrevstatusTilVoConverter;
 import no.nav.brevserver.service.queue.jms.MessageProducer;
 import no.nav.brevserver.service.queue.jms.MessageProducerFactory;
-import no.nav.brevserver.service.support.DefaultBrevtilgangService;
 import org.apache.camel.Handler;
 import org.springframework.stereotype.Component;
 
@@ -33,11 +28,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class ArkiverBrevService {
 
-	private DefaultBrevtilgangService defaultBrevTilgangService;
-	private BrevserverService brevserverService;
-	private BrevstatusService brevstatusService;
-	private BrevlagerService brevlagerService;
-	private BrevstatusTilVoConverter converter;
+	private final BrevstatusService brevstatusService;
+	private final BrevlagerService brevlagerService;
+	private final BrevstatusTilVoConverter converter;
+
+	public ArkiverBrevService(BrevstatusService brevstatusService, BrevlagerService brevlagerService, BrevstatusTilVoConverter converter) {
+		this.brevstatusService = brevstatusService;
+		this.brevlagerService = brevlagerService;
+		this.converter = converter;
+	}
 
 	private KvitteringVO generateKvittering(MessageVO messageVo) throws BrevTechnicalException {
 		KvitteringVO kvittering;
@@ -62,7 +61,6 @@ public class ArkiverBrevService {
 	/**
 	 * Forespørsel lagres i databasen. Deretter sendes den originale meldingen videre på definert kø.
 	 *
-	 * @see AbstractCommand#execute()
 	 */
 	//TODO: fix exceptions
 	@Handler
@@ -73,7 +71,7 @@ public class ArkiverBrevService {
 
 		messageVo.setBrevreferanse(kvittering.getBrevreferanse());
 
-		BrevStatusVO brevStatusVo = converter.convert(brevserverService.hentBrevStatus(kvittering.getSystemID(), kvittering.getBrevreferanse()));
+		BrevStatusVO brevStatusVo = brevstatusService.hentBrevStatus(kvittering.getSystemID(), kvittering.getBrevreferanse());
 		// Hvis ingen status så opprett en basert på det man vet
 		if (brevStatusVo == null) {
 			brevStatusVo = new BrevStatusVO();
