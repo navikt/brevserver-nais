@@ -1,5 +1,6 @@
 package no.nav.brevserver.dokarkiv.journalpost;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
 
@@ -8,7 +9,9 @@ import java.util.List;
 
 @Value
 @Builder
+@AllArgsConstructor
 public class SafJournalpostTo {
+
 	private final String tittel;
 	private final String tema;
 	private final String journalposttype;

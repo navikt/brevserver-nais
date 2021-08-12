@@ -23,7 +23,7 @@
   "FAGARKIV_ENDPOINTS_FAGARKIV": "https://dokarkiv-q1.dev.adeo.no/hentjournalsakinfo",
   "FAGARKIV_PROXY_HOST": "webproxy.nais",
   "FAGARKIV_PROXY_PORT": "8088",
-  "FAGARKIV_ENDPOINTS_DOKARKIV": "https://dokarkiv-q1.dev.adeo.no/hentjournalsakinfo",
+  "FAGARKIV_ENDPOINTS_DOKARKIV": "https://dokarkiv-q1.dev.adeo.no/rest/journalpostapi/v1/journalpost",
   "SECURITY_TOKEN_SERVICE_TOKEN_URL": "https://security-token-service.nais.preprod.local/rest/v1/sts",
   "SAF_ENDPOINT_URL": "https://saf-q1.nais.preprod.local/",
   "SRVBREVSERVER": "/serviceuser/data/dev/srvbrevserver",

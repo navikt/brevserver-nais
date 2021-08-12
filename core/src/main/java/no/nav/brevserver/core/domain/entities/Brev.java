@@ -5,8 +5,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import no.nav.brevserver.core.domain.entities.id.BrevreferanseSystemCompositeId;
 
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -24,16 +26,8 @@ import java.sql.Timestamp;
 @Setter
 public class Brev {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "BLOBID", nullable = false)
-	private Long blobId;
-
-	@Column(name = "BREVREFERANSE")
-	private String brevreferanse;
-
-	@Column(name = "SYSTEMID")
-	private String systemId;
+	@EmbeddedId
+	private BrevreferanseSystemCompositeId id;
 
 	@Column(name = "STATUS")
 	private String status;

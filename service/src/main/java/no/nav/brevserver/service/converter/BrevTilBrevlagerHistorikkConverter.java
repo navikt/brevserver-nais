@@ -13,12 +13,14 @@ public class BrevTilBrevlagerHistorikkConverter implements Converter<Brev, Brevl
 	@Override
 	public BrevlagerHistorikk convert(Brev brev) {
 		return BrevlagerHistorikk.builder()
-				.systemId(brev.getSystemId())
+				.brevreferanse(brev.getId().getBrevreferanse())
+				.systemId(brev.getId().getSystemId())
 				.brukerId(brev.getBrukerId())
 				.status(brev.getStatus())
 				.contentType(brev.getContentType())
 				.timestamp(brev.getEndret()!=null?brev.getEndret():new Timestamp(System.currentTimeMillis()))
 				.brevdata(brev.getBrevdata())
+				.vasket("0")
 				.build();
 	}
 }

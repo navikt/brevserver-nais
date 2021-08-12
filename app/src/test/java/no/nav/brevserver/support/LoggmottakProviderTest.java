@@ -1,0 +1,44 @@
+package no.nav.brevserver.support;
+
+import no.nav.brevserver.AbstractBrevserviceTest;
+import no.nav.brevserver.service.loggmottak.LoggmottakService;
+import no.nav.brevserver.ws.loggmottak.map.LoggRequestMapper;
+import no.nav.brevserver.ws.loggmottak.provider.LoggmottakProvider;
+import no.nav.tjenester.brevogarkiv.loggmottak.LoggRequest;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.springframework.test.context.junit4.SpringRunner;
+
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+/**
+ * Unit tests for LoggmottakProvider
+ *
+ * @author Joakim Bjørnstad, Visma Consulting
+ */
+@RunWith(SpringRunner.class)
+public class LoggmottakProviderTest {
+
+	@Mock
+	private LoggmottakService loggmottakServiceMock;
+	@Mock
+	private LoggRequestMapper loggRequestMapperMock;
+
+	@InjectMocks
+	private LoggmottakProvider loggmottakProvider;
+
+	@Test
+	public void shouldDelegateLoggToLoggmottakService() throws Exception {
+		LoggRequest wsRequest = new LoggRequest();
+		no.nav.brevserver.service.loggmottak.to.LoggRequest domainRequest =
+				new no.nav.brevserver.service.loggmottak.to.LoggRequest();
+		when(loggRequestMapperMock.map(wsRequest)).thenReturn(domainRequest);
+
+		loggmottakProvider.logg(wsRequest);
+
+		verify(loggmottakServiceMock).logg(domainRequest);
+	}
+}
