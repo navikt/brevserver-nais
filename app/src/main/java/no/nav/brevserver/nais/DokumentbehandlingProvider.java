@@ -6,15 +6,17 @@ import no.nav.brevserver.nais.support.HentDokumentRequestMapper;
 import no.nav.brevserver.nais.support.HentDokumentResponseMapper;
 import no.nav.brevserver.nais.support.LagreDokumentRequestMapper;
 import no.nav.brevserver.server.common.config.KnappStatus;
+import no.nav.brevserver.server.common.config.Konstanter;
 import no.nav.brevserver.server.common.exception.BrevException;
 import no.nav.brevserver.server.common.exception.BrevFunctionalException;
 import no.nav.brevserver.server.common.exception.BrevRuntimeException;
 import no.nav.brevserver.server.common.exception.BrevTechnicalException;
-import no.nav.brevserver.server.common.utility.PerformanceLogger;
+import no.nav.brevserver.server.common.type.SystemType;
 import no.nav.brevserver.server.common.vo.BrevStatusVO;
 import no.nav.brevserver.server.common.vo.BrevVO;
 import no.nav.brevserver.service.BrevlagerService;
-import no.nav.brevserver.service.dokumentbehandling.to.HentDokumentResponse;
+import no.nav.brevserver.service.BrevstatusService;
+import no.nav.brevserver.app.dokumentbehandling.to.HentDokumentResponse;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.AvbrytDokumentRequest;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.FerdigstillDokumentRequest;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.HentDokumentRequest;
@@ -34,6 +36,7 @@ import org.springframework.stereotype.Service;
 public class DokumentbehandlingProvider {
 
 	private final BrevlagerService brevlagerService;
+	private final BrevstatusService brevstatusService;
 	private final LagreDokumentRequestMapper lagreDokumentRequestMapper;
 	private final AvbrytDokumentRequestMapper avbrytDokumentRequestMapper;
 	private final FerdigstillDokumentRequestMapper ferdigstillDokumentRequestMapper;
@@ -42,12 +45,14 @@ public class DokumentbehandlingProvider {
 
 	@Autowired
 	public DokumentbehandlingProvider(BrevlagerService brevlagerService,
+									  BrevstatusService brevstatusService,
 									  LagreDokumentRequestMapper lagreDokumentRequestMapper,
 									  AvbrytDokumentRequestMapper avbrytDokumentRequestMapper,
 									  FerdigstillDokumentRequestMapper ferdigstillDokumentRequestMapper,
 									  HentDokumentRequestMapper hentDokumentRequestMapper,
 									  HentDokumentResponseMapper hentDokumentResponseMapper){
 		this.brevlagerService = brevlagerService;
+		this.brevstatusService = brevstatusService;
 		this.lagreDokumentRequestMapper = lagreDokumentRequestMapper;
 		this.avbrytDokumentRequestMapper = avbrytDokumentRequestMapper;
 		this.ferdigstillDokumentRequestMapper = ferdigstillDokumentRequestMapper;
@@ -56,10 +61,14 @@ public class DokumentbehandlingProvider {
 	}
 
 	public HentDokumentResponse2 hentDokument(HentDokumentRequest request) throws BrevTechnicalException, BrevFunctionalException {
-		no.nav.brevserver.service.dokumentbehandling.to.HentDokumentRequest hentDokumentRequest = hentDokumentRequestMapper.map(request);
+		no.nav.brevserver.app.dokumentbehandling.to.HentDokumentRequest hentDokumentRequest = hentDokumentRequestMapper.map(request);
 		hentDokumentRequest.validate();
 		BrevStatusVO brevStatus = hentDokumentRequest.getBrevStatus();
 		BrevVO brev = brevlagerService.hentDokumentFromBrevlagerOrJoark(brevStatus);
+		if (brev == null) {
+			throw new BrevRuntimeException("Brevserver fant ikke dokumentet med brevreferanse: "
+					+ brevStatus.getBrevreferanse());
+		}
 		return hentDokumentResponseMapper.map(createResponse(brevStatus, brev));
 	}
 
@@ -72,18 +81,16 @@ public class DokumentbehandlingProvider {
 	}
 
 	public KnappStatus hentKnappStatus(String systemId, String brevreferanse) {
-		BrevStatusVO result = null;
 		try {
-			result = brevlagerService.hentBrevStatus(systemId, brevreferanse);
+			BrevStatusVO result = brevstatusService.hentBrevStatus(systemId, brevreferanse);
 			if (result == null) {
 				return KnappStatus.getDefault();
 			}
+			return result.getKnappStatus();
 		} catch (BrevException e) {
 			throw new BrevRuntimeException(e.getMessage(), e);
 		}
-		return result.getKnappStatus();
 	}
-
 
 	public void lagreDokument(LagreDokumentRequest lagreDokumentRequest) throws BrevException {
 		String systemIdKey = "systemId";
@@ -91,8 +98,14 @@ public class DokumentbehandlingProvider {
 		try {
 			MDC.put(systemIdKey, lagreDokumentRequest.getSystemId());
 			MDC.put(brevreferanseKey, lagreDokumentRequest.getBrevreferanse());
-
-			brevlagerService.lagreDokument(lagreDokumentRequestMapper.map(lagreDokumentRequest));
+			no.nav.brevserver.app.dokumentbehandling.to.LagreDokumentRequest request = lagreDokumentRequestMapper.map(lagreDokumentRequest);
+			request.validate();
+			BrevVO brev = request.getBrev();
+			BrevStatusVO brevStatus = request.getBrevStatus();
+			SystemType systemType = brevStatus.getSystemID().startsWith("PE") ? SystemType.PE : SystemType.BI;
+			brev.setLagerStatus(Konstanter.BREVLAGER_STATUS_KLADD);
+			brevStatus.setStatus(Konstanter.BREVSTATUS_LAGRET_KLADD);
+			brevlagerService.lagreDokument(brev, brevStatus, systemType);
 		} finally {
 			MDC.remove(systemIdKey);
 			MDC.remove(brevreferanseKey);
@@ -100,14 +113,19 @@ public class DokumentbehandlingProvider {
 	}
 
 		public void avbrytDokument(AvbrytDokumentRequest avbrytDokumentRequest) throws BrevException {
-			brevlagerService.avbrytDokument(avbrytDokumentRequestMapper.map(avbrytDokumentRequest));
+			no.nav.brevserver.app.dokumentbehandling.to.AvbrytDokumentRequest request = avbrytDokumentRequestMapper.map(avbrytDokumentRequest);
+			request.validate();
+			BrevStatusVO brevStatus = request.getBrevStatus();
+			brevlagerService.avbrytDokument(brevStatus);
 		}
 
 		public void ferdigstillDokument(FerdigstillDokumentRequest ferdigstillDokumentRequest) throws BrevException {
-			brevlagerService.ferdigstillDokument(ferdigstillDokumentRequestMapper.map(ferdigstillDokumentRequest));
+			no.nav.brevserver.app.dokumentbehandling.to.FerdigstillDokumentRequest request = ferdigstillDokumentRequestMapper.map(ferdigstillDokumentRequest);
+			request.validate();
+			brevlagerService.ferdigstillBrev(request.getBrevStatus(), request.getBrev(), request.getPdfBrev());
 		}
 
-	public void ping(PingRequest pingRequest) {
+		public void ping(PingRequest pingRequest) {
 		brevlagerService.ping();
 	}
 }

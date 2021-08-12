@@ -2,7 +2,7 @@ package no.nav.brevserver.nais.support.impl;
 
 import no.nav.brevserver.nais.support.AbstractProviderDozerMapper;
 import no.nav.brevserver.nais.support.AvbrytDokumentRequestMapper;
-import no.nav.brevserver.service.dokumentbehandling.to.AvbrytDokumentRequest;
+import no.nav.brevserver.app.dokumentbehandling.to.AvbrytDokumentRequest;
 
 public class DefaultAvbrytDokumentRequest extends AbstractProviderDozerMapper implements AvbrytDokumentRequestMapper {
 

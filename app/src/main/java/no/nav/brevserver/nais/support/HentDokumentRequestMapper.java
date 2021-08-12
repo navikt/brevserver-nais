@@ -1,6 +1,6 @@
 package no.nav.brevserver.nais.support;
 
-import no.nav.brevserver.service.dokumentbehandling.to.HentDokumentRequest;
+import no.nav.brevserver.app.dokumentbehandling.to.HentDokumentRequest;
 
 /**
  * Interface for mapping between webservice and domain hentDokument requests

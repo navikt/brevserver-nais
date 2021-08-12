@@ -1,6 +1,6 @@
 package no.nav.brevserver.nais.support;
 
-import no.nav.brevserver.service.dokumentbehandling.to.FerdigstillDokumentRequest;
+import no.nav.brevserver.app.dokumentbehandling.to.FerdigstillDokumentRequest;
 
 public interface FerdigstillDokumentRequestMapper {
 

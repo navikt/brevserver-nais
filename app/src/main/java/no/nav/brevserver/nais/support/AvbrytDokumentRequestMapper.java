@@ -1,6 +1,6 @@
 package no.nav.brevserver.nais.support;
 
-import no.nav.brevserver.service.dokumentbehandling.to.AvbrytDokumentRequest;
+import no.nav.brevserver.app.dokumentbehandling.to.AvbrytDokumentRequest;
 
 
 public interface AvbrytDokumentRequestMapper {
