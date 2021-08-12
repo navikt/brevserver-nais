@@ -23,11 +23,7 @@ import javax.persistence.Table;
 public class BrevSystemTilgang {
 
 	@Id
-	@Column(name = "systemid")
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "brevsystilgang_seq")
-	@GenericGenerator(name = "brevsystilgang_seq", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator", parameters = {
-			@Parameter(name = "sequence_name", value = "T_BREVSYSTEMTILGANG_SEQ"),
-			@Parameter(name = "initial_value", value = "1")})
+	@Column(name = "systemid", nullable = false)
 	private String sysId;
 
 	@Column(name = "systempassord")

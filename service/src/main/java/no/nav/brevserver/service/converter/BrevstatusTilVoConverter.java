@@ -14,7 +14,7 @@ public class BrevstatusTilVoConverter implements Converter<Brevstatus, BrevStatu
 		}
 		BrevStatusVO brevStatusVO = new BrevStatusVO();
 		brevStatusVO.setBrevreferanse(brevstatus.getBrevreferanse());
-		brevStatusVO.setStatus(brevStatusVO.getStatus());
+		brevStatusVO.setStatus(brevstatus.getStatus());
 		brevStatusVO.setSystemID(brevstatus.getSystemID());
 		brevStatusVO.setBrevmal(brevstatus.getBrevmal());
 		brevStatusVO.setArkiver(brevstatus.getArkiver());

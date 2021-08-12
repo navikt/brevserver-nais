@@ -12,12 +12,12 @@ public class BrevTilVoConverter implements Converter<Brev, BrevVO> {
 	public BrevVO convert(Brev brev) {
 		BrevVO brevVO = new BrevVO();
 		brevVO.setBrevdata(brev.getBrevdata()!=null?brev.getBrevdata():null);
-		brevVO.setBrevreferanse(brev.getBrevreferanse());
+		brevVO.setBrevreferanse(brev.getId().getBrevreferanse());
 		brevVO.setBrukerID(brev.getBrukerId());
 		brevVO.setContentType(brev.getContentType());
 		brevVO.setEndret(brev.getEndret());
 		brevVO.setLagerStatus(brev.getStatus());
-		brevVO.setSystemID(brev.getSystemId());
+		brevVO.setSystemID(brev.getId().getSystemId());
 		return brevVO;
 	}
 }

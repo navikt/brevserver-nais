@@ -4,7 +4,7 @@ import no.nav.brevserver.fagarkiv.FagarkivProperties;
 import no.nav.brevserver.nais.Appconfig;
 import no.nav.brevserver.nais.DokumentbehandlingResource;
 import no.nav.brevserver.service.config.ServiceConfig;
-import no.nav.brevserver.ws.loggmottak.WebServiceConfig;
+import no.nav.brevserver.ws.WebServiceConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;

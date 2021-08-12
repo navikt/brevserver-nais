@@ -12,12 +12,6 @@
 	<artifactId>service</artifactId>
 
 	<dependencies>
-		<!--
-		<dependency>
-			<groupId>no.nav.brevserver</groupId>
-			<artifactId>repository</artifactId>
-		</dependency>
-		-->
 		<dependency>
 			<groupId>no.nav.brevserver</groupId>
 			<artifactId>core</artifactId>
@@ -50,7 +44,18 @@
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
-			<version>4.5.13</version>
+		</dependency>
+		<!-- Test -->
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>no.nav.brevserver</groupId>
+			<artifactId>brevserver-server-common-java</artifactId>
+			<type>test-jar</type>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 </project>

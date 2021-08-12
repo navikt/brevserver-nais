@@ -1,5 +1,6 @@
 package no.nav.brevserver.service.config;
 
+import no.nav.brevserver.core.cache.LokalCacheConfig;
 import no.nav.brevserver.dokarkiv.config.FagarkivConfig;
 import no.nav.brevserver.fagarkiv.FagarkivProperties;
 import org.apache.http.client.HttpClient;
@@ -14,7 +15,7 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 
 
 @Configuration
-@Import({RepositoryConfig.class, FagarkivProperties.class, FagarkivConfig.class})
+@Import({RepositoryConfig.class, FagarkivProperties.class, FagarkivConfig.class, LokalCacheConfig.class})
 public class ServiceConfig {
 
 	@Bean

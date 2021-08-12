@@ -1,9 +1,7 @@
 package no.nav.brevserver.service.queue.jms;
 
 import no.nav.brevserver.server.common.exception.BrevTechnicalException;
-import no.nav.brevserver.server.common.jms.JMSAccessor;
 import no.nav.brevserver.server.common.log.Log;
-import no.nav.brevserver.server.common.utility.PerformanceLogger;
 import no.nav.brevserver.server.common.vo.BrevStatusVO;
 import no.nav.brevserver.server.common.vo.KvitteringVO;
 import no.nav.brevserver.server.common.vo.MessageVO;

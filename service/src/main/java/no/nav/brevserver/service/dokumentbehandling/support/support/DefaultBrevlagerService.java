@@ -1,0 +1,288 @@
+package no.nav.brevserver.service.dokumentbehandling.support.support;
+
+import lombok.extern.slf4j.Slf4j;
+import no.nav.brevserver.core.domain.entities.Brev;
+import no.nav.brevserver.core.domain.entities.id.BrevreferanseSystemCompositeId;
+import no.nav.brevserver.core.repository.BrevRepository;
+import no.nav.brevserver.fagarkiv.dokarkiv.DokarkivConsumer;
+import no.nav.brevserver.fagarkiv.dokarkiv.impl.DokarkivService;
+import no.nav.brevserver.fagarkiv.saf.SafConsumer;
+import no.nav.brevserver.server.common.config.Konstanter;
+import no.nav.brevserver.server.common.exception.BrevException;
+import no.nav.brevserver.server.common.exception.BrevFunctionalException;
+import no.nav.brevserver.server.common.exception.BrevRuntimeException;
+import no.nav.brevserver.server.common.exception.BrevTechnicalException;
+import no.nav.brevserver.server.common.type.SystemType;
+import no.nav.brevserver.server.common.utility.ArgumentValidator;
+import no.nav.brevserver.server.common.vo.BrevStatusVO;
+import no.nav.brevserver.server.common.vo.BrevVO;
+import no.nav.brevserver.server.common.vo.FilType;
+import no.nav.brevserver.server.common.vo.KvitteringVO;
+import no.nav.brevserver.service.BrevlagerService;
+import no.nav.brevserver.service.BrevstatusService;
+import no.nav.brevserver.service.BrevtilgangService;
+import no.nav.brevserver.service.converter.BrevTilVoConverter;
+import no.nav.brevserver.service.converter.BrevstatusTilVoConverter;
+import no.nav.brevserver.service.converter.FileConverter;
+import no.nav.brevserver.service.converter.VoTilBrevConverter;
+import no.nav.brevserver.service.converter.VoTilBrevstatusConverter;
+import no.nav.brevserver.service.queue.KoService;
+import no.nav.brevserver.service.queue.jms.BIMessageProducer;
+import no.nav.brevserver.service.queue.xml.XMLService;
+import no.nav.brevserver.service.queue.xml.XMLServiceFactory;
+import no.nav.brevserver.service.utility.KnappStatusUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
+
+@Service
+@Transactional
+@Slf4j
+public class DefaultBrevlagerService implements BrevlagerService {
+
+	private static String LAGER_STATUS_A = "A";
+
+	private final BrevstatusService brevstatusService;
+	private final BrevRepository brevRepository;
+	private final DefaultBrevlagerHistorikkService defaultBrevlagerHistorikkService;
+	private final BrevTilVoConverter brevTilVoConverter;
+	private final VoTilBrevConverter voTilBrevConverter;
+	private final VoTilBrevstatusConverter voTilBrevstatusConverter;
+	private final BrevstatusTilVoConverter brevstatusTilVoConverter;
+	private final BrevtilgangService brevtilgangService;
+	private final KoService koService;
+	private final DokarkivService dokarkivService;
+	private final SafConsumer safConsumer;
+	private final KnappStatusUtil knappStatusUtil;
+	private final BIMessageProducer biMessageProducer;
+
+	@Autowired
+	public DefaultBrevlagerService(BrevTilVoConverter brevTilVoConverter,
+								   BrevstatusService brevstatusService,
+								   BrevRepository brevRepository,
+								   VoTilBrevConverter voTilBrevConverter,
+								   DefaultBrevlagerHistorikkService defaultBrevlagerHistorikkService,
+								   VoTilBrevstatusConverter voTilBrevstatusConverter,
+								   BrevstatusTilVoConverter brevstatusTilVoConverter,
+								   BrevtilgangService brevtilgangService, KoService koService,
+								   DokarkivService dokarkivService,
+								   SafConsumer safConsumer,
+								   KnappStatusUtil knappStatusUtil,
+								   BIMessageProducer biMessageProducer) {
+		this.brevRepository = brevRepository;
+		this.brevTilVoConverter = brevTilVoConverter;
+		this.voTilBrevstatusConverter = voTilBrevstatusConverter;
+		this.defaultBrevlagerHistorikkService = defaultBrevlagerHistorikkService;
+		this.voTilBrevConverter = voTilBrevConverter;
+		this.brevstatusTilVoConverter = brevstatusTilVoConverter;
+		this.brevtilgangService = brevtilgangService;
+		this.koService = koService;
+		this.brevstatusService = brevstatusService;
+		this.dokarkivService = dokarkivService;
+		this.safConsumer = safConsumer;
+		this.knappStatusUtil = knappStatusUtil;
+		this.biMessageProducer = biMessageProducer;
+	}
+
+
+	@Override
+	public BrevVO getBrev(String systemID, String brevReferanse) throws BrevTechnicalException {
+		BrevVO brevVO = null;
+		try {
+			Optional<Brev> brevOpt = brevRepository.findById(BrevreferanseSystemCompositeId.builder().systemId(systemID).brevreferanse(brevReferanse).build());
+			if (brevOpt.isPresent()) {
+				brevVO = brevTilVoConverter.convert(brevOpt.get());
+				translateContentTypeDocxFromDb2(brevVO);
+			}
+		} catch (RuntimeException e) {
+			throw new BrevTechnicalException(BrevTechnicalException.DATABASE_IKKE_TILGJENGELIG, e);
+		}
+		return brevVO;
+	}
+
+	@Override
+	public BrevStatusVO lagreBrev(BrevVO brev, BrevStatusVO brevstatus) throws BrevTechnicalException {
+		try {
+			backupIfExistingBrev(brev.getBrevreferanse(), brev.getSystemID());
+			BrevStatusVO gmlStatus = brevstatusService.lagreBrevStatus(brevstatus);
+			translateContentTypeDocxToDb2(brev);
+			brevRepository.save(voTilBrevConverter.convert(brev));
+			return gmlStatus;
+		} catch (RuntimeException e) {
+			throw new BrevTechnicalException(BrevTechnicalException.DATABASE_IKKE_TILGJENGELIG, e);
+		}
+	}
+
+	@Override
+	public void ferdigstillBrev(BrevStatusVO brevStatus, BrevVO redBrev, BrevVO pdfBrev) throws BrevException {
+		try {
+			verifyChangeRequest(brevStatus);
+			brevStatus.setStatus(Konstanter.BREVSTATUS_FERDIG);
+			brevStatus.setSkrivertype(Konstanter.SKRIVERTYPE_INGEN);
+			redBrev.setLagerStatus(Konstanter.BREVLAGER_STATUS_KLADD);
+			pdfBrev.setLagerStatus(Konstanter.BREVLAGER_STATUS_FERDIG);
+
+			brevstatusService.lagreBrevStatus(brevStatus);
+			if (brevStatus.getSystemID().startsWith(SystemType.PE.toString())) {
+				dokarkivService.lagreFerdigstiltDokument(brevStatus.getBrevreferanse(), redBrev, pdfBrev);
+			} else {
+				brevferdigstillBrevlagerDokument(brevStatus, redBrev, pdfBrev);
+			}
+			SystemType systemType = brevStatus.getSystemID().startsWith("PE") ? SystemType.PE : SystemType.BI;
+			koService.sendKvittering(pdfBrev, brevStatus, systemType, brevStatus.getReturKoe());
+		}catch (RuntimeException e) {
+			throw new BrevTechnicalException(BrevTechnicalException.DATABASE_IKKE_TILGJENGELIG, e);
+		}
+	}
+
+	@Override
+	public BrevVO hentDokumentFromBrevlagerOrJoark(BrevStatusVO brevStatus) throws BrevTechnicalException, BrevFunctionalException {
+		checkRequiredFields(brevStatus.getSystemID(), brevStatus.getBrevreferanse(), brevStatus.getToken());
+		BrevVO result = null;
+		if (sjekkSystemTokenTilgang(brevStatus.getSystemID(), brevStatus.getBrevreferanse(), brevStatus.getToken())) {
+			if (brevStatus.getSystemID().startsWith(SystemType.PE.toString())) {
+				result = hentDokumentFraJOARK(brevStatus.getBrevreferanse());
+			} else {
+				result = getBrev(brevStatus.getSystemID(), brevStatus.getBrevreferanse());
+			}
+		}
+		return result;
+	}
+
+	@Override
+	public void ping() {
+		//Return databasecheck
+	}
+
+	private void brevferdigstillBrevlagerDokument(BrevStatusVO brevStatus, BrevVO redBrevVo, BrevVO pdfBrevVo) throws BrevTechnicalException {
+		translateContentTypeDocxToDb2(redBrevVo);
+		Brev redBrev = voTilBrevConverter.convert(redBrevVo);
+		Brev pdfBrev = voTilBrevConverter.convert(pdfBrevVo);
+		backupIfExistingBrev(pdfBrevVo.getBrevreferanse(), pdfBrevVo.getSystemID());
+		defaultBrevlagerHistorikkService.insertHistorikk(redBrev);
+		brevRepository.save(pdfBrev);
+	}
+
+	@Override
+	public void avbrytDokument(BrevStatusVO brevStatus) throws BrevException {
+
+		ArgumentValidator.isNotNull(brevStatus);
+		verifyChangeRequest(brevStatus);
+		brevStatus.setStatus(Konstanter.BREVSTATUS_AVBRUTT);
+		brevstatusService.lagreBrevStatus(brevStatus);
+
+		if (brevStatus.getReturKoe() != null) {
+			KvitteringVO kvittering = new KvitteringVO();
+			kvittering.setSystemID(brevStatus.getSystemID());
+			kvittering.setBrevreferanse(brevStatus.getBrevreferanse());
+			brevStatus.setStatus(Konstanter.BREVSTATUS_AVBRUTT);
+
+			XMLService service = XMLServiceFactory.getInstance().createXMLService();
+			String xmlKvittering = service.unmarshal(kvittering, brevStatus);
+			biMessageProducer.sendReturMelding(brevStatus.getReturKoe(), false, null, xmlKvittering);
+		}
+		log.info("Brevet ble avbrutt");
+	}
+
+	@Override
+	public void lagreDokument(BrevVO brev, BrevStatusVO brevStatusVO, SystemType systemType) throws BrevException {
+		ArgumentValidator.isNotNull(brev);
+		ArgumentValidator.isNotNull(brevStatusVO);
+		verifyChangeRequest(brevStatusVO);
+		if (brevStatusVO.getSystemID().startsWith(SystemType.PE.toString())) {
+			lagreJoarkDokument(brev, brevStatusVO, systemType, brevStatusVO.getReturKoe());
+		} else {
+			lagreBrev(brev, brevStatusVO);
+		}
+		koService.sendKvittering(brev, brevStatusVO, systemType, brevStatusVO.getReturKoe());
+	}
+
+
+
+
+	private boolean backupIfExistingBrev(String brevreferanse, String systemID) throws BrevTechnicalException {
+
+		Optional<Brev> brevOpt = brevRepository.findById(BrevreferanseSystemCompositeId.builder().systemId(systemID).brevreferanse(brevreferanse).build());
+		if (brevOpt.isPresent()) {
+			Brev brev = brevOpt.get();
+			if (brev.getStatus().equals(Konstanter.BREVLAGER_STATUS_FERDIG)) {
+				throw new BrevTechnicalException("Brevet har status = '" + Konstanter.BREVLAGER_STATUS_FERDIG
+						+ "' og kan ikke endres");
+			}
+			defaultBrevlagerHistorikkService.insertHistorikk(brev);
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	private void lagreJoarkDokument(BrevVO brev, BrevStatusVO brevstatus, SystemType systemType, String returKoe)
+			throws BrevTechnicalException {
+		dokarkivService.lagreDokument(brevstatus.getBrevreferanse(), brev.getContentType(), brev.getBrevdata());
+	}
+
+	protected void verifyChangeRequest(BrevStatusVO brevStatus) throws BrevException {
+		checkRequiredFields(brevStatus.getSystemID(), brevStatus.getBrevreferanse(), brevStatus.getToken());
+		BrevStatusVO oldBrevStatus = brevstatusService.hentBrevStatus(brevStatus.getSystemID(), brevStatus.getBrevreferanse());
+		if (oldBrevStatus != null) {
+			sjekkSystemTokenTilgang(brevStatus.getSystemID(), brevStatus.getBrevreferanse(), brevStatus.getToken());
+			verifyEditableStatus(oldBrevStatus);
+		}
+	}
+
+	private void verifyEditableStatus(BrevStatusVO brevStatus) throws BrevException {
+		if (Konstanter.BREVSTATUS_FERDIG.equals(brevStatus.getStatus())
+				|| Konstanter.BREVSTATUS_UTSKRIFT.equals(brevStatus.getStatus())) {
+			throw new BrevFunctionalException("Brevet med brevreferanse " + brevStatus.getBrevreferanse() + " har status " + brevStatus.getStatus() + " og kan ikke endres");
+		}
+	}
+
+	private boolean sjekkSystemTokenTilgang(String systemID, String brevreferanse, String token) throws BrevTechnicalException {
+		return brevtilgangService.sjekkTilgang(systemID, brevreferanse, token);
+	}
+
+	private BrevVO hentDokumentFraJOARK(String brevreferanse) throws
+			BrevTechnicalException, BrevFunctionalException {
+		BrevVO result = safConsumer.hentDokument(brevreferanse);
+
+		if (LAGER_STATUS_A.equals(result.getLagerStatus()) && result.getContentType().equals(FilType.RTF.getContentType())) {
+			konverterRtfTilPdf(result, brevreferanse);
+		}
+		return result;
+	}
+
+	private void konverterRtfTilPdf(BrevVO result, String brevreferanse) throws BrevTechnicalException {
+		try {
+			result.setBrevdata(FileConverter.getInstance().convertToPdf(result.getBrevdata()));
+			result.setContentType(FilType.PDF.getContentType());
+		} catch (Exception e) {
+			throw new BrevTechnicalException("Greide ikke å konvertere dokument med brevreferanse " + brevreferanse
+					+ " til pdf", e);
+		}
+	}
+
+	private void translateContentTypeDocxToDb2(BrevVO brevVO) {
+		if (brevVO.getContentType() != null && brevVO.getContentType().equals(FilType.DOCX.getContentType())) {
+			brevVO.setContentType(Konstanter.CONTENTTYPE_DOCX_SHORT);
+		}
+	}
+
+	private void translateContentTypeDocxFromDb2(BrevVO brevVO) {
+		if (brevVO.getContentType() != null && brevVO.getContentType().equals(Konstanter.CONTENTTYPE_DOCX_SHORT)) {
+			brevVO.setContentType(FilType.DOCX.getContentType());
+		}
+	}
+
+	protected void checkRequiredFields(String systemId, String brevreferanse, String token) throws BrevTechnicalException {
+		if (systemId == null) {
+			throw new BrevTechnicalException("Manglende obligatorisk felt: systemId");
+		} else if (brevreferanse == null) {
+			throw new BrevTechnicalException("Manglende obligatorisk felt: brevreferanse");
+		} else if (token == null) {
+			throw new BrevTechnicalException("Manglende obligatorisk felt: token");
+		}
+	}
+
+}

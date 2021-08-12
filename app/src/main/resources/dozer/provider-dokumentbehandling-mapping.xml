@@ -6,7 +6,7 @@
 	<configuration>
 		<custom-converters>
 			<converter type="no.nav.brevserver.provider.map.converters.HentDokumentResponseCustomConverter">
-				<class-a>no.nav.brevserver.service.dokumentbehandling.to.HentDokumentResponse</class-a>
+				<class-a>no.nav.brevserver.app.dokumentbehandling.to.HentDokumentResponse</class-a>
 				<class-b>no.nav.tjenester.brevogarkiv.dokumentbehandling.HentDokumentResponse2</class-b>
 			</converter>
 		</custom-converters>
@@ -15,7 +15,7 @@
 	<!-- hentDokument -->
 	<mapping>
 		<class-a>no.nav.tjenester.brevogarkiv.dokumentbehandling.HentDokumentRequest</class-a>
-		<class-b>no.nav.brevserver.service.dokumentbehandling.to.HentDokumentRequest</class-b>
+		<class-b>no.nav.brevserver.app.dokumentbehandling.to.HentDokumentRequest</class-b>
 		<field>
 			<a>systemId</a>
 			<b>brevStatus.systemID</b>
@@ -30,14 +30,14 @@
 		</field>
 	</mapping>
 	<mapping>
-		<class-a>no.nav.brevserver.service.dokumentbehandling.to.HentDokumentResponse</class-a>
+		<class-a>no.nav.brevserver.app.dokumentbehandling.to.HentDokumentResponse</class-a>
 		<class-b>no.nav.tjenester.brevogarkiv.dokumentbehandling.HentDokumentResponse2</class-b>
 	</mapping>
 
 	<!-- lagreDokument -->
 	<mapping>
 		<class-a>no.nav.tjenester.brevogarkiv.dokumentbehandling.LagreDokumentRequest</class-a>
-		<class-b>no.nav.brevserver.service.dokumentbehandling.to.LagreDokumentRequest</class-b>
+		<class-b>no.nav.brevserver.app.dokumentbehandling.to.LagreDokumentRequest</class-b>
 		<field>
 			<a>systemId</a>
 			<b>brevStatus.systemID</b>
@@ -87,7 +87,7 @@
 	<!-- ferdigstillDokument -->
 	<mapping>
 		<class-a>no.nav.tjenester.brevogarkiv.dokumentbehandling.FerdigstillDokumentRequest</class-a>
-		<class-b>no.nav.brevserver.service.dokumentbehandling.to.FerdigstillDokumentRequest</class-b>
+		<class-b>no.nav.brevserver.app.dokumentbehandling.to.FerdigstillDokumentRequest</class-b>
 		<field>
 			<a>systemId</a>
 			<b>brevStatus.systemID</b>
@@ -161,7 +161,7 @@
 	<!-- avbrytDokument -->
 	<mapping>
 		<class-a>no.nav.tjenester.brevogarkiv.dokumentbehandling.AvbrytDokumentRequest</class-a>
-		<class-b>no.nav.brevserver.service.dokumentbehandling.to.AvbrytDokumentRequest</class-b>
+		<class-b>no.nav.brevserver.app.dokumentbehandling.to.AvbrytDokumentRequest</class-b>
 		<field>
 			<a>systemId</a>
 			<b>brevStatus.systemID</b>

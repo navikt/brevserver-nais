@@ -6,16 +6,17 @@ import no.nav.brevserver.server.common.exception.BrevTechnicalException;
 import no.nav.brevserver.server.common.jms.JMSAccessor;
 import no.nav.brevserver.server.common.log.Log;
 import no.nav.brevserver.server.common.utility.ArgumentValidator;
-import no.nav.brevserver.server.common.utility.PerformanceLogger;
 import no.nav.brevserver.server.common.vo.BrevStatusVO;
 import no.nav.brevserver.server.common.vo.KvitteringVO;
 import no.nav.brevserver.server.common.vo.MessageVO;
 import no.nav.brevserver.service.queue.xml.XMLService;
 import no.nav.brevserver.service.queue.xml.XMLServiceFactory;
+import org.springframework.stereotype.Component;
 
 /**
  * Produserer JMS tekstmeldinger, fortrinnsvis i XML.
  */
+@Component
 public class PEMessageProducer extends MessageProducer {
 
 	public PEMessageProducer() {
@@ -41,7 +42,6 @@ public class PEMessageProducer extends MessageProducer {
 	 */
 	public void deadLetter(MessageVO msgVO) throws BrevTechnicalException {
 		String methodSig = "PEMessageProducer.deadLetter()";
-		PerformanceLogger p = new PerformanceLogger(methodSig);
 
 		boolean setReplyQueue = ConfigManager.getInstance().getBool(ConfigManager.DEADLETTER_REPLY_QUEUE_PE, true)
 				&& msgVO.getReplyQueueName() != null;

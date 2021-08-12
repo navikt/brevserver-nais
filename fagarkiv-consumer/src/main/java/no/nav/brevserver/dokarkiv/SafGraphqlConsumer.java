@@ -53,8 +53,8 @@ public class SafGraphqlConsumer {
 		try {
 			HttpHeaders httpHeaders = createAuthHeaderFromToken(authorizationHeader);
 
-			ResponseEntity<SafJsonJournalpost> responseEntity = restTemplate.exchange(graphQLurl, HttpMethod.POST, new HttpEntity<>(requestToJson(graphQLRequest), httpHeaders), SafJsonJournalpost.class);
-
+			ResponseEntity test = restTemplate.exchange(graphQLurl, HttpMethod.POST, new HttpEntity<>(requestToJson(graphQLRequest), httpHeaders), SafJsonJournalpost.class);
+			ResponseEntity<SafJsonJournalpost> responseEntity = test;
 			if (responseEntity.getBody() == null || responseEntity.getBody().getData() == null || responseEntity.getBody()
 					.getData().getJournalpost() == null) {
 				throw new SafJournalpostIkkeFunnetFunctionalException("Ingen journalpost ble funnet");

@@ -1,18 +1,16 @@
 package no.nav.brevserver.nais;
 
 import io.swagger.annotations.Api;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.brevserver.nais.swagger.SwaggerLagreBrev;
 import no.nav.brevserver.server.common.exception.BrevException;
 import no.nav.brevserver.server.common.exception.BrevFunctionalException;
 import no.nav.brevserver.server.common.exception.BrevSecurityException;
-
 import no.nav.brevserver.server.common.exception.BrevTechnicalException;
-import no.nav.brevserver.service.dokumentbehandling.to.HentDokumentRequest;
-import no.nav.brevserver.service.dokumentbehandling.to.HentDokumentResponse;
+import no.nav.tjenester.brevogarkiv.dokumentbehandling.HentDokumentRequest;
+import no.nav.tjenester.brevogarkiv.dokumentbehandling.HentDokumentResponse2;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.LagreDokumentRequest;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.PingRequest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,10 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(description = "Tjenester for å arkivere i brevserver")
 @RequestMapping("rest")
 @RestController
+@Slf4j
 public class DokumentbehandlingResource {
-
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
-
 
 	private static final String EXCEPTION_MESSAGE = "SOAPkall feilet";
 
@@ -39,22 +35,21 @@ public class DokumentbehandlingResource {
 
 
 	@GetMapping("/hent")
-	public @ResponseBody HentDokumentResponse hentDokument(HentDokumentRequest hentDokumentRequest) {
-		hentDokumentRequest.validate();
+	public @ResponseBody HentDokumentResponse2 hentDokument(HentDokumentRequest hentDokumentRequest) {
+
 		try {
 			return dokumentbehandlingProvider.hentDokument(hentDokumentRequest);
 		} catch (RuntimeException e) {
 			if (e.getCause() != null && e.getCause() instanceof BrevSecurityException) {
 				throw e;
 			}
-			logger.error("hentDokument", EXCEPTION_MESSAGE, e);
+			log.error("hentDokument", EXCEPTION_MESSAGE, e);
 			throw e;
-			//TODO: Exceptionhandling
 		} catch (BrevTechnicalException e) {
-			e.printStackTrace();
+			log.warn("hentDokument", e);
 			throw new RuntimeException(e.getMessage());
 		} catch (BrevFunctionalException e) {
-			e.printStackTrace();
+			log.warn("hentDokument", e);
 			throw new RuntimeException(e.getMessage());
 		}
 	}
@@ -65,7 +60,7 @@ public class DokumentbehandlingResource {
 		try {
 			dokumentbehandlingProvider.lagreDokument(lagreDokumentRequest);
 		} catch (RuntimeException e) {
-			logger.error("lagreDokument", EXCEPTION_MESSAGE, e);
+			log.error("lagreDokument", EXCEPTION_MESSAGE, e);
 			throw e;
 		}
 	}
@@ -95,7 +90,7 @@ public class DokumentbehandlingResource {
 		try {
 			dokumentbehandlingProvider.ping(pingRequest);
 		} catch (RuntimeException e) {
-			logger.error("ping", EXCEPTION_MESSAGE, e);
+			log.error("ping", EXCEPTION_MESSAGE, e);
 			throw e;
 		}
 	}
