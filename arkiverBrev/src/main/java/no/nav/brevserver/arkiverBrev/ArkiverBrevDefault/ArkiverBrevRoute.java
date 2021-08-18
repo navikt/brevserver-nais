@@ -1,11 +1,8 @@
 package no.nav.brevserver.arkiverBrev.ArkiverBrevDefault;
 
 import com.ibm.msg.client.jms.DetailedJMSException;
-import no.nav.brevserver.service.queue.xml.beans.XMLHandler;
-import org.apache.camel.Exchange;
 import org.apache.camel.ExchangePattern;
 import org.apache.camel.LoggingLevel;
-import org.apache.camel.Processor;
 import org.apache.camel.ValidationException;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.stereotype.Component;
@@ -13,18 +10,19 @@ import org.springframework.stereotype.Component;
 import javax.inject.Inject;
 import javax.jms.Queue;
 
+import static no.nav.brevserver.arkiverBrev.util.Utils.REPLY_QUEUE_NAME;
 import static org.apache.camel.LoggingLevel.ERROR;
 
 @Component
 public class ArkiverBrevRoute extends RouteBuilder {
 	public static final String ARKIVER_BREV_ROUTE = "direct:arkiverBrev";
+	private final String ROUTE_OPTIONS = "?transacted=true&concurrentConsumers=1?mapJmsMessage=false";
 
 
 	private final Queue mottakArkiv;
 	private final Queue mottakOnline;
 	private final Queue deadletter;
 	private ArkiverBrevMetricsRoutePolicy arkiverBrevMetricsRoutePolicy;
-	private final MessageVoMapper messageVoMapper;
 	private final ArkiverBrevService arkiverBrevService;
 
 
@@ -33,13 +31,11 @@ public class ArkiverBrevRoute extends RouteBuilder {
 							Queue mottakOnline,
 							Queue deadletter,
 							ArkiverBrevMetricsRoutePolicy arkiverBrevMetricsRoutePolicy,
-							MessageVoMapper messageVoMapper,
 							ArkiverBrevService arkiverBrevService) {
 		this.mottakArkiv = mottakArkiv;
 		this.mottakOnline = mottakOnline;
 		this.deadletter = deadletter;
 		this.arkiverBrevMetricsRoutePolicy = arkiverBrevMetricsRoutePolicy;
-		this.messageVoMapper = messageVoMapper;
 		this.arkiverBrevService = arkiverBrevService;
 	}
 
@@ -71,9 +67,9 @@ public class ArkiverBrevRoute extends RouteBuilder {
 				.to("jms:" + deadletter.getQueueName());
 
 
-		from("jms:" + mottakArkiv.getQueueName() + "?transacted=true&concurrentConsumers=1")
+		from("jms:" + mottakArkiv.getQueueName() + ROUTE_OPTIONS)
 				.to(ARKIVER_BREV_ROUTE);
-		from("jms:" + mottakOnline.getQueueName() + "?transacted=true&concurrentConsumers=1")
+		from("jms:" + mottakOnline.getQueueName() + ROUTE_OPTIONS)
 				.to(ARKIVER_BREV_ROUTE);
 
 		from(ARKIVER_BREV_ROUTE)
@@ -84,12 +80,8 @@ public class ArkiverBrevRoute extends RouteBuilder {
 				.routePolicy(arkiverBrevMetricsRoutePolicy)
 				.setExchangePattern(ExchangePattern.InOnly)
 				.log(LoggingLevel.INFO, log, ARKIVER_BREV_ROUTE + " starter behandling av en mq melding")
-				.bean(messageVoMapper)
 				.bean(arkiverBrevService)
-				//Denne må settes til dynamisk out-kø.
-				//Det er vel mulig å sette en property på exchange så man kan ta
-				//.to("jms:" + exchange.getProperty("outko") - usikker på syntaxen akkurat her
-				.to("jms:" + deadletter.getQueueName());
+				.to("jms:" + exchangeProperty(REPLY_QUEUE_NAME));
 		//TODO: Trenger vi denne?
 				//LoggID'er + logForsendelseId())
 				//TODO: xsd for brevserver? ETter hvert?

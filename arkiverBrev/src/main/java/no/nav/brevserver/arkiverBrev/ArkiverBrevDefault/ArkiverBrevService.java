@@ -2,13 +2,13 @@ package no.nav.brevserver.arkiverBrev.ArkiverBrevDefault;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.brevserver.arkiverBrev.DialogueXMLParser;
-import no.nav.brevserver.core.domain.entities.Brevstatus;
+import no.nav.brevserver.arkiverBrev.XMLService;
+import no.nav.brevserver.arkiverBrev.util.Utils;
 import no.nav.brevserver.server.common.config.Konstanter;
 import no.nav.brevserver.server.common.exception.BrevException;
+import no.nav.brevserver.server.common.exception.BrevFunctionalException;
 import no.nav.brevserver.server.common.exception.BrevTechnicalException;
 import no.nav.brevserver.server.common.type.SystemType;
-import no.nav.brevserver.server.common.utility.ArgumentValidator;
-import no.nav.brevserver.server.common.utility.PerformanceLogger;
 import no.nav.brevserver.server.common.vo.BrevStatusVO;
 import no.nav.brevserver.server.common.vo.FilType;
 import no.nav.brevserver.server.common.vo.KvitteringVO;
@@ -16,13 +16,13 @@ import no.nav.brevserver.server.common.vo.MessageVO;
 import no.nav.brevserver.service.BrevlagerService;
 import no.nav.brevserver.service.BrevserverService;
 import no.nav.brevserver.service.BrevstatusService;
-import no.nav.brevserver.service.converter.BrevTilVoConverter;
 import no.nav.brevserver.service.converter.BrevstatusTilVoConverter;
-import no.nav.brevserver.service.queue.jms.MessageProducer;
-import no.nav.brevserver.service.queue.jms.MessageProducerFactory;
 import no.nav.brevserver.service.support.DefaultBrevtilgangService;
+import org.apache.camel.Exchange;
 import org.apache.camel.Handler;
 import org.springframework.stereotype.Component;
+
+import javax.jms.JMSException;
 
 /**
  * Håndterer meldinger fra Dialogue. Lagrer brev og setter status og sender kvittering til saksbehandlingsystemet.
@@ -38,38 +38,32 @@ public class ArkiverBrevService {
 	private BrevstatusService brevstatusService;
 	private BrevlagerService brevlagerService;
 	private BrevstatusTilVoConverter converter;
+	private XMLService xmlService;
 
-	private KvitteringVO generateKvittering(MessageVO messageVo) throws BrevTechnicalException {
-		KvitteringVO kvittering;
-
-		try {
-			kvittering = DialogueXMLParser.lagKvitteringVOFraDialogueMelding(messageVo.getByteBody());
-		} catch (BrevTechnicalException e) {
-			log.error("Ugyldig XML: ", e);
-			throw e;
-		}
-
-		if (kvittering.getSystemID().startsWith(SystemType.PE.toString())) {
-			String errorMessage = "Brev med feil systemID mottatt: '" + kvittering.getSystemID()
-					+ "', forventet ikke pensjonsbrev";
-			log.error(errorMessage);
-			throw new BrevTechnicalException(errorMessage);
-		}
-
-		return kvittering;
+	public ArkiverBrevService(DefaultBrevtilgangService defaultBrevTilgangService,
+							  BrevserverService brevserverService,
+							  BrevstatusService brevstatusService,
+							  BrevlagerService brevlagerService,
+							  BrevstatusTilVoConverter converter,
+							  XMLService xmlService) {
+		this.defaultBrevTilgangService = defaultBrevTilgangService;
+		this.brevserverService = brevserverService;
+		this.brevstatusService = brevstatusService;
+		this.brevlagerService = brevlagerService;
+		this.converter = converter;
+		this.xmlService = xmlService;
 	}
 
-	/**
-	 * Forespørsel lagres i databasen. Deretter sendes den originale meldingen videre på definert kø.
-	 *
-	 * @see AbstractCommand#execute()
-	 */
-	//TODO: fix exceptions
 	@Handler
-	public BrevStatusVO execute(MessageVO messageVo) throws BrevException {
+	public void execute(Exchange exchange) throws BrevException, JMSException {
+
+		MessageVO messageVo = Utils.createMessageVoFromExchange(exchange);
+
 		KvitteringVO kvittering = generateKvittering(messageVo);
 
-		ArgumentValidator.isNotNull(kvittering);
+		if (kvittering == null) {
+			throw new BrevFunctionalException("Kvittering er null");
+		}
 
 		messageVo.setBrevreferanse(kvittering.getBrevreferanse());
 
@@ -126,11 +120,46 @@ public class ArkiverBrevService {
 			log.info("Brevet er arkivert i Brevlageret");
 		}
 
-		//TODO: Dette burde vel inn i routen
-		MessageProducer producer = MessageProducerFactory.getInstance().createMessageProducer(SystemType.BI);
-		producer.sendKvittering(brevStatusVo, messageVo, kvittering);
-		return brevStatusVo;
+		String message = createKvitteringsXml(brevStatusVo, kvittering);
+		exchange.getIn().setBody(message);
 
 	}
+
+
+	private KvitteringVO generateKvittering(MessageVO messageVo) throws BrevTechnicalException {
+		KvitteringVO kvitteringVo;
+
+		try {
+			kvitteringVo = DialogueXMLParser.lagKvitteringVOFraDialogueMelding(messageVo.getByteBody());
+		} catch (BrevTechnicalException e) {
+			log.error("Ugyldig XML: ", e);
+			throw e;
+		}
+
+		if (kvitteringVo.getSystemID().startsWith(SystemType.PE.toString())) {
+			String errorMessage = "Brev med feil systemID mottatt: '" + kvitteringVo.getSystemID()
+					+ "', forventet ikke pensjonsbrev";
+			log.error(errorMessage);
+			throw new BrevTechnicalException(errorMessage);
+		}
+
+		return kvitteringVo;
+	}
+
+	private String createKvitteringsXml(BrevStatusVO brevStatusVo, KvitteringVO kvittering) throws BrevFunctionalException {
+		if (brevStatusVo == null) {
+			throw new BrevFunctionalException("Kunne ikke lage kvittering da enten brevstatus er null");
+		}
+
+		//Denne trengs kanskje ikke.
+		//Alt som kommer gjennom her skal vel egentlig til samme kø hver gang
+		if (brevStatusVo.getReturKoe() == null || "".equals(brevStatusVo.getReturKoe())) {
+			throw new BrevFunctionalException("Kan ikke sende kvittering da returkø mangler");
+		}
+
+		return xmlService.unmarshal(kvittering, brevStatusVo);
+
+	}
+
 }
 

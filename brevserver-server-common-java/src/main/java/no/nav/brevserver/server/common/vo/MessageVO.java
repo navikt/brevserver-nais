@@ -6,7 +6,7 @@ import java.io.UnsupportedEncodingException;
 
 import javax.jms.BytesMessage;
 import javax.jms.JMSException;
-import org.apache.activemq.command.ActiveMQMessage;
+import javax.jms.Message;
 import javax.jms.Queue;
 import javax.jms.TextMessage;
 
@@ -45,8 +45,10 @@ public class MessageVO implements Serializable {
 			}
 			setCorrelationID(msg.getJMSCorrelationID());
 
-		} catch (JMSException e) {
-			throw new BrevTechnicalException(BrevTechnicalException.MQ_IKKE_TILGJENGELIG, e);
+		} catch (Exception e) {
+			//TODO: Feilhåndtering. MQ_IKKE_TILGJENGELIG vil ikke være et problem her
+			//throw new BrevTechnicalException(BrevTechnicalException.MQ_IKKE_TILGJENGELIG, e);
+
 		}
 	}
 
