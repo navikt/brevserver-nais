@@ -9,18 +9,13 @@ import no.nav.brevserver.server.common.exception.BrevException;
 import no.nav.brevserver.server.common.exception.BrevFunctionalException;
 import no.nav.brevserver.server.common.exception.BrevTechnicalException;
 import no.nav.brevserver.server.common.type.SystemType;
-import no.nav.brevserver.server.common.utility.ArgumentValidator;
 import no.nav.brevserver.server.common.vo.BrevStatusVO;
 import no.nav.brevserver.server.common.vo.FilType;
 import no.nav.brevserver.server.common.vo.KvitteringVO;
 import no.nav.brevserver.server.common.vo.MessageVO;
 import no.nav.brevserver.service.BrevlagerService;
 import no.nav.brevserver.service.BrevstatusService;
-import no.nav.brevserver.service.converter.BrevstatusTilVoConverter;
-import no.nav.brevserver.service.support.DefaultBrevtilgangService;
 import org.apache.camel.Exchange;
-import no.nav.brevserver.service.queue.jms.MessageProducer;
-import no.nav.brevserver.service.queue.jms.MessageProducerFactory;
 import org.apache.camel.Handler;
 import org.springframework.stereotype.Component;
 
@@ -35,24 +30,16 @@ import javax.jms.JMSException;
 @Component
 public class ArkiverBrevService {
 
-	private DefaultBrevtilgangService defaultBrevTilgangService;
-	private BrevserverService brevserverService;
 	private BrevstatusService brevstatusService;
 	private BrevlagerService brevlagerService;
-	private BrevstatusTilVoConverter converter;
 	private XMLService xmlService;
 
-	public ArkiverBrevService(DefaultBrevtilgangService defaultBrevTilgangService,
-							  BrevserverService brevserverService,
+	public ArkiverBrevService(
 							  BrevstatusService brevstatusService,
 							  BrevlagerService brevlagerService,
-							  BrevstatusTilVoConverter converter,
 							  XMLService xmlService) {
-		this.defaultBrevTilgangService = defaultBrevTilgangService;
-		this.brevserverService = brevserverService;
 		this.brevstatusService = brevstatusService;
 		this.brevlagerService = brevlagerService;
-		this.converter = converter;
 		this.xmlService = xmlService;
 	}
 
