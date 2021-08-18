@@ -4,26 +4,27 @@ import no.nav.brevserver.dokarkiv.converter.HentDokumentToBrevVoConverter;
 import no.nav.brevserver.dokarkiv.impl.NavHeaders;
 import no.nav.brevserver.fagarkiv.FagarkivProperties;
 import no.nav.brevserver.fagarkiv.dokarkiv.DokarkivConsumer;
-import no.nav.brevserver.server.common.exception.BrevFunctionalException;
+import no.nav.brevserver.fagarkiv.dokarkiv.model.OppdaterJournalpostRequest;
+import no.nav.brevserver.fagarkiv.dokarkiv.model.OppdaterJournalpostResponse;
 import no.nav.brevserver.server.common.exception.BrevTechnicalException;
-import no.nav.brevserver.server.common.vo.BrevVO;
-import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.UUID;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
-import static org.springframework.http.HttpMethod.GET;
 
 @Service
 public class DokarkivConsumerBean implements DokarkivConsumer {
@@ -32,6 +33,10 @@ public class DokarkivConsumerBean implements DokarkivConsumer {
 	public static final String MDC_CALL_ID = "systemId";
 	private final RestTemplate restTemplate;
 	private final HentDokumentToBrevVoConverter converter;
+	private final boolean forsoekFerdigstill = false;
+	private String oppdaterJournalpostUrl;
+
+	private static final String OPPDATER_JOURNALPOST_RESOURCE_PATH = "/rest/journalpostapi/v1/journalpost/{journalpostId}";
 
 
 	@Autowired
@@ -48,31 +53,38 @@ public class DokarkivConsumerBean implements DokarkivConsumer {
 				.requestFactory(() -> clientHttpRequestFactory)
 				.build();
 		this.converter = converter;
+		String baseUrl = fagarkivProperties.getEndpoints().getDokarkiv();
+		this.oppdaterJournalpostUrl = baseUrl.endsWith("/")?baseUrl+OPPDATER_JOURNALPOST_RESOURCE_PATH:baseUrl+"/"+OPPDATER_JOURNALPOST_RESOURCE_PATH;
 	}
+
+
 
 	@Override
-	public void lagreDokument(String brevreferanse, String contentType, byte[] brevData) throws BrevTechnicalException {
+	public void oppdaterJournalpost(OppdaterJournalpostRequest oppdaterJournalpostRequest, String brevreferanse) throws BrevTechnicalException {
+		HttpHeaders headers = createHeaders();
 
+		ResponseEntity<OppdaterJournalpostResponse> response = restTemplate.exchange(oppdaterJournalpostUrl, HttpMethod.PUT, new HttpEntity<>(oppdaterJournalpostRequest, headers),
+				OppdaterJournalpostResponse.class);
+
+		if (response.getStatusCode().equals(HttpStatus.OK)) {
+			return;
+		}else {
+			throw new BrevTechnicalException(String.format("Brev med referanse %s ikke opprettet"));
+		}
 	}
 
-	@Override
-	public void lagreFerdigstiltDokument(String brevreferanse, BrevVO redBrevVO, BrevVO pdfBrevVO) throws BrevTechnicalException {
-
-	}
 
 	@Override
 	public boolean isJournalpost(String brevReferanse) throws BrevTechnicalException {
 		return false;
 	}
 
-	private HttpHeaders createCorrelationIdHeader() {
+	protected HttpHeaders createHeaders() {
 		HttpHeaders headers = new HttpHeaders();
-		headers.set(NavHeaders.NAV_CALLID, getCallId());
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+
 		return headers;
 	}
 
-	public static String getCallId() {
-		final String callId = MDC.get(MDC_CALL_ID);
-		return isBlank(callId) ? UUID.randomUUID().toString() : callId;
-	}
 }

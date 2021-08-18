@@ -3,7 +3,7 @@ package no.nav.brevserver.nais.support.impl;
 
 import no.nav.brevserver.nais.support.AbstractProviderDozerMapper;
 import no.nav.brevserver.nais.support.FerdigstillDokumentRequestMapper;
-import no.nav.brevserver.service.dokumentbehandling.to.FerdigstillDokumentRequest;
+import no.nav.brevserver.app.dokumentbehandling.to.FerdigstillDokumentRequest;
 import org.springframework.stereotype.Component;
 
 /**

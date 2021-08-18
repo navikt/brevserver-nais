@@ -5,7 +5,6 @@ import no.nav.brevserver.server.common.config.ConfigManager;
 import no.nav.brevserver.server.common.exception.BrevTechnicalException;
 import no.nav.brevserver.server.common.jndi.JndiHelper;
 import no.nav.brevserver.server.common.log.Log;
-import no.nav.brevserver.server.common.utility.PerformanceLogger;
 
 import javax.jms.BytesMessage;
 import javax.jms.JMSException;
@@ -51,7 +50,6 @@ public final class JMSAccessor {
 	public static JMSAccessor getAccessorUsingQueueJndiName(String queueDestJndiName) throws BrevTechnicalException {
 
 		String methSig = "JMSAccessor.getAccessorUsingQueueJndiName(" + queueDestJndiName + ")";
-		PerformanceLogger p = new PerformanceLogger(methSig);
 
 		if (queueDestJndiName == null || "".equals(queueDestJndiName)) {
 			return null;
@@ -72,10 +70,7 @@ public final class JMSAccessor {
 		} catch (JMSException e) {
 			throw new BrevTechnicalException(BrevTechnicalException.MQ_IKKE_TILGJENGELIG, e);
 
-		} finally {
-			p.stop();
 		}
-
 		return result;
 	}
 
@@ -92,22 +87,13 @@ public final class JMSAccessor {
 		}
 		String methSig = "JMSAccessor.getAccessorUsingQueueName(" + queueDestName + ")";
 		JMSAccessor result = new JMSAccessor();
+		String connFactoryJndiName = findConnectionFactory(queueDestName);
 
-		PerformanceLogger p = new PerformanceLogger(methSig);
-
-		try {
-			String connFactoryJndiName = findConnectionFactory(queueDestName);
-
-			result.setQueueConnectionFactory(connFactoryJndiName);
-			result.createSessionAndConnection();
-			Queue queue = result.createQueue(queueDestName);
-			result.setQueue(queue);
-			result.destName = queueDestName;
-
-		} finally {
-			p.stop();
-		}
-
+		result.setQueueConnectionFactory(connFactoryJndiName);
+		result.createSessionAndConnection();
+		Queue queue = result.createQueue(queueDestName);
+		result.setQueue(queue);
+		result.destName = queueDestName;
 		return result;
 	}
 

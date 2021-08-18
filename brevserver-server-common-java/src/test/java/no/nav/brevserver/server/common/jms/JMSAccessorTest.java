@@ -4,7 +4,6 @@ import no.nav.brevserver.server.common.cache.CacheManager;
 import no.nav.brevserver.server.common.config.ConfigManager;
 import no.nav.brevserver.server.common.exception.BrevTechnicalException;
 import no.nav.brevserver.server.common.jndi.JndiHelper;
-import no.nav.brevserver.server.common.utility.PerformanceLogger;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -37,7 +36,7 @@ import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ PerformanceLogger.class, JndiHelper.class, CacheManager.class, ConfigManager.class })
+@PrepareForTest({ JndiHelper.class, CacheManager.class, ConfigManager.class })
 @SuppressStaticInitializationFor({ "no.nav.brevserver.server.common.utility.PerformanceLogger" })
 public class JMSAccessorTest {
 

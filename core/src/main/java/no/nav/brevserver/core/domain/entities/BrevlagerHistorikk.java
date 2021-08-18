@@ -49,7 +49,7 @@ public class BrevlagerHistorikk {
 	@Column(name = "CONTENTTYPE")
 	private String contentType;
 
-	@Column(name = "OPPRETTET_TID")
+	@Column(name = "TIMESTAMP")
 	private Timestamp timestamp;
 
 	@Column(name = "BREVDATA")

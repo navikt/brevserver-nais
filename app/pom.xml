@@ -19,11 +19,14 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>no.nav.brevserver</groupId>
@@ -83,6 +86,14 @@
 			<groupId>org.glassfish.jaxb</groupId>
 			<artifactId>jaxb-runtime</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>no.nav.brevserver</groupId>
+			<artifactId>brevserver-klient-applet</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -107,6 +118,22 @@
 							<includeClassifiers>jaxws</includeClassifiers>
 							<outputDirectory>${project.build.directory}/classes/</outputDirectory>
 							<includes>**/*.wsdl,**/*.xsd,dozer/*.xml</includes>
+						</configuration>
+					</execution>
+					<execution>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>copy</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>no.nav.brevserver</groupId>
+									<artifactId>brevserver-klient-applet</artifactId>
+									<outputDirectory>${project.build.directory}/classes</outputDirectory>
+									<destFileName>StartBrevklientApplet.jar</destFileName>
+								</artifactItem>
+							</artifactItems>
 						</configuration>
 					</execution>
 				</executions>

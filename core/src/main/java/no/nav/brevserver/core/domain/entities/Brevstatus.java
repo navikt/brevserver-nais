@@ -10,6 +10,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.sql.Timestamp;
 
 @Entity
 @Table(name = "T_BREVSTATUS")
@@ -55,5 +56,8 @@ public class Brevstatus {
 
 	@Column(name = "SKUFF")
 	private String skuff;
+
+	@Column(name = "TIMESTAMP")
+	private Timestamp endret;
 
 }

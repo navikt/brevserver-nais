@@ -1,0 +1,47 @@
+package no.nav.brevserver.service;
+
+import no.nav.brevserver.builder.BrevBuilder;
+import no.nav.brevserver.server.common.config.Konstanter;
+import no.nav.brevserver.server.common.vo.FilType;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.junit4.SpringRunner;
+
+import static no.nav.brevserver.builder.BrevBuilder.getBrevBuilder;
+
+/**
+ * Abstract database testclass. Bootstraps an in-memory H2 database.
+ * Performs DDL and cleans up for each test. Also provides convenience methods for database query and updates.
+ *
+ * @author Joakim Bjornstad, Visma Consulting
+ */
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = {H2JpaConfig.class})
+@Sql(scripts = "classpath:drop-all.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+@Sql(scripts = {"classpath:create-database.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+public abstract class AbstractDatabaseTest {
+
+	protected static final String SYSTEM_ID = "PE00";
+	protected static final String BREVREFERANSE = "10000000000";
+	protected static final String BRUKERID = "b111111";
+	protected static final byte[] BREVDATA = "Hest er best".getBytes();
+	protected static final String BLANK = "";
+	protected static final String SYSTEM_PASSORD = "Pensjon123";
+	protected static final String BESTILLER_ID = "b1111";
+	protected static final String RETURKOE = "ReturKoe";
+	protected static final String BREVMAL = "NAV-01-02-03";
+	protected static final String STATUS = "FERDIG";
+	protected static final String FORMAT = FilType.PDF.getJoarkCode();
+	protected static final String SKRIVERTYPE = "Blekk";
+	protected static final String SKRIVER = "Canon";
+	protected static final String ARKIVER = "Ja";
+	protected static final String SKUFF = "0";
+	protected static final String TOKEN = "Token";
+
+	protected BrevBuilder defaultBrev() {
+		return getBrevBuilder().brevreferanse(BREVREFERANSE).systemID(SYSTEM_ID).contentType(FilType.RTF.getContentType())
+				.lagerStatus(Konstanter.BREVLAGER_STATUS_KLADD).brukerID(BRUKERID).brevdata(BREVDATA);
+	}
+
+}

@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface BrevstatusRepository extends CrudRepository<Brevstatus, Long> {
 
-	public List<Brevstatus> findByBrevreferanseAndSystemID(String brevreferanse, String SystemId);
+	List<Brevstatus> findByBrevreferanseAndSystemID(String brevreferanse, String SystemId);
 }

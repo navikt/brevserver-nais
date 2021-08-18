@@ -9,16 +9,18 @@ import no.nav.brevserver.server.common.exception.BrevException;
 import no.nav.brevserver.server.common.exception.BrevFunctionalException;
 import no.nav.brevserver.server.common.exception.BrevTechnicalException;
 import no.nav.brevserver.server.common.type.SystemType;
+import no.nav.brevserver.server.common.utility.ArgumentValidator;
 import no.nav.brevserver.server.common.vo.BrevStatusVO;
 import no.nav.brevserver.server.common.vo.FilType;
 import no.nav.brevserver.server.common.vo.KvitteringVO;
 import no.nav.brevserver.server.common.vo.MessageVO;
 import no.nav.brevserver.service.BrevlagerService;
-import no.nav.brevserver.service.BrevserverService;
 import no.nav.brevserver.service.BrevstatusService;
 import no.nav.brevserver.service.converter.BrevstatusTilVoConverter;
 import no.nav.brevserver.service.support.DefaultBrevtilgangService;
 import org.apache.camel.Exchange;
+import no.nav.brevserver.service.queue.jms.MessageProducer;
+import no.nav.brevserver.service.queue.jms.MessageProducerFactory;
 import org.apache.camel.Handler;
 import org.springframework.stereotype.Component;
 
@@ -67,7 +69,7 @@ public class ArkiverBrevService {
 
 		messageVo.setBrevreferanse(kvittering.getBrevreferanse());
 
-		BrevStatusVO brevStatusVo = converter.convert(brevserverService.hentBrevStatus(kvittering.getSystemID(), kvittering.getBrevreferanse()));
+		BrevStatusVO brevStatusVo = brevstatusService.hentBrevStatus(kvittering.getSystemID(), kvittering.getBrevreferanse());
 		// Hvis ingen status så opprett en basert på det man vet
 		if (brevStatusVo == null) {
 			brevStatusVo = new BrevStatusVO();
