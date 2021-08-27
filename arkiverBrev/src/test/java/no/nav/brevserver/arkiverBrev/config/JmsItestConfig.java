@@ -18,34 +18,40 @@ import javax.jms.Queue;
 @Profile("itest")
 public class JmsItestConfig {
 
-    @Bean
-    public Queue mottakArkiv(@Value("${mottak_arkiv.queuename}") String mottakArkivQueueName){
-        return new ActiveMQQueue(mottakArkivQueueName);
-    }
+	@Bean
+	public Queue mottakArkiv(@Value("${mottak_arkiv.queuename}") String mottakArkivQueueName) {
+		return new ActiveMQQueue(mottakArkivQueueName);
+	}
 
-    @Bean
-    public Queue mottakOnline(@Value("${mottak_arkiv_pe.queuename}") String mottakArkivPeQueueName){
-        return new ActiveMQQueue(mottakArkivPeQueueName);
-    }
+	@Bean
+	public Queue mottakOnline(@Value("${mottak_arkiv_pe.queuename}") String mottakArkivPeQueueName) {
+		return new ActiveMQQueue(mottakArkivPeQueueName);
+	}
 
-    @Bean
-    public Queue deadletter(){
-        return new ActiveMQQueue("ActiveMQ.DLQ");
-    }
+	@Bean
+	public Queue deadletter() {
+		return new ActiveMQQueue("ActiveMQ.DLQ");
+	}
 
-    @Bean(initMethod = "start", destroyMethod = "stop")
-    public BrokerService broker() {
-        BrokerService service = new BrokerService();
-        service.setPersistent(false);
-        return service;
-    }
+	@Bean
+	public Queue svarKo() {
 
-    @Bean
-    public ConnectionFactory activemqConnectionFactory() {
-        ActiveMQConnectionFactory activeMQConnectionFactory = new ActiveMQConnectionFactory("vm://localhost?create=false");
-        RedeliveryPolicy redeliveryPolicy = new RedeliveryPolicy();
-        redeliveryPolicy.setMaximumRedeliveries(0);
-        activeMQConnectionFactory.setRedeliveryPolicy(redeliveryPolicy);
-        return activeMQConnectionFactory;
-    }
+		return new ActiveMQQueue("SvarKo");
+	}
+
+	@Bean(initMethod = "start", destroyMethod = "stop")
+	public BrokerService broker() {
+		BrokerService service = new BrokerService();
+		service.setPersistent(false);
+		return service;
+	}
+
+	@Bean
+	public ConnectionFactory activemqConnectionFactory() {
+		ActiveMQConnectionFactory activeMQConnectionFactory = new ActiveMQConnectionFactory("vm://localhost?create=false");
+		RedeliveryPolicy redeliveryPolicy = new RedeliveryPolicy();
+		redeliveryPolicy.setMaximumRedeliveries(0);
+		activeMQConnectionFactory.setRedeliveryPolicy(redeliveryPolicy);
+		return activeMQConnectionFactory;
+	}
 }

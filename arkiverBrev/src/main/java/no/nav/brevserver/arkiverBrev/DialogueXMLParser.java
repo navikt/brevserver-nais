@@ -1,29 +1,27 @@
 package no.nav.brevserver.arkiverBrev;
 
-import no.nav.brevserver.server.common.config.ConfigManager;
-import no.nav.brevserver.server.common.config.Konstanter;
 import no.nav.brevserver.server.common.exception.BrevTechnicalException;
 import no.nav.brevserver.server.common.vo.KvitteringVO;
 import org.springframework.stereotype.Component;
 
 /**
  * Beskrivelse av klassen
- * 
+ *
  * @author Dag Kristiansen
  */
 @Component
 public class DialogueXMLParser {
 
 	private static XMLService xmlService;
-	public DialogueXMLParser(XMLService xmlService){
+
+	public DialogueXMLParser(XMLService xmlService) {
 		this.xmlService = xmlService;
 	}
 
 	/**
 	 * Metode for å skille ut meldingsheaderen og brevdata og putte disse inn i et kvitteringsobjekt.
-	 * 
-	 * @param bytesMelding
-	 *            Meldingen
+	 *
+	 * @param bytesMelding Meldingen
 	 * @return KvitteringVO med meldingskropp og vedlegg
 	 * @throws BrevTechnicalException
 	 */
@@ -54,7 +52,7 @@ public class DialogueXMLParser {
 		// parserer XML fra headeren
 		for (int i = 0; i < header.length; i++) {
 			// xml-parseren sliter med 0 så vi simulerer et mellomrom
-			if (header[i] == 0) {
+			if ((char) header[i] == 0) {
 				header[i] = ' ';
 			}
 			if (header[i] == 20) {
@@ -70,11 +68,10 @@ public class DialogueXMLParser {
 	}
 
 	private static int finnHeaderlengde(byte[] melding) {
-		int headerLengde = ConfigManager.getInstance().getInt(ConfigManager.ARKIVER_HEADER_LENGDE,
-				Konstanter.MELDING_HEADER_LENGTH);
-		int tegnIStarten = ConfigManager.getInstance().getInt(ConfigManager.ARKIVER_HEADER_LENGDE_TEGN_I_STARTEN, 5);
+		int headerLengde = 350;
+		int tegnIStarten = 0;
 
-		// Hente ut headerlengde fra de første tegnene i meldingen
+		//Hente ut headerlengde fra de første tegnene i meldingen
 		if (tegnIStarten > 0 && tegnIStarten < 10) {
 			if (melding.length > tegnIStarten) {
 				String strLengde = "";

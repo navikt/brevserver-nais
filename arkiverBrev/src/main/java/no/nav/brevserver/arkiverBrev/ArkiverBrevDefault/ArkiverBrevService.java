@@ -21,6 +21,8 @@ import org.springframework.stereotype.Component;
 
 import javax.jms.JMSException;
 
+import static no.nav.brevserver.arkiverBrev.util.Utils.URI;
+
 /**
  * Håndterer meldinger fra Dialogue. Lagrer brev og setter status og sender kvittering til saksbehandlingsystemet.
  *
@@ -35,18 +37,18 @@ public class ArkiverBrevService {
 	private XMLService xmlService;
 
 	public ArkiverBrevService(
-							  BrevstatusService brevstatusService,
-							  BrevlagerService brevlagerService,
-							  XMLService xmlService) {
+			BrevstatusService brevstatusService,
+			BrevlagerService brevlagerService,
+			XMLService xmlService) {
 		this.brevstatusService = brevstatusService;
 		this.brevlagerService = brevlagerService;
 		this.xmlService = xmlService;
 	}
 
 	@Handler
-	public void execute(Exchange exchange) throws BrevException, JMSException {
+	public void execute(Exchange exchange) throws BrevException {
 
-		MessageVO messageVo = Utils.createMessageVoFromExchange(exchange);
+		MessageVO messageVo = Utils.getMessageVoFromExchange(exchange);
 
 		KvitteringVO kvittering = generateKvittering(messageVo);
 
@@ -111,6 +113,7 @@ public class ArkiverBrevService {
 
 		String message = createKvitteringsXml(brevStatusVo, kvittering);
 		exchange.getIn().setBody(message);
+		exchange.getIn().setHeader(URI, messageVo.getReplyQueueName());
 
 	}
 

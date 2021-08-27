@@ -10,13 +10,12 @@ import org.springframework.stereotype.Component;
 import javax.inject.Inject;
 import javax.jms.Queue;
 
-import static no.nav.brevserver.arkiverBrev.util.Utils.REPLY_QUEUE_NAME;
 import static org.apache.camel.LoggingLevel.ERROR;
 
 @Component
 public class ArkiverBrevRoute extends RouteBuilder {
 	public static final String ARKIVER_BREV_ROUTE = "direct:arkiverBrev";
-	private final String ROUTE_OPTIONS = "?transacted=true&concurrentConsumers=1?mapJmsMessage=false";
+	private final String ROUTE_OPTIONS = "?transacted=true&concurrentConsumers=1&mapJmsMessage=false";
 
 
 	private final Queue mottakArkiv;
@@ -53,8 +52,7 @@ public class ArkiverBrevRoute extends RouteBuilder {
 				.handled(true)
 				.useOriginalMessage()
 				.logExhaustedMessageBody(false)
-				//TODO: add logging
-				//.log(LoggingLevel.WARN, log, "${exception}; " )
+				.log(LoggingLevel.WARN, log, "${exception}; ")
 				.to("jms:" + deadletter.getQueueName());
 
 		onException(DetailedJMSException.class)
@@ -73,20 +71,15 @@ public class ArkiverBrevRoute extends RouteBuilder {
 				.to(ARKIVER_BREV_ROUTE);
 
 		from(ARKIVER_BREV_ROUTE)
-				.process(exchange -> {
-					System.out.println("test");
-				})
 				.routeId(ARKIVER_BREV_ROUTE)
 				.routePolicy(arkiverBrevMetricsRoutePolicy)
 				.setExchangePattern(ExchangePattern.InOnly)
-				.log(LoggingLevel.INFO, log, ARKIVER_BREV_ROUTE + " starter behandling av en mq melding")
+				.log(LoggingLevel.INFO, log, ARKIVER_BREV_ROUTE + " starter behandlingen")
 				.bean(arkiverBrevService)
-				.to("jms:" + exchangeProperty(REPLY_QUEUE_NAME));
-		//TODO: Trenger vi denne?
-				//LoggID'er + logForsendelseId())
-				//TODO: xsd for brevserver? ETter hvert?
-				//.to("validator:no.nav.brevserver.....brevserver.xsd")
-				//TODO: Vi kan vel ikke kjøre deault unmarshal når formatene er så rare
-				//.unmarshal(new JaxbDataFormat(JAXBContext.newInstance(DistribuerTilKanal.class)))
+				.toD("jms:${header.uri}")
+				.log(LoggingLevel.INFO, log, "Kvitteringsmeldingen er sendt til: " + "${header.uri}")
+				.end();
+
+
 	}
 }

@@ -1,7 +1,6 @@
 package no.nav.brevserver.arkiverBrev;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.brevserver.server.common.log.Log;
 import no.nav.brevserver.server.common.vo.AvsenderMottakerVO;
 import no.nav.brevserver.server.common.vo.BrevStatusVO;
 import no.nav.brevserver.server.common.vo.DokBeskrivelseVO;
