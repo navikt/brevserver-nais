@@ -143,8 +143,6 @@ public class ArkiverBrevService {
 			throw new BrevFunctionalException("Kunne ikke lage kvittering da enten brevstatus er null");
 		}
 
-		//Denne trengs kanskje ikke.
-		//Alt som kommer gjennom her skal vel egentlig til samme kø hver gang
 		if (brevStatusVo.getReturKoe() == null || "".equals(brevStatusVo.getReturKoe())) {
 			throw new BrevFunctionalException("Kan ikke sende kvittering da returkø mangler");
 		}

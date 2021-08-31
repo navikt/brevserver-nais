@@ -52,10 +52,7 @@ public class DialogueXMLParser {
 		// parserer XML fra headeren
 		for (int i = 0; i < header.length; i++) {
 			// xml-parseren sliter med 0 så vi simulerer et mellomrom
-			if ((char) header[i] == 0) {
-				header[i] = ' ';
-			}
-			if (header[i] == 20) {
+			if ( header[i] == 0 || header[i] == 20) {
 				header[i] = ' ';
 			}
 		}

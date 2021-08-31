@@ -21,7 +21,7 @@ public class ArkiverBrevRoute extends RouteBuilder {
 	private final Queue mottakArkiv;
 	private final Queue mottakOnline;
 	private final Queue deadletter;
-	private ArkiverBrevMetricsRoutePolicy arkiverBrevMetricsRoutePolicy;
+	private final ArkiverBrevMetricsRoutePolicy arkiverBrevMetricsRoutePolicy;
 	private final ArkiverBrevService arkiverBrevService;
 
 

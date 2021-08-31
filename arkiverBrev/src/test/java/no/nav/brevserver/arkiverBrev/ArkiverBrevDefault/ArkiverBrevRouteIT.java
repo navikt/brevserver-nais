@@ -40,7 +40,7 @@ import static org.mockito.Mockito.when;
 @EnableAutoConfiguration
 @SpringBootTest(classes = {ApplicationTestConfig.class})
 @ActiveProfiles("itest")
-public class ArkiverBrevRouteTest {
+public class ArkiverBrevRouteIT {
 
 	@Inject
 	private Queue mottakArkiv;
@@ -77,12 +77,6 @@ public class ArkiverBrevRouteTest {
 		BrevStatusVO brevstatus = new BrevStatusVO();
 		brevstatus.setStatus(Konstanter.BREVSTATUS_BREVPAKKE);
 		return brevstatus;
-	}
-
-	@Test
-	public void test(){
-		String restult = createXmlKvitteringHeader(FilType.PDF.getContentType());
-		System.out.println(restult);
 	}
 
 	private String createXmlKvitteringHeader(String contentType) {
