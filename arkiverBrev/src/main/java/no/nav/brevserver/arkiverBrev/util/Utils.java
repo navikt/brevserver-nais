@@ -12,12 +12,6 @@ public class Utils {
 
 	public static final String URI = "uri";
 
-	static JmsBinding binding;
-
-	static {
-		binding = new JmsBinding();
-	}
-
 	public static MessageVO getMessageVoFromExchange(Exchange exchange) throws BrevTechnicalException {
 		Message message = exchange.getIn(JmsMessage.class).getJmsMessage();
 		MessageVO messageVO = new MessageVO(message);

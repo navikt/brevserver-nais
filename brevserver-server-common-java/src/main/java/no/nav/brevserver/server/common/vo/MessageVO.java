@@ -2,8 +2,6 @@ package no.nav.brevserver.server.common.vo;
 
 import no.nav.brevserver.server.common.config.Konstanter;
 import no.nav.brevserver.server.common.exception.BrevTechnicalException;
-import org.apache.activemq.command.ActiveMQBytesMessage;
-import org.apache.activemq.command.ActiveMQTextMessage;
 
 import javax.jms.BytesMessage;
 import javax.jms.Message;
@@ -26,7 +24,7 @@ public class MessageVO implements Serializable {
 
 	public MessageVO(Message msg) throws BrevTechnicalException {
 		try {
-			if (msg instanceof ActiveMQBytesMessage) {
+			if (msg instanceof BytesMessage) {
 				byte[] buffer = new byte[1024];
 				ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
@@ -35,7 +33,7 @@ public class MessageVO implements Serializable {
 					bos.write(buffer, 0, returnValue);
 				}
 				byteBody = bos.toByteArray();
-			} else if (msg instanceof ActiveMQTextMessage) {
+			} else if (msg instanceof TextMessage) {
 				TextMessage tmsg = (javax.jms.TextMessage) msg;
 				stringBody = tmsg.getText();
 			}

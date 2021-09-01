@@ -34,15 +34,12 @@ public class ArkiverBrevService {
 
 	private BrevstatusService brevstatusService;
 	private BrevlagerService brevlagerService;
-	private XMLService xmlService;
 
 	public ArkiverBrevService(
 			BrevstatusService brevstatusService,
-			BrevlagerService brevlagerService,
-			XMLService xmlService) {
+			BrevlagerService brevlagerService) {
 		this.brevstatusService = brevstatusService;
 		this.brevlagerService = brevlagerService;
-		this.xmlService = xmlService;
 	}
 
 	@Handler
@@ -147,7 +144,7 @@ public class ArkiverBrevService {
 			throw new BrevFunctionalException("Kan ikke sende kvittering da returkø mangler");
 		}
 
-		return xmlService.unmarshal(kvittering, brevStatusVo);
+		return XMLService.unmarshal(kvittering, brevStatusVo);
 
 	}
 

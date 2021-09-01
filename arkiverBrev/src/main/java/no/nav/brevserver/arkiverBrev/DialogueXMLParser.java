@@ -4,6 +4,8 @@ import no.nav.brevserver.server.common.exception.BrevTechnicalException;
 import no.nav.brevserver.server.common.vo.KvitteringVO;
 import org.springframework.stereotype.Component;
 
+import static no.nav.brevserver.arkiverBrev.XMLService.marshalHeader;
+
 /**
  * Beskrivelse av klassen
  *
@@ -11,12 +13,6 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class DialogueXMLParser {
-
-	private static XMLService xmlService;
-
-	public DialogueXMLParser(XMLService xmlService) {
-		this.xmlService = xmlService;
-	}
 
 	/**
 	 * Metode for å skille ut meldingsheaderen og brevdata og putte disse inn i et kvitteringsobjekt.
@@ -59,7 +55,7 @@ public class DialogueXMLParser {
 
 		java.io.ByteArrayInputStream is = new java.io.ByteArrayInputStream(header);
 
-		KvitteringVO kvittering = xmlService.marshalHeader(is);
+		KvitteringVO kvittering = marshalHeader(is);
 		kvittering.setBrevdata(brevData);
 		return kvittering;
 	}
@@ -88,4 +84,5 @@ public class DialogueXMLParser {
 
 		return headerLengde;
 	}
+
 }

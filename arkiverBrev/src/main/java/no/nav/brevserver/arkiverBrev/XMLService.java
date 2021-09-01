@@ -11,21 +11,16 @@ import org.xml.sax.SAXException;
 import java.io.IOException;
 import java.io.StringReader;
 
-@Component
 public class XMLService {
 
-    private XMLHandler xmlHandler;
-    public XMLService(XMLHandler xmlHandler){
-        this.xmlHandler = xmlHandler;
-    }
 
     /**
      * Unmarshal er prosessen å generere XML fra businessobjekter
-     * 
+     *
      * @param kvittering
      * @return String ferdig generert xml
      */
-    public String unmarshal(KvitteringVO kvittering, BrevStatusVO status) {
+    public static String unmarshal(KvitteringVO kvittering, BrevStatusVO status) {
         StringBuffer sb = new StringBuffer();
         sb.append("<?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>\n<rtv-brevkvitt>\n<brevref>");
         sb.append(kvittering.getBrevreferanse());
@@ -43,22 +38,6 @@ public class XMLService {
     }
 
     /**
-     * Henter ut headerinformasjonen av en melding og returnerer en
-     * objektrepresentasjon av resultatet.
-     * 
-     * (Marshalling er prosessen der en populerer businessobjekter fra XML)
-     * 
-     * @param xmlInput
-     * @return ValueObject
-     * @throws BrevTechnicalException
-     */
-    public KvitteringVO marshalHeader(java.io.InputStream xmlInput) throws BrevTechnicalException {
-        XMLHandler handler;
-        handler = marshal(xmlInput);
-        return handler.getKvittering();
-    }
-
-    /**
      * Henter ut brevstatus Marshalling er prosessen der en populerer
      * businessobjekter fra XML
      * 
@@ -66,12 +45,24 @@ public class XMLService {
      * @return ValueObject
      * @throws BrevTechnicalException
      */
-    public BrevStatusVO marshalBrevStatus(StringReader xmlInput) throws BrevTechnicalException {
+    public static BrevStatusVO marshalBrevStatus(StringReader xmlInput) throws BrevTechnicalException {
         XMLHandler handler = marshal(xmlInput);
         return handler.getBrevStatus();
     }
 
-    private XMLHandler marshal(java.io.InputStream xmlInput) throws BrevTechnicalException {
+    /**
+     * Henter ut headerinformasjonen av en melding og returnerer en
+     * objektrepresentasjon av resultatet.
+     *
+     * (Marshalling er prosessen der en populerer businessobjekter fra XML)
+     *
+     * @param xmlInput
+     * @return ValueObject
+     * @throws BrevTechnicalException
+     */
+    public static KvitteringVO marshalHeader(java.io.InputStream xmlInput) throws BrevTechnicalException {
+
+        XMLHandler xmlHandler = new XMLHandler();
 
         try {
             SAXParser saxParser = new SAXParser();
@@ -87,10 +78,11 @@ public class XMLService {
             throw new BrevTechnicalException(BrevTechnicalException.FEIL_I_XML, e);
         }
 
-        return xmlHandler;
+        return xmlHandler.getKvittering();
     }
 
-    private XMLHandler marshal(StringReader xmlInput) throws BrevTechnicalException {
+    private static XMLHandler marshal(StringReader xmlInput) throws BrevTechnicalException {
+        XMLHandler xmlHandler = new XMLHandler();
 
         try {
             SAXParser saxParser = new SAXParser();
