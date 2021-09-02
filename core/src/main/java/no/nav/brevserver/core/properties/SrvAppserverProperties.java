@@ -18,6 +18,7 @@ import javax.annotation.PostConstruct;
 public class SrvAppserverProperties {
 	@NotEmpty
 	private String username;
+	@ToString.Exclude
 	private String password;
 
 	@PostConstruct
