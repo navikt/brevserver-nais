@@ -56,7 +56,7 @@ public class ArkiverBrevRoute extends RouteBuilder {
 				.to("jms:" + deadletter.getQueueName());
 
 		onException(DetailedJMSException.class)
-				.log(LoggingLevel.WARN, "DetailedJMSException oppstått i bestillBrev for forsendelse med  getIdsForLogging() . Melding sendt til funksjonell feilkø.")
+				.log(LoggingLevel.WARN, "DetailedJMSException oppstått i arkiverBrev for forsendelse med  getIdsForLogging() . Melding sendt til funksjonell feilkø.")
 				.useOriginalMessage()
 				.logExhaustedMessageBody(false)
 				.logExhaustedMessageHistory(false)
