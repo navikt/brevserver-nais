@@ -1,6 +1,7 @@
 package no.nav.brevserver.service.dokumentbehandling.support.support;
 
 import no.nav.brevserver.core.domain.entities.Brevstatus;
+import no.nav.brevserver.core.domain.entities.id.BrevreferanseSystemCompositeId;
 import no.nav.brevserver.core.repository.BrevstatusRepository;
 import no.nav.brevserver.server.common.exception.BrevTechnicalException;
 import no.nav.brevserver.server.common.vo.BrevStatusVO;
@@ -12,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -35,14 +36,13 @@ public class DefaultBrevstatusService implements BrevstatusService {
 	}
 
 	@Override
-	public BrevStatusVO hentBrevStatus(String systemId, String brevreferanse) throws BrevTechnicalException {
-
+	public BrevStatusVO hentBrevStatus(String brevreferanse, String systemId) throws BrevTechnicalException {
 		try {
-			List<Brevstatus> brevstatusList = brevstatusRepository.findByBrevreferanseAndSystemID(brevreferanse, systemId);
-			if (brevstatusList.size() == 0) {
+			Optional<Brevstatus> brevstatusOpt = brevstatusRepository.findById(BrevreferanseSystemCompositeId.builder().brevreferanse(brevreferanse).systemId(systemId).build());
+			if (brevstatusOpt.isEmpty()) {
 				return null;
 			} else {
-				return brevstatusTilVoConverter.convert(brevstatusList.get(0));
+				return brevstatusTilVoConverter.convert(brevstatusOpt.get());
 			}
 		} catch (Exception e) {
 			throw new BrevTechnicalException(BrevTechnicalException.DATABASE_IKKE_TILGJENGELIG, e);
@@ -61,7 +61,7 @@ public class DefaultBrevstatusService implements BrevstatusService {
 		BrevStatusVO gmlStatus = null;
 		try {
 			// Sjekk om vi allerede har status.
-			gmlStatus = hentBrevStatus(brevStatusVO.getSystemID(), brevStatusVO.getBrevreferanse());
+			gmlStatus = hentBrevStatus(brevStatusVO.getBrevreferanse(), brevStatusVO.getSystemID());
 			if (gmlStatus != null) {
 
 				// vi har status, sjekk om det er noen felter som ikke er satt i brevStatus, legg inn gamle verdier hvis ikke
@@ -94,7 +94,7 @@ public class DefaultBrevstatusService implements BrevstatusService {
 			brevstatusRepository.save(brevstatus);
 
 			if (token != null) {
-				brevtilgangService.lagreTilgang(brevstatus.getSystemID(), brevstatus.getBrevreferanse(), token);
+				brevtilgangService.lagreTilgang(brevstatus.getId().getSystemId(), brevstatus.getId().getBrevreferanse(), token);
 			}
 
 		} catch (Exception e) {

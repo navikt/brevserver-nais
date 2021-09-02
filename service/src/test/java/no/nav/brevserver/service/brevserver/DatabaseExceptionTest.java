@@ -1,9 +1,9 @@
 package no.nav.brevserver.service.brevserver;
 
 import no.nav.brevserver.builder.BrevStatusBuilder;
-import no.nav.brevserver.core.cache.LokalCacheConfig;
 import no.nav.brevserver.core.domain.entities.Brevstatus;
 import no.nav.brevserver.core.domain.entities.Brevtilgang;
+import no.nav.brevserver.core.domain.entities.id.BrevreferanseSystemCompositeId;
 import no.nav.brevserver.core.repository.BrevSystemTilgangRepository;
 import no.nav.brevserver.core.repository.BrevstatusRepository;
 import no.nav.brevserver.core.repository.BrevtilgangRepository;
@@ -19,7 +19,6 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.cache.Cache;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -64,7 +63,7 @@ public class DatabaseExceptionTest  extends AbstractDatabaseTest {
 		expectExceptionDatabaseNoDatabaseTilgjengelig();
 
 		throwExceptionWhenQueryIsExecuted();
-		brevstatusService.hentBrevStatus(SYSTEM_ID, BREVREFERANSE);
+		brevstatusService.hentBrevStatus(BREVREFERANSE,SYSTEM_ID);
 	}
 
 	@Test
@@ -109,7 +108,7 @@ public class DatabaseExceptionTest  extends AbstractDatabaseTest {
 
 	private void throwExceptionWhenQueryIsExecuted() throws Exception {
 		when(brevSystemTilgangRepository.findBySysId(any(String.class))).thenThrow(new RuntimeException("Database nede"));
-		when(brevstatusRepository.findByBrevreferanseAndSystemID(any(String.class), any(String.class))).thenThrow(new RuntimeException("Database nede"));
+		when(brevstatusRepository.findById(any(BrevreferanseSystemCompositeId.class))).thenThrow(new RuntimeException("Database nede"));
 		when(brevtilgangRepository.save(any(Brevtilgang.class))).thenThrow(new RuntimeException("Database nede"));
 		when(brevstatusRepository.save(any(Brevstatus.class))).thenThrow(new RuntimeException("Database nede"));
 	}

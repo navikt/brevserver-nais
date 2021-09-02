@@ -5,10 +5,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import no.nav.brevserver.core.domain.entities.id.BrevreferanseSystemCompositeId;
 
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.Table;
 import java.sql.Timestamp;
 
@@ -21,14 +22,8 @@ import java.sql.Timestamp;
 @Setter
 public class Brevstatus {
 
-	private static final long serialVersionUID = 7514533773610729921L;
-
-	@Id
-	@Column(name = "BREVREFERANSE")
-	private String brevreferanse;
-
-	@Column(name = "SYSTEMID")
-	private String systemID;
+	@EmbeddedId
+	private BrevreferanseSystemCompositeId id;
 
 	@Column(name = "RETURKOE")
 	private String returKoe;

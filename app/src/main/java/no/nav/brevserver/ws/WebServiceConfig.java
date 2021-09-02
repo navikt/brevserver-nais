@@ -6,22 +6,23 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
-import org.springframework.ws.config.annotation.EnableWs;
-import org.springframework.ws.config.annotation.WsConfigurerAdapter;
+import org.springframework.ws.server.endpoint.adapter.DefaultMethodEndpointAdapter;
+import org.springframework.ws.server.endpoint.adapter.method.MarshallingPayloadMethodProcessor;
 import org.springframework.ws.transport.http.MessageDispatcherServlet;
 import org.springframework.ws.wsdl.wsdl11.SimpleWsdl11Definition;
 import org.springframework.ws.wsdl.wsdl11.Wsdl11Definition;
 
-@EnableWs
+import java.util.Collections;
+
 @Configuration
-public class WebServiceConfig extends WsConfigurerAdapter {
+public class WebServiceConfig {
 
 	@Bean
-	public ServletRegistrationBean messageDispatcherServlet(ApplicationContext applicationContext) {
+	ServletRegistrationBean<?> webServicesRegistration(ApplicationContext applicationContext) {
 		MessageDispatcherServlet servlet = new MessageDispatcherServlet();
 		servlet.setApplicationContext(applicationContext);
 		servlet.setTransformWsdlLocations(true);
-		return new ServletRegistrationBean(servlet, "/Dokumentbehandling/*", "/Loggmottak/*");
+		return new ServletRegistrationBean<>(servlet, "/Dokumentbehandling/*", "/Loggmottak/*");
 	}
 
 	@Bean(name = "loggMottak")
@@ -37,6 +38,21 @@ public class WebServiceConfig extends WsConfigurerAdapter {
 		wsdl11Definition.setWsdl(new ClassPathResource("META-INF/wsdl/Dokumentbehandling.wsdl"));
 		return wsdl11Definition;
 	}
+
+	@Bean
+	public MarshallingPayloadMethodProcessor methodProcessor(Jaxb2Marshaller marshaller) {
+		return new MarshallingPayloadMethodProcessor(marshaller);
+	}
+
+	@Bean
+	DefaultMethodEndpointAdapter endpointAdapter(MarshallingPayloadMethodProcessor methodProcessor) {
+
+		DefaultMethodEndpointAdapter adapter = new DefaultMethodEndpointAdapter();
+		adapter.setMethodArgumentResolvers(Collections.singletonList(methodProcessor));
+		adapter.setMethodReturnValueHandlers(Collections.singletonList(methodProcessor));
+		return adapter;
+	}
+
 
 	@Bean
 	public Jaxb2Marshaller marshaller() {
