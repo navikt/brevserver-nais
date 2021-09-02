@@ -19,7 +19,7 @@
 		<module>service</module>
 		<module>brevserver-klient-applet</module>
 		<module>app</module>
-		<module>arkiverBrev</module>
+		<module>mqServices</module>
 
 	</modules>
 
@@ -233,7 +233,7 @@
 			</dependency>
 			<dependency>
 				<groupId>no.nav.brevserver</groupId>
-				<artifactId>arkiverBrev</artifactId>
+				<artifactId>mqServices</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
