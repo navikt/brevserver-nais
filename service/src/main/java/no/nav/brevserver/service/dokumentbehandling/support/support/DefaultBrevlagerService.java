@@ -4,13 +4,11 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.brevserver.core.domain.entities.Brev;
 import no.nav.brevserver.core.domain.entities.id.BrevreferanseSystemCompositeId;
 import no.nav.brevserver.core.repository.BrevRepository;
-import no.nav.brevserver.fagarkiv.dokarkiv.DokarkivConsumer;
-import no.nav.brevserver.fagarkiv.dokarkiv.impl.DokarkivService;
-import no.nav.brevserver.fagarkiv.saf.SafConsumer;
+import no.nav.brevserver.joark.JoarkService;
+import no.nav.brevserver.joark.JoarkServiceImpl;
 import no.nav.brevserver.server.common.config.Konstanter;
 import no.nav.brevserver.server.common.exception.BrevException;
 import no.nav.brevserver.server.common.exception.BrevFunctionalException;
-import no.nav.brevserver.server.common.exception.BrevRuntimeException;
 import no.nav.brevserver.server.common.exception.BrevTechnicalException;
 import no.nav.brevserver.server.common.type.SystemType;
 import no.nav.brevserver.server.common.utility.ArgumentValidator;
@@ -43,7 +41,7 @@ import java.util.Optional;
 public class DefaultBrevlagerService implements BrevlagerService {
 
 	private static String LAGER_STATUS_A = "A";
-
+	private final JoarkService joarkService;
 	private final BrevstatusService brevstatusService;
 	private final BrevRepository brevRepository;
 	private final DefaultBrevlagerHistorikkService defaultBrevlagerHistorikkService;
@@ -53,13 +51,12 @@ public class DefaultBrevlagerService implements BrevlagerService {
 	private final BrevstatusTilVoConverter brevstatusTilVoConverter;
 	private final BrevtilgangService brevtilgangService;
 	private final KoService koService;
-	private final DokarkivService dokarkivService;
-	private final SafConsumer safConsumer;
 	private final KnappStatusUtil knappStatusUtil;
 	private final BIMessageProducer biMessageProducer;
 
 	@Autowired
-	public DefaultBrevlagerService(BrevTilVoConverter brevTilVoConverter,
+	public DefaultBrevlagerService(JoarkService joarkService,
+								   BrevTilVoConverter brevTilVoConverter,
 								   BrevstatusService brevstatusService,
 								   BrevRepository brevRepository,
 								   VoTilBrevConverter voTilBrevConverter,
@@ -67,10 +64,9 @@ public class DefaultBrevlagerService implements BrevlagerService {
 								   VoTilBrevstatusConverter voTilBrevstatusConverter,
 								   BrevstatusTilVoConverter brevstatusTilVoConverter,
 								   BrevtilgangService brevtilgangService, KoService koService,
-								   DokarkivService dokarkivService,
-								   SafConsumer safConsumer,
 								   KnappStatusUtil knappStatusUtil,
 								   BIMessageProducer biMessageProducer) {
+		this.joarkService = joarkService;
 		this.brevRepository = brevRepository;
 		this.brevTilVoConverter = brevTilVoConverter;
 		this.voTilBrevstatusConverter = voTilBrevstatusConverter;
@@ -80,8 +76,6 @@ public class DefaultBrevlagerService implements BrevlagerService {
 		this.brevtilgangService = brevtilgangService;
 		this.koService = koService;
 		this.brevstatusService = brevstatusService;
-		this.dokarkivService = dokarkivService;
-		this.safConsumer = safConsumer;
 		this.knappStatusUtil = knappStatusUtil;
 		this.biMessageProducer = biMessageProducer;
 	}
@@ -108,10 +102,14 @@ public class DefaultBrevlagerService implements BrevlagerService {
 			backupIfExistingBrev(brev.getBrevreferanse(), brev.getSystemID());
 			BrevStatusVO gmlStatus = brevstatusService.lagreBrevStatus(brevstatus);
 			translateContentTypeDocxToDb2(brev);
-			brevRepository.save(voTilBrevConverter.convert(brev));
+			if (brevstatus.getSystemID().startsWith(SystemType.PE.toString())) {
+				joarkService.lagreDokument(brevstatus.getBrevreferanse(), brev.getContentType(), brev.getBrevdata());
+			} else {
+				brevRepository.save(voTilBrevConverter.convert(brev));
+			}
 			return gmlStatus;
 		} catch (RuntimeException e) {
-			throw new BrevTechnicalException(BrevTechnicalException.DATABASE_IKKE_TILGJENGELIG, e);
+			throw new BrevTechnicalException(BrevTechnicalException.DATABASE_IKKE_TILGJENGELIG, e.getMessage());
 		}
 	}
 
@@ -126,7 +124,7 @@ public class DefaultBrevlagerService implements BrevlagerService {
 
 			brevstatusService.lagreBrevStatus(brevStatus);
 			if (brevStatus.getSystemID().startsWith(SystemType.PE.toString())) {
-				dokarkivService.lagreFerdigstiltDokument(brevStatus.getBrevreferanse(), redBrev, pdfBrev);
+				joarkService.lagreFerdigstiltDokument(brevStatus.getBrevreferanse(), redBrev, pdfBrev);
 			} else {
 				brevferdigstillBrevlagerDokument(brevStatus, redBrev, pdfBrev);
 			}
@@ -218,16 +216,20 @@ public class DefaultBrevlagerService implements BrevlagerService {
 		}
 	}
 
-	private void lagreJoarkDokument(BrevVO brev, BrevStatusVO brevstatus, SystemType systemType, String returKoe)
-			throws BrevTechnicalException {
-		dokarkivService.lagreDokument(brevstatus.getBrevreferanse(), brev.getContentType(), brev.getBrevdata());
+	private void lagreJoarkDokument(BrevVO brev, BrevStatusVO brevstatus, SystemType systemType, String returKoe) {
+		try {
+			joarkService.lagreDokument(brev.getBrevreferanse(), brev.getContentType(), brev.getBrevdata());
+		} catch (BrevException e) {
+			e.printStackTrace();
+		}
+
 	}
 
-	protected void verifyChangeRequest(BrevStatusVO brevStatus) throws BrevException {
-		checkRequiredFields(brevStatus.getSystemID(), brevStatus.getBrevreferanse(), brevStatus.getToken());
-		BrevStatusVO oldBrevStatus = brevstatusService.hentBrevStatus(brevStatus.getSystemID(), brevStatus.getBrevreferanse());
+	protected void verifyChangeRequest(BrevStatusVO brevStatusVO) throws BrevException {
+		checkRequiredFields(brevStatusVO.getSystemID(), brevStatusVO.getBrevreferanse(), brevStatusVO.getToken());
+		BrevStatusVO oldBrevStatus = brevstatusService.hentBrevStatus(brevStatusVO.getBrevreferanse(), brevStatusVO.getSystemID());
 		if (oldBrevStatus != null) {
-			sjekkSystemTokenTilgang(brevStatus.getSystemID(), brevStatus.getBrevreferanse(), brevStatus.getToken());
+			sjekkSystemTokenTilgang(brevStatusVO.getSystemID(), brevStatusVO.getBrevreferanse(), brevStatusVO.getToken());
 			verifyEditableStatus(oldBrevStatus);
 		}
 	}
@@ -243,9 +245,8 @@ public class DefaultBrevlagerService implements BrevlagerService {
 		return brevtilgangService.sjekkTilgang(systemID, brevreferanse, token);
 	}
 
-	private BrevVO hentDokumentFraJOARK(String brevreferanse) throws
-			BrevTechnicalException, BrevFunctionalException {
-		BrevVO result = safConsumer.hentDokument(brevreferanse);
+	private BrevVO hentDokumentFraJOARK(String brevreferanse) throws BrevTechnicalException {
+		BrevVO result = joarkService.hentDokument(brevreferanse);
 
 		if (LAGER_STATUS_A.equals(result.getLagerStatus()) && result.getContentType().equals(FilType.RTF.getContentType())) {
 			konverterRtfTilPdf(result, brevreferanse);

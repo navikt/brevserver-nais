@@ -1,8 +1,5 @@
 package no.nav.brevserver.server.common.exception;
 
-import javax.ejb.ApplicationException;
-
-@ApplicationException(rollback = true)
 public class BrevRuntimeException extends RuntimeException {
 	private static final long serialVersionUID = 2324375389803110131L;
 
