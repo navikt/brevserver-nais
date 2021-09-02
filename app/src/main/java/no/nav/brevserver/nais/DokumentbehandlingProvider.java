@@ -82,7 +82,7 @@ public class DokumentbehandlingProvider {
 
 	public KnappStatus hentKnappStatus(String systemId, String brevreferanse) {
 		try {
-			BrevStatusVO result = brevstatusService.hentBrevStatus(systemId, brevreferanse);
+			BrevStatusVO result = brevstatusService.hentBrevStatus(brevreferanse, systemId);
 			if (result == null) {
 				return KnappStatus.getDefault();
 			}

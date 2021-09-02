@@ -4,12 +4,9 @@ import lombok.Data;
 import lombok.ToString;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -30,9 +27,12 @@ public class FagarkivProperties {
 		 * URL til oppslagstjenesten i fagarkivet.
 		 */
 		@NotEmpty
-		private String dokarkiv;
+		private String journal;
+		@NotEmpty
+		private String journalbehandling;
 
 	}
+
 	@Data
 	@Validated
 	public static class Serviceuser {

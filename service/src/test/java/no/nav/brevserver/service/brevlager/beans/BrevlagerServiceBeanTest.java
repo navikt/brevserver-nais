@@ -2,6 +2,7 @@ package no.nav.brevserver.service.brevlager.beans;
 
 import no.nav.brevserver.builder.BrevStatusBuilder;
 import no.nav.brevserver.core.domain.entities.Brevstatus;
+import no.nav.brevserver.core.domain.entities.id.BrevreferanseSystemCompositeId;
 import no.nav.brevserver.server.common.config.Konstanter;
 import no.nav.brevserver.server.common.exception.BrevTechnicalException;
 import no.nav.brevserver.server.common.vo.BrevStatusVO;
@@ -205,7 +206,7 @@ public class BrevlagerServiceBeanTest extends AbstractDatabaseTest {
 	}
 
 	private Brevstatus.BrevstatusBuilder defaultBrevstatusDomain() {
-		return Brevstatus.builder().brevreferanse(BREVREFERANSE).systemID(SYSTEM_ID).returKoe(RETURKOE)
+		return Brevstatus.builder().id(BrevreferanseSystemCompositeId.builder().brevreferanse(BREVREFERANSE).systemId(SYSTEM_ID).build()).returKoe(RETURKOE)
 				.bestillerBrukerID(BRUKERID).brevmal(BREVMAL).status(STATUS).format(FORMAT).skrivertype(SKRIVERTYPE)
 				.skriver(SKRIVER).arkiver(ARKIVER).skuff(SKUFF);
 	}

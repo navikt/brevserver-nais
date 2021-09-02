@@ -18,6 +18,7 @@ import java.util.concurrent.TimeUnit;
 public class LokalCacheConfig {
 	public static final String SYSTEM_TILGANG_CACHE = "systemTilgang";
 	public static final String HENT_SYSTEM_TILGANG_CACHE = "hentTilgang";
+	public static final String OIDC_TOKEN_CACHE = "OidcTokenCache";
 
 	@Bean
 	@Primary
@@ -32,6 +33,9 @@ public class LokalCacheConfig {
 				new CaffeineCache(HENT_SYSTEM_TILGANG_CACHE, Caffeine.newBuilder()
 						.expireAfterWrite(10, TimeUnit.MINUTES)
 						.maximumSize(10)
+						.build()),
+				new CaffeineCache(OIDC_TOKEN_CACHE, Caffeine.newBuilder()
+						.expireAfterWrite(55, TimeUnit.MINUTES)
 						.build())
 		));
 		return manager;

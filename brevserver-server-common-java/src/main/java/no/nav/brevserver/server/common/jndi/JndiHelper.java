@@ -1,8 +1,8 @@
 package no.nav.brevserver.server.common.jndi;
 
+import no.nav.brevserver.server.common.exception.BrevRuntimeException;
 import no.nav.brevserver.server.common.exception.BrevTechnicalException;
 
-import javax.ejb.EJBException;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -17,7 +17,7 @@ public enum JndiHelper {
 		try {
 			context = new InitialContext();
 		} catch (NamingException e) {
-			throw new EJBException("Instantiation of " + this.getClass().getSimpleName() + " failed", e);
+			throw new BrevRuntimeException("Instantiation of " + this.getClass().getSimpleName() + " failed" + e.getMessage());
 		}
 	}
 

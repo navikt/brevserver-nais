@@ -13,12 +13,11 @@ public class BrevstatusTilVoConverter implements Converter<Brevstatus, BrevStatu
 			return null;
 		}
 		BrevStatusVO brevStatusVO = new BrevStatusVO();
-		brevStatusVO.setBrevreferanse(brevstatus.getBrevreferanse());
+		brevStatusVO.setBrevreferanse(brevstatus.getId().getBrevreferanse());
 		brevStatusVO.setStatus(brevstatus.getStatus());
-		brevStatusVO.setSystemID(brevstatus.getSystemID());
+		brevStatusVO.setSystemID(brevstatus.getId().getSystemId());
 		brevStatusVO.setBrevmal(brevstatus.getBrevmal());
 		brevStatusVO.setArkiver(brevstatus.getArkiver());
-		brevStatusVO.setBrevreferanse(brevstatus.getBrevreferanse());
 		brevStatusVO.setBestillerBrukerID(brevstatus.getBestillerBrukerID());
 		brevStatusVO.setFormat(brevstatus.getFormat());
 		brevStatusVO.setReturKoe(brevstatus.getReturKoe());

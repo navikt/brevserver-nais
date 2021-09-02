@@ -3,6 +3,7 @@ package no.nav.brevserver.service.brevserver;
 import no.nav.brevserver.builder.BrevStatusBuilder;
 import no.nav.brevserver.core.cache.LokalCacheConfig;
 import no.nav.brevserver.core.domain.entities.BrevSystemTilgang;
+import no.nav.brevserver.core.domain.entities.id.BrevreferanseSystemCompositeId;
 import no.nav.brevserver.core.repository.BrevSystemTilgangRepository;
 import no.nav.brevserver.server.common.exception.BrevTechnicalException;
 import no.nav.brevserver.server.common.vo.BrevStatusVO;
@@ -116,7 +117,7 @@ public class BrevserverServiceBeanTest extends AbstractDatabaseTest {
 				.skrivertype("Laser").skriver("HP").arkiver("Nei").skuff("33").build();
 		brevstatusService.lagreBrevStatus(newBrevStatus);
 
-		BrevStatusVO actualBrevStatus = brevstatusService.hentBrevStatus(SYSTEM_ID, BREVREFERANSE);
+		BrevStatusVO actualBrevStatus = brevstatusService.hentBrevStatus(BREVREFERANSE, SYSTEM_ID);
 
 		assertThat(actualBrevStatus.getReturKoe(), is("E18"));
 		assertThat(actualBrevStatus.getBestillerBrukerID(), is("Brannmann"));
@@ -138,7 +139,7 @@ public class BrevserverServiceBeanTest extends AbstractDatabaseTest {
 				.returKoe(RETURKOE).brevmal(BREVMAL).status("PRINTET").build();
 		brevstatusService.lagreBrevStatus(newBrevStatus);
 
-		BrevStatusVO actualBrevStatus = brevstatusService.hentBrevStatus(SYSTEM_ID, BREVREFERANSE);
+		BrevStatusVO actualBrevStatus = brevstatusService.hentBrevStatus(BREVREFERANSE, SYSTEM_ID);
 
 		assertThat(actualBrevStatus.getReturKoe(), is(RETURKOE));
 		assertThat(actualBrevStatus.getBestillerBrukerID(), is(BESTILLER_ID));
@@ -157,14 +158,14 @@ public class BrevserverServiceBeanTest extends AbstractDatabaseTest {
 		BrevStatusVO existingBrevStatus = defaultBrevStatus().build();
 		brevstatusService.lagreBrevStatus(existingBrevStatus);
 
-		BrevStatusVO brevStatus = brevstatusService.hentBrevStatus(SYSTEM_ID, BREVREFERANSE);
+		BrevStatusVO brevStatus = brevstatusService.hentBrevStatus(BREVREFERANSE, SYSTEM_ID);
 
 		assertDefaultBrevStatusValues(brevStatus);
 	}
 
 	@Test
 	public void shouldReturnNullForNonExistingBrevStatus() throws Exception {
-		BrevStatusVO brevStatus = brevstatusService.hentBrevStatus(SYSTEM_ID, BREVREFERANSE);
+		BrevStatusVO brevStatus = brevstatusService.hentBrevStatus(BREVREFERANSE, SYSTEM_ID);
 
 		assertThat(brevStatus, nullValue());
 	}

@@ -1,11 +1,9 @@
 package no.nav.brevserver.core.repository;
 
 import no.nav.brevserver.core.domain.entities.Brevstatus;
+import no.nav.brevserver.core.domain.entities.id.BrevreferanseSystemCompositeId;
 import org.springframework.data.repository.CrudRepository;
 
-import java.util.List;
+public interface BrevstatusRepository extends CrudRepository<Brevstatus, BrevreferanseSystemCompositeId> {
 
-public interface BrevstatusRepository extends CrudRepository<Brevstatus, Long> {
-
-	List<Brevstatus> findByBrevreferanseAndSystemID(String brevreferanse, String SystemId);
 }
