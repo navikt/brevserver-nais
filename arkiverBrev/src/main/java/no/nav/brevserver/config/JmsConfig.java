@@ -1,6 +1,5 @@
-package no.nav.brevserver.core.config.jms;
+package no.nav.brevserver.config;
 
-import com.ibm.mq.constants.MQConstants;
 import com.ibm.mq.jms.MQConnectionFactory;
 import com.ibm.mq.jms.MQQueue;
 import com.ibm.msg.client.jms.JmsConstants;

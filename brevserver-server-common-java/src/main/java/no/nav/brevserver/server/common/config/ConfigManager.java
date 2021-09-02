@@ -57,12 +57,12 @@ public final class ConfigManager {
 	}
 
 	/**
-	 * Get a config value. Checks system properties then resource bundle.
+	 * Get a no.nav.brevserver.config value. Checks system properties then resource bundle.
 	 * Defaults to defaultStr if neither are found.
 	 *
-	 * @param name       The config name
-	 * @param defaultStr The config valeu if no property is found
-	 * @return The config value
+	 * @param name       The no.nav.brevserver.config name
+	 * @param defaultStr The no.nav.brevserver.config valeu if no property is found
+	 * @return The no.nav.brevserver.config value
 	 */
 	public String getString(String name, String defaultStr) {
 		String systemProperty = System.getProperty(name);
@@ -74,12 +74,12 @@ public final class ConfigManager {
 	}
 
 	/**
-	 * Get a config value as int. Checks system properties then resource bundle.
+	 * Get a no.nav.brevserver.config value as int. Checks system properties then resource bundle.
 	 * Defaults to defaultStr if neither are found.
 	 *
-	 * @param name       The config name
-	 * @param defaultInt The config valeu if no property is found
-	 * @return The config value
+	 * @param name       The no.nav.brevserver.config name
+	 * @param defaultInt The no.nav.brevserver.config valeu if no property is found
+	 * @return The no.nav.brevserver.config value
 	 */
 	public int getInt(String name, int defaultInt) {
 		String configValue = getString(name, null);
@@ -95,12 +95,12 @@ public final class ConfigManager {
 	}
 
 	/**
-	 * Get a config value as boolean. Checks system properties then resource bundle.
+	 * Get a no.nav.brevserver.config value as boolean. Checks system properties then resource bundle.
 	 * Defaults to defaultStr if neither are found.
 	 *
-	 * @param name        The config name
-	 * @param defaultBool The config valeu if no property is found
-	 * @return The config value
+	 * @param name        The no.nav.brevserver.config name
+	 * @param defaultBool The no.nav.brevserver.config valeu if no property is found
+	 * @return The no.nav.brevserver.config value
 	 */
 	public boolean getBool(String name, boolean defaultBool) {
 		String configValue = getString(name, null);
