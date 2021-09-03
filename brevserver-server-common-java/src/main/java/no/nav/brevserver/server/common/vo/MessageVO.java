@@ -1,17 +1,15 @@
 package no.nav.brevserver.server.common.vo;
 
-import java.io.ByteArrayOutputStream;
-import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
+import no.nav.brevserver.server.common.config.Konstanter;
+import no.nav.brevserver.server.common.exception.BrevTechnicalException;
 
 import javax.jms.BytesMessage;
-import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.Queue;
 import javax.jms.TextMessage;
-
-import no.nav.brevserver.server.common.config.Konstanter;
-import no.nav.brevserver.server.common.exception.BrevTechnicalException;
+import java.io.ByteArrayOutputStream;
+import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 
 public class MessageVO implements Serializable {
 	private static final long serialVersionUID = 8684875760609707790L;
@@ -23,7 +21,7 @@ public class MessageVO implements Serializable {
 
 	private String brevreferanse = null;
 	private boolean tilgangsXML = false;
-	
+
 	public MessageVO(Message msg) throws BrevTechnicalException {
 		try {
 			if (msg instanceof BytesMessage) {
@@ -45,8 +43,9 @@ public class MessageVO implements Serializable {
 			}
 			setCorrelationID(msg.getJMSCorrelationID());
 
-		} catch (JMSException e) {
-			throw new BrevTechnicalException(BrevTechnicalException.MQ_IKKE_TILGJENGELIG, e);
+		} catch (Exception e) {
+			throw new BrevTechnicalException("Feil i oppretting av MessageVO", e);
+
 		}
 	}
 

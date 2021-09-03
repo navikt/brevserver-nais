@@ -8,6 +8,14 @@ import no.nav.brevserver.server.common.vo.BrevStatusVO;
 import no.nav.brevserver.server.common.vo.BrevVO;
 
 public interface BrevlagerService {
+	/**
+	 * Henter et brev baser. Brevet hentes fra Brevlageret (DB2).
+	 *
+	 * @param systemID
+	 * @param brevReferanse
+	 * @return
+	 * @throws BrevTechnicalException
+	 */
 
 	/**
 	 * Henter et brev baser. Brevet hentes fra Brevlageret (DB2).
