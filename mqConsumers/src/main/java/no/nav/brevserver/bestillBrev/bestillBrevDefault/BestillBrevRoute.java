@@ -66,6 +66,7 @@ public class BestillBrevRoute extends RouteBuilder {
 				.setExchangePattern(ExchangePattern.InOnly)
 				.log(LoggingLevel.INFO, log, BESTILLBREV + " starter behandlingen")
 				.bean(bestillBrevService)
+				//.to(dialogOnlineQueue)
 				.toD("jms:${header.uri}")
 				.log(LoggingLevel.INFO, log, "Kvitteringsmeldingen er sendt til: " + "${header.uri}")
 				.end();

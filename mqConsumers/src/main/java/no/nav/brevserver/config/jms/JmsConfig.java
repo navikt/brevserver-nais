@@ -50,18 +50,26 @@ public class JmsConfig {
 	}
 
 	@Bean
+	//arkivversjonen pdf til dagens brevlagret/db2
 	public Queue mottakArkiv(@Value("${mottak_arkiv.queuename}") String mottakArkivQueueName) throws JMSException {
 		return new MQQueue(mottakArkivQueueName);
 	}
 
 	@Bean
-	public Queue mottakArkivPe(@Value("${mottak_arkiv_pe.queuename}") String mottakArkivPeQueueName) throws JMSException {
-		return new MQQueue(mottakArkivPeQueueName);
+	//brevbestillingskøen fra brevserver til exstream
+	public Queue dialogueOnline(@Value("${dialogue_online.queuename}") String dialogueOnline) throws JMSException {
+		return new MQQueue(dialogueOnline);
 	}
 
 	@Bean
-	public Queue dialogueOnline(@Value("${dialogue_online.queuename}") String dialogueOnline) throws JMSException {
-		return new MQQueue(dialogueOnline);
+	//køen exstream svarer på med en rtf
+	public Queue mottakOnline(@Value("${mottak_online.queuename}") String brevserverMottakOnline) throws JMSException {
+		return new MQQueue(brevserverMottakOnline);
+	}
+
+	@Bean
+	public Queue mottakArkivPe(@Value("${mottak_arkiv_pe.queuename}") String mottakArkivPeQueueName) throws JMSException {
+		return new MQQueue(mottakArkivPeQueueName);
 	}
 
 	@Bean
@@ -77,11 +85,6 @@ public class JmsConfig {
 	@Bean
 	public Queue onlinebrevPe(@Value("${onlinebrev_pe.queuename}") String brevserverOnlinebrevPe) throws JMSException {
 		return new MQQueue(brevserverOnlinebrevPe);
-	}
-
-	@Bean
-	public Queue mottakOnline(@Value("${mottak_online.queuename}") String brevserverMottakOnline) throws JMSException {
-		return new MQQueue(brevserverMottakOnline);
 	}
 
 	@Bean
