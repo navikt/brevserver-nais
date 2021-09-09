@@ -29,5 +29,6 @@
   "FAGARKIV_ENDPOINTS_JOURNALBEHANDLING": "https://wasapp-q2.adeo.no/joark/Journalbehandling",
   "SECURITY_TOKEN_SERVICE_TOKEN_URL": "https://security-token-service.nais.preprod.local/rest/v1/sts",
   "SRVBREVSERVER": "/serviceuser/data/dev/srvbrevserver",
-  "BREVSERVER_SERVER": "https://brevserver-nais-q2.dev.intern.nav.no/brevweb/"
+  "BREVSERVER_SERVER": "https://brevserver-nais-q2.dev.intern.nav.no/brevweb/",
+  "BREVSERVERCHANNEL_NAME": "Q2_BREVSERVER"
 }

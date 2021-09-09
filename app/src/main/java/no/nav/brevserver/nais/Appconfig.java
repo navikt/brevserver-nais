@@ -1,5 +1,6 @@
 package no.nav.brevserver.nais;
 
+import no.nav.brevserver.service.config.JmsConfig;
 import no.nav.brevserver.core.alias.MqGatewayAlias;
 import no.nav.brevserver.core.properties.SrvAppserverProperties;
 import no.nav.brevserver.service.config.ServiceConfig;
@@ -15,7 +16,8 @@ import org.springframework.jms.annotation.EnableJms;
 })
 @Import({
 		NaisContract.class,
-		ServiceConfig.class
+		ServiceConfig.class,
+		JmsConfig.class
 })
 @Configuration
 public class Appconfig {

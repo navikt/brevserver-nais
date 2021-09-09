@@ -1,4 +1,4 @@
-package no.nav.brevserver.config;
+package no.nav.brevserver.service.config;
 
 import com.ibm.mq.jms.MQConnectionFactory;
 import com.ibm.mq.jms.MQQueue;
@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.jms.connection.UserCredentialsConnectionFactoryAdapter;
 
+import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
 import javax.jms.Queue;
 
@@ -21,6 +22,13 @@ import javax.jms.Queue;
 public class JmsConfig {
 
 	private static final int ISO_8859_1 = 819;
+
+	@Bean
+	public ConnectionFactory wmqConnectionFactory(final MqGatewayAlias mqGatewayAlias,
+												  final @Value("${brevserverchannel.name}") String channelName,
+												  final SrvAppserverProperties srvAppserverProperties) throws JMSException {
+		return createConnectionFactory(mqGatewayAlias, channelName, srvAppserverProperties);
+	}
 
 	private PooledConnectionFactory createConnectionFactory(final MqGatewayAlias mqGatewayAlias,
 															final String channelName,

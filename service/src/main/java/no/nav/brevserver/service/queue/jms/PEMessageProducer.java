@@ -1,5 +1,6 @@
 package no.nav.brevserver.service.queue.jms;
 
+import lombok.extern.slf4j.Slf4j;
 import no.nav.brevserver.server.common.config.ConfigManager;
 import no.nav.brevserver.server.common.config.Konstanter;
 import no.nav.brevserver.server.common.exception.BrevTechnicalException;
@@ -17,10 +18,10 @@ import org.springframework.stereotype.Component;
  * Produserer JMS tekstmeldinger, fortrinnsvis i XML.
  */
 @Component
+@Slf4j
 public class PEMessageProducer extends MessageProducer {
 
 	public PEMessageProducer() {
-		log = new Log(this.getClass());
 	}
 
 	/**
@@ -104,6 +105,6 @@ public class PEMessageProducer extends MessageProducer {
 			useJndi = true;
 		}
 
-		//produserTextMelding(queueName, useJndi, null, correlationID, kvittering);
+		produserTextMelding(queueName, null, correlationID, kvittering);
 	}
 }
