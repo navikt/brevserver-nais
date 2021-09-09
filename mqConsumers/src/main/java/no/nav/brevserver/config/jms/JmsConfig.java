@@ -4,7 +4,7 @@ import com.ibm.mq.jms.MQConnectionFactory;
 import com.ibm.mq.jms.MQQueue;
 import com.ibm.msg.client.jms.JmsConstants;
 import com.ibm.msg.client.wmq.WMQConstants;
-import no.nav.brevserver.core.alias.MqGatewayAlias;
+import no.nav.brevserver.core.alias.MqGatewayProperties;
 import no.nav.brevserver.core.properties.SrvAppserverProperties;
 import org.apache.activemq.jms.pool.PooledConnectionFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.jms.connection.UserCredentialsConnectionFactoryAdapter;
 
+import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
 import javax.jms.Queue;
 
@@ -22,7 +23,14 @@ public class JmsConfig {
 
 	private static final int ISO_8859_1 = 819;
 
-	private PooledConnectionFactory createConnectionFactory(final MqGatewayAlias mqGatewayAlias,
+	@Bean
+	public ConnectionFactory wmqConnectionFactory(final MqGatewayProperties mqGatewayAlias,
+												  final @Value("${brevserverchannel.name}") String channelName,
+												  final SrvAppserverProperties srvAppserverProperties) throws JMSException {
+		return createConnectionFactory(mqGatewayAlias, channelName, srvAppserverProperties);
+	}
+
+	private PooledConnectionFactory createConnectionFactory(final MqGatewayProperties mqGatewayAlias,
 															final String channelName,
 															final SrvAppserverProperties srvAppserverProperties) throws JMSException {
 		MQConnectionFactory connectionFactory = new MQConnectionFactory();

@@ -19,7 +19,7 @@
 		<module>service</module>
 		<module>brevserver-klient-applet</module>
 		<module>app</module>
-		<module>mqServices</module>
+		<module>mqConsumers</module>
 
 	</modules>
 
@@ -233,7 +233,7 @@
 			</dependency>
 			<dependency>
 				<groupId>no.nav.brevserver</groupId>
-				<artifactId>mqServices</artifactId>
+				<artifactId>mqConsumers</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
