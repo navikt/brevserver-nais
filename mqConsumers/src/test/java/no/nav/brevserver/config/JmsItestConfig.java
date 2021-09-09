@@ -1,7 +1,5 @@
 package no.nav.brevserver.config;
 
-
-import com.ibm.mq.jms.MQQueue;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.RedeliveryPolicy;
 import org.apache.activemq.broker.BrokerService;

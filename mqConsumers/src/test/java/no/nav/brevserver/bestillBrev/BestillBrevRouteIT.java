@@ -2,16 +2,11 @@ package no.nav.brevserver.bestillBrev;
 
 import io.micrometer.core.instrument.util.IOUtils;
 import no.nav.brevserver.config.ApplicationTestConfig;
-import no.nav.brevserver.server.common.config.Konstanter;
 import no.nav.brevserver.server.common.vo.BrevStatusVO;
-import no.nav.brevserver.server.common.vo.BrevVO;
-import no.nav.brevserver.server.common.vo.FilType;
 import no.nav.brevserver.service.BrevlagerService;
 import no.nav.brevserver.service.BrevstatusService;
 import no.nav.brevserver.service.BrevtilgangService;
 import org.apache.activemq.command.ActiveMQTextMessage;
-import org.apache.camel.ProducerTemplate;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -19,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jms.core.JmsTemplate;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -28,19 +24,19 @@ import javax.jms.TextMessage;
 import javax.xml.bind.JAXBElement;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
 import java.util.concurrent.TimeUnit;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
 @EnableAutoConfiguration
 @SpringBootTest(classes = {ApplicationTestConfig.class})
 @ActiveProfiles("itest")
+//TODO: Fjern. Ser ikke mer på problemet nå da det kan hende modulen deles opp
+@DirtiesContext
 public class BestillBrevRouteIT {
 
 	@Inject
@@ -62,7 +58,7 @@ public class BestillBrevRouteIT {
 	private final String systemId = "BI12";
 	private final String passord = "*****";
 
-	//Test for å gjøre det lettere å lage routen riktig
+
 	@Test
 	public void shouldHandleMessage() throws Exception{
 
