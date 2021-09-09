@@ -1,7 +1,7 @@
 package no.nav.brevserver.nais;
 
+import no.nav.brevserver.service.config.JmsConfig;
 import no.nav.brevserver.core.alias.MqGatewayAlias;
-import jms.JmsConfig;
 import no.nav.brevserver.core.properties.SrvAppserverProperties;
 import no.nav.brevserver.service.config.ServiceConfig;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;

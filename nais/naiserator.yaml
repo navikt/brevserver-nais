@@ -31,10 +31,6 @@ spec:
       value: {{ MOTTAK_ONLINE_QUEUENAME }}
     - name: MOTTAK_ONLINE_PE_QUEUENAME
       value: {{ MOTTAK_ONLINE_PE_QUEUENAME }}
-    - name: DLQ_QUEUENAME
-      value: {{ DLQ_QUEUENAME }}
-    - name: DLQ_PE_QUEUENAME
-      value: {{ DLQ_PE_QUEUENAME }}
     - name: BREV_REPLY_PE_QUEUENAME
       value: {{ BREV_REPLY_PE_QUEUENAME }}
     - name: DEADLETTER_QUEUENAME
@@ -53,6 +49,8 @@ spec:
       value: {{ SECURITY_TOKEN_SERVICE_TOKEN_URL }}
     - name: BREVSERVER_SERVER
       value: {{ BREVSERVER_SERVER }}
+    - name: BREVSERVERCHANNEL_NAME
+      value: {{ BREVSERVERCHANNEL_NAME }}
   image: {{ image }}
   ingresses:
     {{#each INGRESSES}}

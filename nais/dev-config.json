@@ -1,8 +1,8 @@
 {
-  "NAMESPACE": "q1",
+  "NAMESPACE": "teamdokumenthandtering",
   "INGRESSES": [
-    "https://brevserver-nais-q1.dev.intern.nav.no",
-    "https://brevserver-nais-q1.dev.adeo.no"
+    "https://brevserver-nais-q2.dev.intern.nav.no",
+    "https://brevserver-nais-q2.dev.adeo.no"
   ],
   "MQGATEWAY01_HOSTNAME": "b27apvl172.preprod.local",
   "MQGATEWAY01_PORT": "1413",
@@ -25,9 +25,10 @@
   "SPRING_DATASOURCE_URL": "jdbc:db2://ztest.test.local:5025/QDB2",
   "FAGARKIV_PROXY_HOST": "webproxy.nais",
   "FAGARKIV_PROXY_PORT": "8088",
-  "FAGARKIV_ENDPOINTS_JOURNAL": "https://wasapp-q1.adeo.no/joark/Journal",
-  "FAGARKIV_ENDPOINTS_JOURNALBEHANDLING": "https://wasapp-q1.adeo.no/joark/Journalbehandling",
+  "FAGARKIV_ENDPOINTS_JOURNAL": "https://wasapp-q2.adeo.no/joark/Journal",
+  "FAGARKIV_ENDPOINTS_JOURNALBEHANDLING": "https://wasapp-q2.adeo.no/joark/Journalbehandling",
   "SECURITY_TOKEN_SERVICE_TOKEN_URL": "https://security-token-service.nais.preprod.local/rest/v1/sts",
   "SRVBREVSERVER": "/serviceuser/data/dev/srvbrevserver",
-  "BREVSERVER_SERVER": "https://brevserver-nais-q1.dev.intern.nav.no/brevweb/"
+  "BREVSERVER_SERVER": "https://brevserver-nais-q2.dev.intern.nav.no/brevweb/",
+  "BREVSERVERCHANNEL_NAME": "Q2_BREVSERVER"
 }
