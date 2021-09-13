@@ -18,9 +18,8 @@
 		<module>fagarkiv-consumer</module>
 		<module>service</module>
 		<module>brevserver-klient-applet</module>
-		<module>arkiverBrev</module>
 		<module>app</module>
-
+		<module>mqConsumers</module>
 
 	</modules>
 
@@ -234,7 +233,7 @@
 			</dependency>
 			<dependency>
 				<groupId>no.nav.brevserver</groupId>
-				<artifactId>arkiverBrev</artifactId>
+				<artifactId>mqConsumers</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
