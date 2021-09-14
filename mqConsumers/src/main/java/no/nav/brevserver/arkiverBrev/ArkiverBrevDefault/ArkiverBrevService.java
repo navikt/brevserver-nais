@@ -53,9 +53,10 @@ public class ArkiverBrevService {
 
 		messageVo.setBrevreferanse(kvittering.getBrevreferanse());
 
-		BrevStatusVO brevStatusVo = brevstatusService.hentBrevStatus(kvittering.getSystemID(), kvittering.getBrevreferanse());
+		BrevStatusVO brevStatusVo = brevstatusService.hentBrevStatus(kvittering.getBrevreferanse(), kvittering.getSystemID());
 		// Hvis ingen status så opprett en basert på det man vet
 		if (brevStatusVo == null) {
+			log.info("Fant ingen BrevStatusVo. Oppretter ny");
 			brevStatusVo = new BrevStatusVO();
 		}
 		if (brevStatusVo.getSystemID() == null) {
@@ -118,9 +119,8 @@ public class ArkiverBrevService {
 
 		try {
 			kvitteringVo = DialogueXMLParser.lagKvitteringVOFraDialogueMelding(messageVo.getByteBody());
-		} catch (BrevTechnicalException e) {
-			log.error("Ugyldig XML: ", e);
-			throw e;
+		} catch (Exception e) {
+			throw new BrevTechnicalException("Ugyldig brev-xml: \n" + e.getMessage());
 		}
 
 		if (kvitteringVo.getSystemID().startsWith(SystemType.PE.toString())) {
@@ -135,7 +135,7 @@ public class ArkiverBrevService {
 
 	private String createKvitteringsXml(BrevStatusVO brevStatusVo, KvitteringVO kvittering) throws BrevFunctionalException {
 		if (brevStatusVo == null) {
-			throw new BrevFunctionalException("Kunne ikke lage kvittering da enten brevstatus er null");
+			throw new BrevFunctionalException("Kunne ikke lage kvittering da brevstatus er null");
 		}
 
 		if (brevStatusVo.getReturKoe() == null || "".equals(brevStatusVo.getReturKoe())) {

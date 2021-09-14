@@ -1,6 +1,7 @@
 package no.nav.brevserver.arkiverBrev.ArkiverBrevDefault;
 
 import com.ibm.msg.client.jms.DetailedJMSException;
+import no.nav.brevserver.server.common.exception.BrevTechnicalException;
 import org.apache.camel.ExchangePattern;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.ValidationException;
@@ -54,6 +55,14 @@ public class ArkiverBrevRoute extends RouteBuilder {
 				.logExhaustedMessageBody(false)
 				.log(LoggingLevel.WARN, log, "${exception}; ")
 				.to("jms:" + deadletter.getQueueName());
+
+		onException(BrevTechnicalException.class)
+				.handled(true)
+				.useOriginalMessage()
+				.logExhaustedMessageBody(false)
+				.log(ERROR, log, "${exception}; ")
+				.to("jms:" + deadletter.getQueueName());
+
 
 		onException(DetailedJMSException.class)
 				.log(LoggingLevel.WARN, "DetailedJMSException oppstått i arkiverBrev for forsendelse med  getIdsForLogging() . Melding sendt til funksjonell feilkø.")
