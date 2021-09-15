@@ -1,42 +1,26 @@
 package no.nav.brevserver.arkiverBrev;
 
+import org.apache.activemq.command.ActiveMQMessage;
+import org.apache.camel.component.jms.JmsMessage;
 import io.micrometer.core.instrument.util.IOUtils;
 import no.nav.brevserver.config.AbstractDatabaseTest;
 import no.nav.brevserver.config.ApplicationTestConfig;
-import no.nav.brevserver.core.domain.entities.Brevstatus;
-import no.nav.brevserver.core.repository.RepositoryConfig;
 import no.nav.brevserver.server.common.config.Konstanter;
-import no.nav.brevserver.server.common.exception.BrevTechnicalException;
 import no.nav.brevserver.server.common.vo.BrevStatusVO;
-import no.nav.brevserver.server.common.vo.BrevVO;
 import no.nav.brevserver.server.common.vo.FilType;
-import no.nav.brevserver.service.BrevlagerService;
 import no.nav.brevserver.service.BrevstatusService;
 import org.apache.activemq.command.ActiveMQTextMessage;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.client.HttpClient;
 import org.junit.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestEntityManager;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.http.client.ClientHttpRequestFactory;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.context.transaction.TestTransaction;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
@@ -45,7 +29,6 @@ import javax.jms.TextMessage;
 import javax.xml.bind.JAXBElement;
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -95,6 +78,19 @@ public class ArkiverBrevRouteIT extends AbstractDatabaseTest {
 		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
 			String recieved = receive(svarKo);
 			assertNotNull(recieved);
+			System.out.println("Asserted!");
+		});
+	}
+
+	@Test
+	public void shouldFailOnBadXml() throws Exception{
+
+		String header = "Dette er en bad header";
+		sendStringMessage(mottakArkiv, header, CALLID);
+		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
+			ActiveMQMessage recieved = receive(deadletter);
+			assertNotNull(recieved);
+			System.out.println(recieved);
 			System.out.println("Asserted!");
 		});
 	}
