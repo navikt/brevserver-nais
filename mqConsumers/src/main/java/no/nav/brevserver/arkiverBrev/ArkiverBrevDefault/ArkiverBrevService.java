@@ -18,6 +18,9 @@ import no.nav.brevserver.xmlHandlers.XMLService;
 import org.apache.camel.Exchange;
 import org.apache.camel.Handler;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+
+import javax.inject.Inject;
 
 import static no.nav.brevserver.util.Utils.URI;
 
@@ -27,12 +30,13 @@ import static no.nav.brevserver.util.Utils.URI;
  * @author Holger Zobel, Accenture
  */
 @Slf4j
-@Component
+@Service
 public class ArkiverBrevService {
 
 	private BrevstatusService brevstatusService;
 	private BrevlagerService brevlagerService;
 
+	@Inject
 	public ArkiverBrevService(
 			BrevstatusService brevstatusService,
 			BrevlagerService brevlagerService) {

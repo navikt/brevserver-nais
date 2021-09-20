@@ -16,7 +16,7 @@ import static org.apache.camel.LoggingLevel.ERROR;
 @Component
 public class ArkiverBrevRoute extends RouteBuilder {
 	public static final String ARKIVER_BREV_ROUTE = "direct:arkiverBrev";
-	private final String ROUTE_OPTIONS = "?transacted=true&concurrentConsumers=1&mapJmsMessage=false";
+	private final String ROUTE_OPTIONS = "?transacted=true&concurrentConsumers=1";//&mapJmsMessage=false";
 
 
 	private final Queue mottakArkiv;
@@ -61,9 +61,6 @@ public class ArkiverBrevRoute extends RouteBuilder {
 				.useOriginalMessage()
 				.logExhaustedMessageBody(false)
 				.log(ERROR, log, "${exception}; ")
-				.process(exchange -> {
-					System.out.println(exchange);
-				})
 				.to("jms:" + deadletter.getQueueName());
 
 

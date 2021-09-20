@@ -4,7 +4,6 @@ import no.nav.brevserver.server.common.exception.BrevException;
 import no.nav.brevserver.server.common.exception.BrevTechnicalException;
 import no.nav.brevserver.server.common.vo.MessageVO;
 import org.apache.camel.Exchange;
-import org.apache.camel.component.jms.JmsBinding;
 import org.apache.camel.component.jms.JmsMessage;
 
 import javax.jms.Message;

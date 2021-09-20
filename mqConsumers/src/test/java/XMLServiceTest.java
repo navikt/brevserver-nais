@@ -2,8 +2,6 @@ import no.nav.brevserver.server.common.config.Konstanter;
 import no.nav.brevserver.server.common.vo.BrevStatusVO;
 import no.nav.brevserver.server.common.vo.FilType;
 import no.nav.brevserver.server.common.vo.KvitteringVO;
-import no.nav.brevserver.service.queue.xml.beans.XMLServiceBean;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;

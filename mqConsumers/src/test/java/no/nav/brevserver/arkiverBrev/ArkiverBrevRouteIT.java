@@ -1,37 +1,39 @@
 package no.nav.brevserver.arkiverBrev;
 
-import org.apache.activemq.command.ActiveMQMessage;
-import org.apache.camel.component.jms.JmsMessage;
-import io.micrometer.core.instrument.util.IOUtils;
 import no.nav.brevserver.config.AbstractDatabaseTest;
 import no.nav.brevserver.config.ApplicationTestConfig;
-import no.nav.brevserver.server.common.config.Konstanter;
+import no.nav.brevserver.server.common.exception.BrevTechnicalException;
 import no.nav.brevserver.server.common.vo.BrevStatusVO;
-import no.nav.brevserver.server.common.vo.FilType;
 import no.nav.brevserver.service.BrevstatusService;
 import org.apache.activemq.command.ActiveMQTextMessage;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import javax.jms.Queue;
 import javax.jms.TextMessage;
 import javax.xml.bind.JAXBElement;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
+import static no.nav.brevserver.Utils.BISYS_SYSTEM_ID;
+import static no.nav.brevserver.Utils.BREVREFERANSE;
+import static no.nav.brevserver.Utils.BREVREFERANSE2;
+import static no.nav.brevserver.Utils.CALLID;
+import static no.nav.brevserver.Utils.STATUS_FERDIG;
+import static no.nav.brevserver.Utils.classpathToString;
+import static no.nav.brevserver.Utils.createBadXmlKvitteringHeader;
+import static no.nav.brevserver.Utils.createBisysKvittering;
+import static no.nav.brevserver.Utils.createBisysKvittering2;
+import static no.nav.brevserver.Utils.createBrevstatus;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -40,16 +42,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @SpringBootTest(classes = {ApplicationTestConfig.class})
 @ActiveProfiles("itest")
 
-
-//@EnableTransactionManagement
-//@AutoConfigureTestDatabase
-/*@AutoConfigureTestEntityManager
-@EnableJpaRepositories
-@Transactional*/
 //TODO:  Fjern. Ser ikke mer på problemet nå da det kan hende modulen deles opp
 @DirtiesContext
 @Transactional
-public class ArkiverBrevRouteIT extends AbstractDatabaseTest {
+public class ArkiverBrevRouteIT  extends AbstractDatabaseTest {
 
 	@Inject
 	private Queue mottakArkiv;
@@ -59,52 +55,60 @@ public class ArkiverBrevRouteIT extends AbstractDatabaseTest {
 	private JmsTemplate jmsTemplate;
 	@Inject
 	private Queue svarKo;
-	@Autowired
+	@Inject
 	private BrevstatusService brevstatusService;
-	/*@Inject
-	private BrevlagerService brevlagerService;*/
-
-	private final String CALLID = "dette-er-en-callID";
-
 
 	@Test
+	//happypath
 	public void shouldHandleMessage() throws Exception{
-		BrevStatusVO brevstatus = createBrevstatus(SYSTEM_ID, BREVREFERANSE);
-		brevstatusService.lagreBrevStatus(brevstatus);
-		BrevStatusVO vo = brevstatusService.hentBrevStatus(BREVREFERANSE, SYSTEM_ID);
+		lagreDefaultBrevStatusVo();
+		TestTransaction.flagForCommit();
+		TestTransaction.end();
+		TestTransaction.start();
+		String header = createBisysKvittering();
+		sendStringMessage(mottakArkiv, header + "Dette er en pdf".getBytes(), CALLID);
+		await().atMost(100, TimeUnit.SECONDS).untilAsserted(() -> {
+			String recieved = receive(svarKo);
+			assertThat(recieved.equals(classpathToString("happySvarko.xml")));
+		});
+		TestTransaction.flagForCommit();
+		TestTransaction.end();
 
-		String header = createXmlKvitteringHeader(FilType.PDF.getContentType());
-		sendStringMessage(mottakArkiv, header, CALLID);
+		BrevStatusVO endretBrevstatusVo  = brevstatusService.hentBrevStatus(BREVREFERANSE, BISYS_SYSTEM_ID);
+		assertThat(endretBrevstatusVo.getStatus().equals(STATUS_FERDIG));
+	}
+
+	@Test
+	public void shouldCreateNewBrevStatus() throws BrevTechnicalException {
+		String header = createBisysKvittering2();
+		sendStringMessage(mottakArkiv, header + "Dette er en pdf".getBytes(), CALLID);
 		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
 			String recieved = receive(svarKo);
-			assertNotNull(recieved);
-			System.out.println("Asserted!");
+			assertThat(recieved.equals(classpathToString("happySvarko.xml")));
 		});
+		TestTransaction.flagForCommit();
+		TestTransaction.end();
+
+		BrevStatusVO endretBrevstatusVo  = brevstatusService.hentBrevStatus(BREVREFERANSE2, BISYS_SYSTEM_ID);
+		assertThat(endretBrevstatusVo.getStatus().equals(STATUS_FERDIG));
 	}
 
 	@Test
-	public void shouldFailOnBadXml() throws Exception{
-
-		String header = "Dette er en bad header";
+	public void shouldSendToFeilko() throws Exception{
+		String header = createBadXmlKvitteringHeader();
 		sendStringMessage(mottakArkiv, header, CALLID);
 		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
-			ActiveMQMessage recieved = receive(deadletter);
+			String recieved = receive(deadletter);
+			assertThat(recieved.equals(classpathToString("deadletterQ.xml")));
 			assertNotNull(recieved);
 			System.out.println(recieved);
-			System.out.println("Asserted!");
 		});
 	}
 
-	private String createXmlKvitteringHeader(String contentType) {
-		StringBuilder builder = new StringBuilder("<?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>");
-		builder.append("<rtv-brevkvitt>");
-		builder.append("<brevref>").append(BREVREFERANSE).append("</brevref>");
-		builder.append("<sysid>").append(SYSTEM_ID).append("</sysid>");
-		builder.append("<type>").append(contentType).append("</type>");
-		builder.append("<feilniva>").append("0").append("</feilniva>");
-		builder.append("<feilkode>").append("0").append("</feilkode>");
-		builder.append("</rtv-brevkvitt>");
-		return StringUtils.rightPad(builder.toString(), Konstanter.MELDING_HEADER_LENGTH, ' ');
+
+	private void lagreDefaultBrevStatusVo() throws BrevTechnicalException {
+		BrevStatusVO brevstatus = createBrevstatus(BISYS_SYSTEM_ID, BREVREFERANSE);
+		brevstatusService.lagreBrevStatus(brevstatus);
 	}
 
 	private <T> T receive(Queue queue) {
@@ -126,10 +130,5 @@ public class ArkiverBrevRouteIT extends AbstractDatabaseTest {
 			}
 			return msg;
 		});
-	}
-
-	public static String classpathToString(String classpathResource) throws IOException {
-		InputStream inputStream = new ClassPathResource(classpathResource).getInputStream();
-		return IOUtils.toString(inputStream, UTF_8);
 	}
 }

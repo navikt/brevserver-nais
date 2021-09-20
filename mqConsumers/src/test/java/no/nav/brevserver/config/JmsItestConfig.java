@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 import javax.jms.ConnectionFactory;
-import javax.jms.JMSException;
 import javax.jms.Queue;
 
 
@@ -29,18 +28,17 @@ public class JmsItestConfig {
 	}
 
 	@Bean
-	public Queue onlinebrev(@Value("${onlinebrev_name.queuename}") String brevserverOnlinebrev) throws JMSException {
+	public Queue onlinebrev(@Value("${onlinebrev_name.queuename}") String brevserverOnlinebrev) {
 		return new ActiveMQQueue(brevserverOnlinebrev);
 	}
 
 	@Bean
 	public Queue deadletter() {
-		return new ActiveMQQueue("ActiveMQ.DLQ");
+		return new ActiveMQQueue("DLQ");
 	}
 
 	@Bean
 	public Queue svarKo() {
-
 		return new ActiveMQQueue("SvarKo");
 	}
 

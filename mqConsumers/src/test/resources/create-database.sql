@@ -6,7 +6,7 @@ create table t_brevstatus(
 	timestamp timestamp not null,
 	systemid varchar(4) not null,
 	status varchar(8) not null,
-	format varchar(32),-- not null,
+	format varchar(32),
 	skrivertype varchar(16),
 	skriver varchar(32),
 	arkiver varchar(3),
@@ -20,6 +20,9 @@ create table t_brevsystilgang(
 	eldok_id varchar(20),
 	eldok_pwd varchar(20)
 );
+
+insert into t_brevsystilgang(systemid, systempassord) values('PE00', 'Pensjon123');
+insert into t_brevsystilgang(systemid, systempassord) values('BI12', 'Bisys123');
 
 create table t_brevtilgang(
 	brevreferanse varchar(32),

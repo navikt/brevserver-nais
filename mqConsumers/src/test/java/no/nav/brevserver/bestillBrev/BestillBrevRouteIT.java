@@ -1,43 +1,49 @@
 package no.nav.brevserver.bestillBrev;
 
-import io.micrometer.core.instrument.util.IOUtils;
+import no.nav.brevserver.config.AbstractDatabaseTest;
 import no.nav.brevserver.config.ApplicationTestConfig;
+import no.nav.brevserver.server.common.config.Konstanter;
 import no.nav.brevserver.server.common.vo.BrevStatusVO;
-import no.nav.brevserver.service.BrevlagerService;
 import no.nav.brevserver.service.BrevstatusService;
 import no.nav.brevserver.service.BrevtilgangService;
 import org.apache.activemq.command.ActiveMQTextMessage;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.transaction.TestTransaction;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import javax.jms.Queue;
 import javax.jms.TextMessage;
 import javax.xml.bind.JAXBElement;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
+import static no.nav.brevserver.Utils.BISYS_SYSTEM_ID;
+import static no.nav.brevserver.Utils.CALLID;
+import static no.nav.brevserver.Utils.STATUS_FERDIG;
+import static no.nav.brevserver.Utils.STATUS_KLADD;
+import static no.nav.brevserver.Utils.TOKEN;
+import static no.nav.brevserver.Utils.classpathToString;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.when;
 
-@ExtendWith(SpringExtension.class)
+@RunWith(SpringRunner.class)
 @EnableAutoConfiguration
 @SpringBootTest(classes = {ApplicationTestConfig.class})
 @ActiveProfiles("itest")
-//TODO: Fjern. Ser ikke mer på problemet nå da det kan hende modulen deles opp
+
+//TODO:  Fjern. Ser ikke mer på problemet nå da det kan hende modulen deles opp
 @DirtiesContext
-public class BestillBrevRouteIT {
+@Transactional
+public class BestillBrevRouteIT extends AbstractDatabaseTest {
 
 	@Inject
 	private Queue onlinebrev;
@@ -47,41 +53,31 @@ public class BestillBrevRouteIT {
 	private JmsTemplate jmsTemplate;
 	@Inject
 	private Queue svarKo;
-	@MockBean
-	private BrevstatusService brevstatusServiceMock;
-	@MockBean
-	private BrevlagerService brevlagerServiceMock;
-	@MockBean
-	private BrevtilgangService brevtilgangServiceMock;
+	@Inject
+	private BrevstatusService brevstatusService;
+	@Inject
+	private BrevtilgangService brevtilgangService;
 
-	private final String brevreferanse = "3835845842";
-	private final String systemId = "BI12";
-	private final String passord = "*****";
+	private final String BREVREF_XML = "3835845842";
 
 
 	@Test
 	public void shouldHandleMessage() throws Exception{
 
-		//when(xmlServiceMock.marshalBrevStatus(any(StringReader.class))).thenReturn(createDefaultBrevstatus());
-		when(brevtilgangServiceMock.sjekkSystemTilgang(systemId, passord)).thenReturn(true);
-		when(brevstatusServiceMock.hentBrevStatus(systemId, brevreferanse)).thenReturn(null);
-
 		String message = classpathToString("/bestillBrev/bisysBrev.xml");
-		sendStringMessage(onlinebrev, message, "Dette-er-en-callId");
-		await().atMost(120, TimeUnit.SECONDS).untilAsserted(() -> {
+		sendStringMessage(onlinebrev, message, CALLID);
+		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
 			String recieved = receive(svarKo);
 			assertNotNull(recieved);
 			System.out.println(recieved);
 		});
+		TestTransaction.flagForCommit();
+		TestTransaction.end();
+
+		BrevStatusVO endretBrevstatusVo  = brevstatusService.hentBrevStatus(BREVREF_XML, BISYS_SYSTEM_ID);
+		assertThat(STATUS_KLADD.equals(endretBrevstatusVo.getStatus()));
 	}
 
-	private BrevStatusVO createDefaultBrevstatus() {
-		BrevStatusVO brevstatus = new BrevStatusVO();
-		brevstatus.setSystemID(systemId);
-		brevstatus.setBrevreferanse(brevreferanse);
-		brevstatus.setPassord(passord);
-		return brevstatus;
-	}
 
 	private <T> T receive(Queue queue) {
 		Object response = jmsTemplate.receiveAndConvert(queue);
@@ -103,11 +99,5 @@ public class BestillBrevRouteIT {
 			}
 			return msg;
 		});
-	}
-
-
-	public static String classpathToString(String classpathResource) throws IOException {
-		InputStream inputStream = new ClassPathResource(classpathResource).getInputStream();
-		return IOUtils.toString(inputStream, UTF_8);
 	}
 }

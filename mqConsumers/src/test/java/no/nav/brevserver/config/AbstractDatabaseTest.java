@@ -20,42 +20,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 @Sql(scripts = {"classpath:create-database.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 public abstract class AbstractDatabaseTest {
 
-	protected static final String SYSTEM_ID = "BI12";
-	protected static final String BREVREFERANSE = "10000000000";
-	protected static final String BRUKERID = "b111111";
-	protected static final byte[] BREVDATA = "".getBytes();
-	protected static final String BLANK = "";
-	protected static final String SYSTEM_PASSORD = "Bisys123";
-	protected static final String BESTILLER_ID = "b1111";
-	protected static final String RETURKOE = "ReturKoe";
-	protected static final String BREVMAL = "NAV-01-02-03";
-	protected static final String STATUS_FERDIG = "FERDIG";
-	protected static final String STATUS_KLADD = "KLADD";
-	protected static final String FORMAT = FilType.PDF.getJoarkCode();
-	protected static final String SKRIVERTYPE = "Blekk";
-	protected static final String SKRIVER = "Canon";
-	protected static final String ARKIVER = "Ja";
-	protected static final String SKUFF = "0";
-	protected static final String TOKEN = "Token";
-
-	public BrevStatusVO createBrevstatus(String systemId, String brevref){
-		BrevStatusVO brevstatus = new BrevStatusVO();
-		brevstatus.setSystemID(systemId);
-		brevstatus.setBrevreferanse(brevref);
-		brevstatus.setReturKoe(RETURKOE);
-		brevstatus.setBrevmal(BREVMAL);
-		brevstatus.setStatus(STATUS_KLADD);
-		brevstatus.setFormat(FORMAT);
-		brevstatus.setToken(TOKEN);
-		brevstatus.setBestillerBrukerID(BRUKERID);
-		brevstatus.setSkrivertype(SKRIVERTYPE);
-		brevstatus.setSkriver(SKRIVER);
-		brevstatus.setArkiver(ARKIVER);
-		brevstatus.setSkuff(SKUFF);
-		return brevstatus;
-	}
-
-
 
 
 }
