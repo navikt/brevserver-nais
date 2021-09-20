@@ -1,6 +1,6 @@
 package no.nav.brevserver.nais;
 
-import no.nav.brevserver.config.jms.JmsConfig;
+import no.nav.brevserver.core.config.jms.JmsConfig;
 import no.nav.brevserver.core.alias.MqGatewayProperties;
 import no.nav.brevserver.core.properties.SrvAppserverProperties;
 import no.nav.brevserver.service.config.ServiceConfig;

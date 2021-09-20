@@ -4,7 +4,7 @@ import com.aspose.words.Document;
 import com.aspose.words.FontSettings;
 import com.aspose.words.License;
 import com.aspose.words.SaveFormat;
-import no.nav.brevserver.server.common.config.ConfigManager;
+import no.nav.brevserver.service.config.ConfigManager;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.io.ClassPathResource;
 

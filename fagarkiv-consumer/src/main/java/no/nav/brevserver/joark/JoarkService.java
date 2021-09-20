@@ -1,7 +1,7 @@
 package no.nav.brevserver.joark;
 
-import no.nav.brevserver.server.common.exception.BrevTechnicalException;
-import no.nav.brevserver.server.common.vo.BrevVO;
+import no.nav.brevserver.core.exception.BrevTechnicalException;
+import no.nav.brevserver.core.vo.BrevVO;
 
 public interface JoarkService {
 

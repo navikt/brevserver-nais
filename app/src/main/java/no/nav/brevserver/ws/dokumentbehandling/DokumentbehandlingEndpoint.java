@@ -1,10 +1,10 @@
 package no.nav.brevserver.ws.dokumentbehandling;
 
 import no.nav.brevserver.nais.DokumentbehandlingProvider;
-import no.nav.brevserver.server.common.exception.BrevException;
-import no.nav.brevserver.server.common.exception.BrevFunctionalException;
-import no.nav.brevserver.server.common.exception.BrevSecurityException;
-import no.nav.brevserver.server.common.exception.BrevTechnicalException;
+import no.nav.brevserver.core.exception.BrevException;
+import no.nav.brevserver.core.exception.BrevFunctionalException;
+import no.nav.brevserver.core.exception.BrevSecurityException;
+import no.nav.brevserver.core.exception.BrevTechnicalException;
 import no.nav.brevserver.server.common.log.Log;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.AvbrytDokument;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.AvbrytDokumentRequest;

@@ -2,7 +2,7 @@ package no.nav.brevserver.converters;
 
 import no.nav.brevserver.app.dokumentbehandling.to.HentDokumentResponse;
 import no.nav.brevserver.provider.map.converters.HentDokumentResponseCustomConverter;
-import no.nav.brevserver.server.common.vo.FilType;
+import no.nav.brevserver.core.vo.FilType;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.HentDokumentResponse2;
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;

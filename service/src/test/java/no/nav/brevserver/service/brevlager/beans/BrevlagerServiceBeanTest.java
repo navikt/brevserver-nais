@@ -1,13 +1,12 @@
 package no.nav.brevserver.service.brevlager.beans;
 
-import no.nav.brevserver.builder.BrevStatusBuilder;
 import no.nav.brevserver.core.domain.entities.Brevstatus;
 import no.nav.brevserver.core.domain.entities.id.BrevreferanseSystemCompositeId;
-import no.nav.brevserver.server.common.config.Konstanter;
-import no.nav.brevserver.server.common.exception.BrevTechnicalException;
-import no.nav.brevserver.server.common.vo.BrevStatusVO;
-import no.nav.brevserver.server.common.vo.BrevVO;
-import no.nav.brevserver.server.common.vo.FilType;
+import no.nav.brevserver.core.constants.Konstanter;
+import no.nav.brevserver.core.exception.BrevTechnicalException;
+import no.nav.brevserver.core.vo.BrevStatusVO;
+import no.nav.brevserver.core.vo.BrevVO;
+import no.nav.brevserver.core.vo.FilType;
 import no.nav.brevserver.service.AbstractDatabaseTest;
 import no.nav.brevserver.service.BrevlagerService;
 import no.nav.brevserver.service.BrevstatusService;
@@ -24,7 +23,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static no.nav.brevserver.builder.BrevStatusBuilder.getBrevStatusBuilder;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
@@ -155,7 +153,7 @@ public class BrevlagerServiceBeanTest extends AbstractDatabaseTest {
 		BrevVO redBrev = defaultBrev().contentType(FilType.RTF.getContentType()).build();
 		BrevVO pdfBrev = defaultBrev().lagerStatus(Konstanter.BREVLAGER_STATUS_FERDIG)
 				.contentType(FilType.PDF.getContentType()).brevdata(BREVDATA2).build();
-		BrevStatusVO brevStatusVO = BrevStatusBuilder.getBrevStatusBuilder()
+		BrevStatusVO brevStatusVO = BrevStatusVO.builder()
 				.systemID("BR12")
 				.brevreferanse(BREVREFERANSE)
 				.token("12345")
@@ -178,7 +176,7 @@ public class BrevlagerServiceBeanTest extends AbstractDatabaseTest {
 		BrevVO redBrev = defaultBrev().contentType(FilType.DOCX.getContentType()).build();
 		BrevVO pdfBrev = defaultBrev().lagerStatus(Konstanter.BREVLAGER_STATUS_FERDIG)
 				.contentType(FilType.PDF.getContentType()).brevdata(BREVDATA2).build();
-		BrevStatusVO brevStatusVO = BrevStatusBuilder.getBrevStatusBuilder().systemID("BR12").brevreferanse(BREVREFERANSE).token("12345").build();
+		BrevStatusVO brevStatusVO = BrevStatusVO.builder().systemID("BR12").brevreferanse(BREVREFERANSE).token("12345").build();
 		brevlagerService.lagreBrev(redBrev, brevStatusVO);
 		BrevVO persistedBrev = brevlagerService.getBrev(SYSTEM_ID, BREVREFERANSE);
 		assertThat(persistedBrev.getContentType(), is(FilType.DOCX.getContentType()));
@@ -199,10 +197,10 @@ public class BrevlagerServiceBeanTest extends AbstractDatabaseTest {
 	}
 
 
-	private BrevStatusBuilder defaultBrevStatus() {
-		return getBrevStatusBuilder().brevreferanse(BREVREFERANSE).systemID(SYSTEM_ID).token(TOKEN).returKoe(RETURKOE)
-				.bestillerBrukerID(BRUKERID).brevmal(BREVMAL).status(STATUS).format(FORMAT).skrivertype(SKRIVERTYPE)
-				.skriver(SKRIVER).arkiver(ARKIVER).skuff(SKUFF);
+	private BrevStatusVO.BrevStatusVOBuilder defaultBrevStatus() {
+		return BrevStatusVO.builder().brevreferanse(BREVREFERANSE).systemID(SYSTEM_ID).returKoe(RETURKOE)
+				.bestillerBrukerID(BESTILLER_ID).brevmal(BREVMAL).status(STATUS).format(FORMAT)
+				.skrivertype(SKRIVERTYPE).skriver(SKRIVER).arkiver(ARKIVER).skuff(SKUFF);
 	}
 
 	private Brevstatus.BrevstatusBuilder defaultBrevstatusDomain() {

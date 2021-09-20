@@ -1,9 +1,9 @@
 package no.nav.brevserver.support;
 
 import no.nav.brevserver.nais.support.impl.DefaultFerdigstillDokumentRequestMapper;
-import no.nav.brevserver.server.common.vo.BrevStatusVO;
-import no.nav.brevserver.server.common.vo.BrevVO;
-import no.nav.brevserver.server.common.vo.FilType;
+import no.nav.brevserver.core.vo.BrevStatusVO;
+import no.nav.brevserver.core.vo.BrevVO;
+import no.nav.brevserver.core.vo.FilType;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.FerdigstillDokumentRequest;
 import org.junit.Before;
 import org.junit.Test;

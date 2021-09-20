@@ -1,15 +1,14 @@
 package no.nav.brevserver.service.brevserver;
 
-import no.nav.brevserver.builder.BrevStatusBuilder;
 import no.nav.brevserver.core.domain.entities.Brevstatus;
 import no.nav.brevserver.core.domain.entities.Brevtilgang;
 import no.nav.brevserver.core.domain.entities.id.BrevreferanseSystemCompositeId;
 import no.nav.brevserver.core.repository.BrevSystemTilgangRepository;
 import no.nav.brevserver.core.repository.BrevstatusRepository;
 import no.nav.brevserver.core.repository.BrevtilgangRepository;
-import no.nav.brevserver.server.common.exception.BrevTechnicalException;
-import no.nav.brevserver.server.common.vo.BrevStatusVO;
-import no.nav.brevserver.server.common.vo.SysTilgangVO;
+import no.nav.brevserver.core.exception.BrevTechnicalException;
+import no.nav.brevserver.core.vo.BrevStatusVO;
+import no.nav.brevserver.core.vo.SysTilgangVO;
 import no.nav.brevserver.service.AbstractDatabaseTest;
 import no.nav.brevserver.service.BrevstatusService;
 import no.nav.brevserver.service.BrevtilgangService;
@@ -23,7 +22,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import static no.nav.brevserver.builder.BrevStatusBuilder.getBrevStatusBuilder;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -71,7 +69,7 @@ public class DatabaseExceptionTest  extends AbstractDatabaseTest {
 		expectExceptionDatabaseNoDatabaseTilgjengelig();
 
 		throwExceptionWhenQueryIsExecuted();
-		brevstatusService.lagreBrevStatus(defaultBrevStatus().build());
+		brevstatusService.lagreBrevStatus(defaultBrevStatus());
 	}
 
 	@Test
@@ -102,7 +100,7 @@ public class DatabaseExceptionTest  extends AbstractDatabaseTest {
 	public void shouldThrowExceptionForNotAllowedNullField() throws Exception {
 		expectExceptionDatabaseNoDatabaseTilgjengelig();
 		throwExceptionWhenQueryIsExecuted();
-		BrevStatusVO invalidBrevStatus = defaultBrevStatus().brevreferanse(null).systemID(null).build();
+		BrevStatusVO invalidBrevStatus = defaultBrevStatus().toBuilder().brevreferanse(null).systemID(null).build();
 		brevstatusService.lagreBrevStatus(invalidBrevStatus);
 	}
 
@@ -118,9 +116,9 @@ public class DatabaseExceptionTest  extends AbstractDatabaseTest {
 		thrown.expectMessage("Databasen til brevserveren er ikke tilgjengelig");
 	}
 
-	private BrevStatusBuilder defaultBrevStatus() {
-		return getBrevStatusBuilder().brevreferanse(BREVREFERANSE).systemID(SYSTEM_ID).returKoe(RETURKOE)
+	private BrevStatusVO defaultBrevStatus() {
+		return BrevStatusVO.builder().brevreferanse(BREVREFERANSE).systemID(SYSTEM_ID).returKoe(RETURKOE)
 				.bestillerBrukerID(BESTILLER_ID).brevmal(BREVMAL).status(STATUS).format(FORMAT)
-				.skrivertype(SKRIVERTYPE).skriver(SKRIVER).arkiver(ARKIVER).skuff(SKUFF);
+				.skrivertype(SKRIVERTYPE).skriver(SKRIVER).arkiver(ARKIVER).skuff(SKUFF).build();
 	}
 }
