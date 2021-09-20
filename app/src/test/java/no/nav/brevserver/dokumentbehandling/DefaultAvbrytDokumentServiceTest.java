@@ -1,11 +1,10 @@
 package no.nav.brevserver.dokumentbehandling;
 
-import no.nav.brevserver.AbstractBrevserviceTest;
+import no.nav.brevserver.core.exception.BrevException;
+import no.nav.brevserver.core.vo.BrevStatusVO;
 import no.nav.brevserver.nais.DokumentbehandlingProvider;
 import no.nav.brevserver.nais.support.AvbrytDokumentRequestMapper;
 import no.nav.brevserver.nais.support.impl.DefaultAvbrytDokumentRequestMapper;
-import no.nav.brevserver.core.exception.BrevException;
-import no.nav.brevserver.core.vo.BrevStatusVO;
 import no.nav.brevserver.service.BrevlagerService;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.AvbrytDokumentRequest;
 import org.junit.Before;

@@ -35,13 +35,6 @@
 			<artifactId>xercesImpl</artifactId>
 		</dependency>
 
-
-		<!--
-		<dependency>
-			<groupId>no.nav.brevserver</groupId>
-			<artifactId>brevserver-server-common-java</artifactId>
-		</dependency>
-		-->
 		<dependency>
 			<groupId>no.nav.brevserver</groupId>
 			<artifactId>service</artifactId>

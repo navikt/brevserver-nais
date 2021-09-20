@@ -24,8 +24,8 @@ import static org.mockito.Mockito.verify;
  * @author Nabil Fario, Visma Consulting
  */
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = {H2JpaConfig.class})
+//@RunWith(SpringRunner.class)
+//@SpringBootTest(classes = {H2JpaConfig.class})
 //TODO: Fjern hele saken?
 public class DefaultLoggmottakServiceTest {
 	/*

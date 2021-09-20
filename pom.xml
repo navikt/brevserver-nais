@@ -22,22 +22,6 @@
 		<module>arkiverBrev</module>
 
 	</modules>
-	<!--<module>brevserver-server-common-java</module>-->
-	<!--<module>mqConsumers</module>-->
-	<!--
-	<dependency>
-		<groupId>no.nav.brevserver</groupId>
-		<artifactId>brevserver-server-common-java</artifactId>
-		<version>${project.version}</version>
-		<type>test-jar</type>
-		<scope>test</scope>
-	</dependency>-->
-	<!--
-	<dependency>
-		<groupId>no.nav.brevserver</groupId>
-		<artifactId>brevserver-server-common-java</artifactId>
-		<version>${project.version}</version>
-	</dependency>-->
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -75,18 +59,7 @@
 
 	<dependencyManagement>
 		<dependencies>
-			<!--
-			<dependency>
-				<groupId>no.nav.brevserver</groupId>
-				<artifactId>brevserver-no.nav.brevserver.config-common-env</artifactId>
-				<version>${project.version}</version>
-			</dependency>-->
-			<!--
-			<dependency>
-				<groupId>no.nav.brevserver</groupId>
-				<artifactId>brevserver-no.nav.brevserver.config</artifactId>
-				<version>${project.version}</version>
-			</dependency>-->
+
 			<dependency>
 				<groupId>no.nav.brevserver</groupId>
 				<artifactId>service</artifactId>

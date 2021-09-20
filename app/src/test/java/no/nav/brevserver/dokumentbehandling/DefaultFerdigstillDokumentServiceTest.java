@@ -1,11 +1,10 @@
 package no.nav.brevserver.dokumentbehandling;
 
+import no.nav.brevserver.core.constants.SystemType;
 import no.nav.brevserver.nais.DokumentbehandlingProvider;
 import no.nav.brevserver.nais.support.FerdigstillDokumentRequestMapper;
 import no.nav.brevserver.nais.support.impl.DefaultFerdigstillDokumentRequestMapper;
-import no.nav.brevserver.provider.map.converters.DatahandlerCustomConverter;
 import no.nav.brevserver.core.exception.BrevException;
-import no.nav.brevserver.server.common.type.SystemType;
 import no.nav.brevserver.core.vo.BrevStatusVO;
 import no.nav.brevserver.core.vo.BrevVO;
 import no.nav.brevserver.core.vo.FilType;

@@ -13,18 +13,6 @@
 	<packaging>jar</packaging>
 	<dependencies>
 		<dependency>
-			<groupId>no.nav.brevserver</groupId>
-			<artifactId>core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>no.nav.brevserver</groupId>
-			<artifactId>bestillBrev</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>no.nav.brevserver</groupId>
-			<artifactId>arkiverBrev</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-autoconfigure</artifactId>
 		</dependency>
@@ -97,6 +85,47 @@
 		<dependency>
 			<groupId>no.nav.brevserver</groupId>
 			<artifactId>brevserver-klient-applet</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>no.nav.brevserver</groupId>
+			<artifactId>core</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.junit</groupId>
+					<artifactId>junit</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.mockito</groupId>
+					<artifactId>mockito-core</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.mockito</groupId>
+					<artifactId>mockito-all</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>no.nav.brevserver</groupId>
+			<artifactId>service</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.junit</groupId>
+					<artifactId>junit</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.mockito</groupId>
+					<artifactId>mockito-core</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.mockito</groupId>
+					<artifactId>mockito-all</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>3.11.2</version>
 		</dependency>
 	</dependencies>
 

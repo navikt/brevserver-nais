@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 
-import static no.nav.brevserver.bestillBrev.biSys.ArkiverBrevRoute.ARKIVER_BREV_ROUTE;
+import static no.nav.brevserver.bestillBrev.biSys.BestillBrevRoute.BESTILLBREV;
 import static no.nav.brevserver.core.metrics.MetricLabels.LABEL_ERROR_TYPE;
 import static no.nav.brevserver.core.metrics.MetricLabels.LABEL_EXCEPTION_NAME;
 import static no.nav.brevserver.core.metrics.MetricLabels.LABEL_PROCESS;
@@ -22,17 +22,17 @@ import static no.nav.brevserver.core.metrics.MetricLabels.TYPE_TECHNICAL_EXCEPTI
  * @author Ugur Alpay Cenar, Visma Consulting.
  */
 @Component
-public class ArkiverBrevMetricsRoutePolicy extends RoutePolicySupport {
+public class BestillBrevMetricsRoutePolicy extends RoutePolicySupport {
 
 	private final MeterRegistry registry;
 	private Timer.Sample timer;
 
-	static final String ARKIVER_BREV_PROCESS_TIMER = "dok_request_latency";
-	private static final String ARKIVER_BREV_PROCESS_TIMER_DESCRIPTION = "prosesseringstid for kall inn til arkiverBrev";
-	private static final String ARKIVER_BREV_EXCEPTION = "dok_request_exception_total";
+	static final String BESTILL_BREV_PROCESS_TIMER = "dok_request_latency";
+	private static final String BESTILL_BREV_PROCESS_TIMER_DESCRIPTION = "prosesseringstid for kall inn til arkiverBrev";
+	private static final String BESTILL_BREV_EXCEPTION = "dok_request_exception_total";
 
 	@Inject
-	public ArkiverBrevMetricsRoutePolicy(MeterRegistry registry) {
+	public BestillBrevMetricsRoutePolicy(MeterRegistry registry) {
 		this.registry = registry;
 	}
 
@@ -45,23 +45,23 @@ public class ArkiverBrevMetricsRoutePolicy extends RoutePolicySupport {
 	public void onExchangeDone(Route route, Exchange exchange) {
 		Exception exception = getException(exchange);
 
-		timer.stop(Timer.builder(ARKIVER_BREV_PROCESS_TIMER)
-				.description(ARKIVER_BREV_PROCESS_TIMER_DESCRIPTION)
-				.tags(LABEL_PROCESS, ARKIVER_BREV_ROUTE)
+		timer.stop(Timer.builder(BESTILL_BREV_PROCESS_TIMER)
+				.description(BESTILL_BREV_PROCESS_TIMER_DESCRIPTION)
+				.tags(LABEL_PROCESS, BESTILLBREV)
 				.publishPercentileHistogram(true)
 				.register(registry));
 
 		if (exception != null) {
 			if (isFunctionalException(exception)) {
-				registry.counter(ARKIVER_BREV_EXCEPTION,
+				registry.counter(BESTILL_BREV_EXCEPTION,
 						LABEL_ERROR_TYPE, TYPE_FUNCTIONAL_EXCEPTION,
 						LABEL_EXCEPTION_NAME, exception.getClass().getSimpleName(),
-						LABEL_PROCESS, ARKIVER_BREV_ROUTE).increment();
+						LABEL_PROCESS, BESTILLBREV).increment();
 			} else {
-				registry.counter(ARKIVER_BREV_EXCEPTION,
+				registry.counter(BESTILL_BREV_EXCEPTION,
 						LABEL_ERROR_TYPE, TYPE_TECHNICAL_EXCEPTION,
 						LABEL_EXCEPTION_NAME, exception.getClass().getCanonicalName(),
-						LABEL_PROCESS, ARKIVER_BREV_ROUTE).increment();
+						LABEL_PROCESS, BESTILLBREV).increment();
 			}
 		}
 	}
@@ -78,3 +78,4 @@ public class ArkiverBrevMetricsRoutePolicy extends RoutePolicySupport {
 		return exception;
 	}
 }
+

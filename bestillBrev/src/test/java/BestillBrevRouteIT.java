@@ -55,7 +55,7 @@ public class BestillBrevRouteIT extends AbstractDatabaseTest {
 	@Test
 	public void shouldHandleMessage() throws Exception{
 
-		String message = Utils.classpathToString("/bestillBrev/bisysBrev.xml");
+		String message = Utils.classpathToString("bisysBrev.xml");
 		sendStringMessage(onlinebrev, message, Utils.CALLID);
 		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
 			String recieved = receive(svarKo);
