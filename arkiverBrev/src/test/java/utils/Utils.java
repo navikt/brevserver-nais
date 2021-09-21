@@ -57,13 +57,8 @@ public class Utils {
 		return brevstatus;
 	}
 
-
 	public static String createPesysKvittering(){
-		return StringUtils.rightPad(generateKvitteringHeader(FORMAT, PENSJON_SYSTEM_ID, BREVREFERANSE).toString(), Konstanter.MELDING_HEADER_LENGTH, ' ');
-	}
-
-	public static String createPesysKvittering(String format){
-		return StringUtils.rightPad(generateKvitteringHeader(format, PENSJON_SYSTEM_ID, BREVREFERANSE).toString(), Konstanter.MELDING_HEADER_LENGTH, ' ');
+		return StringUtils.rightPad(generateKvitteringHeader(PDF_CONTENTTYPE, PENSJON_SYSTEM_ID, BREVREFERANSE).toString(), Konstanter.MELDING_HEADER_LENGTH, ' ');
 	}
 
 	//Brevserver forventer en kvitteringsheader på nøyaktig 350 chars. Pad til 350

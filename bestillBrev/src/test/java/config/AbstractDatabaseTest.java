@@ -1,7 +1,5 @@
 package config;
 
-import no.nav.brevserver.core.vo.BrevStatusVO;
-import no.nav.brevserver.core.vo.FilType;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
@@ -16,8 +14,8 @@ import org.springframework.test.context.junit4.SpringRunner;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {H2JpaConfig.class})
-@Sql(scripts = "classpath:drop-all.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-@Sql(scripts = {"classpath:create-database.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+@Sql(scripts = "classpath:sql/drop-all.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+@Sql(scripts = {"classpath:sql/create-database.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 public abstract class AbstractDatabaseTest {
 
 

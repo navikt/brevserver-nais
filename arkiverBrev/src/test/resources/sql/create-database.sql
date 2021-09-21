@@ -21,9 +21,6 @@ create table t_brevsystilgang(
 	eldok_pwd varchar(20)
 );
 
-insert into t_brevsystilgang(systemid, systempassord) values('PE00', 'Pensjon123');
-insert into t_brevsystilgang(systemid, systempassord) values('BI12', 'Bisys123');
-
 create table t_brevtilgang(
 	brevreferanse varchar(32),
 	token varchar(64),

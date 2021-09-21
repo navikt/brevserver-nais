@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 import java.io.StringReader;
 
 import static no.nav.brevserver.core.utils.mqUtils.Utils.URI;
-import static no.nav.brevserver.core.utils.mqUtils.Utils.notEmpty_old;
+import static no.nav.brevserver.core.utils.mqUtils.Utils.notEmpty;
 
 
 /**
@@ -51,7 +51,6 @@ public class BestillBrevService {
 		MessageVO messageVo = Utils.getMessageVoFromExchange(exchange);
 		BrevStatusVO brevStatusVo = generateBrevStatusVo(messageVo);
 		if(brevStatusVo == null){
-
 			throw new BrevFunctionalException("BrevStatus er null");
 		}
 
@@ -97,6 +96,9 @@ public class BestillBrevService {
 
 	private BrevStatusVO generateBrevStatusVo(MessageVO messageVO) throws BrevTechnicalException {
 
+		if(	messageVO == null || messageVO.getStringBody() == null){
+			throw new BrevTechnicalException("Ugyldig XML: InputMessage er null");
+		}
 		StringReader reader = new StringReader(messageVO.getStringBody());
 		BrevStatusVO brevStatusVo;
 
@@ -114,14 +116,13 @@ public class BestillBrevService {
 		if (brevStatusVo.getSystemID().startsWith(SystemType.PE.toString())) {
 			String errorMessage = "Brev med feil systemID mottatt: '" + brevStatusVo.getSystemID()
 					+ "', forventet ikke pensjonsbrev";
-			log.error("BestillBrevCommand.validate()", errorMessage);
 			throw new BrevTechnicalException(BrevTechnicalException.FEIL_I_XML, errorMessage, null);
 		}
 
 		try {
-			notEmpty_old("Brevreferanse", brevStatusVo.getBrevreferanse(), false);
-			notEmpty_old("Systemid", brevStatusVo.getSystemID(), false);
-			notEmpty_old("Returkø", brevStatusVo.getReturKoe(), false);
+			notEmpty("Brevreferanse", brevStatusVo.getBrevreferanse(), false);
+			notEmpty("Systemid", brevStatusVo.getSystemID(), false);
+			notEmpty("Returkø", brevStatusVo.getReturKoe(), false);
 		} catch (BrevException e) {
 			log.error("Ugyldig XML mottatt for brevreferanse " + messageVO.getBrevreferanse(), e);
 			throw new BrevTechnicalException(BrevTechnicalException.FEIL_I_XML, e);

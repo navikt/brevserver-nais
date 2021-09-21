@@ -61,10 +61,9 @@ public class ArkiverBrevServiceTest {
 		String header = createBisysKvittering(FilType.XML.getJoarkCode());
 		sendStringMessage(mottakArkiv, header, "Dette-er-en-callId");
 
-		await().atMost(100, TimeUnit.SECONDS).untilAsserted(() -> {
+		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
 			String recieved = receive(svarKo);
 			assertEquals(recieved, createReplyToBisysKvittering(STATUS_LAGRET, BISYS_SYSTEM_ID, FILTYPE_XML, "0"));
-			verify(brevlagerServiceMock, times(1));
 		});
 	}
 
@@ -80,13 +79,12 @@ public class ArkiverBrevServiceTest {
 			String recieved = receive(svarKo);
 			assertEquals(recieved, createReplyToBisysKvittering(BREVSTATUS_FEIL, BISYS_SYSTEM_ID, FORMAT, FEIL_BREV_EKSISTERER));
 			verifyZeroInteractions(brevlagerServiceMock);
-			verify(brevstatusServiceMock, times(1));
 		});
 	}
 
 	@Test
 	public void shouldFailOnPeFagsystem(){
-		String message = createPesysKvittering(FilType.PDF.getJoarkCode());
+		String message = createPesysKvittering();
 		sendStringMessage(mottakArkiv, message, "Dette-er-en-callId");
 
 		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {

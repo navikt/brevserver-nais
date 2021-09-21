@@ -23,7 +23,7 @@ public class Utils {
 		exchange.getIn().setHeader(URI, returnQueue);
 	}
 
-	public static void notEmpty_old(String name, String value, boolean checkIfValidNumber) throws BrevException {
+	public static void notEmpty(String name, String value, boolean checkIfValidNumber) throws BrevException {
 		if (value == null) {
 			return;
 		} else if (value.equals("")) {

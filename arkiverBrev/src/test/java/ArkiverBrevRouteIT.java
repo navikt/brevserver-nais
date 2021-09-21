@@ -64,7 +64,7 @@ public class ArkiverBrevRouteIT  extends AbstractDatabaseTest {
 		sendStringMessage(mottakArkiv, header + "Dette er en pdf".getBytes(), CALLID);
 		await().atMost(100, TimeUnit.SECONDS).untilAsserted(() -> {
 			String recieved = receive(svarKo);
-			assertThat(recieved.equals(classpathToString("happySvarko.xml")));
+			assertThat(recieved.equals(classpathToString("svarXml/happySvarko.xml")));
 		});
 		TestTransaction.flagForCommit();
 		TestTransaction.end();
@@ -79,7 +79,7 @@ public class ArkiverBrevRouteIT  extends AbstractDatabaseTest {
 		sendStringMessage(mottakArkiv, header + "Dette er en pdf".getBytes(), CALLID);
 		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
 			String recieved = receive(svarKo);
-			assertThat(recieved.equals(classpathToString("happySvarko.xml")));
+			assertThat(recieved.equals(classpathToString("svarXml/happySvarko.xml")));
 		});
 		TestTransaction.flagForCommit();
 		TestTransaction.end();
@@ -94,7 +94,7 @@ public class ArkiverBrevRouteIT  extends AbstractDatabaseTest {
 		sendStringMessage(mottakArkiv, header, CALLID);
 		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
 			String recieved = receive(deadletter);
-			assertThat(recieved.equals(classpathToString("deadletterQ.xml")));
+			assertThat(recieved.equals(classpathToString("svarXml/deadletterQ.xml")));
 			assertNotNull(recieved);
 			System.out.println(recieved);
 		});

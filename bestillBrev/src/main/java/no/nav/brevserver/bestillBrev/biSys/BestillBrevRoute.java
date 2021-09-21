@@ -1,6 +1,7 @@
 package no.nav.brevserver.bestillBrev.biSys;
 
 import com.ibm.msg.client.jms.DetailedJMSException;
+import no.nav.brevserver.core.exception.BrevTechnicalException;
 import org.apache.camel.ExchangePattern;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.ValidationException;
@@ -15,7 +16,7 @@ import static org.apache.camel.LoggingLevel.ERROR;
 @Component
 public class BestillBrevRoute extends RouteBuilder {
 	public static final String BESTILLBREV = "bestill_brev";
-	private final String ROUTE_OPTIONS = "?transacted=true&concurrentConsumers=1&mapJmsMessage=false";
+	private final String ROUTE_OPTIONS = "?transacted=true&concurrentConsumers=1";//&mapJmsMessage=false";
 
 	private final Queue onlinebrev;
 	private final Queue deadletter;
@@ -49,6 +50,15 @@ public class BestillBrevRoute extends RouteBuilder {
 				.logExhaustedMessageBody(false)
 				.log(LoggingLevel.WARN, log, "${exception}; ")
 				.to("jms:" + deadletter.getQueueName());
+
+
+		onException(BrevTechnicalException.class)
+				.handled(true)
+				.useOriginalMessage()
+				.logExhaustedMessageBody(false)
+				.log(ERROR, log, "${exception}; ")
+				.to("jms:" + deadletter.getQueueName());
+
 
 		onException(DetailedJMSException.class)
 				.log(LoggingLevel.WARN, "DetailedJMSException oppstått i bestillBrev for forsendelse med  getIdsForLogging() . Melding sendt til funksjonell feilkø.")

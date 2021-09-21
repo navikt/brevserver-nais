@@ -1,10 +1,13 @@
+package no.nav.brevserver.bestillBrev.biSys;
 
 import config.AbstractDatabaseTest;
 import config.ApplicationTestConfig;
+import no.nav.brevserver.bestillBrev.Utils;
 import no.nav.brevserver.core.vo.BrevStatusVO;
 import no.nav.brevserver.service.BrevstatusService;
 import no.nav.brevserver.service.BrevtilgangService;
 import org.apache.activemq.command.ActiveMQTextMessage;
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -53,9 +56,8 @@ public class BestillBrevRouteIT extends AbstractDatabaseTest {
 
 
 	@Test
-	public void shouldHandleMessage() throws Exception{
-
-		String message = Utils.classpathToString("bisysBrev.xml");
+	public void shouldBestillNewBrev() throws Exception{
+		String message = Utils.classpathToString("brevXml/bisysBrev.xml");
 		sendStringMessage(onlinebrev, message, Utils.CALLID);
 		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
 			String recieved = receive(svarKo);
@@ -66,9 +68,21 @@ public class BestillBrevRouteIT extends AbstractDatabaseTest {
 		TestTransaction.end();
 
 		BrevStatusVO endretBrevstatusVo  = brevstatusService.hentBrevStatus(BREVREF_XML, Utils.BISYS_SYSTEM_ID);
-		assertThat(Utils.STATUS_KLADD.equals(endretBrevstatusVo.getStatus()));
+		Assertions.assertThat(Utils.STATUS_KLADD.equals(endretBrevstatusVo.getStatus()));
 	}
 
+	@Test
+	public void shouldSendToFeilKoOnException() throws Exception{
+
+		String badHeader = Utils.classpathToString("brevXml/pensjonsbrev.xml");
+		sendStringMessage(onlinebrev, badHeader, Utils.CALLID);
+		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
+			String recieved = receive(deadletter);
+			assertThat(recieved.equals(Utils.classpathToString("brevXml/pensjonsbrev.xml")));
+		});
+		TestTransaction.flagForCommit();
+		TestTransaction.end();
+	}
 
 	private <T> T receive(Queue queue) {
 		Object response = jmsTemplate.receiveAndConvert(queue);
