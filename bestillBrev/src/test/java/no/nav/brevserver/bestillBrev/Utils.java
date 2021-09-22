@@ -107,24 +107,9 @@ public class Utils {
 
 	//Det er noe tull med line separators om det går i en egen fil..
 
-	public static String noe(){
-		return "<rtv-brev direkteutskrift=\"NEI\" malpakke=\"BI01.BI01X01\" sysid=\"BI12\" passord=\"Bisys123\" saksbehandler=\"B100946\">\n" +
-				"<brev brevref=\"100000\" spraak=\"NB\" tknr=\"0814\">\n" +
-				"<brevMottaker>\n" +
-				"<navn>Donald</navn>\n" +
-				"<adr1>Andeby 1</adr1>\n" +
-				"<adr2>Borte</adr2>\n" +
-				"<adr3>vekk</adr3>\n" +
-				"<adr4/>\n" +
-				"<bidrRolle>01</bidrRolle>\n" +
-				"<fnr>11111111111</fnr>\n" +
-				"<fDato>010134</fDato>\n" +
-				"<postnr>1234</postnr>\n" +
-				"<landKd/>\n" +
-				"<spraak>NB</spraak>\n" +
-				"</brevMottaker>\n" +
-				"</brev>\n" +
-				"</rtv-brev>\n";
+	public static String getHappyPathText(){
+		return "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
+				"<rtv-brev direkteutskrift=\"NEI\" format=\"ENSIDIG\" malpakke=\"BI01.BI01X01\" sysid=\"BI12\" passord=\"Bisys123\" saksbehandler=\"B100946\"><brev brevref=\"10000000000\" spraak=\"NB\" tknr=\"0814\"><brevMottaker><navn>Donald</navn><adr1>Andeby 1</adr1><adr2>Borte</adr2><adr3>vekk</adr3><adr4/><bidrRolle>01</bidrRolle><fnr>11111111111</fnr><fDato>010134</fDato><postnr>1234</postnr><landKd/><spraak>NB</spraak></brevMottaker></brev></rtv-brev>";
 	}
 	public static String getBrevFinnesAlleredeString(){
 		return "<?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>\n" +

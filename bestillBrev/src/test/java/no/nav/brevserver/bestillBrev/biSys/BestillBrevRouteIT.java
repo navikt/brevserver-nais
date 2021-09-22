@@ -25,8 +25,10 @@ import javax.jms.TextMessage;
 import javax.xml.bind.JAXBElement;
 import java.util.concurrent.TimeUnit;
 
+import static no.nav.brevserver.core.constants.Konstanter.BREVSTATUS_BREVPAKKE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @RunWith(SpringRunner.class)
@@ -62,13 +64,12 @@ public class BestillBrevRouteIT extends AbstractDatabaseTest {
 		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
 			String recieved = receive(svarKo);
 			assertNotNull(recieved);
-			System.out.println(recieved);
 		});
 		TestTransaction.flagForCommit();
 		TestTransaction.end();
 
 		BrevStatusVO endretBrevstatusVo  = brevstatusService.hentBrevStatus(BREVREF_XML, Utils.BISYS_SYSTEM_ID);
-		Assertions.assertThat(Utils.STATUS_KLADD.equals(endretBrevstatusVo.getStatus()));
+		assertEquals(BREVSTATUS_BREVPAKKE, endretBrevstatusVo.getStatus());
 	}
 
 	@Test
@@ -78,7 +79,7 @@ public class BestillBrevRouteIT extends AbstractDatabaseTest {
 		sendStringMessage(onlinebrev, badHeader, Utils.CALLID);
 		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
 			String recieved = receive(deadletter);
-			assertThat(recieved.equals(Utils.classpathToString("brevXml/pensjonsbrev.xml")));
+			assertEquals(recieved, Utils.classpathToString("brevXml/pensjonsbrev.xml"));
 		});
 		TestTransaction.flagForCommit();
 		TestTransaction.end();

@@ -6,6 +6,7 @@ import no.nav.brevserver.core.vo.BrevVO;
 import no.nav.brevserver.core.vo.FilType;
 import no.nav.brevserver.service.BrevlagerService;
 import no.nav.brevserver.service.BrevstatusService;
+import org.apache.activemq.command.ActiveMQMessage;
 import org.apache.activemq.command.ActiveMQTextMessage;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 
 import static no.nav.brevserver.core.constants.Konstanter.BREVSTATUS_FEIL;
 import static no.nav.brevserver.core.constants.Konstanter.FEIL_BREV_EKSISTERER;
+import static no.nav.brevserver.core.constants.Konstanter.FEIL_UKJENT;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -54,12 +56,15 @@ public class ArkiverBrevServiceTest {
 	@MockBean
 	private BrevlagerService brevlagerServiceMock;
 
+	private String CORRELATION_ID = "corr-id";
+	private String CALL_ID = "1234-callid-5678";
+
 	@Test
 	public void shouldSaveAsKladd() throws Exception{
 		when(brevstatusServiceMock.hentBrevStatus(BREVREFERANSE, BISYS_SYSTEM_ID)).thenReturn(createDefaultBrevstatus());
 		when(brevlagerServiceMock.lagreBrev(any(BrevVO.class), any(BrevStatusVO.class))).thenReturn(null);
 		String header = createBisysKvittering(FilType.XML.getJoarkCode());
-		sendStringMessage(mottakArkiv, header, "Dette-er-en-callId");
+		sendStringMessage(mottakArkiv, header, CALL_ID);
 
 		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
 			String recieved = receive(svarKo);
@@ -68,12 +73,39 @@ public class ArkiverBrevServiceTest {
 	}
 
 	@Test
+	public void shouldSaveAsFerdig() throws Exception{
+		when(brevstatusServiceMock.hentBrevStatus(BREVREFERANSE, BISYS_SYSTEM_ID)).thenReturn(createDefaultBrevstatus());
+		when(brevlagerServiceMock.lagreBrev(any(BrevVO.class), any(BrevStatusVO.class))).thenReturn(null);
+		String header = createBisysKvittering(FilType.PDF.getContentType());
+		sendStringMessage(mottakArkiv, header, CALL_ID);
+
+		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
+			String recieved = receive(svarKo);
+			assertEquals(recieved, createReplyToBisysKvittering(STATUS_FERDIG, BISYS_SYSTEM_ID, FilType.PDF.getContentType(), "0"));
+		});
+	}
+
+	@Test
+	public void shouldHandleFeilKvittering() throws Exception{
+		when(brevstatusServiceMock.hentBrevStatus(BREVREFERANSE, BISYS_SYSTEM_ID)).thenReturn(createDefaultBrevstatus());
+		when(brevlagerServiceMock.lagreBrev(any(BrevVO.class), any(BrevStatusVO.class))).thenReturn(null);
+		String header = createBisysKvitteringfeilNiva();
+		sendStringMessage(mottakArkiv, header, CALL_ID);
+
+		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
+			String recieved = receive(svarKo);
+			assertEquals(recieved, createReplyToBisysKvittering(BREVSTATUS_FEIL, BISYS_SYSTEM_ID, FilType.PDF.getContentType(), FEIL_UKJENT));
+		});
+		verify(brevstatusServiceMock, times(1)).lagreBrevStatus(any(BrevStatusVO.class));
+	}
+
+	@Test
 	public void shouldFailBrevFinnesAllerede() throws BrevTechnicalException {
 
 		when(brevstatusServiceMock.hentBrevStatus(BREVREFERANSE, BISYS_SYSTEM_ID)).thenReturn(createBrevStatusVOFinnesAllerede());
 		when(brevlagerServiceMock.lagreBrev(any(BrevVO.class), any(BrevStatusVO.class))).thenReturn(null);
 		String message = createBisysKvittering(FilType.PDF.getJoarkCode());
-		sendStringMessage(mottakArkiv, message, "Dette-er-en-callId");
+		sendStringMessage(mottakArkiv, message, CALL_ID);
 
 		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
 			String recieved = receive(svarKo);
@@ -85,7 +117,7 @@ public class ArkiverBrevServiceTest {
 	@Test
 	public void shouldFailOnPeFagsystem(){
 		String message = createPesysKvittering();
-		sendStringMessage(mottakArkiv, message, "Dette-er-en-callId");
+		sendStringMessage(mottakArkiv, message, CALL_ID);
 
 		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
 			String recieved = receive(deadletter);
@@ -97,11 +129,11 @@ public class ArkiverBrevServiceTest {
 
 	@Test
 	public void shouldFailOnNullKvittering(){
-		sendStringMessage(mottakArkiv, null, "Dette-er-en-callId");
+		sendStringMessage(mottakArkiv, null, CALL_ID);
 
 		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
-			Object recieved = receive(deadletter);
-			//assertEquals(recieved, message);
+			ActiveMQMessage recieved = receive(deadletter);
+			assertEquals(recieved.getJMSCorrelationID(), CORRELATION_ID);
 			verifyZeroInteractions(brevlagerServiceMock, brevstatusServiceMock);
 		});
 	}
@@ -143,7 +175,7 @@ public class ArkiverBrevServiceTest {
 		jmsTemplate.send(queue, session -> {
 			TextMessage msg = new ActiveMQTextMessage();
 			msg.setText(message);
-			msg.setJMSCorrelationID("Dette-er-en-correlation-ID");
+			msg.setJMSCorrelationID(CORRELATION_ID);
 			msg.setJMSReplyTo(svarKo);
 			if (callId != null) {
 				msg.setStringProperty("callId", callId);

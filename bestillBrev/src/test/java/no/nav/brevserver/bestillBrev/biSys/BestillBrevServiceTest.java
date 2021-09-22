@@ -2,15 +2,13 @@ package no.nav.brevserver.bestillBrev.biSys;
 
 import config.ApplicationTestConfig;
 import no.nav.brevserver.bestillBrev.Utils;
-import no.nav.brevserver.core.constants.Konstanter;
 import no.nav.brevserver.core.vo.BrevStatusVO;
 import no.nav.brevserver.service.BrevstatusService;
 import no.nav.brevserver.service.BrevtilgangService;
+import org.apache.activemq.command.ActiveMQMessage;
 import org.apache.activemq.command.ActiveMQTextMessage;
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,10 +25,8 @@ import javax.xml.bind.JAXBElement;
 import java.util.concurrent.TimeUnit;
 
 import static no.nav.brevserver.bestillBrev.Utils.BISYS_SYSTEM_ID;
-import static no.nav.brevserver.bestillBrev.Utils.BREVMAL;
 import static no.nav.brevserver.bestillBrev.Utils.BREVREFERANSE;
 import static no.nav.brevserver.bestillBrev.Utils.SYSTEM_PASSORD;
-import static no.nav.brevserver.bestillBrev.Utils.TOKEN;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.internal.bytebuddy.matcher.ElementMatchers.is;
 import static org.awaitility.Awaitility.await;
@@ -61,13 +57,15 @@ public class BestillBrevServiceTest {
 	@MockBean
 	private BrevtilgangService brevtilgangServiceMock;
 
+	private final String CORRELATION_ID = "abcd-1234-def-5678";
+	private final String CALL_ID="12-callID-34";
 	@Test
 	public void shouldFailOnNullInput(){
-		sendStringMessage(onlinebrev, null, "Dette-er-en-callId");
+		sendStringMessage(onlinebrev, null, CALL_ID);
 
 		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
-			Object recieved = receive(deadletter);
-			//assertEquals(recieved, message);
+			ActiveMQMessage recieved = receive(deadletter);
+			assertEquals(recieved.getJMSCorrelationID(), (CORRELATION_ID));
 			verifyZeroInteractions(brevtilgangServiceMock, brevstatusServiceMock);
 		});
 	}
@@ -79,11 +77,11 @@ public class BestillBrevServiceTest {
 		PowerMockito.when(brevstatusServiceMock.lagreBrevStatus(any(BrevStatusVO.class))).thenReturn(createDefaultBrevstatus());
 
 		String header = createDefaultInput();
-		sendStringMessage(onlinebrev, header, "Dette-er-en-callId");
+		sendStringMessage(onlinebrev, header, CORRELATION_ID);
 
 		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
 			String recieved = receive(svarKo);
-			assertEquals(recieved.equals(Utils.classpathToString("brevXml/response.xml")));
+			assertEquals(recieved, Utils.getHappyPathText());
 			verify(brevstatusServiceMock, times(1)).lagreBrevStatus(any(BrevStatusVO.class));
 		});
 	}
@@ -94,7 +92,7 @@ public class BestillBrevServiceTest {
 		PowerMockito.when(brevstatusServiceMock.lagreBrevStatus(any(BrevStatusVO.class))).thenReturn(createDefaultBrevstatus());
 
 		String header = createInput("PE01");
-		sendStringMessage(onlinebrev, header, "Dette-er-en-callId");
+		sendStringMessage(onlinebrev, header, CALL_ID);
 
 		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
 			String recieved = receive(deadletter);
@@ -111,7 +109,7 @@ public class BestillBrevServiceTest {
 		PowerMockito.when(brevstatusServiceMock.lagreBrevStatus(any(BrevStatusVO.class))).thenReturn(createDefaultBrevstatus());
 
 		String header = "<rtv-brev>badXMl<rtv-brev>";
-		sendStringMessage(onlinebrev, header, "Dette-er-en-callId");
+		sendStringMessage(onlinebrev, header, CALL_ID);
 
 		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
 			String recieved = receive(deadletter);
@@ -128,7 +126,7 @@ public class BestillBrevServiceTest {
 		PowerMockito.when(brevstatusServiceMock.lagreBrevStatus(any(BrevStatusVO.class))).thenReturn(createDefaultBrevstatus());
 
 		String header = createInput("");
-		sendStringMessage(onlinebrev, header, "Dette-er-en-callId");
+		sendStringMessage(onlinebrev, header, CALL_ID);
 
 		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
 			String recieved = receive(deadletter);
@@ -145,7 +143,7 @@ public class BestillBrevServiceTest {
 		PowerMockito.when(brevstatusServiceMock.lagreBrevStatus(any(BrevStatusVO.class))).thenReturn(createDefaultBrevstatus());
 
 		String header = createDefaultInput();
-		sendStringMessage(onlinebrev, header, "Dette-er-en-callId");
+		sendStringMessage(onlinebrev, header, CALL_ID);
 
 		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
 			String recieved = receive(svarKo);
@@ -162,7 +160,7 @@ public class BestillBrevServiceTest {
 		PowerMockito.when(brevtilgangServiceMock.lagreTilgang(BISYS_SYSTEM_ID, BREVREFERANSE, "token")).thenReturn(true);
 
 		String header = createInput(BISYS_SYSTEM_ID, "frabrevlager");
-		sendStringMessage(onlinebrev, header, "Dette-er-en-callId");
+		sendStringMessage(onlinebrev, header, CALL_ID);
 
 		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
 			verify(brevtilgangServiceMock, times(1)).sjekkSystemTilgang(BISYS_SYSTEM_ID, SYSTEM_PASSORD);
@@ -175,7 +173,7 @@ public class BestillBrevServiceTest {
 		PowerMockito.when(brevtilgangServiceMock.sjekkSystemTilgang(BISYS_SYSTEM_ID, SYSTEM_PASSORD)).thenReturn(false);
 
 		String header = createDefaultInput();
-		sendStringMessage(onlinebrev, header, "Dette-er-en-callId");
+		sendStringMessage(onlinebrev, header, CALL_ID);
 
 		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
 			String recieved = receive(svarKo);
@@ -250,7 +248,7 @@ public class BestillBrevServiceTest {
 		jmsTemplate.send(queue, session -> {
 			TextMessage msg = new ActiveMQTextMessage();
 			msg.setText(message);
-			msg.setJMSCorrelationID("Dette-er-en-correlation-ID");
+			msg.setJMSCorrelationID(CORRELATION_ID);
 			msg.setJMSReplyTo(svarKo);
 			if (callId != null) {
 				msg.setStringProperty("callId", callId);

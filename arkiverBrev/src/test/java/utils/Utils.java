@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static no.nav.brevserver.core.constants.Konstanter.BREVPAKKE_FEILNIVA_FEIL;
+import static no.nav.brevserver.core.constants.Konstanter.FEIL_UKJENT;
 
 public class Utils {
 
@@ -29,6 +31,7 @@ public class Utils {
 	public static final String STATUS_KLADD = "KLADD";
 	public static final String STATUS_LAGRET = "LAGRET";
 	public static final String FILTYPE_XML = "XML";
+	public static final String FILTYPE_PDF = "PDF";
 	public static final String FORMAT = FilType.PDF.getJoarkCode();
 	public static final String SKRIVERTYPE = "Blekk";
 	public static final String SKRIVER = "Canon";
@@ -68,6 +71,10 @@ public class Utils {
 
 	public static String createBisysKvittering(String format) {
 		return StringUtils.rightPad(generateKvitteringHeader(format, BISYS_SYSTEM_ID, BREVREFERANSE).toString(), Konstanter.MELDING_HEADER_LENGTH, ' ');
+	}
+
+	public static String createBisysKvitteringfeilNiva() {
+		return StringUtils.rightPad(generateKvitteringHeader(PDF_CONTENTTYPE, BISYS_SYSTEM_ID, BREVREFERANSE, BREVPAKKE_FEILNIVA_FEIL, FEIL_UKJENT).toString(), Konstanter.MELDING_HEADER_LENGTH, ' ');
 	}
 
 	public static String createBadXmlKvitteringHeader(){
