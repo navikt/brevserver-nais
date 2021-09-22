@@ -17,10 +17,6 @@
 			<artifactId>core</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>no.nav.brevserver</groupId>
-			<artifactId>brevserver-server-common-java</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
 		</dependency>
@@ -71,12 +67,6 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>no.nav.brevserver</groupId>
-			<artifactId>brevserver-server-common-java</artifactId>
-			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

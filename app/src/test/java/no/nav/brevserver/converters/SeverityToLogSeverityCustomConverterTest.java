@@ -1,7 +1,7 @@
 package no.nav.brevserver.converters;
 
 import no.nav.brevserver.provider.map.converters.SeverityToLogSeverityCustomConverter;
-import no.nav.brevserver.server.common.log.Log;
+import no.nav.brevserver.service.loggmottak.Log;
 import no.nav.tjenester.brevogarkiv.loggmottak.Severity;
 import org.junit.Before;
 import org.junit.Test;

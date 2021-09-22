@@ -1,5 +1,6 @@
 package no.nav.brevserver.dokumentbehandling;
 
+import no.nav.brevserver.core.constants.SystemType;
 import no.nav.brevserver.nais.DokumentbehandlingProvider;
 import no.nav.brevserver.nais.support.AvbrytDokumentRequestMapper;
 import no.nav.brevserver.nais.support.FerdigstillDokumentRequestMapper;
@@ -11,13 +12,12 @@ import no.nav.brevserver.nais.support.impl.DefaultFerdigstillDokumentRequestMapp
 import no.nav.brevserver.nais.support.impl.DefaultHentDokumentRequestMapper;
 import no.nav.brevserver.nais.support.impl.DefaultHentDokumentResponseMapper;
 import no.nav.brevserver.nais.support.impl.DefaultLagreDokumentRequestMapper;
-import no.nav.brevserver.server.common.exception.BrevException;
-import no.nav.brevserver.server.common.exception.BrevFunctionalException;
-import no.nav.brevserver.server.common.exception.BrevTechnicalException;
-import no.nav.brevserver.server.common.type.SystemType;
-import no.nav.brevserver.server.common.vo.BrevStatusVO;
-import no.nav.brevserver.server.common.vo.BrevVO;
-import no.nav.brevserver.server.common.vo.FilType;
+import no.nav.brevserver.core.exception.BrevException;
+import no.nav.brevserver.core.exception.BrevFunctionalException;
+import no.nav.brevserver.core.exception.BrevTechnicalException;
+import no.nav.brevserver.core.vo.BrevStatusVO;
+import no.nav.brevserver.core.vo.BrevVO;
+import no.nav.brevserver.core.vo.FilType;
 import no.nav.brevserver.service.BrevlagerService;
 import no.nav.brevserver.service.BrevstatusService;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.AvbrytDokumentRequest;

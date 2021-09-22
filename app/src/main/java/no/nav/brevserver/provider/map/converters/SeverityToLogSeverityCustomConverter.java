@@ -1,6 +1,6 @@
 package no.nav.brevserver.provider.map.converters;
 
-import no.nav.brevserver.server.common.log.Log;
+import no.nav.brevserver.service.loggmottak.Log;
 import no.nav.tjenester.brevogarkiv.loggmottak.Severity;
 import org.dozer.DozerConverter;
 

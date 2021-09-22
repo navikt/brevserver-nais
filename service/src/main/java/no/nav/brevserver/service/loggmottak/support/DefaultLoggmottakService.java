@@ -1,6 +1,8 @@
 package no.nav.brevserver.service.loggmottak.support;
 
-import no.nav.brevserver.server.common.log.Log;
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import no.nav.brevserver.service.loggmottak.Log;
 import no.nav.brevserver.service.loggmottak.LoggmottakService;
 import no.nav.brevserver.service.loggmottak.to.LoggRequest;
 import org.springframework.stereotype.Service;
@@ -12,15 +14,11 @@ import org.springframework.stereotype.Service;
  * @author Joakim Bjørnstad, Visma Consulting
  */
 @Service
+@Slf4j
+@NoArgsConstructor
 public class DefaultLoggmottakService implements LoggmottakService {
 
 	static final String UNKNOWN_SEVERITY_MESSAGE = "Mottok loggrequest med ukjent severity";
-
-	private Log log;
-
-	public DefaultLoggmottakService() {
-		log = new Log(DefaultLoggmottakService.class);
-	}
 
 	@Override
 	public void logg(LoggRequest loggRequest) {
@@ -39,13 +37,13 @@ public class DefaultLoggmottakService implements LoggmottakService {
 
 		switch (loggRequest.getSeverity()) {
 			case Log.FATAL:
-				log.fatal(methSig, logMessage);
+				log.error("Fatal error! " + methSig, logMessage);
 				break;
 			case Log.ERROR:
 				log.error(methSig, logMessage);
 				break;
 			case Log.WARNING:
-				log.warning(methSig, logMessage);
+				log.warn(methSig, logMessage);
 				break;
 			case Log.INFO:
 				log.info(methSig, logMessage);
@@ -54,9 +52,5 @@ public class DefaultLoggmottakService implements LoggmottakService {
 				log.error(methSig, UNKNOWN_SEVERITY_MESSAGE + ": " + loggRequest.getSeverity() + "."
 						+ " Mottatt loggrequest: " + logMessage);
 		}
-	}
-
-	public void setLog(Log log) {
-		this.log = log;
 	}
 }

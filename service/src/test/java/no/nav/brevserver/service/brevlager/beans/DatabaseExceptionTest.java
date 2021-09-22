@@ -1,10 +1,9 @@
 package no.nav.brevserver.service.brevlager.beans;
 
-import no.nav.brevserver.builder.BrevStatusBuilder;
 import no.nav.brevserver.core.repository.BrevRepository;
 import no.nav.brevserver.core.repository.BrevstatusRepository;
-import no.nav.brevserver.server.common.exception.BrevTechnicalException;
-import no.nav.brevserver.server.common.vo.BrevStatusVO;
+import no.nav.brevserver.core.exception.BrevTechnicalException;
+import no.nav.brevserver.core.vo.BrevStatusVO;
 import no.nav.brevserver.service.AbstractDatabaseTest;
 import no.nav.brevserver.service.BrevlagerService;
 import org.junit.Rule;
@@ -31,7 +30,7 @@ public class DatabaseExceptionTest extends AbstractDatabaseTest {
 	public void shouldThrowExceptionForFailedQueryInFerdigstillBrev() throws Exception {
 		expectExceptionDatabaseNoDatabaseTilgjengelig();
 		throwExceptionWhenQueryIsExecuted();
-		brevlagerService.ferdigstillBrev(BrevStatusBuilder.getBrevStatusBuilder().systemID("123").brevreferanse("123").token("123").build(), defaultBrev().build(), defaultBrev().build());
+		brevlagerService.ferdigstillBrev(BrevStatusVO.builder().systemID("123").brevreferanse("123").token("123").build(), defaultBrev().build(), defaultBrev().build());
 	}
 
 	@Test

@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Configuration
 @Import(ServiceConfig.class)
 @EnableAutoConfiguration
-@PropertySource("application-itest.properties")
+@PropertySource("classpath:application-itest.properties")
 @EnableTransactionManagement
 @ComponentScan(basePackages = {
 		"no.nav.brevserver"

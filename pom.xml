@@ -13,16 +13,15 @@
 	<version>10.2.1-SNAPSHOT</version>
 
 	<modules>
-		<module>brevserver-server-common-java</module>
 		<module>core</module>
 		<module>fagarkiv-consumer</module>
 		<module>service</module>
 		<module>brevserver-klient-applet</module>
 		<module>app</module>
-		<module>mqConsumers</module>
+		<module>bestillBrev</module>
+		<module>arkiverBrev</module>
 
 	</modules>
-
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -60,6 +59,42 @@
 
 	<dependencyManagement>
 		<dependencies>
+
+			<dependency>
+				<groupId>no.nav.brevserver</groupId>
+				<artifactId>service</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>no.nav.brevserver</groupId>
+				<artifactId>fagarkiv-consumer</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>no.nav.brevserver</groupId>
+				<artifactId>core</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>no.nav.brevserver</groupId>
+				<artifactId>bestillBrev</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>no.nav.brevserver</groupId>
+				<artifactId>arkiverBrev</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>no.nav.brevserver</groupId>
+				<artifactId>brevserver-klient-applet</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>no.nav.brevserver</groupId>
+				<artifactId>nav-brevserver-resource-no.nav.brevserver.config</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-core</artifactId>
@@ -192,51 +227,6 @@
 				</exclusions>
 			</dependency>
 			<dependency>
-				<groupId>no.nav.brevserver</groupId>
-				<artifactId>brevserver-server-common-java</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>no.nav.brevserver</groupId>
-				<artifactId>brevserver-no.nav.brevserver.config-common-env</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>no.nav.brevserver</groupId>
-				<artifactId>brevserver-no.nav.brevserver.config</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>no.nav.brevserver</groupId>
-				<artifactId>brevserver-klient-applet</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>no.nav.brevserver</groupId>
-				<artifactId>nav-brevserver-resource-no.nav.brevserver.config</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>no.nav.brevserver</groupId>
-				<artifactId>service</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>no.nav.brevserver</groupId>
-				<artifactId>fagarkiv-consumer</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>no.nav.brevserver</groupId>
-				<artifactId>core</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>no.nav.brevserver</groupId>
-				<artifactId>mqConsumers</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
 				<groupId>no.nav.tjenester.brevogarkiv</groupId>
 				<artifactId>dokumentbehandling-tjenestespesifikasjon</artifactId>
 				<version>1.0.2</version>
@@ -366,13 +356,6 @@
 			<dependency>
 				<groupId>no.nav.brevserver</groupId>
 				<artifactId>brevserver-no.nav.brevserver.config</artifactId>
-				<version>${project.version}</version>
-				<type>test-jar</type>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>no.nav.brevserver</groupId>
-				<artifactId>brevserver-server-common-java</artifactId>
 				<version>${project.version}</version>
 				<type>test-jar</type>
 				<scope>test</scope>

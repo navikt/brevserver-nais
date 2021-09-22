@@ -1,8 +1,8 @@
 package no.nav.brevserver.app.dokumentbehandling.to;
 
-import no.nav.brevserver.server.common.vo.BrevStatusVO;
-import no.nav.brevserver.server.common.vo.BrevVO;
-import no.nav.brevserver.server.common.vo.FilType;
+import no.nav.brevserver.core.vo.BrevStatusVO;
+import no.nav.brevserver.core.vo.BrevVO;
+import no.nav.brevserver.core.vo.FilType;
 import org.apache.commons.lang3.Validate;
 
 /**

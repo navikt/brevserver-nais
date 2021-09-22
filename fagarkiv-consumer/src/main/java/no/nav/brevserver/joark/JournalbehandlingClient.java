@@ -1,6 +1,6 @@
 package no.nav.brevserver.joark;
 
-import no.nav.brevserver.server.common.exception.BrevTechnicalException;
+import no.nav.brevserver.core.exception.BrevTechnicalException;
 import no.nav.virksomhet.tjenester.arkiv.journalbehandling.meldinger.v1.OppdaterJournalRequest;
 import no.nav.virksomhet.tjenester.arkiv.journalbehandling.v1.OppdaterJournal;
 import org.springframework.ws.client.core.support.WebServiceGatewaySupport;

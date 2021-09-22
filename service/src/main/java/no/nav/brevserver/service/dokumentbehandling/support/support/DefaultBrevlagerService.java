@@ -1,21 +1,20 @@
 package no.nav.brevserver.service.dokumentbehandling.support.support;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.brevserver.core.constants.SystemType;
 import no.nav.brevserver.core.domain.entities.Brev;
 import no.nav.brevserver.core.domain.entities.id.BrevreferanseSystemCompositeId;
 import no.nav.brevserver.core.repository.BrevRepository;
+import no.nav.brevserver.core.utils.xmlHandlers.XMLService;
 import no.nav.brevserver.joark.JoarkService;
-import no.nav.brevserver.joark.JoarkServiceImpl;
-import no.nav.brevserver.server.common.config.Konstanter;
-import no.nav.brevserver.server.common.exception.BrevException;
-import no.nav.brevserver.server.common.exception.BrevFunctionalException;
-import no.nav.brevserver.server.common.exception.BrevTechnicalException;
-import no.nav.brevserver.server.common.type.SystemType;
-import no.nav.brevserver.server.common.utility.ArgumentValidator;
-import no.nav.brevserver.server.common.vo.BrevStatusVO;
-import no.nav.brevserver.server.common.vo.BrevVO;
-import no.nav.brevserver.server.common.vo.FilType;
-import no.nav.brevserver.server.common.vo.KvitteringVO;
+import no.nav.brevserver.core.constants.Konstanter;
+import no.nav.brevserver.core.exception.BrevException;
+import no.nav.brevserver.core.exception.BrevFunctionalException;
+import no.nav.brevserver.core.exception.BrevTechnicalException;
+import no.nav.brevserver.core.vo.BrevStatusVO;
+import no.nav.brevserver.core.vo.BrevVO;
+import no.nav.brevserver.core.vo.FilType;
+import no.nav.brevserver.core.vo.KvitteringVO;
 import no.nav.brevserver.service.BrevlagerService;
 import no.nav.brevserver.service.BrevstatusService;
 import no.nav.brevserver.service.BrevtilgangService;
@@ -25,9 +24,6 @@ import no.nav.brevserver.service.converter.FileConverter;
 import no.nav.brevserver.service.converter.VoTilBrevConverter;
 import no.nav.brevserver.service.converter.VoTilBrevstatusConverter;
 import no.nav.brevserver.service.queue.KoService;
-import no.nav.brevserver.service.queue.jms.BIMessageProducer;
-import no.nav.brevserver.service.queue.xml.XMLService;
-import no.nav.brevserver.service.queue.xml.XMLServiceFactory;
 import no.nav.brevserver.service.utility.KnappStatusUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -52,7 +48,6 @@ public class DefaultBrevlagerService implements BrevlagerService {
 	private final BrevtilgangService brevtilgangService;
 	private final KoService koService;
 	private final KnappStatusUtil knappStatusUtil;
-	private final BIMessageProducer biMessageProducer;
 
 	@Autowired
 	public DefaultBrevlagerService(JoarkService joarkService,
@@ -64,8 +59,7 @@ public class DefaultBrevlagerService implements BrevlagerService {
 								   VoTilBrevstatusConverter voTilBrevstatusConverter,
 								   BrevstatusTilVoConverter brevstatusTilVoConverter,
 								   BrevtilgangService brevtilgangService, KoService koService,
-								   KnappStatusUtil knappStatusUtil,
-								   BIMessageProducer biMessageProducer) {
+								   KnappStatusUtil knappStatusUtil) {
 		this.joarkService = joarkService;
 		this.brevRepository = brevRepository;
 		this.brevTilVoConverter = brevTilVoConverter;
@@ -77,7 +71,6 @@ public class DefaultBrevlagerService implements BrevlagerService {
 		this.koService = koService;
 		this.brevstatusService = brevstatusService;
 		this.knappStatusUtil = knappStatusUtil;
-		this.biMessageProducer = biMessageProducer;
 	}
 
 
@@ -166,7 +159,9 @@ public class DefaultBrevlagerService implements BrevlagerService {
 	@Override
 	public void avbrytDokument(BrevStatusVO brevStatus) throws BrevException {
 
-		ArgumentValidator.isNotNull(brevStatus);
+		if(brevStatus == null){
+			throw new IllegalArgumentException("Brevstatus er null!");
+		}
 		verifyChangeRequest(brevStatus);
 		brevStatus.setStatus(Konstanter.BREVSTATUS_AVBRUTT);
 		brevstatusService.lagreBrevStatus(brevStatus);
@@ -177,17 +172,18 @@ public class DefaultBrevlagerService implements BrevlagerService {
 			kvittering.setBrevreferanse(brevStatus.getBrevreferanse());
 			brevStatus.setStatus(Konstanter.BREVSTATUS_AVBRUTT);
 
-			XMLService service = XMLServiceFactory.getInstance().createXMLService();
-			String xmlKvittering = service.unmarshal(kvittering, brevStatus);
-			biMessageProducer.sendReturMelding(brevStatus.getReturKoe(), false, null, xmlKvittering);
+			String xmlKvittering = XMLService.unmarshal(kvittering, brevStatus);
+			//TODO: Send returmelding
+			//biMessageProducer.sendReturMelding(brevStatus.getReturKoe(), false, null, xmlKvittering);
 		}
 		log.info("Brevet ble avbrutt");
 	}
 
 	@Override
 	public void lagreDokument(BrevVO brev, BrevStatusVO brevStatusVO, SystemType systemType) throws BrevException {
-		ArgumentValidator.isNotNull(brev);
-		ArgumentValidator.isNotNull(brevStatusVO);
+		if(brev == null || brevStatusVO == null){
+			throw new IllegalArgumentException("Brevstatus er null!");
+		}
 		verifyChangeRequest(brevStatusVO);
 		if (brevStatusVO.getSystemID().startsWith(SystemType.PE.toString())) {
 			lagreJoarkDokument(brev, brevStatusVO, systemType, brevStatusVO.getReturKoe());

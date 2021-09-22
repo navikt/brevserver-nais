@@ -1,0 +1,17 @@
+<rtv-brev direkteutskrift="NEI" malpakke="BI01.BI01X01" sysid="BI12" passord="Bisys123" saksbehandler="B100946">
+	<brev brevref="100000" spraak="NB" tknr="0814">
+		<brevMottaker>
+			<navn>Donald</navn>
+			<adr1>Andeby 1</adr1>
+			<adr2>Borte</adr2>
+			<adr3>vekk</adr3>
+			<adr4/>
+			<bidrRolle>01</bidrRolle>
+			<fnr>11111111111</fnr>
+			<fDato>010134</fDato>
+			<postnr>1234</postnr>
+			<landKd/>
+			<spraak>NB</spraak>
+		</brevMottaker>
+	</brev>
+</rtv-brev>
