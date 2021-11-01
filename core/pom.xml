@@ -71,16 +71,16 @@
 			<artifactId>spring-boot-autoconfigure</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.ibm.db2</groupId>
-			<artifactId>db2jcc4</artifactId>
+			<groupId>com.oracle.database.jdbc</groupId>
+			<artifactId>ojdbc10</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.ibm.db2</groupId>
-			<artifactId>db2jcc_license_cu</artifactId>
+			<groupId>com.oracle.database.jdbc</groupId>
+			<artifactId>ucp</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.ibm.db2</groupId>
-			<artifactId>db2jcc_license_cisuz</artifactId>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-core</artifactId>
 		</dependency>
 	</dependencies>
 
