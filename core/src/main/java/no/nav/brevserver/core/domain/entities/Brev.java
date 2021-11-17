@@ -18,7 +18,7 @@ import javax.persistence.Table;
 import java.sql.Timestamp;
 
 @Entity
-@Table(name = "T_BREVLAGER5")
+@Table(name = "T_BREVLAGER_X")
 @Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
