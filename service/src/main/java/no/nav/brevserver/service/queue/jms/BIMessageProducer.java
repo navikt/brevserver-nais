@@ -1,5 +1,6 @@
 package no.nav.brevserver.service.queue.jms;
 //TODO: Eksempel: Her
+import lombok.extern.slf4j.Slf4j;
 import no.nav.brevserver.server.common.config.ConfigManager;
 import no.nav.brevserver.server.common.exception.BrevTechnicalException;
 import no.nav.brevserver.server.common.log.Log;
@@ -15,10 +16,10 @@ import org.springframework.stereotype.Component;
  * Produserer JMS tekstmeldinger, fortrinnsvis i XML.
  */
 @Component
+@Slf4j
 public class BIMessageProducer extends MessageProducer {
 
 	public BIMessageProducer() {
-		log = new Log(this.getClass());
 	}
 
 	/**
@@ -62,7 +63,7 @@ public class BIMessageProducer extends MessageProducer {
 		String methSig = "ArkiverBrevCommand.sendKvittering(" + brevStatusVo.getBrevreferanse() + ")";
 
 		if (brevStatusVo.getReturKoe() == null || "".equals(brevStatusVo.getReturKoe())) {
-			log.warning(methSig, "Kan ikke sende kvittering da returkø mangler");
+			log.warn(methSig, "Kan ikke sende kvittering da returkø mangler");
 			return;
 		}
 
@@ -94,7 +95,7 @@ public class BIMessageProducer extends MessageProducer {
 		if (queueName == null || "".equals(queueName)) {
 			log.debug("MessageProducer.sendReturMelding()", "Forsøkte å sende melding til en kø uten navn");
 		} else {
-		//	produserTextMelding(queueName, useJndi, null, correlationID, kvittering);
+			produserTextMelding(queueName, null, correlationID, kvittering);
 		}
 	}
 }
