@@ -1,6 +1,7 @@
 package no.nav.brevserver.arkiverBrev;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.brevserver.core.constants.Konstanter;
 import no.nav.brevserver.core.constants.SystemType;
 import no.nav.brevserver.core.exception.BrevException;
 import no.nav.brevserver.core.exception.BrevFunctionalException;
@@ -12,36 +13,32 @@ import no.nav.brevserver.core.vo.BrevStatusVO;
 import no.nav.brevserver.core.vo.FilType;
 import no.nav.brevserver.core.vo.KvitteringVO;
 import no.nav.brevserver.core.vo.MessageVO;
-import no.nav.brevserver.core.constants.Konstanter;
+import no.nav.brevserver.joark.JoarkService;
 import no.nav.brevserver.service.BrevlagerService;
 import no.nav.brevserver.service.BrevstatusService;
+import no.nav.brevserver.service.BrevtilgangService;
 import org.apache.camel.Exchange;
 import org.apache.camel.Handler;
-import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 
 import static no.nav.brevserver.core.utils.mqUtils.Utils.URI;
 
-
-/**
- * Håndterer meldinger fra Dialogue. Lagrer brev og setter status og sender kvittering til saksbehandlingsystemet.
- *
- * @author Holger Zobel, Accenture
- */
 @Slf4j
-@Service
-public class ArkiverBrevService {
+public class PeArkiverBrevService {
 
 	private BrevstatusService brevstatusService;
-	private BrevlagerService brevlagerService;
+	private BrevtilgangService brevtilgangService;
+	private JoarkService joarkService;
 
 	@Inject
-	public ArkiverBrevService(
+	public PeArkiverBrevService(
 			BrevstatusService brevstatusService,
-			BrevlagerService brevlagerService) {
+			BrevtilgangService brevtilgangService,
+			JoarkService joarkService) {
 		this.brevstatusService = brevstatusService;
-		this.brevlagerService = brevlagerService;
+		this.brevtilgangService = brevtilgangService;
+		this.joarkService = joarkService;
 	}
 
 	@Handler
@@ -58,12 +55,14 @@ public class ArkiverBrevService {
 
 		messageVo.setBrevreferanse(kvittering.getBrevreferanse());
 
-		BrevStatusVO brevStatusVo = brevstatusService.hentBrevStatus(kvittering.getBrevreferanse(), kvittering.getSystemID());
+		// Sjekk om brevet finnes, hent status
+		BrevStatusVO brevStatusVo = brevstatusService.hentBrevStatus(kvittering.getSystemID(), kvittering.getBrevreferanse());
+
 		// Hvis ingen status så opprett en basert på det man vet
 		if (brevStatusVo == null) {
-			log.info("Fant ingen BrevStatusVo. Oppretter ny");
 			brevStatusVo = new BrevStatusVO();
 		}
+
 		if (brevStatusVo.getSystemID() == null) {
 			brevStatusVo.setSystemID(kvittering.getSystemID());
 		}
@@ -89,33 +88,36 @@ public class ArkiverBrevService {
 			brevStatusVo.setStatus(Konstanter.BREVSTATUS_FEIL);
 
 			// Ved feilmelding fra dialogue så gi feilmelding
-		} else if (kvittering.getFeilniva() == null ||
-				kvittering.getFeilniva().equals(Konstanter.BREVPAKKE_FEILNIVA_FEIL)) {
+		} else if (kvittering.getFeilniva() == null || kvittering.getFeilniva().equals(Konstanter.BREVPAKKE_FEILNIVA_FEIL)) {
 			brevStatusVo.setStatus(Konstanter.BREVSTATUS_FEIL);
 
-			if (brevStatusVo.getBrevreferanse() != null && brevStatusVo.getSystemID() != null) {
-				brevstatusService.lagreBrevStatus(brevStatusVo);
-			}
-
-			// Alt gikk bra
+			// Alt gikk bra, lagre i JOARK.
 		} else {
+			joarkService.lagreDokument(kvittering.getBrevreferanse(), kvittering.getContentType(), kvittering.getBrevdata());
+
 			if (FilType.PDF.getContentType().equals(kvittering.getContentType())) {
 				kvittering.setLagerStatus(Konstanter.BREVLAGER_STATUS_FERDIG);
 				brevStatusVo.setStatus(Konstanter.BREVSTATUS_FERDIG);
-			} else {
+			} else if (FilType.RTF.getContentType().equals(kvittering.getContentType())
+					|| FilType.DOCX.getContentType().equals(kvittering.getContentType())) {
 				kvittering.setLagerStatus(Konstanter.BREVLAGER_STATUS_KLADD);
 				brevStatusVo.setStatus(Konstanter.BREVSTATUS_LAGRET_KLADD);
+			} else {
+				throw new RuntimeException("Unknown file format!");
 			}
-			// Lagre i Brevlageret
-			brevlagerService.lagreBrev(kvittering, brevStatusVo);
-
-			log.info("Brevet er arkivert i Brevlageret");
 		}
 
+		if (brevStatusVo.getBrevreferanse() != null && brevStatusVo.getSystemID() != null) {
+			brevstatusService.lagreBrevStatus(brevStatusVo);
+		}
+
+		/*
+		MessageProducer producer = MessageProducerFactory.getInstance().createMessageProducer(SystemType.PE);
+		producer.sendKvittering(brevStatusVo, messageVo, kvittering);
+		*/
 		String message = createKvitteringsXml(brevStatusVo, kvittering);
 		exchange.getIn().setBody(message);
 		exchange.getIn().setHeader(URI, messageVo.getReplyQueueName());
-
 	}
 
 
@@ -128,7 +130,7 @@ public class ArkiverBrevService {
 			throw new BrevTechnicalException("Ugyldig brev-xml: \n" + e.getMessage());
 		}
 
-		if (kvitteringVo.getSystemID().startsWith(SystemType.PE.toString())) {
+		if (!kvitteringVo.getSystemID().startsWith(SystemType.PE.toString())) {
 			String errorMessage = "Brev med feil systemID mottatt: '" + kvitteringVo.getSystemID()
 					+ "', forventet ikke pensjonsbrev";
 			log.error(errorMessage);
@@ -137,6 +139,7 @@ public class ArkiverBrevService {
 
 		return kvitteringVo;
 	}
+
 
 	private String createKvitteringsXml(BrevStatusVO brevStatusVo, KvitteringVO kvittering) throws BrevFunctionalException {
 		if (brevStatusVo == null) {
@@ -150,6 +153,4 @@ public class ArkiverBrevService {
 		return XMLService.unmarshal(kvittering, brevStatusVo);
 
 	}
-
 }
-

@@ -33,6 +33,12 @@ public class JmsItestConfig {
 	}
 
 	@Bean
+	public Queue dialogueOnline(@Value("${dialogue_online.queuename}") String brevserverOnlinebrev) {
+		return new ActiveMQQueue(brevserverOnlinebrev);
+	}
+
+
+	@Bean
 	public Queue deadletter() {
 		return new ActiveMQQueue("DLQ");
 	}

@@ -14,27 +14,28 @@ import javax.jms.Queue;
 import static org.apache.camel.LoggingLevel.ERROR;
 
 @Component
-public class BestillBrevRoute extends RouteBuilder {
-	public static final String BESTILLBREV = "bestill_brev";
+public class PeBestillBrevRoute extends RouteBuilder {
+	public static final String BESTILLBREV = "peBestill_brev";
 	private final String ROUTE_OPTIONS = "?transacted=true&concurrentConsumers=1";//&mapJmsMessage=false";
 
-	private final Queue onlinebrev;
-	private final Queue dialogueOnline;
-	private final Queue deadletter;
+	private final Queue onlinebrevPe;
+	private final Queue dialogueOnlinePe;
+	private final Queue deadletterPe;
 	private final BestillBrevMetricsRoutePolicy bestillBrevMetricsRoutePolicy;
-	private final BestillBrevService bestillBrevService;
+	private final PeBestillBrevService peBestillBrevService;
 
 	@Inject
-	public BestillBrevRoute(Queue onlinebrev,
-							Queue deadletter,
-							Queue dialogueOnline,
-							BestillBrevMetricsRoutePolicy arkiverBrevMetricsRoutePolicy,
-							BestillBrevService arkiverBrevService) {
-		this.onlinebrev = onlinebrev;
-		this.deadletter = deadletter;
-		this.dialogueOnline = dialogueOnline;
-		this.bestillBrevMetricsRoutePolicy = arkiverBrevMetricsRoutePolicy;
-		this.bestillBrevService = arkiverBrevService;
+	public PeBestillBrevRoute(Queue onlinebrevPe,
+							Queue deadletterPe,
+							Queue dialogueOnlinePe,
+							//TODO: PeBestillBrevMetrics? Unødvendig? Undersøk!
+							BestillBrevMetricsRoutePolicy peBestillBrevMetricsRoutePolicy,
+							PeBestillBrevService peBestillBrevService) {
+		this.onlinebrevPe = onlinebrevPe;
+		this.deadletterPe = deadletterPe;
+		this.dialogueOnlinePe = dialogueOnlinePe;
+		this.bestillBrevMetricsRoutePolicy = peBestillBrevMetricsRoutePolicy;
+		this.peBestillBrevService = peBestillBrevService;
 	}
 
 	@Override
@@ -52,7 +53,7 @@ public class BestillBrevRoute extends RouteBuilder {
 				.useOriginalMessage()
 				.logExhaustedMessageBody(false)
 				.log(LoggingLevel.WARN, log, "${exception}; ")
-				.to("jms:" + deadletter.getQueueName());
+				.to("jms:" + deadletterPe.getQueueName());
 
 
 		onException(BrevTechnicalException.class)
@@ -60,7 +61,7 @@ public class BestillBrevRoute extends RouteBuilder {
 				.useOriginalMessage()
 				.logExhaustedMessageBody(false)
 				.log(ERROR, log, "${exception}; ")
-				.to("jms:" + deadletter.getQueueName());
+				.to("jms:" + deadletterPe.getQueueName());
 
 
 		onException(DetailedJMSException.class)
@@ -70,21 +71,19 @@ public class BestillBrevRoute extends RouteBuilder {
 				.logExhaustedMessageHistory(false)
 				.logStackTrace(false)
 				.handled(true)
-				.to("jms:" + deadletter.getQueueName());
+				.to("jms:" + deadletterPe.getQueueName());
 
 
-		//Brevbestilling fra Bisys
-		from("jms:" + onlinebrev.getQueueName() + ROUTE_OPTIONS)
+		//Brevbestilling fra Pesys
+		from("jms:" + onlinebrevPe.getQueueName() + ROUTE_OPTIONS)
 				.routeId(BESTILLBREV)
 				.routePolicy(bestillBrevMetricsRoutePolicy)
 				.setExchangePattern(ExchangePattern.InOnly)
 				.log(LoggingLevel.INFO, log, BESTILLBREV + " starter behandlingen")
-				.bean(bestillBrevService)
-				.to("jms:" + dialogueOnline.getQueueName())
-				//.toD(deadletter.getQueueName())
+				.bean(peBestillBrevService)
+				.to("jms:" + dialogueOnlinePe.getQueueName())
 				.log(LoggingLevel.INFO, log, "Kvitteringsmeldingen er sendt til: " + "${header.uri}")
 				.end();
 
 	}
 }
-

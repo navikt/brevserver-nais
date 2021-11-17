@@ -22,8 +22,18 @@ public class MessageVO implements Serializable {
 	private String brevreferanse = null;
 	private boolean tilgangsXML = false;
 
-	public MessageVO(Message msg) throws BrevTechnicalException {
+	public MessageVO(byte[] bytes, String replyQ) throws BrevTechnicalException {
 		try {
+			byteBody = bytes;/*
+			byte[] buffer = new byte[1024];
+			ByteArrayOutputStream bos = new ByteArrayOutputStream();
+
+			int returnValue = 0;
+			while ((returnValue = ((BytesMessage) bytes).readBytes(buffer)) != -1) {
+				bos.write(buffer, 0, returnValue);
+			}
+			byteBody = bos.toByteArray();
+		/*
 			if (msg instanceof BytesMessage) {
 				byte[] buffer = new byte[1024];
 				ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -33,15 +43,16 @@ public class MessageVO implements Serializable {
 					bos.write(buffer, 0, returnValue);
 				}
 				byteBody = bos.toByteArray();
+				/*
 			} else if (msg instanceof TextMessage) {
 				TextMessage tmsg = (javax.jms.TextMessage) msg;
 				stringBody = tmsg.getText();
 			}
-
+*//*
 			if (msg.getJMSReplyTo() != null) {
 				setReplyQueueName(((Queue) msg.getJMSReplyTo()).getQueueName());
 			}
-			setCorrelationID(msg.getJMSCorrelationID());
+			setCorrelationID(msg.getJMSCorrelationID());*/
 
 		} catch (Exception e) {
 			throw new BrevTechnicalException("Feil i oppretting av MessageVO", e);

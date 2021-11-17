@@ -57,50 +57,67 @@ public class JmsConfig {
 		return pooledFactory;
 	}
 
+
 	@Bean
+	//bisys -> brevserver
+	//brevbestilling fra Bisys
+	public Queue onlinebrev(@Value("${onlinebrev.queuename}") String brevserverOnlinebrev) throws JMSException {
+		return new MQQueue(brevserverOnlinebrev);
+	}
+
+	@Bean
+	//exstream -> brevserver
 	//arkivversjonen pdf til dagens brevlagret/db2
 	public Queue mottakArkiv(@Value("${mottak_arkiv.queuename}") String mottakArkivQueueName) throws JMSException {
 		return new MQQueue(mottakArkivQueueName);
 	}
 
 	@Bean
+	//exstream -> brevserver
+	// returkø fra exstream til brevserver
+	public Queue mottakOnline(@Value("${mottak_online.queuename}") String brevserverMottakOnline) throws JMSException {
+		return new MQQueue(brevserverMottakOnline);
+	}
+
+	@Bean
+	//brevserver->exstream
 	//brevbestillingskøen fra brevserver til exstream
 	public Queue dialogueOnline(@Value("${dialogue_online.queuename}") String dialogueOnline) throws JMSException {
 		return new MQQueue(dialogueOnline);
 	}
 
 	@Bean
-	//køen exstream svarer på med en rtf
-	public Queue mottakOnline(@Value("${mottak_online.queuename}") String brevserverMottakOnline) throws JMSException {
-		return new MQQueue(brevserverMottakOnline);
-	}
-
-	@Bean
-	public Queue mottakArkivPe(@Value("${mottak_arkiv_pe.queuename}") String mottakArkivPeQueueName) throws JMSException {
-		return new MQQueue(mottakArkivPeQueueName);
-	}
-
-	@Bean
-	public Queue dialogueOnlinePe(@Value("${dialogue_online_pe.queuename}") String dialogueOnlinePe) throws JMSException {
-		return new MQQueue(dialogueOnlinePe);
-	}
-
-	@Bean
-	public Queue onlinebrev(@Value("${onlinebrev.queuename}") String brevserverOnlinebrev) throws JMSException {
-		return new MQQueue(brevserverOnlinebrev);
-	}
-
-	@Bean
+	// pesys -> brevserver
+	// brevbestilling fra pensjon
 	public Queue onlinebrevPe(@Value("${onlinebrev_pe.queuename}") String brevserverOnlinebrevPe) throws JMSException {
 		return new MQQueue(brevserverOnlinebrevPe);
 	}
 
 	@Bean
+	// brevserver -> exstream
+	// brevbestillingskøen fra brevserver til exstream
+	public Queue dialogueOnlinePe(@Value("${dialogue_online_pe.queuename}") String dialogueOnlinePe) throws JMSException {
+		return new MQQueue(dialogueOnlinePe);
+	}
+
+	@Bean
+	// exstream -> brevserver
+	// returkø fra exstream til brevserver
+	public Queue mottakArkivPe(@Value("${mottak_arkiv_pe.queuename}") String mottakArkivPeQueueName) throws JMSException {
+		return new MQQueue(mottakArkivPeQueueName);
+	}
+
+	@Bean
+	// exstream -> brevserver
+	// returkø fra exstream til brevserver
 	public Queue mottakOnlinePe(@Value("${mottak_online_pe.queuename}") String brevserverMottakOnlinePe) throws JMSException {
 		return new MQQueue(brevserverMottakOnlinePe);
 	}
 
 	@Bean
+	// brevserver -> pensjon
+	// usikker på hvor den brukes. Dette skal vel være definert i in-meldingen
+	// med litt flaks kan vi standarisere det til en kø..
 	public Queue brevReplyPe(@Value("${brev_reply_pe.queuename}") String brevReplyPe) throws JMSException {
 		return new MQQueue(brevReplyPe);
 	}

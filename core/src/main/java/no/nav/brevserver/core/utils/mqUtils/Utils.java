@@ -1,5 +1,6 @@
 package no.nav.brevserver.core.utils.mqUtils;
 
+import lombok.extern.slf4j.Slf4j;
 import no.nav.brevserver.core.exception.BrevException;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
 import no.nav.brevserver.core.vo.MessageVO;
@@ -8,14 +9,19 @@ import org.apache.camel.component.jms.JmsMessage;
 
 import javax.jms.Message;
 
+@Slf4j
 public class Utils {
 
 	public static final String URI = "uri";
 
 	public static MessageVO getMessageVoFromExchange(Exchange exchange) throws BrevTechnicalException {
+		String msg = exchange.getIn().getBody(String.class);
+		//System.out.println(msg);
 		Message message = exchange.getIn(JmsMessage.class).getJmsMessage();
-		MessageVO messageVO = new MessageVO(message);
-		return messageVO;
+		JmsMessage message2 = exchange.getIn().getBody(JmsMessage.class);
+		MessageVO vo = new MessageVO(exchange.getIn().getBody(byte[].class), "repplyq");
+		//MessageVO messageVO = new MessageVO(vo, "replyq");
+		return vo;
 	}
 
 	public static void setBodyAndReturnQueue(Exchange exchange, Object Body, String returnQueue){

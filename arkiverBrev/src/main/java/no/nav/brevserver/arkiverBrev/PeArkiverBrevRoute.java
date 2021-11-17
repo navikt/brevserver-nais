@@ -10,33 +10,32 @@ import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import javax.jms.Queue;
-import javax.jms.TextMessage;
 
 import static org.apache.camel.LoggingLevel.ERROR;
 import static org.apache.camel.LoggingLevel.INFO;
 
 @Component
-public class ArkiverBrevRoute extends RouteBuilder {
-	public static final String ARKIVER_BREV_ROUTE = "direct:arkiverBrev";
+public class PeArkiverBrevRoute extends RouteBuilder {
+	public static final String PE_ARKIVER_BREV_ROUTE = "direct:peArkiverBrev";
 	private final String ROUTE_OPTIONS = "?transacted=true&concurrentConsumers=1";//&mapJmsMessage=false";
 
 
-	private final Queue mottakArkiv;
-	private final Queue mottakOnline;
-	private final Queue deadletter;
+	private final Queue mottakArkivPe;
+	private final Queue mottakOnlinePe;
+	private final Queue deadletterPe;
 	private final ArkiverBrevMetricsRoutePolicy arkiverBrevMetricsRoutePolicy;
 	private final ArkiverBrevService arkiverBrevService;
 
 
 	@Inject
-	public ArkiverBrevRoute(Queue mottakArkiv,
-							Queue mottakOnline,
-							Queue deadletter,
-							ArkiverBrevMetricsRoutePolicy arkiverBrevMetricsRoutePolicy,
-							ArkiverBrevService arkiverBrevService) {
-		this.mottakArkiv = mottakArkiv;
-		this.mottakOnline = mottakOnline;
-		this.deadletter = deadletter;
+	public PeArkiverBrevRoute(Queue mottakArkivPe,
+							  Queue mottakOnlinePe,
+							  Queue deadletterPe,
+							  ArkiverBrevMetricsRoutePolicy arkiverBrevMetricsRoutePolicy,
+							  ArkiverBrevService arkiverBrevService) {
+		this.mottakArkivPe = mottakArkivPe;
+		this.mottakOnlinePe = mottakOnlinePe;
+		this.deadletterPe = deadletterPe;
 		this.arkiverBrevMetricsRoutePolicy = arkiverBrevMetricsRoutePolicy;
 		this.arkiverBrevService = arkiverBrevService;
 	}
@@ -56,14 +55,14 @@ public class ArkiverBrevRoute extends RouteBuilder {
 				.useOriginalMessage()
 				.logExhaustedMessageBody(false)
 				.log(LoggingLevel.WARN, log, "${exception}; ")
-				.to("jms:" + deadletter.getQueueName());
+				.to("jms:" + deadletterPe.getQueueName());
 
 		onException(BrevTechnicalException.class)
 				.handled(true)
 				.useOriginalMessage()
 				.logExhaustedMessageBody(false)
 				.log(ERROR, log, "${exception}; ")
-				.to("jms:" + deadletter.getQueueName());
+				.to("jms:" + deadletterPe.getQueueName());
 
 
 		onException(DetailedJMSException.class)
@@ -73,22 +72,21 @@ public class ArkiverBrevRoute extends RouteBuilder {
 				.logExhaustedMessageHistory(false)
 				.logStackTrace(false)
 				.handled(true)
-				.to("jms:" + deadletter.getQueueName());
+				.to("jms:" + deadletterPe.getQueueName());
 
-
-		from("jms:" + mottakArkiv.getQueueName() + ROUTE_OPTIONS)
+		from("jms:" + mottakArkivPe.getQueueName() + ROUTE_OPTIONS)
 				.log(INFO, log, "mottat melding fra mq")
-				.to(ARKIVER_BREV_ROUTE);
-		from("jms:" + mottakOnline.getQueueName() + ROUTE_OPTIONS)
+				.to(PE_ARKIVER_BREV_ROUTE);
+		from("jms:" + mottakOnlinePe.getQueueName() + ROUTE_OPTIONS)
 				.log(INFO, log, "mottat melding fra mq")
-				.to(ARKIVER_BREV_ROUTE);
+				.to(PE_ARKIVER_BREV_ROUTE);
 
 		//Hent svar fra exstream
-		from(ARKIVER_BREV_ROUTE)
-				.routeId(ARKIVER_BREV_ROUTE)
+		from(PE_ARKIVER_BREV_ROUTE)
+				.routeId(PE_ARKIVER_BREV_ROUTE)
 				.routePolicy(arkiverBrevMetricsRoutePolicy)
 				.setExchangePattern(ExchangePattern.InOnly)
-				.log(LoggingLevel.INFO, log, ARKIVER_BREV_ROUTE + " starter behandlingen")
+				.log(LoggingLevel.INFO, log, PE_ARKIVER_BREV_ROUTE + " starter behandlingen")
 				.bean(arkiverBrevService)
 				.toD("jms:${header.uri}")
 				.log(LoggingLevel.INFO, log, "Kvitteringsmeldingen er sendt til: " + "${header.uri}")
