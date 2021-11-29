@@ -28,5 +28,6 @@
   "SECURITY_TOKEN_SERVICE_TOKEN_URL": "https://security-token-service.nais.preprod.local/rest/v1/sts",
   "SRVBREVSERVER": "/serviceuser/data/dev/srvbrevserver",
   "BREVSERVER_SERVER": "https://brevserver-nais-q1.dev.intern.nav.no/brevweb/",
-  "BREVSERVERCHANNEL_NAME": "Q1_BREVSERVER"
+  "BREVSERVERCHANNEL_NAME": "Q1_BREVSERVER",
+  "BREVSERVER_DS": "/oracle/data/dev/creds/brevserver_td-user"
 }
