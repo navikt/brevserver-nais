@@ -32,7 +32,7 @@ public class BrevlagerHistorikk {
 	@GenericGenerator(name = "brevlagerhistorikk_seq", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator", parameters = {
 			@Parameter(name = "sequence_name", value = "BREVLAGER_HISTORIKK_SEQ"),
 			@Parameter(name = "initial_value", value = "1")})
-	@Column(name = "BREVLAGER_HISTORIK_ID")
+	@Column(name = "ID", columnDefinition = "NUMERIC(19,0)")
 	private Long id;
 
 	@Column(name = "BREVREFERANSE")

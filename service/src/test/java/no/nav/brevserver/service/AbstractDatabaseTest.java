@@ -19,7 +19,7 @@ import static no.nav.brevserver.builder.BrevBuilder.getBrevBuilder;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {H2JpaConfig.class})
 @Sql(scripts = "classpath:drop-all.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-@Sql(scripts = {"classpath:create-database.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+@Sql(scripts = {"classpath:V2.0.0__initial_table.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 public abstract class AbstractDatabaseTest {
 
 	protected static final String SYSTEM_ID = "PE00";
