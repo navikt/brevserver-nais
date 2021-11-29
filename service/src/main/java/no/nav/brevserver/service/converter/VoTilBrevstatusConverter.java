@@ -29,7 +29,6 @@ public class VoTilBrevstatusConverter implements Converter<BrevStatusVO, Brevsta
 				.skrivertype(brevStatusVO.getSkrivertype())
 				.skuff(brevStatusVO.getSkuff())
 				.status(brevStatusVO.getStatus())
-				.endret(new Timestamp(System.currentTimeMillis()))
 				.build();
 	}
 }

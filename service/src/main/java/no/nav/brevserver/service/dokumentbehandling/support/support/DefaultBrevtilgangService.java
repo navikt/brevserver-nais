@@ -77,7 +77,6 @@ public class DefaultBrevtilgangService implements BrevtilgangService {
 				.brevreferanse(brevreferanse)
 				.systemId(systemId)
 				.token(token)
-				.opprettetDato(new Timestamp(System.currentTimeMillis()))
 				.build();
 		try {
 			brevtilgangRepository.save(brevtilgang);
