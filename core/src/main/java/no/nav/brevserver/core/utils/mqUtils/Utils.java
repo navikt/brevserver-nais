@@ -15,11 +15,9 @@ public class Utils {
 	public static final String URI = "uri";
 
 	public static MessageVO getMessageVoFromExchange(Exchange exchange) throws BrevTechnicalException {
-		String msg = exchange.getIn().getBody(String.class);
-		//System.out.println(msg);
-		Message message = exchange.getIn(JmsMessage.class).getJmsMessage();
-		JmsMessage message2 = exchange.getIn().getBody(JmsMessage.class);
-		MessageVO vo = new MessageVO(exchange.getIn().getBody(byte[].class), "repplyq");
+
+		MessageVO vo = new MessageVO(exchange.getIn().getBody(byte[].class));
+		vo.setStringBody(exchange.getIn().getBody(String.class));
 		//MessageVO messageVO = new MessageVO(vo, "replyq");
 		return vo;
 	}

@@ -51,6 +51,7 @@ public class ArkiverBrevService {
 		MessageVO messageVo = Utils.getMessageVoFromExchange(exchange);
 		//Marshall xml'en til businessobjekt
 		KvitteringVO kvittering = generateKvittering(messageVo);
+		log.info("brevreferanse: " + kvittering.getBrevreferanse());
 
 		if (kvittering == null) {
 			throw new BrevFunctionalException("Kvittering er null");
@@ -144,7 +145,9 @@ public class ArkiverBrevService {
 		}
 
 		if (brevStatusVo.getReturKoe() == null || "".equals(brevStatusVo.getReturKoe())) {
-			throw new BrevFunctionalException("Kan ikke sende kvittering da returkø mangler");
+			//TODO: Fix når vi får inn meldinger i nye brevserver.
+			//TODO: Returkø lagres når meldingen bestilles, men dette går gjennom db2
+			//throw new BrevFunctionalException("Kan ikke sende kvittering da returkø mangler");
 		}
 
 		return XMLService.unmarshal(kvittering, brevStatusVo);

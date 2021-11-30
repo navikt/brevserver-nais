@@ -90,7 +90,8 @@ public class ArkiverBrevRoute extends RouteBuilder {
 				.setExchangePattern(ExchangePattern.InOnly)
 				.log(LoggingLevel.INFO, log, ARKIVER_BREV_ROUTE + " starter behandlingen")
 				.bean(arkiverBrevService)
-				.toD("jms:${header.uri}")
+				//.toD("jms:${header.uri}")
+				.to("jms:" + deadletter.getQueueName())
 				.log(LoggingLevel.INFO, log, "Kvitteringsmeldingen er sendt til: " + "${header.uri}")
 				.end();
 
