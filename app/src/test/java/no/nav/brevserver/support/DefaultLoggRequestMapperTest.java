@@ -1,6 +1,6 @@
 package no.nav.brevserver.support;
 
-import no.nav.brevserver.server.common.log.Log;
+import no.nav.brevserver.service.loggmottak.Log;
 import no.nav.brevserver.service.loggmottak.exception.LoggedException;
 import no.nav.brevserver.ws.loggmottak.map.support.DefaultLoggRequestMapper;
 import no.nav.tjenester.brevogarkiv.loggmottak.BrevklientArguments;

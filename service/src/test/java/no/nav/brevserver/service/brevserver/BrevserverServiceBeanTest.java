@@ -1,14 +1,12 @@
 package no.nav.brevserver.service.brevserver;
 
-import no.nav.brevserver.builder.BrevStatusBuilder;
 import no.nav.brevserver.core.cache.LokalCacheConfig;
 import no.nav.brevserver.core.domain.entities.BrevSystemTilgang;
-import no.nav.brevserver.core.domain.entities.id.BrevreferanseSystemCompositeId;
 import no.nav.brevserver.core.repository.BrevSystemTilgangRepository;
-import no.nav.brevserver.server.common.exception.BrevTechnicalException;
-import no.nav.brevserver.server.common.vo.BrevStatusVO;
-import no.nav.brevserver.server.common.vo.FilType;
-import no.nav.brevserver.server.common.vo.SysTilgangVO;
+import no.nav.brevserver.core.exception.BrevTechnicalException;
+import no.nav.brevserver.core.vo.BrevStatusVO;
+import no.nav.brevserver.core.vo.FilType;
+import no.nav.brevserver.core.vo.SysTilgangVO;
 import no.nav.brevserver.service.AbstractDatabaseTest;
 import no.nav.brevserver.service.BrevstatusService;
 import no.nav.brevserver.service.BrevtilgangService;
@@ -24,7 +22,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import static no.nav.brevserver.builder.BrevStatusBuilder.getBrevStatusBuilder;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
@@ -77,7 +74,7 @@ public class BrevserverServiceBeanTest extends AbstractDatabaseTest {
 
 	@Test
 	public void shouldLagreBrevStatusForNyttBrev() throws Exception {
-		BrevStatusVO validBrevStatus = defaultBrevStatus().build();
+		BrevStatusVO validBrevStatus = defaultBrevStatus();
 		BrevStatusVO returnedBrevStatus = brevstatusService.lagreBrevStatus(validBrevStatus);
 
 		assertThat(returnedBrevStatus, nullValue());
@@ -85,7 +82,7 @@ public class BrevserverServiceBeanTest extends AbstractDatabaseTest {
 
 	@Test
 	public void shouldLagreBrevStatusForNyttBrevOgLagreTilgangMedToken() throws Exception {
-		BrevStatusVO validBrevStatus = defaultBrevStatus().token(TOKEN).build();
+		BrevStatusVO validBrevStatus = defaultBrevStatus().toBuilder().token(TOKEN).build();
 		BrevStatusVO returnedBrevStatus = brevstatusService.lagreBrevStatus(validBrevStatus);
 		boolean lagretTilgang = brevtilgangService.sjekkTilgang(SYSTEM_ID, BREVREFERANSE, TOKEN);
 
@@ -95,10 +92,10 @@ public class BrevserverServiceBeanTest extends AbstractDatabaseTest {
 
 	@Test
 	public void shouldReturnereGammelBrevStatusForOppdateringAvBrevStatus() throws Exception {
-		BrevStatusVO existingBrevStatus = defaultBrevStatus().build();
+		BrevStatusVO existingBrevStatus = defaultBrevStatus();
 		brevstatusService.lagreBrevStatus(existingBrevStatus);
 
-		BrevStatusVO newBrevStatus = getBrevStatusBuilder().brevreferanse(BREVREFERANSE).systemID(SYSTEM_ID)
+		BrevStatusVO newBrevStatus = BrevStatusVO.builder().brevreferanse(BREVREFERANSE).systemID(SYSTEM_ID)
 				.returKoe("Returko").bestillerBrukerID("Brannmann").brevmal("NAV1").status("UFERDIG").format(FilType.RTF.getJoarkCode())
 				.skrivertype("Laser").skriver("HP").arkiver("Nei").skuff("33").build();
 
@@ -109,10 +106,10 @@ public class BrevserverServiceBeanTest extends AbstractDatabaseTest {
 
 	@Test
 	public void shouldOppdatereBrevStatus() throws Exception {
-		BrevStatusVO existingBrevStatus = defaultBrevStatus().returKoe("E18").brevmal("NAV1").build();
+		BrevStatusVO existingBrevStatus = defaultBrevStatus().toBuilder().returKoe("E18").brevmal("NAV1").build();
 		brevstatusService.lagreBrevStatus(existingBrevStatus);
 
-		BrevStatusVO newBrevStatus = getBrevStatusBuilder().brevreferanse(BREVREFERANSE).systemID(SYSTEM_ID)
+		BrevStatusVO newBrevStatus = BrevStatusVO.builder().brevreferanse(BREVREFERANSE).systemID(SYSTEM_ID)
 				.returKoe(null).bestillerBrukerID("Brannmann").brevmal(null).status("UFERDIG").format(FilType.RTF.getJoarkCode())
 				.skrivertype("Laser").skriver("HP").arkiver("Nei").skuff("33").build();
 		brevstatusService.lagreBrevStatus(newBrevStatus);
@@ -132,10 +129,10 @@ public class BrevserverServiceBeanTest extends AbstractDatabaseTest {
 
 	@Test
 	public void shouldOppdatereBrevStatusOgFylleInnManglendeVerdierFraGammelBrevStatus() throws Exception {
-		BrevStatusVO existingBrevStatus = defaultBrevStatus().returKoe(null).brevmal(null).build();
+		BrevStatusVO existingBrevStatus = defaultBrevStatus().toBuilder().returKoe(null).brevmal(null).build();
 		brevstatusService.lagreBrevStatus(existingBrevStatus);
 
-		BrevStatusVO newBrevStatus = getBrevStatusBuilder().brevreferanse(BREVREFERANSE).systemID(SYSTEM_ID)
+		BrevStatusVO newBrevStatus = BrevStatusVO.builder().brevreferanse(BREVREFERANSE).systemID(SYSTEM_ID)
 				.returKoe(RETURKOE).brevmal(BREVMAL).status("PRINTET").build();
 		brevstatusService.lagreBrevStatus(newBrevStatus);
 
@@ -155,7 +152,7 @@ public class BrevserverServiceBeanTest extends AbstractDatabaseTest {
 
 	@Test
 	public void shouldHenteBrevStatus() throws Exception {
-		BrevStatusVO existingBrevStatus = defaultBrevStatus().build();
+		BrevStatusVO existingBrevStatus = defaultBrevStatus();
 		brevstatusService.lagreBrevStatus(existingBrevStatus);
 
 		BrevStatusVO brevStatus = brevstatusService.hentBrevStatus(BREVREFERANSE, SYSTEM_ID);
@@ -222,10 +219,10 @@ public class BrevserverServiceBeanTest extends AbstractDatabaseTest {
 		assertThat(sysTilgang.getPwd(), is(SYSTEM_PASSORD));
 	}
 
-	private BrevStatusBuilder defaultBrevStatus() {
-		return getBrevStatusBuilder().brevreferanse(BREVREFERANSE).systemID(SYSTEM_ID).returKoe(RETURKOE)
+	private BrevStatusVO defaultBrevStatus() {
+		return BrevStatusVO.builder().brevreferanse(BREVREFERANSE).systemID(SYSTEM_ID).returKoe(RETURKOE)
 				.bestillerBrukerID(BESTILLER_ID).brevmal(BREVMAL).status(STATUS).format(FORMAT)
-				.skrivertype(SKRIVERTYPE).skriver(SKRIVER).arkiver(ARKIVER).skuff(SKUFF);
+				.skrivertype(SKRIVERTYPE).skriver(SKRIVER).arkiver(ARKIVER).skuff(SKUFF).build();
 	}
 
 	private void assertDefaultBrevStatusValues(BrevStatusVO brevStatus) {

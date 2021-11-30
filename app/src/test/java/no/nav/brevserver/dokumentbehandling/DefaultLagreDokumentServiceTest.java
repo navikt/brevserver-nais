@@ -1,17 +1,15 @@
 package no.nav.brevserver.dokumentbehandling;
 
-import com.google.common.io.ByteSource;
 import no.nav.brevserver.AbstractBrevserviceTest;
+import no.nav.brevserver.core.constants.SystemType;
 import no.nav.brevserver.nais.DokumentbehandlingProvider;
 import no.nav.brevserver.nais.support.LagreDokumentRequestMapper;
 import no.nav.brevserver.nais.support.impl.DefaultLagreDokumentRequestMapper;
-import no.nav.brevserver.provider.map.converters.DatahandlerCustomConverter;
-import no.nav.brevserver.server.common.config.Konstanter;
-import no.nav.brevserver.server.common.exception.BrevException;
-import no.nav.brevserver.server.common.type.SystemType;
-import no.nav.brevserver.server.common.vo.BrevStatusVO;
-import no.nav.brevserver.server.common.vo.BrevVO;
-import no.nav.brevserver.server.common.vo.FilType;
+import no.nav.brevserver.core.constants.Konstanter;
+import no.nav.brevserver.core.exception.BrevException;
+import no.nav.brevserver.core.vo.BrevStatusVO;
+import no.nav.brevserver.core.vo.BrevVO;
+import no.nav.brevserver.core.vo.FilType;
 import no.nav.brevserver.service.BrevlagerService;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.LagreDokumentRequest;
 import org.junit.Rule;

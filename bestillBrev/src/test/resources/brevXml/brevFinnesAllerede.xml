@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<rtv-brevkvitt>
+<brevref>10000000000</brevref>
+<sysid>BI12</sysid>
+<type>null</type>
+<status>FEIL</status>
+<feilkode>90000003 Brevet eksisterer allerede</feilkode>
+</rtv-brevkvitt>

@@ -1,11 +1,11 @@
 package no.nav.brevserver.service;
 
-import no.nav.brevserver.server.common.exception.BrevException;
-import no.nav.brevserver.server.common.exception.BrevFunctionalException;
-import no.nav.brevserver.server.common.exception.BrevTechnicalException;
-import no.nav.brevserver.server.common.type.SystemType;
-import no.nav.brevserver.server.common.vo.BrevStatusVO;
-import no.nav.brevserver.server.common.vo.BrevVO;
+import no.nav.brevserver.core.constants.SystemType;
+import no.nav.brevserver.core.exception.BrevException;
+import no.nav.brevserver.core.exception.BrevFunctionalException;
+import no.nav.brevserver.core.exception.BrevTechnicalException;
+import no.nav.brevserver.core.vo.BrevStatusVO;
+import no.nav.brevserver.core.vo.BrevVO;
 
 public interface BrevlagerService {
 	/**

@@ -1,7 +1,7 @@
 package no.nav.brevserver.service;
 
-import no.nav.brevserver.server.common.exception.BrevTechnicalException;
-import no.nav.brevserver.server.common.vo.SysTilgangVO;
+import no.nav.brevserver.core.exception.BrevTechnicalException;
+import no.nav.brevserver.core.vo.SysTilgangVO;
 
 public interface BrevtilgangService {
 

@@ -1,15 +1,15 @@
 package no.nav.brevserver.dokumentbehandling;
 
+import no.nav.brevserver.core.constants.KnappStatus;
 import no.nav.brevserver.nais.DokumentbehandlingProvider;
 import no.nav.brevserver.nais.support.HentDokumentRequestMapper;
 import no.nav.brevserver.nais.support.HentDokumentResponseMapper;
 import no.nav.brevserver.nais.support.impl.DefaultHentDokumentRequestMapper;
 import no.nav.brevserver.nais.support.impl.DefaultHentDokumentResponseMapper;
-import no.nav.brevserver.server.common.config.KnappStatus;
-import no.nav.brevserver.server.common.exception.BrevRuntimeException;
-import no.nav.brevserver.server.common.vo.BrevStatusVO;
-import no.nav.brevserver.server.common.vo.BrevVO;
-import no.nav.brevserver.server.common.vo.FilType;
+import no.nav.brevserver.core.exception.BrevRuntimeException;
+import no.nav.brevserver.core.vo.BrevStatusVO;
+import no.nav.brevserver.core.vo.BrevVO;
+import no.nav.brevserver.core.vo.FilType;
 import no.nav.brevserver.service.BrevlagerService;
 import no.nav.brevserver.service.BrevstatusService;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.HentDokumentRequest;

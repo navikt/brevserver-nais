@@ -1,14 +1,13 @@
 package no.nav.brevserver.service;
 
-import no.nav.brevserver.builder.BrevBuilder;
-import no.nav.brevserver.server.common.config.Konstanter;
-import no.nav.brevserver.server.common.vo.FilType;
+import no.nav.brevserver.core.constants.Konstanter;
+import no.nav.brevserver.core.vo.BrevVO;
+import no.nav.brevserver.core.vo.FilType;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static no.nav.brevserver.builder.BrevBuilder.getBrevBuilder;
 
 /**
  * Abstract database testclass. Bootstraps an in-memory H2 database.
@@ -39,8 +38,8 @@ public abstract class AbstractDatabaseTest {
 	protected static final String SKUFF = "0";
 	protected static final String TOKEN = "Token";
 
-	protected BrevBuilder defaultBrev() {
-		return getBrevBuilder().brevreferanse(BREVREFERANSE).systemID(SYSTEM_ID).contentType(FilType.RTF.getContentType())
+	protected BrevVO.BrevVOBuilder defaultBrev() {
+		return BrevVO.builder().brevreferanse(BREVREFERANSE).systemID(SYSTEM_ID).contentType(FilType.RTF.getContentType())
 				.lagerStatus(Konstanter.BREVLAGER_STATUS_KLADD).brukerID(BRUKERID).brevdata(BREVDATA);
 	}
 

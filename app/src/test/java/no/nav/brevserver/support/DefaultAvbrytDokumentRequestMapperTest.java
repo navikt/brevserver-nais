@@ -1,7 +1,7 @@
 package no.nav.brevserver.support;
 
 import no.nav.brevserver.nais.support.impl.DefaultAvbrytDokumentRequestMapper;
-import no.nav.brevserver.server.common.vo.BrevStatusVO;
+import no.nav.brevserver.core.vo.BrevStatusVO;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.AvbrytDokumentRequest;
 import org.junit.Before;
 import org.junit.Test;

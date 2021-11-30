@@ -1,7 +1,7 @@
 package no.nav.brevserver.converters;
 
 import no.nav.brevserver.provider.map.converters.DatahandlerCustomConverter;
-import no.nav.brevserver.server.common.vo.FilType;
+import no.nav.brevserver.core.vo.FilType;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;

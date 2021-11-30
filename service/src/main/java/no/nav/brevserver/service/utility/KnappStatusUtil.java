@@ -1,7 +1,6 @@
 package no.nav.brevserver.service.utility;
 
-import no.nav.brevserver.server.common.config.ConfigManager;
-import no.nav.brevserver.server.common.config.KnappStatus;
+import no.nav.brevserver.core.constants.KnappStatus;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
