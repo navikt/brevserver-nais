@@ -74,7 +74,7 @@ public class ArkiverBrevRoute extends RouteBuilder {
 				.to("jms:" + deadletter.getQueueName());
 
 
-		from("jms:" + mottakArkiv.getQueueName() + ROUTE_OPTIONS)
+		/*from("jms:" + mottakArkiv.getQueueName() + ROUTE_OPTIONS)
 				.to(ARKIVER_BREV_ROUTE);
 		from("jms:" + mottakOnline.getQueueName() + ROUTE_OPTIONS)
 				.to(ARKIVER_BREV_ROUTE);
@@ -87,7 +87,7 @@ public class ArkiverBrevRoute extends RouteBuilder {
 				.bean(arkiverBrevService)
 				.toD("jms:${header.uri}")
 				.log(LoggingLevel.INFO, log, "Kvitteringsmeldingen er sendt til: " + "${header.uri}")
-				.end();
+				.end();*/
 
 
 	}

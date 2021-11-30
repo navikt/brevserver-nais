@@ -28,9 +28,9 @@ public class KvitteringRoute extends RouteBuilder {
 				.logStackTrace(true)
 				.loggingLevel(ERROR));
 
-		from(DIRECT_SENDKVITTERINGROUTE)
+		/*from(DIRECT_SENDKVITTERINGROUTE)
 				.log(LoggingLevel.INFO, log, "Starter behandlingen av kvitteringsmelding")
 				.toD("jms:"+queueName)
-				.log(LoggingLevel.INFO, log, "Kvitteringsmeldingen er sendt til: " + "${header.uri}");
+				.log(LoggingLevel.INFO, log, "Kvitteringsmeldingen er sendt til: " + "${header.uri}");*/
 	}
 }

@@ -70,7 +70,7 @@ public class BestillBrevRoute extends RouteBuilder {
 				.to("jms:" + deadletter.getQueueName());
 
 
-		from("jms:" + onlinebrev.getQueueName() + ROUTE_OPTIONS)
+		/*from("jms:" + onlinebrev.getQueueName() + ROUTE_OPTIONS)
 				.routeId(BESTILLBREV)
 				.routePolicy(bestillBrevMetricsRoutePolicy)
 				.setExchangePattern(ExchangePattern.InOnly)
@@ -80,7 +80,7 @@ public class BestillBrevRoute extends RouteBuilder {
 				.toD("jms:${header.uri}")
 				.log(LoggingLevel.INFO, log, "Kvitteringsmeldingen er sendt til: " + "${header.uri}")
 				.end();
-
+*/
 
 	}
 }
