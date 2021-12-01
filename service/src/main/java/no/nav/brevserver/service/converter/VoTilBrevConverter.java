@@ -18,7 +18,6 @@ public class VoTilBrevConverter implements Converter<BrevVO, Brev> {
 				.status(brevVO.getLagerStatus())
 				.brukerId(brevVO.getBrukerID())
 				.contentType(brevVO.getContentType())
-				.endret(new Timestamp(System.currentTimeMillis()))
 				.brevdata(brevVO.getBrevdata())
 				.build();
 	}

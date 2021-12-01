@@ -5,8 +5,6 @@ import no.nav.brevserver.core.domain.entities.BrevlagerHistorikk;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
-import java.sql.Timestamp;
-
 @Component
 public class BrevTilBrevlagerHistorikkConverter implements Converter<Brev, BrevlagerHistorikk> {
 
@@ -18,9 +16,8 @@ public class BrevTilBrevlagerHistorikkConverter implements Converter<Brev, Brevl
 				.brukerId(brev.getBrukerId())
 				.status(brev.getStatus())
 				.contentType(brev.getContentType())
-				.timestamp(brev.getEndret()!=null?brev.getEndret():new Timestamp(System.currentTimeMillis()))
 				.brevdata(brev.getBrevdata())
-				.vasket("0")
+				.vasket('0')
 				.build();
 	}
 }
