@@ -19,7 +19,10 @@ import org.springframework.stereotype.Component;
 
 import java.io.StringReader;
 
-import static no.nav.brevserver.core.utils.mqUtils.Utils.URI;
+import static no.nav.brevserver.bestillBrev.biSys.BestillBrevRoute.HEADER_SENDTOMODE;
+import static no.nav.brevserver.bestillBrev.biSys.BestillBrevRoute.MODE_LAGRE_TILGANG;
+import static no.nav.brevserver.bestillBrev.biSys.BestillBrevRoute.MODE_OPPRETT_BREV;
+import static no.nav.brevserver.bestillBrev.biSys.BestillBrevRoute.MODE_RETURN_FEILMELDING;
 import static no.nav.brevserver.core.utils.mqUtils.Utils.notEmpty;
 
 
@@ -59,7 +62,7 @@ public class BestillBrevService {
 		if (!brevtilgangService.sjekkSystemTilgang(brevStatusVo.getSystemID(), brevStatusVo.getPassord())) {
 			log.warn("Feil systempassord for melding fra " + brevStatusVo.getSystemID());
 			String xmlKvittering = lagFeilmelding(Konstanter.FEIL_IKKE_SYSTEM_TILGANG, brevStatusVo);
-
+			exchange.setProperty(HEADER_SENDTOMODE, MODE_RETURN_FEILMELDING);
 			Utils.setBodyAndReturnQueue(exchange, xmlKvittering, messageVo.getReplyQueueName());
 
 			return;
@@ -76,6 +79,7 @@ public class BestillBrevService {
 				log.warn("Kunne ikke gi tilgang '" + brevStatusVo.getCensoredToken()
 						+ "' for systemID '" + brevStatusVo.getSystemID() + "'");
 			}
+			exchange.setProperty(HEADER_SENDTOMODE, MODE_LAGRE_TILGANG);
 			// Bestille brevet fra Dialogue
 		} else {
 			BrevStatusVO tmp = brevstatusService.hentBrevStatus(brevStatusVo.getSystemID(), brevStatusVo.getBrevreferanse());
@@ -83,14 +87,16 @@ public class BestillBrevService {
 				// Brevet eksisterer fra før, returner feilmelding
 				log.warn("Brevet eksisterer fra før " + brevStatusVo.getBrevreferanse());
 				String xmlKvittering = lagFeilmelding(Konstanter.FEIL_BREV_EKSISTERER, brevStatusVo);
-				Utils.setBodyAndReturnQueue(exchange, xmlKvittering, brevStatusVo.getReturKoe());
+				//TODO: Send feilmelding til fagsystem
+				//Utils.setBodyAndReturnQueue(exchange, xmlKvittering, brevStatusVo.getReturKoe());
 				return;
 			}
 
 			brevStatusVo.setStatus(Konstanter.BREVSTATUS_BREVPAKKE);
 			brevstatusService.lagreBrevStatus(brevStatusVo);
 			exchange.getIn().setBody(messageVo.getStringBody());
-			exchange.getIn().setHeader(URI, messageVo.getReplyQueueName());
+			exchange.setProperty(HEADER_SENDTOMODE, MODE_OPPRETT_BREV);
+			//exchange.getIn().setHeader(URI, messageVo.getReplyQueueName());
 		}
 	}
 

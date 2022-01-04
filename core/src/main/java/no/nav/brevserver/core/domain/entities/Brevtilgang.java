@@ -24,6 +24,7 @@ import javax.persistence.Table;
 public class Brevtilgang {
 
 	@Id
+	@Setter
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID", nullable = false)
 	private Long journalpostId;

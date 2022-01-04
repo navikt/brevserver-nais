@@ -14,7 +14,6 @@ import no.nav.brevserver.core.vo.FilType;
 import no.nav.brevserver.core.vo.KvitteringVO;
 import no.nav.brevserver.core.vo.MessageVO;
 import no.nav.brevserver.joark.JoarkService;
-import no.nav.brevserver.service.BrevlagerService;
 import no.nav.brevserver.service.BrevstatusService;
 import no.nav.brevserver.service.BrevtilgangService;
 import org.apache.camel.Exchange;
@@ -22,7 +21,7 @@ import org.apache.camel.Handler;
 
 import javax.inject.Inject;
 
-import static no.nav.brevserver.core.utils.mqUtils.Utils.URI;
+import static no.nav.brevserver.core.utils.mqUtils.Utils.RETURNQUEUE;
 
 @Slf4j
 public class PeArkiverBrevService {
@@ -117,7 +116,7 @@ public class PeArkiverBrevService {
 		*/
 		String message = createKvitteringsXml(brevStatusVo, kvittering);
 		exchange.getIn().setBody(message);
-		exchange.getIn().setHeader(URI, messageVo.getReplyQueueName());
+		exchange.getIn().setHeader(RETURNQUEUE, messageVo.getReplyQueueName());
 	}
 
 

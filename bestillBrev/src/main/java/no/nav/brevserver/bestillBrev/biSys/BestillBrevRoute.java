@@ -11,12 +11,20 @@ import org.springframework.stereotype.Component;
 import javax.inject.Inject;
 import javax.jms.Queue;
 
+import static no.nav.brevserver.core.utils.mqUtils.Utils.RETURNQUEUE;
 import static org.apache.camel.LoggingLevel.ERROR;
+import static org.apache.camel.LoggingLevel.INFO;
 
 @Component
 public class BestillBrevRoute extends RouteBuilder {
+	public static final String BESTILL_BREV_ROUTE = "direct:bestillBrev";
 	public static final String BESTILLBREV = "bestill_brev";
 	private final String ROUTE_OPTIONS = "?transacted=true&concurrentConsumers=1";//&mapJmsMessage=false";
+	public static String MODE_OPPRETT_BREV = "OPPRETT_BREV";
+	public static String MODE_LAGRE_TILGANG = "LAGRE_TILGANG";
+	public static String MODE_RETURN_FEILMELDING = "FEILSITUASJON";
+	public static String HEADER_SENDTOMODE = "SENDTOQUEUE";
+	private static String HEADER_SENDTOQUEUE = "header.SENDTOQUEUE";
 
 	private final Queue onlinebrev;
 	private final Queue dialogueOnline;
@@ -73,16 +81,48 @@ public class BestillBrevRoute extends RouteBuilder {
 				.to("jms:" + deadletter.getQueueName());
 
 
+		/*from("jms:" + onlinebrev.getQueueName() + ROUTE_OPTIONS)
+				.log(INFO, log, "mottat melding fra mq")
+				.to(BESTILL_BREV_ROUTE);*/
+
+		from("file://C:/Users/b157935/Documents/brevserverTest/?filename=test2.txt&charset=ISO-8859-1")
+				.convertBodyTo(String.class)
+				.to(BESTILL_BREV_ROUTE);
+
 		//Brevbestilling fra Bisys
-		from("jms:" + onlinebrev.getQueueName() + ROUTE_OPTIONS)
+		from(BESTILL_BREV_ROUTE)
 				.routeId(BESTILLBREV)
 				.routePolicy(bestillBrevMetricsRoutePolicy)
 				.setExchangePattern(ExchangePattern.InOnly)
-				.log(LoggingLevel.INFO, log, BESTILLBREV + " starter behandlingen")
+				.log(INFO, log, BESTILLBREV + " starter behandlingen")
 				.bean(bestillBrevService)
+				.process(
+						exchange -> {
+							System.out.println("noe");
+						}
+				)
+				.choice()
+				.when(simple("${" + HEADER_SENDTOQUEUE +"} == '" + MODE_OPPRETT_BREV + "'"))
+				//.to("direct:soppel")
 				.to("jms:" + dialogueOnline.getQueueName())
-				//.toD(deadletter.getQueueName())
-				.log(LoggingLevel.INFO, log, "Kvitteringsmeldingen er sendt til: " + "${header.uri}")
+				.when(simple("${" + HEADER_SENDTOQUEUE +"} == '" + MODE_LAGRE_TILGANG + "'"))
+				//noop, melding fra brevklient
+				.when(simple("${" + HEADER_SENDTOQUEUE +"} == '" + MODE_RETURN_FEILMELDING+"'"))
+				.process(exchange -> {
+					if (exchange.getProperty(RETURNQUEUE) == null)
+						exchange.setProperty(RETURNQUEUE, deadletter.getQueueName());
+				})
+				.to("jms:{header." + RETURNQUEUE + "}")
+				.otherwise()
+				.to("jms:" + deadletter.getQueueName())
+				.end();
+
+		from("direct:soppel")
+				.process(
+						exchange -> {
+							System.out.println("noe");
+						}
+				)
 				.end();
 
 	}

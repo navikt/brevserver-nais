@@ -5,14 +5,11 @@ import no.nav.brevserver.core.exception.BrevException;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
 import no.nav.brevserver.core.vo.MessageVO;
 import org.apache.camel.Exchange;
-import org.apache.camel.component.jms.JmsMessage;
-
-import javax.jms.Message;
 
 @Slf4j
 public class Utils {
 
-	public static final String URI = "uri";
+	public static final String RETURNQUEUE = "uri";
 
 	public static MessageVO getMessageVoFromExchange(Exchange exchange) throws BrevTechnicalException {
 
@@ -24,7 +21,7 @@ public class Utils {
 
 	public static void setBodyAndReturnQueue(Exchange exchange, Object Body, String returnQueue){
 		exchange.getIn().setBody(Body);
-		exchange.getIn().setHeader(URI, returnQueue);
+		exchange.getIn().setHeader(RETURNQUEUE, returnQueue);
 	}
 
 	public static void notEmpty(String name, String value, boolean checkIfValidNumber) throws BrevException {

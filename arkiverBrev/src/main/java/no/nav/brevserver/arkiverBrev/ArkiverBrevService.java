@@ -21,7 +21,7 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 
-import static no.nav.brevserver.core.utils.mqUtils.Utils.URI;
+import static no.nav.brevserver.core.utils.mqUtils.Utils.RETURNQUEUE;
 
 
 /**
@@ -115,7 +115,7 @@ public class ArkiverBrevService {
 
 		String message = createKvitteringsXml(brevStatusVo, kvittering);
 		exchange.getIn().setBody(message);
-		exchange.getIn().setHeader(URI, messageVo.getReplyQueueName());
+		exchange.getIn().setHeader(RETURNQUEUE, messageVo.getReplyQueueName());
 
 	}
 
