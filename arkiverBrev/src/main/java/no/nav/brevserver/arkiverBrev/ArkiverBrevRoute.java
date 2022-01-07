@@ -76,13 +76,14 @@ public class ArkiverBrevRoute extends RouteBuilder {
 				.to("jms:" + deadletter.getQueueName());
 
 
-		/*from("jms:" + mottakArkiv.getQueueName() + ROUTE_OPTIONS)
+		/*
+		from("jms:" + mottakArkiv.getQueueName() + ROUTE_OPTIONS)
 				.log(INFO, log, "mottat melding fra mq")
 				.to(ARKIVER_BREV_ROUTE);
 		from("jms:" + mottakOnline.getQueueName() + ROUTE_OPTIONS)
 				.log(INFO, log, "mottat melding fra mq")
-				.to(ARKIVER_BREV_ROUTE);*/
-
+				.to(ARKIVER_BREV_ROUTE);
+*/
 		//Hent svar fra exstream
 		from(ARKIVER_BREV_ROUTE)
 				.routeId(ARKIVER_BREV_ROUTE)

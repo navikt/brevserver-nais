@@ -18,12 +18,14 @@ import no.nav.brevserver.service.BrevstatusService;
 import no.nav.brevserver.service.BrevtilgangService;
 import org.apache.camel.Exchange;
 import org.apache.camel.Handler;
+import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 
 import static no.nav.brevserver.core.utils.mqUtils.Utils.RETURNQUEUE;
 
 @Slf4j
+@Service
 public class PeArkiverBrevService {
 
 	private BrevstatusService brevstatusService;

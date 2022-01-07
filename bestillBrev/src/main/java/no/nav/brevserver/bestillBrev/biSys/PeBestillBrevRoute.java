@@ -12,11 +12,13 @@ import javax.inject.Inject;
 import javax.jms.Queue;
 
 import static org.apache.camel.LoggingLevel.ERROR;
+import static org.apache.camel.LoggingLevel.INFO;
 
 @Component
 public class PeBestillBrevRoute extends RouteBuilder {
 	public static final String BESTILLBREV = "peBestill_brev";
 	private final String ROUTE_OPTIONS = "?transacted=true&concurrentConsumers=1";//&mapJmsMessage=false";
+	public static final String BESTILL_BREV_ROUTE_PE = "direct:bestillBrevPe";
 
 	private final Queue onlinebrevPe;
 	private final Queue dialogueOnlinePe;
@@ -74,8 +76,16 @@ public class PeBestillBrevRoute extends RouteBuilder {
 				.to("jms:" + deadletterPe.getQueueName());
 
 
-		//Brevbestilling fra Pesys
+		/*from("file://C:/Users/b157935/Documents/brevserverTest/?filename=peTest.txt&charset=ISO-8859-1")
+				.convertBodyTo(String.class)
+				.to(BESTILL_BREV_ROUTE_PE);*/
+/*
 		from("jms:" + onlinebrevPe.getQueueName() + ROUTE_OPTIONS)
+				.log(INFO, log, "mottat melding fra mq")
+				.to(BESTILL_BREV_ROUTE_PE);
+*/
+		//Brevbestilling fra Pesys
+		from(BESTILL_BREV_ROUTE_PE)
 				.routeId(BESTILLBREV)
 				.routePolicy(bestillBrevMetricsRoutePolicy)
 				.setExchangePattern(ExchangePattern.InOnly)

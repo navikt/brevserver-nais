@@ -113,6 +113,7 @@ public class BestillBrevService {
 			messageVO.setTilgangsXML(brevStatusVo != null && Konstanter.BREVMODUS_FRALAGER.equals(brevStatusVo.getModus()));
 		} catch (BrevTechnicalException e) {
 			log.error("Ugyldig XML: " + messageVO.getStringBody());
+			log.error("msg: " + e.getMessage());
 			throw e;
 		}
 

@@ -81,14 +81,15 @@ public class BestillBrevRoute extends RouteBuilder {
 				.to("jms:" + deadletter.getQueueName());
 
 
-		/*from("jms:" + onlinebrev.getQueueName() + ROUTE_OPTIONS)
+/*
+		from("jms:" + onlinebrev.getQueueName() + ROUTE_OPTIONS)
 				.log(INFO, log, "mottat melding fra mq")
-				.to(BESTILL_BREV_ROUTE);*/
+				.to(BESTILL_BREV_ROUTE);
 
 		from("file://C:/Users/b157935/Documents/brevserverTest/?filename=test2.txt&charset=ISO-8859-1")
 				.convertBodyTo(String.class)
 				.to(BESTILL_BREV_ROUTE);
-
+*/
 		//Brevbestilling fra Bisys
 		from(BESTILL_BREV_ROUTE)
 				.routeId(BESTILLBREV)
@@ -104,7 +105,11 @@ public class BestillBrevRoute extends RouteBuilder {
 				.choice()
 				.when(simple("${" + HEADER_SENDTOQUEUE +"} == '" + MODE_OPPRETT_BREV + "'"))
 				//.to("direct:soppel")
-				.to("jms:" + dialogueOnline.getQueueName())
+					.to("jms:" + dialogueOnline.getQueueName())
+					.log(INFO, log, "Sendt til " + dialogueOnline.getQueueName())
+					.process(exchange -> {
+						System.out.println(exchange.getIn().getBody());
+					})
 				.when(simple("${" + HEADER_SENDTOQUEUE +"} == '" + MODE_LAGRE_TILGANG + "'"))
 				//noop, melding fra brevklient
 				.when(simple("${" + HEADER_SENDTOQUEUE +"} == '" + MODE_RETURN_FEILMELDING+"'"))

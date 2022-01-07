@@ -24,7 +24,7 @@ public class PeArkiverBrevRoute extends RouteBuilder {
 	private final Queue mottakOnlinePe;
 	private final Queue deadletterPe;
 	private final ArkiverBrevMetricsRoutePolicy arkiverBrevMetricsRoutePolicy;
-	private final ArkiverBrevService arkiverBrevService;
+	private final PeArkiverBrevService peArkiverBrevService;
 
 
 	@Inject
@@ -32,12 +32,12 @@ public class PeArkiverBrevRoute extends RouteBuilder {
 							  Queue mottakOnlinePe,
 							  Queue deadletterPe,
 							  ArkiverBrevMetricsRoutePolicy arkiverBrevMetricsRoutePolicy,
-							  ArkiverBrevService arkiverBrevService) {
+							  PeArkiverBrevService peArkiverBrevService) {
 		this.mottakArkivPe = mottakArkivPe;
 		this.mottakOnlinePe = mottakOnlinePe;
 		this.deadletterPe = deadletterPe;
 		this.arkiverBrevMetricsRoutePolicy = arkiverBrevMetricsRoutePolicy;
-		this.arkiverBrevService = arkiverBrevService;
+		this.peArkiverBrevService = peArkiverBrevService;
 	}
 
 	@Override
@@ -81,13 +81,17 @@ public class PeArkiverBrevRoute extends RouteBuilder {
 				.log(INFO, log, "mottat melding fra mq")
 				.to(PE_ARKIVER_BREV_ROUTE);*/
 
+		from("file://C:/Users/b157935/Documents/brevserverTest/?filename=nyPeTest.txt&charset=ISO-8859-1")
+			.convertBodyTo(String.class)
+			.to(PE_ARKIVER_BREV_ROUTE);
+
 		//Hent svar fra exstream
 		from(PE_ARKIVER_BREV_ROUTE)
 				.routeId(PE_ARKIVER_BREV_ROUTE)
 				.routePolicy(arkiverBrevMetricsRoutePolicy)
 				.setExchangePattern(ExchangePattern.InOnly)
 				.log(LoggingLevel.INFO, log, PE_ARKIVER_BREV_ROUTE + " starter behandlingen")
-				.bean(arkiverBrevService)
+				.bean(peArkiverBrevService)
 				.toD("jms:${header.uri}")
 				.log(LoggingLevel.INFO, log, "Kvitteringsmeldingen er sendt til: " + "${header.uri}")
 				.end();
