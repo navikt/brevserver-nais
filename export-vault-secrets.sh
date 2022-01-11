@@ -11,3 +11,9 @@ then
     echo "Setting SERVICEUSER_PASSWORD"
     export FAGARKIV_SERVICEUSER_PASSWORD=$(cat /var/run/secrets/nais.io/srvbrevserver/password)
 fi
+
+if test -f /var/run/secrets/nais.io/brevserverDS/password;
+then
+    echo "Setting SPRING_DATASOURCE_PASSWORD"
+    export  SPRING_DATASOURCE_PASSWORD=$(cat /var/run/secrets/nais.io/brevserverDS/password)
+fi

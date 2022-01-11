@@ -4,20 +4,21 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import no.nav.brevserver.core.audit.AuditTrail;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "T_BREVTILGANG")
+@Table(name = "BREVTILGANG")
 @Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
@@ -25,12 +26,12 @@ import java.time.LocalDateTime;
 public class Brevtilgang {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "brevtilgang_seq")
+	@GenericGenerator(name = "brevtilgang_seq", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator", parameters = {
+			@Parameter(name = "sequence_name", value = "BREVTILGANG_SEQ"),
+			@Parameter(name = "initial_value", value = "1")})
 	@Column(name = "ID", nullable = false)
 	private Long journalpostId;
-
-	@Column(name = "TIMESTAMP")
-	private Timestamp opprettetDato;
 
  	@Column(name = "TOKEN")
 	private String token;
@@ -40,5 +41,9 @@ public class Brevtilgang {
 
 	@Column(name = "BREVREFERANSE")
 	private String brevreferanse;
+
+	@Embedded
+	@Setter
+	private AuditTrail auditTrail;
 
 }

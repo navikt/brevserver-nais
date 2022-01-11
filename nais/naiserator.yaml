@@ -87,3 +87,5 @@ spec:
         mountPath: /var/run/secrets/nais.io/srvbrevserver
       - kvPath: {{ BREVSERVER_VAULT }}
         mountPath: /var/run/secrets/nais.io/vault
+      - kvPath: {{ BREVSERVER_DS }}
+        mountPath: /var/run/secrets/nais.io/brevserverDS
