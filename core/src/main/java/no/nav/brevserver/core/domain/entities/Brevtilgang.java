@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import no.nav.brevserver.core.audit.AuditTrail;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -24,8 +26,10 @@ import javax.persistence.Table;
 public class Brevtilgang {
 
 	@Id
-	@Setter
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "brevtilgang_seq")
+	@GenericGenerator(name = "brevtilgang_seq", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator", parameters = {
+			@Parameter(name = "sequence_name", value = "BREVTILGANG_SEQ"),
+			@Parameter(name = "initial_value", value = "1")})
 	@Column(name = "ID", nullable = false)
 	private Long journalpostId;
 
