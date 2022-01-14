@@ -6,10 +6,9 @@ import no.nav.brevserver.core.constants.SystemType;
 import no.nav.brevserver.core.exception.BrevException;
 import no.nav.brevserver.core.exception.BrevFunctionalException;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
-import no.nav.brevserver.core.utils.mqUtils.Utils;
+import no.nav.brevserver.core.utils.ExchangeUtils;
 import no.nav.brevserver.core.utils.xmlHandlers.XMLService;
 import no.nav.brevserver.core.vo.BrevStatusVO;
-import no.nav.brevserver.core.vo.KvitteringVO;
 import no.nav.brevserver.core.vo.MessageVO;
 import no.nav.brevserver.service.BrevstatusService;
 import no.nav.brevserver.service.BrevtilgangService;
@@ -19,11 +18,14 @@ import org.springframework.stereotype.Component;
 
 import java.io.StringReader;
 
-import static no.nav.brevserver.bestillBrev.biSys.BestillBrevRoute.HEADER_SENDTOMODE;
-import static no.nav.brevserver.bestillBrev.biSys.BestillBrevRoute.MODE_LAGRE_TILGANG;
-import static no.nav.brevserver.bestillBrev.biSys.BestillBrevRoute.MODE_OPPRETT_BREV;
-import static no.nav.brevserver.bestillBrev.biSys.BestillBrevRoute.MODE_RETURN_FEILMELDING;
-import static no.nav.brevserver.core.utils.mqUtils.Utils.notEmpty;
+import static no.nav.brevserver.bestillBrev.utils.Utils.lagFeilmelding;
+import static no.nav.brevserver.core.utils.ExchangeUtils.PROPERTY_SENDTOMODE;
+import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.GI_FEILMELDING;
+import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.INGEN_TILBAKEMELDING;
+import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.OPPRETT_BREV;
+import static no.nav.brevserver.core.utils.ExchangeUtils.notEmpty;
+import static no.nav.brevserver.core.utils.ExchangeUtils.setBodyAndMode;
+import static no.nav.brevserver.core.utils.ExchangeUtils.setBodyAndReturnQueueWithMode;
 
 
 /**
@@ -51,26 +53,14 @@ public class BestillBrevService {
 	@Handler
 	public void execute(Exchange exchange) throws BrevException {
 
-		MessageVO messageVo = Utils.getMessageVoFromExchange(exchange);
+		MessageVO messageVo = ExchangeUtils.getMessageVoFromExchange(exchange);
 		BrevStatusVO brevStatusVo = generateBrevStatusVo(messageVo);
-		if(brevStatusVo == null){
-			throw new BrevFunctionalException("BrevStatus er null");
-		}
-
-		//Ved feil systempassord send en feilmelding tilbake til fagsystemet over riktig kø.
-		//Setter bodyen til exchangen til feilmeldingen og ruter den til riktig kø
-		if (!brevtilgangService.sjekkSystemTilgang(brevStatusVo.getSystemID(), brevStatusVo.getPassord())) {
-			log.warn("Feil systempassord for melding fra " + brevStatusVo.getSystemID());
-			String xmlKvittering = lagFeilmelding(Konstanter.FEIL_IKKE_SYSTEM_TILGANG, brevStatusVo);
-			exchange.setProperty(HEADER_SENDTOMODE, MODE_RETURN_FEILMELDING);
-			Utils.setBodyAndReturnQueue(exchange, xmlKvittering, messageVo.getReplyQueueName());
-
-			return;
+		if (brevStatusVo == null) {
+			throw new BrevFunctionalException("BrevStatusVo er null");
 		}
 
 		// Hvis modus="frabrevlager" ønsker et fagsystem å gi en tilgang til brevet fra brevklient med en token
 		if (brevStatusVo.getModus() != null && Konstanter.BREVMODUS_FRALAGER.equals(brevStatusVo.getModus())) {
-			// Lagre token
 			boolean ok = brevtilgangService.lagreTilgang(brevStatusVo.getSystemID(), brevStatusVo.getBrevreferanse(),
 					brevStatusVo.getToken());
 			if (ok) {
@@ -79,30 +69,32 @@ public class BestillBrevService {
 				log.warn("Kunne ikke gi tilgang '" + brevStatusVo.getCensoredToken()
 						+ "' for systemID '" + brevStatusVo.getSystemID() + "'");
 			}
-			exchange.setProperty(HEADER_SENDTOMODE, MODE_LAGRE_TILGANG);
-			// Bestille brevet fra Dialogue
+			exchange.setProperty(PROPERTY_SENDTOMODE, INGEN_TILBAKEMELDING);
+
+			// Bestill fra Dialogue
 		} else {
 			BrevStatusVO tmp = brevstatusService.hentBrevStatus(brevStatusVo.getSystemID(), brevStatusVo.getBrevreferanse());
 			if (tmp != null) {
-				// Brevet eksisterer fra før, returner feilmelding
 				log.warn("Brevet eksisterer fra før " + brevStatusVo.getBrevreferanse());
-				String xmlKvittering = lagFeilmelding(Konstanter.FEIL_BREV_EKSISTERER, brevStatusVo);
-				//TODO: Send feilmelding til fagsystem
-				//Utils.setBodyAndReturnQueue(exchange, xmlKvittering, brevStatusVo.getReturKoe());
+				setBodyAndReturnQueueWithMode(
+						exchange,
+						lagFeilmelding(Konstanter.FEIL_BREV_EKSISTERER, brevStatusVo),
+						brevStatusVo.getReturKoe(),
+						GI_FEILMELDING);
 				return;
 			}
 
 			brevStatusVo.setStatus(Konstanter.BREVSTATUS_BREVPAKKE);
 			brevstatusService.lagreBrevStatus(brevStatusVo);
-			exchange.getIn().setBody(messageVo.getStringBody());
-			exchange.setProperty(HEADER_SENDTOMODE, MODE_OPPRETT_BREV);
-			//exchange.getIn().setHeader(URI, messageVo.getReplyQueueName());
+			setBodyAndMode(exchange,
+					messageVo.getStringBody(),
+					OPPRETT_BREV);
 		}
 	}
 
 	private BrevStatusVO generateBrevStatusVo(MessageVO messageVO) throws BrevTechnicalException {
 
-		if(	messageVO == null || messageVO.getStringBody() == null){
+		if (messageVO == null || messageVO.getStringBody() == null) {
 			throw new BrevTechnicalException("Ugyldig XML: InputMessage er null");
 		}
 		StringReader reader = new StringReader(messageVO.getStringBody());
@@ -110,13 +102,12 @@ public class BestillBrevService {
 
 		try {
 			brevStatusVo = XMLService.marshalBrevStatus(reader);
-			messageVO.setTilgangsXML(brevStatusVo != null && Konstanter.BREVMODUS_FRALAGER.equals(brevStatusVo.getModus()));
 		} catch (BrevTechnicalException e) {
-			log.error("Ugyldig XML: " + messageVO.getStringBody());
-			log.error("msg: " + e.getMessage());
+			log.warn("Ugyldig XML mottatt!");
 			throw e;
 		}
 
+		messageVO.setTilgangsXML(brevStatusVo != null && Konstanter.BREVMODUS_FRALAGER.equals(brevStatusVo.getModus()));
 		brevStatusVo.setReturKoe(messageVO.getReplyQueueName());
 		messageVO.setBrevreferanse(brevStatusVo.getBrevreferanse());
 
@@ -131,28 +122,13 @@ public class BestillBrevService {
 			notEmpty("Systemid", brevStatusVo.getSystemID(), false);
 			notEmpty("Returkø", brevStatusVo.getReturKoe(), false);
 		} catch (BrevException e) {
-			log.error("Ugyldig XML mottatt for brevreferanse " + messageVO.getBrevreferanse(), e);
+			log.warn("Ugyldig XML mottatt for brevreferanse " + messageVO.getBrevreferanse(), e);
 			throw new BrevTechnicalException(BrevTechnicalException.FEIL_I_XML, e);
 		}
 		return brevStatusVo;
 	}
 
-	/**
-	 * Lager feilmelding basert på feiltype.
-	 *
-	 * @param feilType
-	 * @return Feilmeldings-XML
-	 */
-	private String lagFeilmelding(String feilType, BrevStatusVO brevStatusVo) {
-		KvitteringVO kvittering = new KvitteringVO();
-		kvittering.setSystemID(brevStatusVo.getSystemID());
-		kvittering.setBrevreferanse(brevStatusVo.getBrevreferanse());
-		kvittering.setFeilkode(feilType);
-		brevStatusVo.setStatus(Konstanter.BREVSTATUS_FEIL);
 
-		String xmlKvittering = XMLService.unmarshal(kvittering, brevStatusVo);
-		return xmlKvittering;
-	}
 
 }
 

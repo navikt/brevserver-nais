@@ -1,6 +1,7 @@
 package no.nav.brevserver.bestillBrev.biSys;
 
 import com.ibm.msg.client.jms.DetailedJMSException;
+import no.nav.brevserver.bestillBrev.BestillBrevMetricsRoutePolicy;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
 import org.apache.camel.ExchangePattern;
 import org.apache.camel.LoggingLevel;
@@ -11,7 +12,12 @@ import org.springframework.stereotype.Component;
 import javax.inject.Inject;
 import javax.jms.Queue;
 
-import static no.nav.brevserver.core.utils.mqUtils.Utils.RETURNQUEUE;
+import static no.nav.brevserver.core.utils.ExchangeUtils.DESTINATION;
+import static no.nav.brevserver.core.utils.ExchangeUtils.JMS;
+import static no.nav.brevserver.core.utils.ExchangeUtils.SENDTOMODE;
+import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.GI_FEILMELDING;
+import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.INGEN_TILBAKEMELDING;
+import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.OPPRETT_BREV;
 import static org.apache.camel.LoggingLevel.ERROR;
 import static org.apache.camel.LoggingLevel.INFO;
 
@@ -20,11 +26,6 @@ public class BestillBrevRoute extends RouteBuilder {
 	public static final String BESTILL_BREV_ROUTE = "direct:bestillBrev";
 	public static final String BESTILLBREV = "bestill_brev";
 	private final String ROUTE_OPTIONS = "?transacted=true&concurrentConsumers=1";//&mapJmsMessage=false";
-	public static String MODE_OPPRETT_BREV = "OPPRETT_BREV";
-	public static String MODE_LAGRE_TILGANG = "LAGRE_TILGANG";
-	public static String MODE_RETURN_FEILMELDING = "FEILSITUASJON";
-	public static String HEADER_SENDTOMODE = "SENDTOQUEUE";
-	private static String HEADER_SENDTOQUEUE = "header.SENDTOQUEUE";
 
 	private final Queue onlinebrev;
 	private final Queue dialogueOnline;
@@ -81,15 +82,16 @@ public class BestillBrevRoute extends RouteBuilder {
 				.to("jms:" + deadletter.getQueueName());
 
 
-/*
 		from("jms:" + onlinebrev.getQueueName() + ROUTE_OPTIONS)
 				.log(INFO, log, "mottat melding fra mq")
 				.to(BESTILL_BREV_ROUTE);
 
+		//TODO:REMOVE etter test
+		/*
 		from("file://C:/Users/b157935/Documents/brevserverTest/?filename=test2.txt&charset=ISO-8859-1")
 				.convertBodyTo(String.class)
 				.to(BESTILL_BREV_ROUTE);
-*/
+        */
 		//Brevbestilling fra Bisys
 		from(BESTILL_BREV_ROUTE)
 				.routeId(BESTILLBREV)
@@ -97,37 +99,22 @@ public class BestillBrevRoute extends RouteBuilder {
 				.setExchangePattern(ExchangePattern.InOnly)
 				.log(INFO, log, BESTILLBREV + " starter behandlingen")
 				.bean(bestillBrevService)
-				.process(
-						exchange -> {
-							System.out.println("noe");
-						}
-				)
 				.choice()
-				.when(simple("${" + HEADER_SENDTOQUEUE +"} == '" + MODE_OPPRETT_BREV + "'"))
-				//.to("direct:soppel")
-					.to("jms:" + dialogueOnline.getQueueName())
-					.log(INFO, log, "Sendt til " + dialogueOnline.getQueueName())
-					.process(exchange -> {
-						System.out.println(exchange.getIn().getBody());
-					})
-				.when(simple("${" + HEADER_SENDTOQUEUE +"} == '" + MODE_LAGRE_TILGANG + "'"))
-				//noop, melding fra brevklient
-				.when(simple("${" + HEADER_SENDTOQUEUE +"} == '" + MODE_RETURN_FEILMELDING+"'"))
-				.process(exchange -> {
-					if (exchange.getProperty(RETURNQUEUE) == null)
-						exchange.setProperty(RETURNQUEUE, deadletter.getQueueName());
-				})
-				.to("jms:{header." + RETURNQUEUE + "}")
-				.otherwise()
-				.to("jms:" + deadletter.getQueueName())
-				.end();
-
-		from("direct:soppel")
-				.process(
-						exchange -> {
-							System.out.println("noe");
-						}
-				)
+					.when(exchangeProperty(SENDTOMODE).isEqualTo(OPPRETT_BREV))
+						.to(JMS + dialogueOnline.getQueueName())
+						.log(INFO, log, "Brev sendt til opprettelse i Exstream: " + dialogueOnline.getQueueName())
+					.when(exchangeProperty(SENDTOMODE).isEqualTo(GI_FEILMELDING ))
+						.process(exchange -> {
+							if (exchange.getIn().getHeader(DESTINATION) == null)
+								exchange.getIn().setHeader(DESTINATION, deadletter.getQueueName());
+						})
+						.toD(JMS + header(DESTINATION))
+						.log(INFO, log, "Feilmelding er sendt til: " +  header(DESTINATION))
+					.when(exchangeProperty(SENDTOMODE).isEqualTo(INGEN_TILBAKEMELDING))
+						.stop()
+					.otherwise()
+						.to(JMS + deadletter.getQueueName())
+						.log(ERROR, log, "En melding er sendt til deadletter pga ukjent mode!")
 				.end();
 
 	}

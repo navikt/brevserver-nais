@@ -80,7 +80,7 @@ public class DefaultBrevtilgangService implements BrevtilgangService {
 				.systemId(systemId)
 				.token(token)
 				.build();
-		brevtilgang.setJournalpostId(12345678L);
+		//TODO: FIX!
 		AuditTrail trail = new AuditTrail("dummy", new Date(20000), "dummy", new Date(200));
 		brevtilgang.setAuditTrail(trail);
 		try {

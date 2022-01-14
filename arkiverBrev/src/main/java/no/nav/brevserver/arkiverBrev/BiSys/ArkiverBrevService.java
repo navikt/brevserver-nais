@@ -1,11 +1,11 @@
-package no.nav.brevserver.arkiverBrev;
+package no.nav.brevserver.arkiverBrev.BiSys;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.brevserver.core.constants.SystemType;
 import no.nav.brevserver.core.exception.BrevException;
 import no.nav.brevserver.core.exception.BrevFunctionalException;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
-import no.nav.brevserver.core.utils.mqUtils.Utils;
+import no.nav.brevserver.core.utils.ExchangeUtils;
 import no.nav.brevserver.core.utils.xmlHandlers.DialogueXMLParser;
 import no.nav.brevserver.core.utils.xmlHandlers.XMLService;
 import no.nav.brevserver.core.vo.BrevStatusVO;
@@ -21,7 +21,8 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 
-import static no.nav.brevserver.core.utils.mqUtils.Utils.RETURNQUEUE;
+import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.GI_TILBAKEMELDING;
+import static no.nav.brevserver.core.utils.ExchangeUtils.setBodyAndReturnQueueWithMode;
 
 
 /**
@@ -48,10 +49,10 @@ public class ArkiverBrevService {
 	public void execute(Exchange exchange) throws BrevException {
 
 		//Konverter Exchange til messageVo
-		MessageVO messageVo = Utils.getMessageVoFromExchange(exchange);
+		MessageVO messageVo = ExchangeUtils.getMessageVoFromExchange(exchange);
 		//Marshall xml'en til businessobjekt
 		KvitteringVO kvittering = generateKvittering(messageVo);
-		log.info("brevreferanse: " + kvittering.getBrevreferanse());
+		log.info("Mottat kvittering for brevreferanse: " + kvittering.getBrevreferanse());
 
 		if (kvittering == null) {
 			throw new BrevFunctionalException("Kvittering er null");
@@ -62,7 +63,6 @@ public class ArkiverBrevService {
 		BrevStatusVO brevStatusVo = brevstatusService.hentBrevStatus(kvittering.getBrevreferanse(), kvittering.getSystemID());
 		// Hvis ingen status så opprett en basert på det man vet
 		if (brevStatusVo == null) {
-			log.info("Fant ingen BrevStatusVo. Oppretter ny");
 			brevStatusVo = new BrevStatusVO();
 		}
 		if (brevStatusVo.getSystemID() == null) {
@@ -109,13 +109,13 @@ public class ArkiverBrevService {
 			}
 			// Lagre i Brevlageret
 			brevlagerService.lagreBrev(kvittering, brevStatusVo);
-
-			log.info("Brevet er arkivert i Brevlageret");
+			log.info("Brev med brevref: " + brevStatusVo.getBrevreferanse() +" er arkivert i Brevlageret");
 		}
 
-		String message = createKvitteringsXml(brevStatusVo, kvittering);
-		exchange.getIn().setBody(message);
-		exchange.getIn().setHeader(RETURNQUEUE, messageVo.getReplyQueueName());
+		setBodyAndReturnQueueWithMode(exchange,
+				createReturKvittering(brevStatusVo, kvittering),
+				messageVo.getReplyQueueName(),
+				GI_TILBAKEMELDING);
 
 	}
 
@@ -139,19 +139,12 @@ public class ArkiverBrevService {
 		return kvitteringVo;
 	}
 
-	private String createKvitteringsXml(BrevStatusVO brevStatusVo, KvitteringVO kvittering) throws BrevFunctionalException {
+	private String createReturKvittering(BrevStatusVO brevStatusVo, KvitteringVO kvittering) throws BrevFunctionalException {
 		if (brevStatusVo == null) {
 			throw new BrevFunctionalException("Kunne ikke lage kvittering da brevstatus er null");
 		}
 
-		if (brevStatusVo.getReturKoe() == null || "".equals(brevStatusVo.getReturKoe())) {
-			//TODO: Fix når vi får inn meldinger i nye brevserver.
-			//TODO: Returkø lagres når meldingen bestilles, men dette går gjennom db2
-			//throw new BrevFunctionalException("Kan ikke sende kvittering da returkø mangler");
-		}
-
 		return XMLService.unmarshal(kvittering, brevStatusVo);
-
 	}
 
 }

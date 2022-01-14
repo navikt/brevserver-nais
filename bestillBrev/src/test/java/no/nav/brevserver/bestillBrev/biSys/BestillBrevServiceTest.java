@@ -24,9 +24,9 @@ import javax.jms.TextMessage;
 import javax.xml.bind.JAXBElement;
 import java.util.concurrent.TimeUnit;
 
-import static no.nav.brevserver.bestillBrev.Utils.BISYS_SYSTEM_ID;
-import static no.nav.brevserver.bestillBrev.Utils.BREVREFERANSE;
-import static no.nav.brevserver.bestillBrev.Utils.SYSTEM_PASSORD;
+import static no.nav.brevserver.bestillBrev.utils.BISYS_SYSTEM_ID;
+import static no.nav.brevserver.bestillBrev.utils.BREVREFERANSE;
+import static no.nav.brevserver.bestillBrev.utils.SYSTEM_PASSORD;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.internal.bytebuddy.matcher.ElementMatchers.is;
 import static org.awaitility.Awaitility.await;

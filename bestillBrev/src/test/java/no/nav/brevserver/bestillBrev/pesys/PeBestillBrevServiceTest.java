@@ -1,7 +1,6 @@
 package no.nav.brevserver.bestillBrev.pesys;
 
 import config.ApplicationTestConfig;
-import no.nav.brevserver.bestillBrev.Utils;
 import no.nav.brevserver.core.constants.Konstanter;
 import no.nav.brevserver.core.vo.BrevStatusVO;
 import no.nav.brevserver.service.BrevstatusService;
@@ -11,7 +10,6 @@ import org.apache.activemq.command.ActiveMQTextMessage;
 import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.powermock.api.mockito.PowerMockito;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -27,15 +25,13 @@ import javax.xml.bind.JAXBElement;
 
 import java.util.concurrent.TimeUnit;
 
-import static no.nav.brevserver.bestillBrev.Utils.BISYS_SYSTEM_ID;
-import static no.nav.brevserver.bestillBrev.Utils.BREVREFERANSE;
-import static no.nav.brevserver.bestillBrev.Utils.PENSJON_SYSTEM_ID;
-import static no.nav.brevserver.bestillBrev.Utils.SYSTEM_PASSORD;
+import static no.nav.brevserver.bestillBrev.utils.BISYS_SYSTEM_ID;
+import static no.nav.brevserver.bestillBrev.utils.BREVREFERANSE;
+import static no.nav.brevserver.bestillBrev.utils.PENSJON_SYSTEM_ID;
+import static no.nav.brevserver.bestillBrev.utils.SYSTEM_PASSORD;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 

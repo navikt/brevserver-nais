@@ -1,4 +1,4 @@
-package no.nav.brevserver.arkiverBrev;
+package no.nav.brevserver.arkiverBrev.Pesys;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.brevserver.core.constants.Konstanter;
@@ -6,7 +6,7 @@ import no.nav.brevserver.core.constants.SystemType;
 import no.nav.brevserver.core.exception.BrevException;
 import no.nav.brevserver.core.exception.BrevFunctionalException;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
-import no.nav.brevserver.core.utils.mqUtils.Utils;
+import no.nav.brevserver.core.utils.ExchangeUtils;
 import no.nav.brevserver.core.utils.xmlHandlers.DialogueXMLParser;
 import no.nav.brevserver.core.utils.xmlHandlers.XMLService;
 import no.nav.brevserver.core.vo.BrevStatusVO;
@@ -22,7 +22,9 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 
-import static no.nav.brevserver.core.utils.mqUtils.Utils.RETURNQUEUE;
+import static no.nav.brevserver.core.utils.ExchangeUtils.DESTINATION;
+import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.GI_TILBAKEMELDING;
+import static no.nav.brevserver.core.utils.ExchangeUtils.setBodyAndReturnQueueWithMode;
 
 @Slf4j
 @Service
@@ -46,15 +48,13 @@ public class PeArkiverBrevService {
 	public void execute(Exchange exchange) throws BrevException {
 
 		//Konverter Exchange til messageVo
-		MessageVO messageVo = Utils.getMessageVoFromExchange(exchange);
+		MessageVO messageVo = ExchangeUtils.getMessageVoFromExchange(exchange);
 		//Marshall xml'en til businessobjekt
 		KvitteringVO kvittering = generateKvittering(messageVo);
 
 		if (kvittering == null) {
 			throw new BrevFunctionalException("Kvittering er null");
 		}
-
-		messageVo.setBrevreferanse(kvittering.getBrevreferanse());
 
 		// Sjekk om brevet finnes, hent status
 		BrevStatusVO brevStatusVo = brevstatusService.hentBrevStatus(kvittering.getSystemID(), kvittering.getBrevreferanse());
@@ -116,9 +116,11 @@ public class PeArkiverBrevService {
 		MessageProducer producer = MessageProducerFactory.getInstance().createMessageProducer(SystemType.PE);
 		producer.sendKvittering(brevStatusVo, messageVo, kvittering);
 		*/
-		String message = createKvitteringsXml(brevStatusVo, kvittering);
-		exchange.getIn().setBody(message);
-		exchange.getIn().setHeader(RETURNQUEUE, messageVo.getReplyQueueName());
+
+		setBodyAndReturnQueueWithMode(exchange,
+				createReturKvittering(brevStatusVo, kvittering),
+				messageVo.getReplyQueueName(),
+				GI_TILBAKEMELDING);
 	}
 
 
@@ -142,13 +144,9 @@ public class PeArkiverBrevService {
 	}
 
 
-	private String createKvitteringsXml(BrevStatusVO brevStatusVo, KvitteringVO kvittering) throws BrevFunctionalException {
+	private String createReturKvittering(BrevStatusVO brevStatusVo, KvitteringVO kvittering) throws BrevFunctionalException {
 		if (brevStatusVo == null) {
 			throw new BrevFunctionalException("Kunne ikke lage kvittering da brevstatus er null");
-		}
-
-		if (brevStatusVo.getReturKoe() == null || "".equals(brevStatusVo.getReturKoe())) {
-			throw new BrevFunctionalException("Kan ikke sende kvittering da returkø mangler");
 		}
 
 		return XMLService.unmarshal(kvittering, brevStatusVo);
