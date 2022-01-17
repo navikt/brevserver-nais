@@ -88,24 +88,18 @@ public class BestillBrevRouteIT extends AbstractDatabaseTest {
 		loggen.addAppender(listAppender);
 		String message = Utils.classpathToString("brevXml/fraBrevlager.xml");
 		sendStringMessage(onlinebrev, message, Utils.CALLID);
-		log.info("test");
 
-		Thread.sleep(1000);
+		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
+			listAppender.list.contains("TIlgang gitt. Håndtering avsluttes");
+		});
 		TestTransaction.flagForCommit();
 		TestTransaction.end();
-		log.info("committed");
-		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
-			//assertNotNull(brevtilgangService.hentTilgangUtenCache(BISYS));
-			listAppender.list.contains("TIlgang gitt. Håndtering avsluttes");
-			//assertTrue(true);
-		});
 		listAppender.list.contains("TIlgang gitt. Håndtering avsluttes");
 
-		SysTilgangVO systilgang = brevtilgangService.hentTilgangUtenCache(BISYS);
-		assertEquals(systilgang.getPwd(), "passord");
+		assertTrue(brevtilgangService.sjekkTilgang("BI12", "92fa00f8d8024b0", "klientToken"));
 	}
 
-//	@Test
+	@Test
 	public void shouldSendToFeilKoOnException() throws Exception{
 
 		String badHeader = Utils.classpathToString("brevXml/pensjonsbrev.xml");
