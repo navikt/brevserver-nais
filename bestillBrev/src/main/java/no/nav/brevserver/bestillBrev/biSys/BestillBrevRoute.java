@@ -15,6 +15,7 @@ import javax.jms.Queue;
 import static no.nav.brevserver.core.utils.ExchangeUtils.DESTINATION;
 import static no.nav.brevserver.core.utils.ExchangeUtils.JMS;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SENDTOMODE;
+import static no.nav.brevserver.core.utils.ExchangeUtils.SENDTOMODE;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.GI_FEILMELDING;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.INGEN_TILBAKEMELDING;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.OPPRETT_BREV;
@@ -99,10 +100,13 @@ public class BestillBrevRoute extends RouteBuilder {
 				.setExchangePattern(ExchangePattern.InOnly)
 				.log(INFO, log, BESTILLBREV + " starter behandlingen")
 				.bean(bestillBrevService)
-				.choice()
+				.process(exchange -> {
+							log.info("test");
+				})
+				.choice()				
 					.when(exchangeProperty(SENDTOMODE).isEqualTo(OPPRETT_BREV))
 						.to(JMS + dialogueOnline.getQueueName())
-						.log(INFO, log, "Brev sendt til opprettelse i Exstream: " + dialogueOnline.getQueueName())
+						.log(INFO, log, "Brev sendt til opprettelse i Exstream2: " + dialogueOnline.getQueueName())
 					.when(exchangeProperty(SENDTOMODE).isEqualTo(GI_FEILMELDING ))
 						.process(exchange -> {
 							if (exchange.getIn().getHeader(DESTINATION) == null)
@@ -111,8 +115,13 @@ public class BestillBrevRoute extends RouteBuilder {
 						.toD(JMS + header(DESTINATION))
 						.log(INFO, log, "Feilmelding er sendt til: " +  header(DESTINATION))
 					.when(exchangeProperty(SENDTOMODE).isEqualTo(INGEN_TILBAKEMELDING))
+						.log(INFO, log, "TIlgang gitt. Håndtering avsluttes")
 						.stop()
 					.otherwise()
+						.process(exchange -> {
+							log.info("SENDTOMODE: " + exchange.getProperty(SENDTOMODE));
+							log.info("destination: " + exchange.getIn().getHeader(DESTINATION));
+						})
 						.to(JMS + deadletter.getQueueName())
 						.log(ERROR, log, "En melding er sendt til deadletter pga ukjent mode!")
 				.end();

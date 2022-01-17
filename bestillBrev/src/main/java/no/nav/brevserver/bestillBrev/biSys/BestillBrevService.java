@@ -20,6 +20,7 @@ import java.io.StringReader;
 
 import static no.nav.brevserver.bestillBrev.utils.Utils.lagFeilmelding;
 import static no.nav.brevserver.core.utils.ExchangeUtils.PROPERTY_SENDTOMODE;
+import static no.nav.brevserver.core.utils.ExchangeUtils.SENDTOMODE;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.GI_FEILMELDING;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.INGEN_TILBAKEMELDING;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.OPPRETT_BREV;
@@ -69,7 +70,8 @@ public class BestillBrevService {
 				log.warn("Kunne ikke gi tilgang '" + brevStatusVo.getCensoredToken()
 						+ "' for systemID '" + brevStatusVo.getSystemID() + "'");
 			}
-			exchange.setProperty(PROPERTY_SENDTOMODE, INGEN_TILBAKEMELDING);
+			exchange.setProperty(SENDTOMODE, INGEN_TILBAKEMELDING);
+			return;
 
 			// Bestill fra Dialogue
 		} else {

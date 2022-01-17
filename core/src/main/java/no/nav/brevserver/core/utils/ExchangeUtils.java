@@ -41,7 +41,7 @@ public class ExchangeUtils {
 
 	public static void setBodyAndMode(Exchange exchange, Object Body, SendToMode sendToMode){
 		exchange.getIn().setBody(Body);
-		exchange.setProperty(SENDTOMODE, sendToMode.name());
+		exchange.setProperty(SENDTOMODE, sendToMode);
 	}
 
 	public static void notEmpty(String name, String value, boolean checkIfValidNumber) throws BrevException {

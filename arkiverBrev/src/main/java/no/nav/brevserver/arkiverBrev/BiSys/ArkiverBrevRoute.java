@@ -98,8 +98,10 @@ public class ArkiverBrevRoute extends RouteBuilder {
 				.log(LoggingLevel.INFO, log, ARKIVER_BREV_ROUTE + " starter behandlingen")
 				.bean(arkiverBrevService)
 				.process(exchange -> {
-					if (exchange.getIn().getHeader(DESTINATION) == null)
-						exchange.getIn().setHeader(DESTINATION, BISYS_DEFAULT! må grave den opp først..);
+					if (exchange.getIn().getHeader(DESTINATION) == null) {
+						log.info("Meldingen hadde ikke definert en returkø. Sender til deadletter.");
+						exchange.getIn().setHeader(DESTINATION, deadletter.getQueueName());
+					}
 				})
 				.choice()
 					.when(exchangeProperty(SENDTOMODE).isEqualTo(GI_TILBAKEMELDING))

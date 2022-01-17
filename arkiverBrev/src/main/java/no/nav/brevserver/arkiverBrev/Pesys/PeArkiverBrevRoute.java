@@ -17,7 +17,6 @@ import static no.nav.brevserver.core.utils.ExchangeUtils.JMS;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SENDTOMODE;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.GI_FEILMELDING;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.GI_TILBAKEMELDING;
-import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.INGEN_TILBAKEMELDING;
 import static org.apache.camel.LoggingLevel.ERROR;
 import static org.apache.camel.LoggingLevel.INFO;
 
@@ -30,6 +29,7 @@ public class PeArkiverBrevRoute extends RouteBuilder {
 	private final Queue mottakArkivPe;
 	private final Queue mottakOnlinePe;
 	private final Queue deadletterPe;
+	private final Queue brevReplyPe;
 	private final ArkiverBrevMetricsRoutePolicy arkiverBrevMetricsRoutePolicy;
 	private final PeArkiverBrevService peArkiverBrevService;
 
@@ -38,11 +38,12 @@ public class PeArkiverBrevRoute extends RouteBuilder {
 	public PeArkiverBrevRoute(Queue mottakArkivPe,
 							  Queue mottakOnlinePe,
 							  Queue deadletterPe,
-							  ArkiverBrevMetricsRoutePolicy arkiverBrevMetricsRoutePolicy,
+							  Queue brevReplyPe, ArkiverBrevMetricsRoutePolicy arkiverBrevMetricsRoutePolicy,
 							  PeArkiverBrevService peArkiverBrevService) {
 		this.mottakArkivPe = mottakArkivPe;
 		this.mottakOnlinePe = mottakOnlinePe;
 		this.deadletterPe = deadletterPe;
+		this.brevReplyPe = brevReplyPe;
 		this.arkiverBrevMetricsRoutePolicy = arkiverBrevMetricsRoutePolicy;
 		this.peArkiverBrevService = peArkiverBrevService;
 	}
@@ -101,7 +102,7 @@ public class PeArkiverBrevRoute extends RouteBuilder {
 				.bean(peArkiverBrevService)
 				.process(exchange -> {
 					if (exchange.getIn().getHeader(DESTINATION) == null)
-						exchange.getIn().setHeader(DESTINATION, PESYS_DEFAULT! må grave den opp først..);
+						exchange.getIn().setHeader(DESTINATION, brevReplyPe.getQueueName());
 				})
 				.choice()
 				.when(exchangeProperty(SENDTOMODE).isEqualTo(GI_TILBAKEMELDING))
