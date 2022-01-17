@@ -47,7 +47,7 @@
 		<xmlbeans.version>5.0.1</xmlbeans.version>
 		<spring-cloud-contract-wiremock.version>3.0.3</spring-cloud-contract-wiremock.version>
 		<wiremock.standalone.version>2.27.2</wiremock.standalone.version>
-		<spring.framework.version>5.3.9</spring.framework.version>
+		<spring.framework.version>5.3.14</spring.framework.version>
 	</properties>
 
 	<scm>
