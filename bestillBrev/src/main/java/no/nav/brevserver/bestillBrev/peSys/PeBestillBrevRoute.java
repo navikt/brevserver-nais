@@ -1,4 +1,4 @@
-package no.nav.brevserver.bestillBrev.biSys;
+package no.nav.brevserver.bestillBrev.peSys;
 
 import com.ibm.msg.client.jms.DetailedJMSException;
 import no.nav.brevserver.bestillBrev.BestillBrevMetricsRoutePolicy;
@@ -12,9 +12,9 @@ import org.springframework.stereotype.Component;
 import javax.inject.Inject;
 import javax.jms.Queue;
 
-import static no.nav.brevserver.core.utils.ExchangeUtils.DESTINATION;
 import static no.nav.brevserver.core.utils.ExchangeUtils.JMS;
-import static no.nav.brevserver.core.utils.ExchangeUtils.SENDTOMODE;
+import static no.nav.brevserver.core.utils.ExchangeUtils.PROPERTY_SENDTOMODE;
+import static no.nav.brevserver.core.utils.ExchangeUtils.DESTINATION;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SENDTOMODE;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.GI_FEILMELDING;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.INGEN_TILBAKEMELDING;
@@ -23,28 +23,29 @@ import static org.apache.camel.LoggingLevel.ERROR;
 import static org.apache.camel.LoggingLevel.INFO;
 
 @Component
-public class BestillBrevRoute extends RouteBuilder {
-	public static final String BESTILL_BREV_ROUTE = "direct:bestillBrev";
-	public static final String BESTILLBREV = "bestill_brev";
+public class PeBestillBrevRoute extends RouteBuilder {
+	public static final String BESTILLBREV = "peBestill_brev";
 	private final String ROUTE_OPTIONS = "?transacted=true&concurrentConsumers=1";//&mapJmsMessage=false";
+	public static final String BESTILL_BREV_ROUTE_PE = "direct:bestillBrevPe";
 
-	private final Queue onlinebrev;
-	private final Queue dialogueOnline;
-	private final Queue deadletter;
+	private final Queue onlinebrevPe;
+	private final Queue dialogueOnlinePe;
+	private final Queue deadletterPe;
 	private final BestillBrevMetricsRoutePolicy bestillBrevMetricsRoutePolicy;
-	private final BestillBrevService bestillBrevService;
+	private final PeBestillBrevService peBestillBrevService;
 
 	@Inject
-	public BestillBrevRoute(Queue onlinebrev,
-							Queue deadletter,
-							Queue dialogueOnline,
-							BestillBrevMetricsRoutePolicy arkiverBrevMetricsRoutePolicy,
-							BestillBrevService arkiverBrevService) {
-		this.onlinebrev = onlinebrev;
-		this.deadletter = deadletter;
-		this.dialogueOnline = dialogueOnline;
-		this.bestillBrevMetricsRoutePolicy = arkiverBrevMetricsRoutePolicy;
-		this.bestillBrevService = arkiverBrevService;
+	public PeBestillBrevRoute(Queue onlinebrevPe,
+							Queue deadletterPe,
+							Queue dialogueOnlinePe,
+							//TODO: PeBestillBrevMetrics? Unødvendig? Undersøk!
+							BestillBrevMetricsRoutePolicy peBestillBrevMetricsRoutePolicy,
+							PeBestillBrevService peBestillBrevService) {
+		this.onlinebrevPe = onlinebrevPe;
+		this.deadletterPe = deadletterPe;
+		this.dialogueOnlinePe = dialogueOnlinePe;
+		this.bestillBrevMetricsRoutePolicy = peBestillBrevMetricsRoutePolicy;
+		this.peBestillBrevService = peBestillBrevService;
 	}
 
 	@Override
@@ -62,7 +63,7 @@ public class BestillBrevRoute extends RouteBuilder {
 				.useOriginalMessage()
 				.logExhaustedMessageBody(false)
 				.log(LoggingLevel.WARN, log, "${exception}; ")
-				.to("jms:" + deadletter.getQueueName());
+				.to("jms:" + deadletterPe.getQueueName());
 
 
 		onException(BrevTechnicalException.class)
@@ -70,7 +71,7 @@ public class BestillBrevRoute extends RouteBuilder {
 				.useOriginalMessage()
 				.logExhaustedMessageBody(false)
 				.log(ERROR, log, "${exception}; ")
-				.to("jms:" + deadletter.getQueueName());
+				.to("jms:" + deadletterPe.getQueueName());
 
 
 		onException(DetailedJMSException.class)
@@ -80,49 +81,41 @@ public class BestillBrevRoute extends RouteBuilder {
 				.logExhaustedMessageHistory(false)
 				.logStackTrace(false)
 				.handled(true)
-				.to("jms:" + deadletter.getQueueName());
+				.to("jms:" + deadletterPe.getQueueName());
 
 
-		from("jms:" + onlinebrev.getQueueName() + ROUTE_OPTIONS)
-				.log(INFO, log, "mottat melding fra mq")
-				.to(BESTILL_BREV_ROUTE);
-
-		//TODO:REMOVE etter test
-		/*
-		from("file://C:/Users/b157935/Documents/brevserverTest/?filename=test2.txt&charset=ISO-8859-1")
+		/*from("file://C:/Users/b157935/Documents/brevserverTest/?filename=peTest.txt&charset=ISO-8859-1")
 				.convertBodyTo(String.class)
-				.to(BESTILL_BREV_ROUTE);
-        */
-		//Brevbestilling fra Bisys
-		from(BESTILL_BREV_ROUTE)
+				.to(BESTILL_BREV_ROUTE_PE);*/
+
+		from("jms:" + onlinebrevPe.getQueueName() + ROUTE_OPTIONS)
+				.log(INFO, log, "mottat melding fra mq")
+				.to(BESTILL_BREV_ROUTE_PE);
+
+		//Brevbestilling fra Pesys
+		from(BESTILL_BREV_ROUTE_PE)
 				.routeId(BESTILLBREV)
 				.routePolicy(bestillBrevMetricsRoutePolicy)
 				.setExchangePattern(ExchangePattern.InOnly)
-				.log(INFO, log, BESTILLBREV + " starter behandlingen")
-				.bean(bestillBrevService)
+				.log(LoggingLevel.INFO, log, BESTILLBREV + " starter behandlingen")
+				.bean(peBestillBrevService)
 				.choice()
 					.when(exchangeProperty(SENDTOMODE).isEqualTo(OPPRETT_BREV))
-						.to(JMS + dialogueOnline.getQueueName())
-						.log(INFO, log, "Brev sendt til opprettelse i Exstream2: " + dialogueOnline.getQueueName())
+						.to(JMS + dialogueOnlinePe.getQueueName())
+						.log(INFO, log, "Brev sendt til opprettelse i Exstream: " + dialogueOnlinePe.getQueueName())
 					.when(exchangeProperty(SENDTOMODE).isEqualTo(GI_FEILMELDING ))
 						.process(exchange -> {
 							if (exchange.getIn().getHeader(DESTINATION) == null)
-								exchange.getIn().setHeader(DESTINATION, deadletter.getQueueName());
+								exchange.getIn().setHeader(DESTINATION, deadletterPe.getQueueName());
 						})
 						.toD(JMS + header(DESTINATION))
 						.log(INFO, log, "Feilmelding er sendt til: " +  header(DESTINATION))
 					.when(exchangeProperty(SENDTOMODE).isEqualTo(INGEN_TILBAKEMELDING))
-						.log(INFO, log, "TIlgang gitt. Håndtering avsluttes")
 						.stop()
 					.otherwise()
-						.process(exchange -> {
-							log.info("SENDTOMODE: " + exchange.getProperty(SENDTOMODE));
-							log.info("destination: " + exchange.getIn().getHeader(DESTINATION));
-						})
-						.to(JMS + deadletter.getQueueName())
+						.to(JMS + deadletterPe.getQueueName())
 						.log(ERROR, log, "En melding er sendt til deadletter pga ukjent mode!")
 				.end();
 
 	}
 }
-

@@ -1,5 +1,6 @@
 package no.nav.brevserver.service.dokumentbehandling.support.support;
 
+import no.nav.brevserver.core.audit.AuditTrail;
 import no.nav.brevserver.core.cache.LokalCacheConfig;
 import no.nav.brevserver.core.domain.entities.BrevSystemTilgang;
 import no.nav.brevserver.core.domain.entities.Brevtilgang;
@@ -13,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -78,6 +81,9 @@ public class DefaultBrevtilgangService implements BrevtilgangService {
 				.systemId(systemId)
 				.token(token)
 				.build();
+		//TODO: FIX!
+		AuditTrail trail = new AuditTrail("dummy", new Date(20000), "dummy", new Date(200));
+		brevtilgang.setAuditTrail(trail);
 		try {
 			brevtilgangRepository.save(brevtilgang);
 			return true;

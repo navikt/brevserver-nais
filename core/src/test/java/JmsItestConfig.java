@@ -25,10 +25,10 @@ public class JmsItestConfig {
 		return new ActiveMQQueue(mottakArkivPeQueueName);
 	}
 
-	@Bean
+	/*@Bean
 	public Queue onlinebrev(@Value("${onlinebrev_name.queuename}") String brevserverOnlinebrev) {
 		return new ActiveMQQueue(brevserverOnlinebrev);
-	}
+	}*/
 
 	@Bean
 	public Queue deadletter() {

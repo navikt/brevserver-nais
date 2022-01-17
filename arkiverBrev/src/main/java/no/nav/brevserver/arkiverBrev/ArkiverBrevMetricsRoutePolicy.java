@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 
-import static no.nav.brevserver.arkiverBrev.ArkiverBrevRoute.ARKIVER_BREV_ROUTE;
+import static no.nav.brevserver.arkiverBrev.BiSys.ArkiverBrevRoute.ARKIVER_BREV_ROUTE;
 import static no.nav.brevserver.core.metrics.MetricLabels.LABEL_ERROR_TYPE;
 import static no.nav.brevserver.core.metrics.MetricLabels.LABEL_EXCEPTION_NAME;
 import static no.nav.brevserver.core.metrics.MetricLabels.LABEL_PROCESS;

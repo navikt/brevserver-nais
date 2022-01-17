@@ -1,4 +1,4 @@
-package no.nav.brevserver.bestillBrev.biSys;
+package no.nav.brevserver.bestillBrev.peSys;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.brevserver.core.constants.Konstanter;
@@ -20,7 +20,6 @@ import java.io.StringReader;
 
 import static no.nav.brevserver.bestillBrev.utils.Utils.lagFeilmelding;
 import static no.nav.brevserver.core.utils.ExchangeUtils.PROPERTY_SENDTOMODE;
-import static no.nav.brevserver.core.utils.ExchangeUtils.SENDTOMODE;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.GI_FEILMELDING;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.INGEN_TILBAKEMELDING;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.OPPRETT_BREV;
@@ -28,22 +27,16 @@ import static no.nav.brevserver.core.utils.ExchangeUtils.notEmpty;
 import static no.nav.brevserver.core.utils.ExchangeUtils.setBodyAndMode;
 import static no.nav.brevserver.core.utils.ExchangeUtils.setBodyAndReturnQueueWithMode;
 
-
-/**
- * Håndterer meldinger fra Dialogue. Lagrer brev og setter status og sender kvittering til saksbehandlingsystemet.
- *
- * @author Holger Zobel, Accenture
- */
 @Slf4j
 @Component
-public class BestillBrevService {
+public class PeBestillBrevService {
 
 	private final BrevstatusService brevstatusService;
 	private final BrevtilgangService brevtilgangService;
 
 
-	public BestillBrevService(BrevstatusService brevstatusService,
-							  BrevtilgangService brevtilgangService) {
+	public PeBestillBrevService(BrevstatusService brevstatusService,
+								BrevtilgangService brevtilgangService) {
 		this.brevstatusService = brevstatusService;
 		this.brevtilgangService = brevtilgangService;
 	}
@@ -57,11 +50,24 @@ public class BestillBrevService {
 		MessageVO messageVo = ExchangeUtils.getMessageVoFromExchange(exchange);
 		BrevStatusVO brevStatusVo = generateBrevStatusVo(messageVo);
 		if (brevStatusVo == null) {
-			throw new BrevFunctionalException("BrevStatusVo er null");
+			throw new BrevFunctionalException("BrevStatus er null");
 		}
 
-		// Hvis modus="frabrevlager" ønsker et fagsystem å gi en tilgang til brevet fra brevklient med en token
-		if (brevStatusVo.getModus() != null && Konstanter.BREVMODUS_FRALAGER.equals(brevStatusVo.getModus())) {
+		//TODO: Dette ser ikke ut til å være med for pensjon i gamle brevserver? Bare for bisys??
+		/*
+		//Ved feil systempassord send en feilmelding tilbake til fagsystemet over riktig kø.
+		//Setter bodyen til exchangen til feilmeldingen og ruter den til riktig kø
+		if (!brevtilgangService.sjekkSystemTilgang(brevStatusVo.getSystemID(), brevStatusVo.getPassord())) {
+			log.warn("Feil systempassord for melding fra " + brevStatusVo.getSystemID());
+
+			Utils.setBodyAndReturnQueue(exchange,
+					lagFeilmelding(Konstanter.FEIL_IKKE_SYSTEM_TILGANG, brevStatusVo),
+					messageVo.getReplyQueueName(),
+					GI_FEILMELDING);
+			return;
+		}
+*/
+		if (messageVo.isTilgangsXML()) {
 			boolean ok = brevtilgangService.lagreTilgang(brevStatusVo.getSystemID(), brevStatusVo.getBrevreferanse(),
 					brevStatusVo.getToken());
 			if (ok) {
@@ -70,8 +76,7 @@ public class BestillBrevService {
 				log.warn("Kunne ikke gi tilgang '" + brevStatusVo.getCensoredToken()
 						+ "' for systemID '" + brevStatusVo.getSystemID() + "'");
 			}
-			exchange.setProperty(SENDTOMODE, INGEN_TILBAKEMELDING);
-			return;
+			exchange.setProperty(PROPERTY_SENDTOMODE, INGEN_TILBAKEMELDING);
 
 			// Bestill fra Dialogue
 		} else {
@@ -105,17 +110,16 @@ public class BestillBrevService {
 		try {
 			brevStatusVo = XMLService.marshalBrevStatus(reader);
 		} catch (BrevTechnicalException e) {
-			log.warn("Ugyldig XML mottatt!");
+			log.warn("Ugyldig XML mottatt");
 			throw e;
 		}
-
-		messageVO.setTilgangsXML(brevStatusVo != null && Konstanter.BREVMODUS_FRALAGER.equals(brevStatusVo.getModus()));
+		messageVO.setTilgangsXML(Konstanter.BREVMODUS_FRALAGER.equals(brevStatusVo.getModus()));
 		brevStatusVo.setReturKoe(messageVO.getReplyQueueName());
 		messageVO.setBrevreferanse(brevStatusVo.getBrevreferanse());
 
-		if (brevStatusVo.getSystemID().startsWith(SystemType.PE.toString())) {
+		if (!brevStatusVo.getSystemID().startsWith(SystemType.PE.toString())) {
 			String errorMessage = "Brev med feil systemID mottatt: '" + brevStatusVo.getSystemID()
-					+ "', forventet ikke pensjonsbrev";
+					+ "', forventer pensjonsbrev";
 			throw new BrevTechnicalException(BrevTechnicalException.FEIL_I_XML, errorMessage, null);
 		}
 
@@ -124,14 +128,9 @@ public class BestillBrevService {
 			notEmpty("Systemid", brevStatusVo.getSystemID(), false);
 			notEmpty("Returkø", brevStatusVo.getReturKoe(), false);
 		} catch (BrevException e) {
-			log.warn("Ugyldig XML mottatt for brevreferanse " + messageVO.getBrevreferanse(), e);
+			log.error("Ugyldig XML mottatt for brevreferanse " + messageVO.getBrevreferanse(), e);
 			throw new BrevTechnicalException(BrevTechnicalException.FEIL_I_XML, e);
 		}
 		return brevStatusVo;
 	}
-
-
-
 }
-
-

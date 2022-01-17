@@ -1,6 +1,7 @@
-package no.nav.brevserver.arkiverBrev;
+package no.nav.brevserver.arkiverBrev.BiSys;
 
 import com.ibm.msg.client.jms.DetailedJMSException;
+import no.nav.brevserver.arkiverBrev.ArkiverBrevMetricsRoutePolicy;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
 import org.apache.camel.ExchangePattern;
 import org.apache.camel.LoggingLevel;
@@ -11,7 +12,14 @@ import org.springframework.stereotype.Component;
 import javax.inject.Inject;
 import javax.jms.Queue;
 
+import static no.nav.brevserver.core.utils.ExchangeUtils.DESTINATION;
+import static no.nav.brevserver.core.utils.ExchangeUtils.JMS;
+import static no.nav.brevserver.core.utils.ExchangeUtils.SENDTOMODE;
+import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.GI_FEILMELDING;
+import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.GI_TILBAKEMELDING;
+import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.INGEN_TILBAKEMELDING;
 import static org.apache.camel.LoggingLevel.ERROR;
+import static org.apache.camel.LoggingLevel.INFO;
 
 @Component
 public class ArkiverBrevRoute extends RouteBuilder {
@@ -74,21 +82,38 @@ public class ArkiverBrevRoute extends RouteBuilder {
 				.to("jms:" + deadletter.getQueueName());
 
 
-		/*from("jms:" + mottakArkiv.getQueueName() + ROUTE_OPTIONS)
+
+		from("jms:" + mottakArkiv.getQueueName() + ROUTE_OPTIONS)
+				.log(INFO, log, "mottat melding fra mq")
 				.to(ARKIVER_BREV_ROUTE);
 		from("jms:" + mottakOnline.getQueueName() + ROUTE_OPTIONS)
+				.log(INFO, log, "mottat melding fra mq")
 				.to(ARKIVER_BREV_ROUTE);
 
+		//Hent svar fra exstream
 		from(ARKIVER_BREV_ROUTE)
 				.routeId(ARKIVER_BREV_ROUTE)
 				.routePolicy(arkiverBrevMetricsRoutePolicy)
 				.setExchangePattern(ExchangePattern.InOnly)
 				.log(LoggingLevel.INFO, log, ARKIVER_BREV_ROUTE + " starter behandlingen")
 				.bean(arkiverBrevService)
-				.toD("jms:${header.uri}")
-				.log(LoggingLevel.INFO, log, "Kvitteringsmeldingen er sendt til: " + "${header.uri}")
-				.end();*/
-
+				.process(exchange -> {
+					if (exchange.getIn().getHeader(DESTINATION) == null) {
+						log.info("Meldingen hadde ikke definert en returkø. Sender til deadletter.");
+						exchange.getIn().setHeader(DESTINATION, deadletter.getQueueName());
+					}
+				})
+				.choice()
+					.when(exchangeProperty(SENDTOMODE).isEqualTo(GI_TILBAKEMELDING))
+						.toD(JMS + header(DESTINATION))
+						.log(INFO, log, "Tilbakemelding er sendt til: " + header(DESTINATION))
+					.when(exchangeProperty(SENDTOMODE).isEqualTo(GI_FEILMELDING))
+						.toD(JMS + header(DESTINATION))
+						.log(INFO, log, "Feilmelding er sendt til: " + header(DESTINATION))
+					.otherwise()
+						.to(JMS + deadletter.getQueueName())
+						.log(ERROR, log, "En melding er sendt til deadletter pga ukjent mode!")
+				.end();
 
 	}
 }

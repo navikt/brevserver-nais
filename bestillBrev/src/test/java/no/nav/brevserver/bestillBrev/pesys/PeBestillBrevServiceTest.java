@@ -1,15 +1,15 @@
-package no.nav.brevserver.bestillBrev.biSys;
+package no.nav.brevserver.bestillBrev.pesys;
 
 import config.ApplicationTestConfig;
-import no.nav.brevserver.bestillBrev.Utils;
+import no.nav.brevserver.core.constants.Konstanter;
 import no.nav.brevserver.core.vo.BrevStatusVO;
 import no.nav.brevserver.service.BrevstatusService;
 import no.nav.brevserver.service.BrevtilgangService;
 import org.apache.activemq.command.ActiveMQMessage;
 import org.apache.activemq.command.ActiveMQTextMessage;
+import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.powermock.api.mockito.PowerMockito;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -24,28 +24,25 @@ import javax.jms.TextMessage;
 import javax.xml.bind.JAXBElement;
 import java.util.concurrent.TimeUnit;
 
-import static no.nav.brevserver.bestillBrev.Utils.BISYS_SYSTEM_ID;
 import static no.nav.brevserver.bestillBrev.Utils.BREVREFERANSE;
 import static no.nav.brevserver.bestillBrev.Utils.SYSTEM_PASSORD;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
+
 
 @RunWith(SpringRunner.class)
 @EnableAutoConfiguration
 @SpringBootTest(classes = {ApplicationTestConfig.class})
 @ActiveProfiles("itest")
 @DirtiesContext
-public class BestillBrevServiceTest {
+public class PeBestillBrevServiceTest {
+
 
 	@Inject
-	private Queue onlinebrev;
+	private Queue onlinebrevPe;
 	@Inject
-	private Queue deadletter;
+	private Queue deadletterPe;
 	@Inject
 	private JmsTemplate jmsTemplate;
 	@Inject
@@ -57,17 +54,22 @@ public class BestillBrevServiceTest {
 
 	private final String CORRELATION_ID = "abcd-1234-def-5678";
 	private final String CALL_ID="12-callID-34";
+	private final String SYSTEM_ID = "PE2";
+	private final String BREVMAL = "PE_AP_04_220";
+
 	@Test
 	public void shouldFailOnNullInput(){
-		sendStringMessage(onlinebrev, null, CALL_ID);
+		sendStringMessage(onlinebrevPe, null, CALL_ID);
 
 		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
-			ActiveMQMessage recieved = receive(deadletter);
+			ActiveMQMessage recieved = receive(deadletterPe);
 			assertEquals(recieved.getJMSCorrelationID(), (CORRELATION_ID));
 			verifyZeroInteractions(brevtilgangServiceMock, brevstatusServiceMock);
 		});
 	}
 
+
+	/*
 	@Test
 	public void shouldHandleMessage() throws Exception {
 		PowerMockito.when(brevtilgangServiceMock.sjekkSystemTilgang(BISYS_SYSTEM_ID, SYSTEM_PASSORD)).thenReturn(true);
@@ -182,54 +184,32 @@ public class BestillBrevServiceTest {
 
 	}
 
-
-
-
-	private String createDefaultInput(){
-		return createInput(BISYS_SYSTEM_ID);
-	}
-
-	private String createInput(String fagsystem){
+	private String createInput(){
 		StringBuilder builder = new StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
-		builder.append("<rtv-brev direkteutskrift=\"NEI\" format=\"ENSIDIG\" malpakke=\"BI01.BI01X01\" sysid=\"").append(fagsystem).append("\" passord=\"Bisys123\" saksbehandler=\"B100946\">");
+		builder.append("<rtv-brev direkteutskrift=\"NEI\" format=\"ENSIDIG\" malpakke=\"BI01.BI01X01\" sysid=\"").append(PENSJON_SYSTEM_ID).append("\" passord=\"Bisys123\" saksbehandler=\"B100946\">");
 		addText(builder);
 		return builder.toString();
 	}
-
-	private String createInput(String fagsystem, String modus){
-		StringBuilder builder = new StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
-		builder.append("<rtv-brev direkteutskrift=\"NEI\" klientToken=\"token\" modus=\"").append(modus).append("\" malpakke=\"BI01.BI01X01\" sysid=\"").append(fagsystem).append("\" passord=\"Bisys123\" saksbehandler=\"B100946\">");
-		addText(builder);
-		return builder.toString();
-	}
-
-	private StringBuilder addText(StringBuilder builder){
-		builder.append("<brev brevref=\"").append(BREVREFERANSE).append("\" spraak=\"NB\" tknr=\"0814\">");
-		builder.append("<brevMottaker>");
-		builder.append("<navn>").append("Donald").append("</navn>");
-		builder.append("<adr1>").append("Andeby 1").append("</adr1>");
-		builder.append("<adr2>").append("Borte").append("</adr2>");
-		builder.append("<adr3>").append("vekk").append("</adr3>");
-		builder.append("<adr4/>");
-		builder.append("<bidrRolle>").append("01").append("</bidrRolle>");
-		builder.append("<fnr>").append("11111111111").append("</fnr>");
-		builder.append("<fDato>").append("010134").append("</fDato>");
-		builder.append("<postnr>").append(1234).append("</postnr>");
-		builder.append("<landKd/>");
-		builder.append("<spraak>").append("NB").append("</spraak>");
-		builder.append("</brevMottaker>");
-		builder.append("</brev>");
-		builder.append("</rtv-brev>");
-		return builder;
+*/
+	private String createXmlKvitteringHeader(String contentType) {
+		StringBuilder builder = new StringBuilder("<?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>");
+		builder.append("<rtv-brevkvitt>");
+		builder.append("<brevref>").append(BREVREFERANSE).append("</brevref>");
+		builder.append("<sysid>").append(SYSTEM_ID).append("</sysid>");
+		builder.append("<type>").append(contentType).append("</type>");
+		builder.append("<feilniva>").append("0").append("</feilniva>");
+		builder.append("<feilkode>").append("0").append("</feilkode>");
+		builder.append("</rtv-brevkvitt>");
+		return StringUtils.rightPad(builder.toString(), Konstanter.MELDING_HEADER_LENGTH, ' ');
 	}
 
 	private BrevStatusVO createDefaultBrevstatus() {
 		BrevStatusVO brevstatus = new BrevStatusVO();
 		brevstatus.setBrevreferanse(BREVREFERANSE);
-		brevstatus.setSystemID(BISYS_SYSTEM_ID);
+		brevstatus.setSystemID(SYSTEM_ID);
 		brevstatus.setReturKoe("svarKo");
 		brevstatus.setBestillerBrukerID("B100946");
-		brevstatus.setBrevmal("BI01.BI01X01");
+		brevstatus.setBrevmal(BREVMAL);
 		brevstatus.setPassord(SYSTEM_PASSORD);
 		return brevstatus;
 	}

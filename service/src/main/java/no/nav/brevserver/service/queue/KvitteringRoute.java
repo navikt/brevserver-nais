@@ -12,10 +12,6 @@ import static org.apache.camel.LoggingLevel.ERROR;
 @Component
 public class KvitteringRoute extends RouteBuilder {
 
-	//TODO: Dynamisk oppslag
-	@Value("${brev_reply_pe_queuename}")
-	private String queueName;
-
 	public static final String DIRECT_SENDKVITTERINGROUTE = "direct:sendkvitteringroute";
 
 	@Override
@@ -28,9 +24,9 @@ public class KvitteringRoute extends RouteBuilder {
 				.logStackTrace(true)
 				.loggingLevel(ERROR));
 
-		/*from(DIRECT_SENDKVITTERINGROUTE)
+		from(DIRECT_SENDKVITTERINGROUTE)
 				.log(LoggingLevel.INFO, log, "Starter behandlingen av kvitteringsmelding")
-				.toD("jms:"+queueName)
-				.log(LoggingLevel.INFO, log, "Kvitteringsmeldingen er sendt til: " + "${header.uri}");*/
+				.toD("jms:${header.uri}")
+				.log(LoggingLevel.INFO, log, "Kvitteringsmeldingen er sendt til: " + "${header.uri}");
 	}
 }
