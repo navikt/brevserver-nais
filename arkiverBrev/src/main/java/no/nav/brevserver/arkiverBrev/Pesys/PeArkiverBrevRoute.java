@@ -82,16 +82,16 @@ public class PeArkiverBrevRoute extends RouteBuilder {
 				.handled(true)
 				.to(JMS + deadletterPe.getQueueName());
 
-		/*from("jms:" + mottakArkivPe.getQueueName() + ROUTE_OPTIONS)
+		from("jms:" + mottakArkivPe.getQueueName() + ROUTE_OPTIONS)
 				.log(INFO, log, "mottat melding fra mq")
 				.to(PE_ARKIVER_BREV_ROUTE);
 		from("jms:" + mottakOnlinePe.getQueueName() + ROUTE_OPTIONS)
 				.log(INFO, log, "mottat melding fra mq")
-				.to(PE_ARKIVER_BREV_ROUTE);*/
+				.to(PE_ARKIVER_BREV_ROUTE);
 
-		from("file://C:/Users/b157935/Documents/brevserverTest/?filename=nyPeTest.txt&charset=ISO-8859-1")
+		/*from("file://C:/Users/b157935/Documents/brevserverTest/?filename=nyPeTest.txt&charset=ISO-8859-1")
 			.convertBodyTo(String.class)
-			.to(PE_ARKIVER_BREV_ROUTE);
+			.to(PE_ARKIVER_BREV_ROUTE);*/
 
 		//Hent svar fra exstream
 		from(PE_ARKIVER_BREV_ROUTE)

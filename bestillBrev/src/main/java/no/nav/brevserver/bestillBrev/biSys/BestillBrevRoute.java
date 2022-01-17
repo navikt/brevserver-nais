@@ -100,10 +100,7 @@ public class BestillBrevRoute extends RouteBuilder {
 				.setExchangePattern(ExchangePattern.InOnly)
 				.log(INFO, log, BESTILLBREV + " starter behandlingen")
 				.bean(bestillBrevService)
-				.process(exchange -> {
-							log.info("test");
-				})
-				.choice()				
+				.choice()
 					.when(exchangeProperty(SENDTOMODE).isEqualTo(OPPRETT_BREV))
 						.to(JMS + dialogueOnline.getQueueName())
 						.log(INFO, log, "Brev sendt til opprettelse i Exstream2: " + dialogueOnline.getQueueName())

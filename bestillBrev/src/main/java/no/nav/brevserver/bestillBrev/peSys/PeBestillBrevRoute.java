@@ -87,11 +87,11 @@ public class PeBestillBrevRoute extends RouteBuilder {
 		/*from("file://C:/Users/b157935/Documents/brevserverTest/?filename=peTest.txt&charset=ISO-8859-1")
 				.convertBodyTo(String.class)
 				.to(BESTILL_BREV_ROUTE_PE);*/
-/*
+
 		from("jms:" + onlinebrevPe.getQueueName() + ROUTE_OPTIONS)
 				.log(INFO, log, "mottat melding fra mq")
 				.to(BESTILL_BREV_ROUTE_PE);
-*/
+
 		//Brevbestilling fra Pesys
 		from(BESTILL_BREV_ROUTE_PE)
 				.routeId(BESTILLBREV)
