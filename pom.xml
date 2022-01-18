@@ -17,15 +17,14 @@
 		<module>fagarkiv-consumer</module>
 		<module>service</module>
 		<module>brevserver-klient-applet</module>
-		<module>app</module>
 		<module>bestillBrev</module>
 		<module>arkiverBrev</module>
-
+		<module>app</module>
 	</modules>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<java.version>11</java.version>
+		<java.version>17</java.version>
 		<web.context.root>/brevweb</web.context.root>
 		<powermock.version>2.0.9</powermock.version>
 		<slf4j.version>1.7.5</slf4j.version>
@@ -576,8 +575,8 @@
 				<version>3.0.0-M3</version>
 			</plugin>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-toolchains-plugin</artifactId>
-				<version>3.0.0</version>
 				<executions>
 					<execution>
 						<goals>
@@ -588,7 +587,7 @@
 				<configuration>
 					<toolchains>
 						<jdk>
-							<version>11</version>
+							<version>17</version>
 							<vendor>openjdk</vendor>
 						</jdk>
 					</toolchains>
