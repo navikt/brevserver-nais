@@ -115,7 +115,7 @@ public class PeBestillBrevService {
 		}
 		messageVO.setTilgangsXML(Konstanter.BREVMODUS_FRALAGER.equals(brevStatusVo.getModus()));
 		brevStatusVo.setReturKoe(messageVO.getReplyQueueName());
-		messageVO.setBrevreferanse(brevStatusVo.getBrevreferanse())
+		messageVO.setBrevreferanse(brevStatusVo.getBrevreferanse());
 		log.info("Returkø er satt til: " + brevStatusVo.getReturKoe());;
 
 		if (!brevStatusVo.getSystemID().startsWith(SystemType.PE.toString())) {
