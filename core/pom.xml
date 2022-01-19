@@ -75,6 +75,13 @@
 			<artifactId>commons-lang3</artifactId>
 		</dependency>
 
+
+		<dependency>
+			<groupId>net.logstash.logback</groupId>
+			<artifactId>logstash-logback-encoder</artifactId>
+			<!-- Jenkins doesn't agree the version exists in the parent pom -->
+			<version>6.6</version>
+		</dependency>
 		<!-- fra repo-->
 		<dependency>
 			<groupId>org.springframework.data</groupId>

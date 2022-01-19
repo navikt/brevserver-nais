@@ -1,9 +1,12 @@
 package no.nav.brevserver.service.converter;
 
+import no.nav.brevserver.core.audit.AuditTrail;
 import no.nav.brevserver.core.domain.entities.Brev;
 import no.nav.brevserver.core.domain.entities.BrevlagerHistorikk;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
+
+import java.sql.Date;
 
 @Component
 public class BrevTilBrevlagerHistorikkConverter implements Converter<Brev, BrevlagerHistorikk> {
@@ -18,6 +21,7 @@ public class BrevTilBrevlagerHistorikkConverter implements Converter<Brev, Brevl
 				.contentType(brev.getContentType())
 				.brevdata(brev.getBrevdata())
 				.vasket('0')
+				.auditTrail(new AuditTrail("dummy", new Date(20000), "dummy", new Date(200)))
 				.build();
 	}
 }

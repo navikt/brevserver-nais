@@ -74,11 +74,11 @@ public class PeArkiverBrevRoute extends RouteBuilder {
 
 
 		onException(DetailedJMSException.class)
-				.log(LoggingLevel.WARN, "DetailedJMSException oppstått i arkiverBrev for forsendelse med  getIdsForLogging() . Melding sendt til funksjonell feilkø.")
+				.log(LoggingLevel.WARN, "DetailedJMSException oppstått i PeArkiverBrevRoute")
 				.useOriginalMessage()
 				.logExhaustedMessageBody(false)
 				.logExhaustedMessageHistory(false)
-				.logStackTrace(false)
+				.logStackTrace(true)
 				.handled(true)
 				.to(JMS + deadletterPe.getQueueName());
 
@@ -88,10 +88,6 @@ public class PeArkiverBrevRoute extends RouteBuilder {
 		from("jms:" + mottakOnlinePe.getQueueName() + ROUTE_OPTIONS)
 				.log(INFO, log, "mottat melding fra mq")
 				.to(PE_ARKIVER_BREV_ROUTE);
-
-		/*from("file://C:/Users/b157935/Documents/brevserverTest/?filename=nyPeTest.txt&charset=ISO-8859-1")
-			.convertBodyTo(String.class)
-			.to(PE_ARKIVER_BREV_ROUTE);*/
 
 		//Hent svar fra exstream
 		from(PE_ARKIVER_BREV_ROUTE)
@@ -106,9 +102,11 @@ public class PeArkiverBrevRoute extends RouteBuilder {
 				})
 				.choice()
 				.when(exchangeProperty(SENDTOMODE).isEqualTo(GI_TILBAKEMELDING))
+					.log(INFO, log, "Prøver å sende tilbakemelding til: " + header(DESTINATION))
 					.toD(JMS + header(DESTINATION))
 					.log(INFO, log, "Tilbakemelding er sendt til: " + header(DESTINATION))
 				.when(exchangeProperty(SENDTOMODE).isEqualTo(GI_FEILMELDING))
+					.log(INFO, log, "Prøver å sende feilmelding til: " + header(DESTINATION))
 					.toD(JMS + header(DESTINATION))
 					.log(INFO, log, "Feilmelding er sendt til: " + header(DESTINATION))
 				.otherwise()

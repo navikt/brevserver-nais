@@ -13,7 +13,8 @@ public class ExchangeUtils {
 		OPPRETT_BREV,
 		GI_TILBAKEMELDING,
 		GI_FEILMELDING,
-		INGEN_TILBAKEMELDING
+		INGEN_TILBAKEMELDING,
+		TIL_FEILKO
 	}
 
 	public static final String DESTINATION = "uri";
@@ -25,6 +26,7 @@ public class ExchangeUtils {
 
 		MessageVO vo = new MessageVO(exchange.getIn().getBody(byte[].class));
 		vo.setStringBody(exchange.getIn().getBody(String.class));
+		log.info("xml:\n" +vo.getStringBody());
 		return vo;
 	}
 
@@ -37,11 +39,19 @@ public class ExchangeUtils {
 		exchange.getIn().setBody(Body);
 		exchange.getIn().setHeader(DESTINATION, returnQueue);
 		exchange.setProperty(SENDTOMODE, sendToMode.name());
+		log.info("Setter returkø til: " + returnQueue + " og sendToMode til: " + sendToMode);
 	}
 
 	public static void setBodyAndMode(Exchange exchange, Object Body, SendToMode sendToMode){
 		exchange.getIn().setBody(Body);
 		exchange.setProperty(SENDTOMODE, sendToMode);
+	}
+
+	public static void setModeAndReturnQueue(Exchange exchange, SendToMode sendToMode, String returnQueue){
+		log.info("Gammel mode: " + exchange.getProperty(SENDTOMODE) + " gammel kø: " + exchange.getIn().getHeaders().get(DESTINATION) +
+				"Ny mode: " + sendToMode + " ny returnqueue: " + returnQueue);
+		exchange.setProperty(SENDTOMODE, sendToMode);
+		exchange.getIn().setHeader(DESTINATION, returnQueue);
 	}
 
 	public static void notEmpty(String name, String value, boolean checkIfValidNumber) throws BrevException {

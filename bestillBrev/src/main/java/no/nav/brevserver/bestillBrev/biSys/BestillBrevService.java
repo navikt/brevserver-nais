@@ -111,6 +111,7 @@ public class BestillBrevService {
 
 		messageVO.setTilgangsXML(brevStatusVo != null && Konstanter.BREVMODUS_FRALAGER.equals(brevStatusVo.getModus()));
 		brevStatusVo.setReturKoe(messageVO.getReplyQueueName());
+		log.info("Returkø er satt til: " + brevStatusVo.getReturKoe());
 		messageVO.setBrevreferanse(brevStatusVo.getBrevreferanse());
 
 		if (brevStatusVo.getSystemID().startsWith(SystemType.PE.toString())) {

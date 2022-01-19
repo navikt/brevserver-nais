@@ -75,18 +75,14 @@ public class PeBestillBrevRoute extends RouteBuilder {
 
 
 		onException(DetailedJMSException.class)
-				.log(LoggingLevel.WARN, "DetailedJMSException oppstått i bestillBrev for forsendelse med  getIdsForLogging() . Melding sendt til funksjonell feilkø.")
+				.log(LoggingLevel.WARN, "DetailedJMSException oppstått i PeBestillBrevRoute")
 				.useOriginalMessage()
 				.logExhaustedMessageBody(false)
 				.logExhaustedMessageHistory(false)
-				.logStackTrace(false)
+				.logStackTrace(true)
 				.handled(true)
 				.to("jms:" + deadletterPe.getQueueName());
 
-
-		/*from("file://C:/Users/b157935/Documents/brevserverTest/?filename=peTest.txt&charset=ISO-8859-1")
-				.convertBodyTo(String.class)
-				.to(BESTILL_BREV_ROUTE_PE);*/
 
 		from("jms:" + onlinebrevPe.getQueueName() + ROUTE_OPTIONS)
 				.log(INFO, log, "mottat melding fra mq")

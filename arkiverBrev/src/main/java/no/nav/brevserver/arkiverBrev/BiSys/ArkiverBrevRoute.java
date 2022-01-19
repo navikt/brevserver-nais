@@ -18,6 +18,8 @@ import static no.nav.brevserver.core.utils.ExchangeUtils.SENDTOMODE;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.GI_FEILMELDING;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.GI_TILBAKEMELDING;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.INGEN_TILBAKEMELDING;
+import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.TIL_FEILKO;
+import static no.nav.brevserver.core.utils.ExchangeUtils.setModeAndReturnQueue;
 import static org.apache.camel.LoggingLevel.ERROR;
 import static org.apache.camel.LoggingLevel.INFO;
 
@@ -73,11 +75,11 @@ public class ArkiverBrevRoute extends RouteBuilder {
 
 
 		onException(DetailedJMSException.class)
-				.log(LoggingLevel.WARN, "DetailedJMSException oppstått i arkiverBrev for forsendelse med  getIdsForLogging() . Melding sendt til funksjonell feilkø.")
+				.log(LoggingLevel.WARN, "DetailedJMSException oppstått i ArkiverBrevRoute.")
 				.useOriginalMessage()
 				.logExhaustedMessageBody(false)
 				.logExhaustedMessageHistory(false)
-				.logStackTrace(false)
+				.logStackTrace(true)
 				.handled(true)
 				.to("jms:" + deadletter.getQueueName());
 
@@ -100,14 +102,19 @@ public class ArkiverBrevRoute extends RouteBuilder {
 				.process(exchange -> {
 					if (exchange.getIn().getHeader(DESTINATION) == null) {
 						log.info("Meldingen hadde ikke definert en returkø. Sender til deadletter.");
-						exchange.getIn().setHeader(DESTINATION, deadletter.getQueueName());
+						setModeAndReturnQueue(exchange, TIL_FEILKO, deadletter.getQueueName());
 					}
 				})
 				.choice()
 					.when(exchangeProperty(SENDTOMODE).isEqualTo(GI_TILBAKEMELDING))
+						.log(INFO, log, "Prøver å sende tilbakemelding til: " + header(DESTINATION))
 						.toD(JMS + header(DESTINATION))
 						.log(INFO, log, "Tilbakemelding er sendt til: " + header(DESTINATION))
 					.when(exchangeProperty(SENDTOMODE).isEqualTo(GI_FEILMELDING))
+						.log(INFO, log, "Prøver å sende feilmelding til: " + header(DESTINATION))
+						.toD(JMS + header(DESTINATION))
+						.log(INFO, log, "Feilmelding er sendt til: " + header(DESTINATION))
+					.when(exchangeProperty(SENDTOMODE).isEqualTo(TIL_FEILKO))
 						.toD(JMS + header(DESTINATION))
 						.log(INFO, log, "Feilmelding er sendt til: " + header(DESTINATION))
 					.otherwise()

@@ -1,6 +1,7 @@
 package no.nav.brevserver.bestillBrev.biSys;
 
 import com.ibm.msg.client.jms.DetailedJMSException;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.brevserver.bestillBrev.BestillBrevMetricsRoutePolicy;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
 import org.apache.camel.ExchangePattern;
@@ -23,6 +24,7 @@ import static org.apache.camel.LoggingLevel.ERROR;
 import static org.apache.camel.LoggingLevel.INFO;
 
 @Component
+@Slf4j
 public class BestillBrevRoute extends RouteBuilder {
 	public static final String BESTILL_BREV_ROUTE = "direct:bestillBrev";
 	public static final String BESTILLBREV = "bestill_brev";
@@ -74,25 +76,19 @@ public class BestillBrevRoute extends RouteBuilder {
 
 
 		onException(DetailedJMSException.class)
-				.log(LoggingLevel.WARN, "DetailedJMSException oppstått i bestillBrev for forsendelse med  getIdsForLogging() . Melding sendt til funksjonell feilkø.")
+				.log(LoggingLevel.WARN, "DetailedJMSException oppstått i BestillBrevRoute.")
 				.useOriginalMessage()
 				.logExhaustedMessageBody(false)
-				.logExhaustedMessageHistory(false)
-				.logStackTrace(false)
+				.logExhaustedMessageHistory(true)
+				.logStackTrace(true)
 				.handled(true)
 				.to("jms:" + deadletter.getQueueName());
 
 
 		from("jms:" + onlinebrev.getQueueName() + ROUTE_OPTIONS)
-				.log(INFO, log, "mottat melding fra mq")
+				.log(INFO, log, "Starter behandlingen")
 				.to(BESTILL_BREV_ROUTE);
 
-		//TODO:REMOVE etter test
-		/*
-		from("file://C:/Users/b157935/Documents/brevserverTest/?filename=test2.txt&charset=ISO-8859-1")
-				.convertBodyTo(String.class)
-				.to(BESTILL_BREV_ROUTE);
-        */
 		//Brevbestilling fra Bisys
 		from(BESTILL_BREV_ROUTE)
 				.routeId(BESTILLBREV)
@@ -103,7 +99,7 @@ public class BestillBrevRoute extends RouteBuilder {
 				.choice()
 					.when(exchangeProperty(SENDTOMODE).isEqualTo(OPPRETT_BREV))
 						.to(JMS + dialogueOnline.getQueueName())
-						.log(INFO, log, "Brev sendt til opprettelse i Exstream2: " + dialogueOnline.getQueueName())
+						.log(INFO, log, "Brev sendt til opprettelse i Exstream: " + dialogueOnline.getQueueName())
 					.when(exchangeProperty(SENDTOMODE).isEqualTo(GI_FEILMELDING ))
 						.process(exchange -> {
 							if (exchange.getIn().getHeader(DESTINATION) == null)

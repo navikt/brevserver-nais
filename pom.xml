@@ -47,6 +47,7 @@
 		<spring-cloud-contract-wiremock.version>3.0.3</spring-cloud-contract-wiremock.version>
 		<wiremock.standalone.version>2.27.2</wiremock.standalone.version>
 		<spring.framework.version>5.3.14</spring.framework.version>
+		<logstash-logback-encoder.version>6.6</logstash-logback-encoder.version>
 	</properties>
 
 	<scm>
@@ -502,6 +503,11 @@
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>net.logstash.logback</groupId>
+			<artifactId>logstash-logback-encoder</artifactId>
+			<version>${logstash-logback-encoder.version}</version>
 		</dependency>
 
 		<!-- Test -->
