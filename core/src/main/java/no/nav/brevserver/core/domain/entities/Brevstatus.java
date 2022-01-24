@@ -13,9 +13,10 @@ import javax.persistence.Embedded;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.sql.Timestamp;
 
 @Entity
-@Table(name = "BREVSTATUS")
+@Table(name = "T_BREVSTATUS")
 @Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
@@ -53,8 +54,12 @@ public class Brevstatus {
 	@Column(name = "SKUFF")
 	private String skuff;
 
+	@Column(name = "TIMESTAMP")
+	private Timestamp endret;
+
+/*
 	@Embedded
 	@Setter
 	private AuditTrail auditTrail;
-
+*/
 }

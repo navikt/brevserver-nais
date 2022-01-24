@@ -15,7 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "BREVSYSTILGANG")
+@Table(name = "T_BREVSYSTILGANG")
 @Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor

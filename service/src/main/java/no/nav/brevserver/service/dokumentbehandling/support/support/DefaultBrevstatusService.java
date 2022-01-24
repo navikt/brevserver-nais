@@ -93,8 +93,6 @@ public class DefaultBrevstatusService implements BrevstatusService {
 				}
 			}
 			Brevstatus brevstatus = voTilBrevstatusConverter.convert(brevStatusVO);
-			AuditTrail trail = new AuditTrail("dummy", new Date(20000), "dummy", new Date(200));
-			brevstatus.setAuditTrail(trail);
 			brevstatusRepository.save(brevstatus);
 
 			if (token != null) {

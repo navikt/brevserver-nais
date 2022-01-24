@@ -79,11 +79,9 @@ public class DefaultBrevtilgangService implements BrevtilgangService {
 		Brevtilgang brevtilgang = Brevtilgang.builder()
 				.brevreferanse(brevreferanse)
 				.systemId(systemId)
+				.endret(new Timestamp(System.currentTimeMillis()))
 				.token(token)
 				.build();
-		//TODO: FIX!
-		AuditTrail trail = new AuditTrail("dummy", new Date(20000), "dummy", new Date(200));
-		brevtilgang.setAuditTrail(trail);
 		try {
 			brevtilgangRepository.save(brevtilgang);
 			return true;

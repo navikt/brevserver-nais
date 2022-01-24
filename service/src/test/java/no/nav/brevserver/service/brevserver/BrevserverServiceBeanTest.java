@@ -241,7 +241,7 @@ public class BrevserverServiceBeanTest extends AbstractDatabaseTest {
 
 
 	private void createSystemTilgang() {
-		BrevSystemTilgang brevSystemTilgang = BrevSystemTilgang.builder().sysId("PE00").pwd("Pensjon123").build();
+		BrevSystemTilgang brevSystemTilgang = BrevSystemTilgang.builder().sysId("BI12").pwd("Pensjon123").build();
 		brevSystemTilgangRepository.save(brevSystemTilgang);
 	}
 

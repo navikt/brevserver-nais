@@ -17,7 +17,7 @@ public class BrevTilVoConverter implements Converter<Brev, BrevVO> {
 		brevVO.setBrevreferanse(brev.getId().getBrevreferanse());
 		brevVO.setBrukerID(brev.getBrukerId());
 		brevVO.setContentType(brev.getContentType());
-		brevVO.setEndret(brev.getAuditTrail()!=null&&brev.getAuditTrail().getEndretDato()!=null?new Timestamp(brev.getAuditTrail().getEndretDato().getTime()):null);
+		brevVO.setEndret(brev.getEndret());
 		brevVO.setLagerStatus(brev.getStatus());
 		brevVO.setSystemID(brev.getId().getSystemId());
 		return brevVO;

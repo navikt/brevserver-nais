@@ -7,7 +7,9 @@ import no.nav.brevserver.service.BrevstatusService;
 import no.nav.brevserver.service.BrevtilgangService;
 import org.apache.activemq.command.ActiveMQMessage;
 import org.apache.activemq.command.ActiveMQTextMessage;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -40,6 +42,7 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 @SpringBootTest(classes = {ApplicationTestConfig.class})
 @ActiveProfiles("itest")
 @DirtiesContext
+@Ignore
 public class BestillBrevServiceTest {
 
 	@Inject

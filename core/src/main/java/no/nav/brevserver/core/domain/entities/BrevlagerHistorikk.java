@@ -17,9 +17,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.Table;
+import java.sql.Timestamp;
 
 @Entity
-@Table(name = "BREVLAGER_HISTORIKK")
+@Table(name = "T_BREVLAGER_HISTORIKK")
 @Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
@@ -32,7 +33,7 @@ public class BrevlagerHistorikk {
 	@GenericGenerator(name = "brevlagerhistorikk_seq", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator", parameters = {
 			@Parameter(name = "sequence_name", value = "BREVLAGER_HISTORIKK_SEQ"),
 			@Parameter(name = "initial_value", value = "1")})
-	@Column(name = "ID", columnDefinition = "NUMERIC(19,0)")
+	@Column(name = "BREVLAGER_HISTORIK_ID", columnDefinition = "NUMBER(19,0)")
 	private Long id;
 
 	@Column(name = "BREVREFERANSE")
@@ -57,8 +58,14 @@ public class BrevlagerHistorikk {
 	@Column(name = "VASKET")
 	private Character vasket;
 
+	@Column(name = "TIMESTAMP")
+	private Timestamp endret;
+
+	/*
 	@Embedded
 	@Setter
 	private AuditTrail auditTrail;
+
+	 */
 
 }

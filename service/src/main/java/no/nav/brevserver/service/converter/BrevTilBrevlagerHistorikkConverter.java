@@ -7,6 +7,7 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 
 @Component
 public class BrevTilBrevlagerHistorikkConverter implements Converter<Brev, BrevlagerHistorikk> {
@@ -21,7 +22,7 @@ public class BrevTilBrevlagerHistorikkConverter implements Converter<Brev, Brevl
 				.contentType(brev.getContentType())
 				.brevdata(brev.getBrevdata())
 				.vasket('0')
-				.auditTrail(new AuditTrail("dummy", new Date(20000), "dummy", new Date(200)))
+				.endret(new Timestamp(System.currentTimeMillis()))
 				.build();
 	}
 }

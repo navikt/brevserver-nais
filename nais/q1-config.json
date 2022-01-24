@@ -20,7 +20,7 @@
   "DEADLETTER_QUEUENAME": "QA.Q475.BREVSERVER_DLQ",
   "DEADLETTER_PE_QUEUENAME": "QA.Q475.BREVSERVER_DLQ_PE",
   "BREVSERVER_VAULT": "/kv/preprod/fss/brevserver-nais/dev",
-  "SPRING_DATASOURCE_URL": "jdbc:oracle:thin:@d26dbvl020.test.local:1521/brevserver_td",
+  "SPRING_DATASOURCE_URL": "jdbc:oracle:thin:@a01dbfl032.adeo.no:1521/brevserver_q1",
   "FAGARKIV_PROXY_HOST": "webproxy.nais",
   "FAGARKIV_PROXY_PORT": "8088",
   "FAGARKIV_ENDPOINTS_JOURNAL": "https://wasapp-q1.adeo.no/joark/Journal",
@@ -29,5 +29,5 @@
   "SRVBREVSERVER": "/serviceuser/data/dev/srvbrevserver",
   "BREVSERVER_SERVER": "https://brevserver-nais-q1.dev.intern.nav.no/brevweb/",
   "BREVSERVERCHANNEL_NAME": "Q1_BREVSERVER",
-  "BREVSERVER_DS": "/oracle/data/dev/creds/brevserver_td-user"
+  "BREVSERVER_DS": "/oracle/data/dev/creds/brevserver_q1-user"
 }

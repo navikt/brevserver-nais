@@ -31,7 +31,7 @@ public class VoTilBrevstatusConverter implements Converter<BrevStatusVO, Brevsta
 				.skrivertype(brevStatusVO.getSkrivertype())
 				.skuff(brevStatusVO.getSkuff())
 				.status(brevStatusVO.getStatus())
-				.auditTrail(new AuditTrail("dummy", new Date(20000), "dummy", new Date(200)))
+				.endret(new Timestamp(System.currentTimeMillis()))
 				.build();
 	}
 }

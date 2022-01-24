@@ -15,15 +15,16 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
 import javax.persistence.Table;
+import java.sql.Timestamp;
 
 @Entity
-@Table(name = "BREVLAGER")
+@Table(name = "T_BREVLAGER_X")
 @Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class Brev implements Auditable {
+public class Brev {
 
 	@EmbeddedId
 	private BrevreferanseSystemCompositeId id;
@@ -41,8 +42,12 @@ public class Brev implements Auditable {
 	@Lob
 	private byte[] brevdata;
 
+	@Column(name = "TIMESTAMP")
+	private Timestamp endret;
+
+/*
 	@Embedded
 	@Setter
 	private AuditTrail auditTrail;
-
+*/
 }

@@ -4,14 +4,18 @@ import no.nav.brevserver.core.domain.entities.Brevstatus;
 import no.nav.brevserver.core.domain.entities.id.BrevreferanseSystemCompositeId;
 import no.nav.brevserver.core.constants.Konstanter;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
+import no.nav.brevserver.core.repository.BrevRepository;
 import no.nav.brevserver.core.vo.BrevStatusVO;
 import no.nav.brevserver.core.vo.BrevVO;
 import no.nav.brevserver.core.vo.FilType;
+import no.nav.brevserver.joark.JournalClient;
 import no.nav.brevserver.service.AbstractDatabaseTest;
 import no.nav.brevserver.service.BrevlagerService;
 import no.nav.brevserver.service.BrevstatusService;
 import no.nav.brevserver.service.converter.BrevstatusTilVoConverter;
 import no.nav.brevserver.service.converter.VoTilBrevstatusConverter;
+import no.nav.virksomhet.gjennomforing.arkiv.journal.v2.Journalpost;
+import no.nav.virksomhet.gjennomforing.arkiv.journal.v2.Journalstatus;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -27,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -62,7 +67,10 @@ public class BrevlagerServiceBeanTest extends AbstractDatabaseTest {
 	@MockBean
 	private BrevstatusTilVoConverter brevstatusTilVoConverter;
 	@Autowired
+	private BrevRepository brevRepository;
+	@Autowired
 	private BrevlagerService brevlagerService;
+
 
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
@@ -79,7 +87,10 @@ public class BrevlagerServiceBeanTest extends AbstractDatabaseTest {
 		BrevVO brev = defaultBrev().build();
 		when(voTilBrevstatusConverter.convert(brevStatusVO)).thenReturn(brevStatus);
 		when(brevstatusServiceMock.lagreBrevStatus(brevStatusVO)).thenReturn(null);
-
+		Journalpost journalpost = new Journalpost();
+		Journalstatus journalstatus = new Journalstatus();
+		journalstatus.setKode("OPPRETTET");
+		journalpost.setJournalstatus(journalstatus);
 		BrevStatusVO oldBrevStatus = brevlagerService.lagreBrev(brev, brevStatusVO);
 
 		verify(brevstatusServiceMock).lagreBrevStatus(brevStatusVO);
@@ -129,8 +140,10 @@ public class BrevlagerServiceBeanTest extends AbstractDatabaseTest {
 
 	@Test
 	public void shouldFerdigstilleNyttBrevAndVerifyLagret() throws Exception {
+		brevRepository.deleteAll();
 		BrevStatusVO brevStatusVO = defaultBrevStatus().build();
 		brevStatusVO.setSystemID("BR10");
+		brevStatusVO.setToken("12345");
 		Brevstatus brevStatus = defaultBrevstatusDomain().build();
 		BrevVO redBrev = defaultBrev().contentType(FilType.RTF.getContentType()).build();
 		BrevVO pdfBrev = defaultBrev().lagerStatus(Konstanter.BREVLAGER_STATUS_FERDIG).contentType(FilType.PDF.getContentType()).build();
@@ -151,6 +164,7 @@ public class BrevlagerServiceBeanTest extends AbstractDatabaseTest {
 
 	@Test
 	public void shouldFerdigstilleEksisterendeBrevAndVerifyLagret() throws Exception {
+		brevRepository.deleteAll();
 		BrevVO redBrev = defaultBrev().contentType(FilType.RTF.getContentType()).build();
 		BrevVO pdfBrev = defaultBrev().lagerStatus(Konstanter.BREVLAGER_STATUS_FERDIG)
 				.contentType(FilType.PDF.getContentType()).brevdata(BREVDATA2).build();

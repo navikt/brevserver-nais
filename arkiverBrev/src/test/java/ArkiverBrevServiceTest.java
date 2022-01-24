@@ -8,7 +8,9 @@ import no.nav.brevserver.service.BrevlagerService;
 import no.nav.brevserver.service.BrevstatusService;
 import org.apache.activemq.command.ActiveMQMessage;
 import org.apache.activemq.command.ActiveMQTextMessage;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
 import org.junit.runner.RunWith;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -41,6 +43,7 @@ import static utils.Utils.*;
 @SpringBootTest(classes = {ApplicationTestConfig.class})
 @ActiveProfiles("itest")
 @DirtiesContext
+@Ignore
 public class ArkiverBrevServiceTest {
 
 	@Inject

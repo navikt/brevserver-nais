@@ -16,9 +16,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.sql.Timestamp;
 
 @Entity
-@Table(name = "BREVTILGANG")
+@Table(name = "T_BREVTILGANG")
 @Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
@@ -42,8 +43,7 @@ public class Brevtilgang {
 	@Column(name = "BREVREFERANSE")
 	private String brevreferanse;
 
-	@Embedded
-	@Setter
-	private AuditTrail auditTrail;
+	@Column(name = "TIMESTAMP")
+	private Timestamp endret;
 
 }

@@ -21,8 +21,7 @@ public class VoTilBrevConverter implements Converter<BrevVO, Brev> {
 				.brukerId(brevVO.getBrukerID())
 				.contentType(brevVO.getContentType())
 				.brevdata(brevVO.getBrevdata())
-				//TODO:FIX!
-				.auditTrail(new AuditTrail("dummy", new Date(20000), "dummy", new Date(200)))
+				.endret(new Timestamp(System.currentTimeMillis()))
 				.build();
 	}
 }

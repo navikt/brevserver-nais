@@ -17,11 +17,9 @@ import org.springframework.test.context.junit4.SpringRunner;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {H2JpaConfig.class})
-@Sql(scripts = "classpath:drop-all.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-@Sql(scripts = {"classpath:V2.0.0__initial_table.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 public abstract class AbstractDatabaseTest {
 
-	protected static final String SYSTEM_ID = "PE00";
+	protected static final String SYSTEM_ID = "BI12";
 	protected static final String BREVREFERANSE = "10000000000";
 	protected static final String BRUKERID = "b111111";
 	protected static final byte[] BREVDATA = "Hest er best".getBytes();
