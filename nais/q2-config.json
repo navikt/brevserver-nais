@@ -1,5 +1,7 @@
 {
+  "NAMESPACE": "teamdokumenthandtering",
   "APP_NAME": "brevserver-nais",
+  "APPD_NAME": "brevserver-nais",
   "INGRESSES": [
     "https://brevserver-nais-q2.dev.intern.nav.no",
     "https://brevserver-nais-q2.dev.adeo.no"
