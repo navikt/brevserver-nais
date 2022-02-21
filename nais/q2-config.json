@@ -4,7 +4,8 @@
   "APPD_NAME": "brevserver-nais",
   "INGRESSES": [
     "https://brevserver-nais-q2.dev.intern.nav.no",
-    "https://brevserver-nais-q2.dev.adeo.no"
+    "https://brevserver-nais-q2.dev.adeo.no",
+    "https://wasapp-q2.adeo.no"
   ],
   "MQGATEWAY01_HOSTNAME": "b27apvl170.preprod.local",
   "MQGATEWAY01_PORT": "1413",
