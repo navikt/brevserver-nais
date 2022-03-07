@@ -11,6 +11,7 @@ import no.nav.brevserver.core.vo.SysTilgangVO;
 import no.nav.brevserver.service.BrevstatusService;
 import no.nav.brevserver.service.BrevtilgangService;
 import org.apache.activemq.command.ActiveMQTextMessage;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -39,9 +40,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @EnableAutoConfiguration
 @SpringBootTest(classes = {ApplicationTestConfig.class})
 @ActiveProfiles("itest")
-
-//TODO:  Fjern. Ser ikke mer på problemet nå da det kan hende modulen deles opp
-//@DirtiesContext
 @Transactional
 @Slf4j
 public class BestillBrevRouteIT extends AbstractDatabaseTest {

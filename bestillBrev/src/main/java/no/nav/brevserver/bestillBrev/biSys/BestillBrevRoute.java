@@ -13,13 +13,17 @@ import org.springframework.stereotype.Component;
 import javax.inject.Inject;
 import javax.jms.Queue;
 
+import static no.nav.brevserver.core.utils.ExchangeUtils.DEFAULT_RETURN_QUEUE;
 import static no.nav.brevserver.core.utils.ExchangeUtils.DESTINATION;
 import static no.nav.brevserver.core.utils.ExchangeUtils.JMS;
+import static no.nav.brevserver.core.utils.ExchangeUtils.JMS_OVERRIDDEN;
+import static no.nav.brevserver.core.utils.ExchangeUtils.OVERRIDE_DESTINATION;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SENDTOMODE;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SENDTOMODE;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.GI_FEILMELDING;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.INGEN_TILBAKEMELDING;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.OPPRETT_BREV;
+import static no.nav.brevserver.core.utils.ExchangeUtils.overrideDestination;
 import static org.apache.camel.LoggingLevel.ERROR;
 import static org.apache.camel.LoggingLevel.INFO;
 
@@ -48,6 +52,17 @@ public class BestillBrevRoute extends RouteBuilder {
 		this.bestillBrevMetricsRoutePolicy = arkiverBrevMetricsRoutePolicy;
 		this.bestillBrevService = arkiverBrevService;
 	}
+
+	/*
+	config for new exstream:
+	    "DIALOGUE_ONLINE_QUEUENAME": "QA.Q1_EDP.BISYS_ONLINE",
+  		"MOTTAK_ARKIV_QUEUENAME": "QA.Q1_EDP.BS_BISYS_MOTTAK_ARKIV",
+  		"MOTTAK_ONLINE_QUEUENAME": "QA.Q1_EDP.BS_BISYS_REDIGERBART_DOK",
+	config for old:
+		  "DIALOGUE_ONLINE_QUEUENAME": "QA.Q475.DIALOGUE_ONLINE",
+		  "MOTTAK_ARKIV_QUEUENAME": "QA.Q475.BREVSERVER_MOTTAK_ARKIV",
+		  "MOTTAK_ONLINE_QUEUENAME": "QA.Q475.BREVSERVER_MOTTAK_ONLINE",
+	 */
 
 	@Override
 	public void configure() throws Exception {
@@ -96,25 +111,24 @@ public class BestillBrevRoute extends RouteBuilder {
 				.setExchangePattern(ExchangePattern.InOnly)
 				.log(INFO, log, BESTILLBREV + " starter behandlingen")
 				.bean(bestillBrevService)
+				.process(exchange -> {
+					log.info("XML til Exstream: " + exchange.getIn().getBody());
+					exchange.getIn().setHeader(DEFAULT_RETURN_QUEUE, deadletter.getQueueName());
+				})
 				.choice()
 					.when(exchangeProperty(SENDTOMODE).isEqualTo(OPPRETT_BREV))
-						.to(JMS + dialogueOnline.getQueueName())
+						.process(exchange -> {
+							overrideDestination(exchange, dialogueOnline.getQueueName());
+						})
+						.to(JMS_OVERRIDDEN)
 						.log(INFO, log, "Brev sendt til opprettelse i Exstream: " + dialogueOnline.getQueueName())
 					.when(exchangeProperty(SENDTOMODE).isEqualTo(GI_FEILMELDING ))
-						.process(exchange -> {
-							if (exchange.getIn().getHeader(DESTINATION) == null)
-								exchange.getIn().setHeader(DESTINATION, deadletter.getQueueName());
-						})
-						.toD(JMS + header(DESTINATION))
-						.log(INFO, log, "Feilmelding er sendt til: " +  header(DESTINATION))
+						.to(JMS_OVERRIDDEN)
+						.log(INFO, log, "Feilmelding er sendt til: JMS_OVERRIDDEN")
 					.when(exchangeProperty(SENDTOMODE).isEqualTo(INGEN_TILBAKEMELDING))
 						.log(INFO, log, "TIlgang gitt. Håndtering avsluttes")
 						.stop()
 					.otherwise()
-						.process(exchange -> {
-							log.info("SENDTOMODE: " + exchange.getProperty(SENDTOMODE));
-							log.info("destination: " + exchange.getIn().getHeader(DESTINATION));
-						})
 						.to(JMS + deadletter.getQueueName())
 						.log(ERROR, log, "En melding er sendt til deadletter pga ukjent mode!")
 				.end();

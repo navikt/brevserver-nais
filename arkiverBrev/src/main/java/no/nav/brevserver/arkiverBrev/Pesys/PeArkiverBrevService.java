@@ -22,9 +22,8 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 
-import static no.nav.brevserver.core.utils.ExchangeUtils.DESTINATION;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.GI_TILBAKEMELDING;
-import static no.nav.brevserver.core.utils.ExchangeUtils.setBodyAndReturnQueueWithMode;
+import static no.nav.brevserver.core.utils.ExchangeUtils.setBodyAndReturnQueueOverriddenWithMode;
 
 @Slf4j
 @Service
@@ -110,6 +109,7 @@ public class PeArkiverBrevService {
 
 		if (brevStatusVo.getBrevreferanse() != null && brevStatusVo.getSystemID() != null) {
 			brevstatusService.lagreBrevStatus(brevStatusVo);
+			log.info("Brev med brevref: " + brevStatusVo.getBrevreferanse() +" er arkivert i Brevlageret");
 		}
 
 		/*
@@ -117,9 +117,9 @@ public class PeArkiverBrevService {
 		producer.sendKvittering(brevStatusVo, messageVo, kvittering);
 		*/
 
-		setBodyAndReturnQueueWithMode(exchange,
+		setBodyAndReturnQueueOverriddenWithMode(exchange,
 				createReturKvittering(brevStatusVo, kvittering),
-				messageVo.getReplyQueueName(),
+				brevStatusVo.getReturKoe(),
 				GI_TILBAKEMELDING);
 	}
 

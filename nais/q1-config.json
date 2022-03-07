@@ -1,10 +1,12 @@
 {
-  "NAMESPACE": "teamdokumenthandtering",
+  "MIN_REPLICAS": 1,
+  "MAX_REPLICAS": 2,
   "APP_NAME": "brevserver-nais-q1",
   "APPD_NAME": "brevserver-nais-q1",
   "INGRESSES": [
     "https://brevserver-nais-q1.dev.intern.nav.no",
-    "https://brevserver-nais-q1.dev.adeo.no"
+    "https://brevserver-nais-q1.dev.adeo.no",
+    "https://wasapp-q1.adeo.no"
   ],
   "MQGATEWAY01_HOSTNAME": "b27apvl172.preprod.local",
   "MQGATEWAY01_PORT": "1413",

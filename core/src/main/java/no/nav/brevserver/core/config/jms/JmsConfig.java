@@ -1,5 +1,6 @@
 package no.nav.brevserver.core.config.jms;
 
+import com.ibm.mq.constants.MQConstants;
 import com.ibm.mq.jms.MQConnectionFactory;
 import com.ibm.mq.jms.MQQueue;
 import com.ibm.msg.client.jms.JmsConstants;
@@ -39,9 +40,9 @@ public class JmsConfig {
 		connectionFactory.setChannel(channelName);
 		connectionFactory.setQueueManager(mqGatewayAlias.getName());
 		connectionFactory.setTransportType(WMQConstants.WMQ_CM_CLIENT);
-		connectionFactory.setCCSID(ISO_8859_1);
-		//connectionFactory.setIntProperty(WMQConstants.JMS_IBM_ENCODING, MQConstants.MQENC_NATIVE);
-		connectionFactory.setIntProperty(WMQConstants.JMS_IBM_CHARACTER_SET, ISO_8859_1);
+		connectionFactory.setCCSID(1208);
+		connectionFactory.setIntProperty(WMQConstants.JMS_IBM_ENCODING, 1208);
+		//connectionFactory.setIntProperty(WMQConstants.JMS_IBM_CHARACTER_SET, ISO_8859_1);  MQConstants.MQENC_NATIVE
 		UserCredentialsConnectionFactoryAdapter adapter = new UserCredentialsConnectionFactoryAdapter();
 		adapter.setTargetConnectionFactory(connectionFactory);
 

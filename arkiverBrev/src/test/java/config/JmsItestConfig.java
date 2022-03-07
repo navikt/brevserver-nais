@@ -1,5 +1,6 @@
 package config;
 
+import com.ibm.mq.jms.MQQueue;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.RedeliveryPolicy;
 import org.apache.activemq.broker.BrokerService;
@@ -10,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 import javax.jms.ConnectionFactory;
+import javax.jms.JMSException;
 import javax.jms.Queue;
 
 
@@ -23,20 +25,28 @@ public class JmsItestConfig {
 	}
 
 	@Bean
-	public Queue mottakOnline(@Value("${mottak_arkiv_pe.queuename}") String mottakArkivPeQueueName) {
-		return new ActiveMQQueue(mottakArkivPeQueueName);
+	public Queue mottakOnline(@Value("${mottak_online.queuename}") String mottakOnlineQueueName) {
+		return new ActiveMQQueue(mottakOnlineQueueName);
 	}
 
 	@Bean
-	public Queue onlinebrev(@Value("${onlinebrev_name.queuename}") String brevserverOnlinebrev) {
-		return new ActiveMQQueue(brevserverOnlinebrev);
+	// exstream -> brevserver
+	// returkø fra exstream til brevserver
+	public Queue mottakArkivPe(@Value("${mottak_arkiv_pe.queuename}") String mottakArkivPeQueueName) throws JMSException {
+		return new MQQueue(mottakArkivPeQueueName);
 	}
 
 	@Bean
-	public Queue dialogueOnline(@Value("${dialogue_online.queuename}") String brevserverOnlinebrev) {
-		return new ActiveMQQueue(brevserverOnlinebrev);
+	// exstream -> brevserver
+	// returkø fra exstream til brevserver
+	public Queue mottakOnlinePe(@Value("${mottak_online_pe.queuename}") String brevserverMottakOnlinePe) throws JMSException {
+		return new ActiveMQQueue(brevserverMottakOnlinePe);
 	}
 
+	@Bean
+	public Queue brevReplyPe(@Value("${brev_reply_pe.queuename}") String brevReplyPe) throws JMSException {
+		return new MQQueue(brevReplyPe);
+	}
 
 	@Bean
 	public Queue deadletter() {
@@ -44,8 +54,8 @@ public class JmsItestConfig {
 	}
 
 	@Bean
-	public Queue svarKo() {
-		return new ActiveMQQueue("SvarKo");
+	public Queue deadletterPe() {
+		return new ActiveMQQueue("DLQ");
 	}
 
 	@Bean(initMethod = "start", destroyMethod = "stop")
@@ -53,6 +63,11 @@ public class JmsItestConfig {
 		BrokerService service = new BrokerService();
 		service.setPersistent(false);
 		return service;
+	}
+
+	@Bean
+	public Queue svarKo() {
+		return new ActiveMQQueue("SvarKo");
 	}
 
 	@Bean

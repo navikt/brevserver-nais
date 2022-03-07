@@ -67,4 +67,6 @@ public class MessageVO implements Serializable {
 		this.tilgangsXML = isTilgangsXML;
 	}
 
+	public void setReplyQueueName(String replyQueueName){ this.replyQueueName = replyQueueName; }
+
 }

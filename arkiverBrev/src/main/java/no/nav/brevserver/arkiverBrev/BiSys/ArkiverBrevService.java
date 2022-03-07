@@ -1,6 +1,7 @@
 package no.nav.brevserver.arkiverBrev.BiSys;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.brevserver.core.constants.Konstanter;
 import no.nav.brevserver.core.constants.SystemType;
 import no.nav.brevserver.core.exception.BrevException;
 import no.nav.brevserver.core.exception.BrevFunctionalException;
@@ -12,7 +13,6 @@ import no.nav.brevserver.core.vo.BrevStatusVO;
 import no.nav.brevserver.core.vo.FilType;
 import no.nav.brevserver.core.vo.KvitteringVO;
 import no.nav.brevserver.core.vo.MessageVO;
-import no.nav.brevserver.core.constants.Konstanter;
 import no.nav.brevserver.service.BrevlagerService;
 import no.nav.brevserver.service.BrevstatusService;
 import org.apache.camel.Exchange;
@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service;
 import javax.inject.Inject;
 
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.GI_TILBAKEMELDING;
-import static no.nav.brevserver.core.utils.ExchangeUtils.setBodyAndReturnQueueWithMode;
+import static no.nav.brevserver.core.utils.ExchangeUtils.setBodyAndReturnQueueOverriddenWithMode;
 
 
 /**
@@ -112,9 +112,9 @@ public class ArkiverBrevService {
 			log.info("Brev med brevref: " + brevStatusVo.getBrevreferanse() +" er arkivert i Brevlageret");
 		}
 
-		setBodyAndReturnQueueWithMode(exchange,
+		setBodyAndReturnQueueOverriddenWithMode(exchange,
 				createReturKvittering(brevStatusVo, kvittering),
-				messageVo.getReplyQueueName(),
+				brevStatusVo.getReturKoe(),
 				GI_TILBAKEMELDING);
 
 	}
