@@ -15,6 +15,7 @@ import javax.jms.Queue;
 import static no.nav.brevserver.core.utils.ExchangeUtils.DEFAULT_RETURN_QUEUE;
 import static no.nav.brevserver.core.utils.ExchangeUtils.JMS;
 import static no.nav.brevserver.core.utils.ExchangeUtils.JMS_OVERRIDDEN;
+import static no.nav.brevserver.core.utils.ExchangeUtils.OVERRIDE_DESTINATION;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SENDTOMODE;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.GI_FEILMELDING;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.GI_TILBAKEMELDING;
@@ -86,10 +87,8 @@ public class ArkiverBrevRoute extends RouteBuilder {
 
 
 		from("jms:" + mottakArkiv.getQueueName() + ROUTE_OPTIONS)
-				.log(INFO, log, "mottat melding fra mq")
 				.to(ARKIVER_BREV_ROUTE);
 		from("jms:" + mottakOnline.getQueueName() + ROUTE_OPTIONS)
-				.log(INFO, log, "mottat melding fra mq")
 				.to(ARKIVER_BREV_ROUTE);
 
 		//Hent svar fra exstream
@@ -104,9 +103,9 @@ public class ArkiverBrevRoute extends RouteBuilder {
 				.bean(arkiverBrevService)
 				.choice()
 					.when(exchangeProperty(SENDTOMODE).isEqualTo(GI_TILBAKEMELDING))
+						.log(INFO, log, "Sender svar til: ${exchange.getIn().getHeader(\"" + OVERRIDE_DESTINATION + "\").toString()}")
 						.to(JMS_OVERRIDDEN)
-						.log(INFO, log, "Tilbakemelding er sendt til: JMS_OVERRIDDEN")
-					.when(exchangeProperty(SENDTOMODE).isEqualTo(GI_FEILMELDING))
+				.when(exchangeProperty(SENDTOMODE).isEqualTo(GI_FEILMELDING))
 						.to(JMS_OVERRIDDEN)
 						.log(INFO, log, "Feilmelding er sendt til: JMS_OVERRIDDEN")
 					.when(exchangeProperty(SENDTOMODE).isEqualTo(TIL_FEILKO))

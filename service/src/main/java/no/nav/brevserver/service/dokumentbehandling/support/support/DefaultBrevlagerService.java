@@ -94,7 +94,7 @@ public class DefaultBrevlagerService implements BrevlagerService {
 		try {
 			backupIfExistingBrev(brev.getBrevreferanse(), brev.getSystemID());
 			BrevStatusVO gmlStatus = brevstatusService.lagreBrevStatus(brevstatus);
-			log.info("lagrer brev: "+ brevstatus.getBrevreferanse() + " fra " + brev.getSystemID());
+			//log.info("lagrer brev: "+ brevstatus.getBrevreferanse() + " fra " + brev.getSystemID());
 			translateContentTypeDocxToDb2(brev);
 			if (brevstatus.getSystemID()!=null && brevstatus.getSystemID().startsWith(SystemType.PE.toString())) {
 				joarkService.lagreDokument(brevstatus.getBrevreferanse(), brev.getContentType(), brev.getBrevdata());
@@ -143,6 +143,7 @@ public class DefaultBrevlagerService implements BrevlagerService {
 				result = getBrev(brevStatus.getSystemID(), brevStatus.getBrevreferanse());
 			}
 		}
+		log.info("hentDokumentFromBrevlagerOrJoark har hentet " + brevStatus.getBrevreferanse() + " fra " + brevStatus.getSystemID());
 		return result;
 	}
 
@@ -159,6 +160,7 @@ public class DefaultBrevlagerService implements BrevlagerService {
 		backupIfExistingBrev(pdfBrevVo.getBrevreferanse(), pdfBrevVo.getSystemID());
 		defaultBrevlagerHistorikkService.insertHistorikk(redBrev);
 		brevRepository.save(pdfBrev);
+		log.info("brevlagerdokument "  + brevStatus.getBrevreferanse() + " fra " + brevStatus.getSystemID() + " har blitt ferdigstilt");
 	}
 
 	@Override
@@ -178,8 +180,8 @@ public class DefaultBrevlagerService implements BrevlagerService {
 			brevStatus.setStatus(Konstanter.BREVSTATUS_AVBRUTT);
 
 			String xmlKvittering = XMLService.unmarshal(kvittering, brevStatus);
-			//TODO: Send returmelding
-			//biMessageProducer.sendReturMelding(brevStatus.getReturKoe(), false, null, xmlKvittering);
+			log.info("Sender kvittering for brevreferanse=" + brevStatus.getBrevreferanse());
+			kvitteringService.sendKvittering(xmlKvittering, brevStatus.getReturKoe());
 		}
 		log.info("Brevet ble avbrutt");
 	}

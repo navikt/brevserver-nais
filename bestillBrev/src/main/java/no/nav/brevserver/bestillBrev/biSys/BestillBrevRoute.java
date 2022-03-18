@@ -24,6 +24,8 @@ import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.GI_FEILMELDI
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.INGEN_TILBAKEMELDING;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.OPPRETT_BREV;
 import static no.nav.brevserver.core.utils.ExchangeUtils.overrideDestination;
+import static no.nav.brevserver.core.utils.ExchangeUtils.overrideDestinationWithTargetClient;
+import static no.nav.brevserver.core.utils.ExchangeUtils.setDefaultReturnQueue;
 import static org.apache.camel.LoggingLevel.ERROR;
 import static org.apache.camel.LoggingLevel.INFO;
 
@@ -103,7 +105,7 @@ public class BestillBrevRoute extends RouteBuilder {
 		from("jms:" + onlinebrev.getQueueName() + ROUTE_OPTIONS)
 				.log(INFO, log, "Starter behandlingen")
 				.to(BESTILL_BREV_ROUTE);
-
+		
 		//Brevbestilling fra Bisys
 		from(BESTILL_BREV_ROUTE)
 				.routeId(BESTILLBREV)
@@ -113,12 +115,12 @@ public class BestillBrevRoute extends RouteBuilder {
 				.bean(bestillBrevService)
 				.process(exchange -> {
 					log.info("XML til Exstream: " + exchange.getIn().getBody());
-					exchange.getIn().setHeader(DEFAULT_RETURN_QUEUE, deadletter.getQueueName());
+					setDefaultReturnQueue(exchange, deadletter.getQueueName());
 				})
 				.choice()
 					.when(exchangeProperty(SENDTOMODE).isEqualTo(OPPRETT_BREV))
 						.process(exchange -> {
-							overrideDestination(exchange, dialogueOnline.getQueueName());
+							overrideDestinationWithTargetClient(exchange, dialogueOnline.getQueueName());
 						})
 						.to(JMS_OVERRIDDEN)
 						.log(INFO, log, "Brev sendt til opprettelse i Exstream: " + dialogueOnline.getQueueName())

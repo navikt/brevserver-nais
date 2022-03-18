@@ -12,8 +12,10 @@ import org.apache.camel.Exchange;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.builder.ExchangeBuilder;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.MDC;
 import org.springframework.stereotype.Service;
 
+import static no.nav.brevserver.core.mdc.MDCConstants.MDC_CALL_ID;
 import static no.nav.brevserver.core.utils.ExchangeUtils.overrideDestination;
 import static no.nav.brevserver.service.queue.KvitteringRoute.DIRECT_SENDKVITTERINGROUTE;
 
@@ -36,15 +38,25 @@ public class KvitteringService {
 		KvitteringVO kvittering = createKvittering(brevstatus, brev);
 		String xmlKvittering = XMLService.unmarshal(kvittering, brevstatus);
 
-			try {
-				ExchangeBuilder exchangeBuilder = new ExchangeBuilder(context);
-				Exchange kvitteringExchange = exchangeBuilder.withBody(xmlKvittering).build();
-				overrideDestination(kvitteringExchange, returKoe);
+		doSendKvittering(xmlKvittering, returKoe);
+	}
 
-				producerTemplate.send(DIRECT_SENDKVITTERINGROUTE, kvitteringExchange);
-			} catch (Exception e) {
-				log.error("Klarte ikke sende melding: " + e.getMessage() + " \n" + e.getStackTrace());
-			}
+	public void sendKvittering(String xmlKvittering, String returKoe){
+
+		doSendKvittering(xmlKvittering, returKoe);
+	}
+
+	private void doSendKvittering(String xmlKvittering, String returKoe) {
+		try {
+			ExchangeBuilder exchangeBuilder = new ExchangeBuilder(context);
+			Exchange kvitteringExchange = exchangeBuilder.withBody(xmlKvittering).build();
+			overrideDestination(kvitteringExchange, returKoe);
+			MDC.put(MDC_CALL_ID, kvitteringExchange.getExchangeId());
+
+			producerTemplate.send(DIRECT_SENDKVITTERINGROUTE, kvitteringExchange);
+		} catch (Exception e) {
+			log.error("Klarte ikke sende melding: " + e.getMessage() + " \n" + e.getStackTrace());
+		}
 	}
 
 	private KvitteringVO createKvittering(BrevStatusVO brevstatus, BrevVO brev) {

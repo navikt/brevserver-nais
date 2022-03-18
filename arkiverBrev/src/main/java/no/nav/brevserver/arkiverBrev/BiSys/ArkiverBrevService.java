@@ -117,6 +117,8 @@ public class ArkiverBrevService {
 				brevStatusVo.getReturKoe(),
 				GI_TILBAKEMELDING);
 
+		exchange.getIn().setHeader("JMS_IBM_Format", "MQSTR");
+
 	}
 
 

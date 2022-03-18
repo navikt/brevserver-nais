@@ -91,7 +91,6 @@ public class BestillBrevService {
 
 			brevStatusVo.setStatus(Konstanter.BREVSTATUS_BREVPAKKE);
 			brevStatusVo.setReturKoe(messageVo.getReplyQueueName());
-			log.info("Setter replyQ til: " + brevStatusVo.getReturKoe());
 			brevstatusService.lagreBrevStatus(brevStatusVo);
 			log.info("Brev med brevref: " + brevStatusVo.getBrevreferanse() +" er arkivert i Brevlageret");
 			setBodyAndMode(exchange,

@@ -5,9 +5,14 @@ import no.nav.brevserver.core.exception.BrevException;
 import no.nav.brevserver.core.vo.MessageVO;
 import org.apache.camel.Exchange;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.MDC;
 
 import javax.jms.JMSException;
 import javax.jms.Queue;
+
+import java.util.regex.Pattern;
+
+import static no.nav.brevserver.core.mdc.MDCConstants.MDC_CALL_ID;
 
 @Slf4j
 public class ExchangeUtils {
@@ -32,10 +37,14 @@ public class ExchangeUtils {
 	//Brukes fordi vanlige camel endpoints ikke gotar ibm options, mens denne gjør det
 	public static final String JMS_OVERRIDDEN = "jms:dummy";
 
+
+	private static Pattern containsQueuemanager = Pattern.compile("//(.*)/");
+
 	public static MessageVO getMessageVoFromExchange(Exchange exchange) {
 
 		MessageVO vo = new MessageVO(exchange.getIn().getBody(byte[].class));
 		vo.setStringBody(exchange.getIn().getBody(String.class));
+		MDC.put(MDC_CALL_ID, exchange.getExchangeId());
 
 		try {
 			vo.setReplyQueueName(getReplyTo(exchange));
@@ -71,6 +80,7 @@ public class ExchangeUtils {
 	public static void setBodyAndReturnQueueOverriddenWithMode(Exchange exchange, Object Body, String returnQueue, SendToMode sendToMode) {
 		exchange.getIn().setBody(Body);
 		String returKo = StringUtils.isBlank(returnQueue) ?	(String) exchange.getIn().getHeader(DEFAULT_RETURN_QUEUE) : returnQueue;
+		returKo = containsQueuemanager.matcher(returKo).replaceAll("///");
 		exchange.getIn().setHeader(OVERRIDE_DESTINATION, returKo);
 		exchange.setProperty(SENDTOMODE, sendToMode.name());
 		log.info("Setter returkø til: " + returKo + " og sendToMode til: " + sendToMode);
@@ -81,17 +91,22 @@ public class ExchangeUtils {
 	 * z/os krever ?targetClient=1 optionen som er mq spesifikk og ikke blir godtatt av camel
 	 * Ved å sende denne propertien håndterer ibm-mq selv hvor meldingen skal sendes og overstyrer camel sin to()
 	 */
-	public static void overrideDestination(Exchange exchange, String newDestination){
+	public static void overrideDestinationWithTargetClient(Exchange exchange, String newDestination){
 		exchange.getIn().setHeader(OVERRIDE_DESTINATION, newDestination+"?targetClient=1");
+		log.info("Setter returkø til: " + newDestination+"?targetClient=1");
+	}
+
+	/*
+	 * Meldingene definerer selv hva som er returnQueue. Mange av disse inneholder ?targetclient?=1 som crasher camel.
+	 * Setter derfor returnqueue i den ibm-spesifikke OVERRIDE_DESTINATION
+	 */
+	public static void overrideDestination(Exchange exchange, String newDestination){
+		exchange.getIn().setHeader(OVERRIDE_DESTINATION, newDestination);
+		log.info("Setter returkø til: " + newDestination);
 	}
 
 	public static void setDefaultReturnQueue(Exchange exchange, String returnQueue){
 		exchange.getIn().setHeader(DEFAULT_RETURN_QUEUE, returnQueue);
-	}
-
-
-	public static String createCamelFriendlyIbmReturnQueue(String oldQ) {
-		return StringUtils.split(oldQ, "?")[0];
 	}
 
 	public static void notEmpty(String name, String value, boolean checkIfValidNumber) throws BrevException {

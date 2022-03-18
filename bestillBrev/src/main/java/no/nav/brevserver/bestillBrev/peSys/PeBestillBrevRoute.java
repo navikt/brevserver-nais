@@ -22,6 +22,7 @@ import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.GI_FEILMELDI
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.INGEN_TILBAKEMELDING;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.OPPRETT_BREV;
 import static no.nav.brevserver.core.utils.ExchangeUtils.overrideDestination;
+import static no.nav.brevserver.core.utils.ExchangeUtils.overrideDestinationWithTargetClient;
 import static org.apache.camel.LoggingLevel.ERROR;
 import static org.apache.camel.LoggingLevel.INFO;
 
@@ -101,7 +102,7 @@ public class PeBestillBrevRoute extends RouteBuilder {
 				.log(LoggingLevel.INFO, log, BESTILLBREV + " starter behandlingen")
 				.process(exchange -> {
 					log.info("XML til Exstream: " + exchange.getIn().getBody());
-					exchange.getIn().setHeader(DEFAULT_RETURN_QUEUE, brevReplyPe.getQueueName());
+					overrideDestinationWithTargetClient(exchange, brevReplyPe.getQueueName());
 				})
 				.bean(peBestillBrevService)
 				.choice()

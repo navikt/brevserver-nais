@@ -112,15 +112,11 @@ public class PeArkiverBrevService {
 			log.info("Brev med brevref: " + brevStatusVo.getBrevreferanse() +" er arkivert i Brevlageret");
 		}
 
-		/*
-		MessageProducer producer = MessageProducerFactory.getInstance().createMessageProducer(SystemType.PE);
-		producer.sendKvittering(brevStatusVo, messageVo, kvittering);
-		*/
-
 		setBodyAndReturnQueueOverriddenWithMode(exchange,
 				createReturKvittering(brevStatusVo, kvittering),
 				brevStatusVo.getReturKoe(),
 				GI_TILBAKEMELDING);
+		exchange.getIn().setHeader("JMS_IBM_Format", "MQSTR");
 	}
 
 
