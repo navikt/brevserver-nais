@@ -142,8 +142,11 @@ public class DefaultBrevlagerService implements BrevlagerService {
 			} else {
 				result = getBrev(brevStatus.getSystemID(), brevStatus.getBrevreferanse());
 			}
+			log.info("hentDokumentFromBrevlagerOrJoark har hentet " + brevStatus.getBrevreferanse() + " fra " + brevStatus.getSystemID());
+		}else{
+			log.error("hentDokumentFromBrevlagerOrJoark har ikke tilgang " + brevStatus.getBrevreferanse() + " fra " + brevStatus.getSystemID());
 		}
-		log.info("hentDokumentFromBrevlagerOrJoark har hentet " + brevStatus.getBrevreferanse() + " fra " + brevStatus.getSystemID());
+
 		return result;
 	}
 
@@ -164,6 +167,10 @@ public class DefaultBrevlagerService implements BrevlagerService {
 	}
 
 	@Override
+	/*
+	 * Brukes bare av bidrag??
+	 * Se avbrytDokument i LagreCOntrollerDelegate.java i gamle brevserver
+	 */
 	public void avbrytDokument(BrevStatusVO brevStatus) throws BrevException {
 
 		if(brevStatus == null){
@@ -181,7 +188,7 @@ public class DefaultBrevlagerService implements BrevlagerService {
 
 			String xmlKvittering = XMLService.unmarshal(kvittering, brevStatus);
 			log.info("Sender kvittering for brevreferanse=" + brevStatus.getBrevreferanse());
-			kvitteringService.sendKvittering(xmlKvittering, brevStatus.getReturKoe());
+			kvitteringService.sendKvitteringBi(xmlKvittering, brevStatus.getReturKoe());
 		}
 		log.info("Brevet ble avbrutt");
 	}

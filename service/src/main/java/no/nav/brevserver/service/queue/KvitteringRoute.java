@@ -5,7 +5,9 @@ import org.apache.camel.builder.RouteBuilder;
 import org.springframework.stereotype.Component;
 
 import static no.nav.brevserver.core.utils.ExchangeUtils.JMS_OVERRIDDEN;
+import static no.nav.brevserver.core.utils.ExchangeUtils.OVERRIDE_DESTINATION;
 import static org.apache.camel.LoggingLevel.ERROR;
+import static org.apache.camel.LoggingLevel.INFO;
 
 @Component
 public class KvitteringRoute extends RouteBuilder {
@@ -23,7 +25,7 @@ public class KvitteringRoute extends RouteBuilder {
 				.loggingLevel(ERROR));
 
 		from(DIRECT_SENDKVITTERINGROUTE)
-				.log(LoggingLevel.INFO, log, "Starter behandlingen av kvitteringsmelding")
+				.log(INFO, log, "Sender svar til: ${exchange.getIn().getHeader(\"" + OVERRIDE_DESTINATION + "\").toString()}")
 				.to(JMS_OVERRIDDEN)
 				.log(LoggingLevel.INFO, log, "Brevserver har levert kvitteringen");
 	}

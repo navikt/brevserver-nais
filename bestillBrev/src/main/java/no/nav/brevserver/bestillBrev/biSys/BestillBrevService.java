@@ -56,7 +56,6 @@ public class BestillBrevService {
 		MessageVO messageVo = ExchangeUtils.getMessageVoFromExchange(exchange);
 		BrevStatusVO brevStatusVo = generateBrevStatusVo(messageVo);
 
-		log.info("in-xml:\n" + exchange.getIn().getBody(String.class));
 		if (brevStatusVo == null) {
 			throw new BrevFunctionalException("BrevStatusVo er null");
 		}

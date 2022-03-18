@@ -126,8 +126,6 @@ public class JmsConfig {
 
 	@Bean
 	// brevserver -> pensjon
-	// usikker på hvor den brukes. Dette skal vel være definert i in-meldingen
-	// med litt flaks kan vi standarisere det til en kø..
 	public Queue brevReplyPe(@Value("${brev_reply_pe.queuename}") String brevReplyPe) throws JMSException {
 		return new MQQueue(brevReplyPe);
 	}

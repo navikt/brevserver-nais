@@ -9,7 +9,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
-@Import(ServiceConfig.class)
+@Import({ServiceConfig.class})
 @EnableAutoConfiguration
 @PropertySource("classpath:application-itest.properties")
 @EnableTransactionManagement
