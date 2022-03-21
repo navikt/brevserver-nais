@@ -14,12 +14,13 @@ import javax.jms.Queue;
 
 import static no.nav.brevserver.core.utils.ExchangeUtils.JMS;
 import static no.nav.brevserver.core.utils.ExchangeUtils.JMS_OVERRIDDEN;
+import static no.nav.brevserver.core.utils.ExchangeUtils.OVERRIDE_DESTINATION;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SENDTOMODE;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.GI_FEILMELDING;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.INGEN_TILBAKEMELDING;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.OPPRETT_BREV;
-import static no.nav.brevserver.core.utils.ExchangeUtils.overrideDestination;
-import static no.nav.brevserver.core.utils.ExchangeUtils.overrideDestinationWithTargetClient;
+import static no.nav.brevserver.core.utils.ExchangeUtils.setDefaultReturnQueue;
+import static no.nav.brevserver.core.utils.ExchangeUtils.setDestination;
 import static org.apache.camel.LoggingLevel.ERROR;
 import static org.apache.camel.LoggingLevel.INFO;
 
@@ -99,20 +100,21 @@ public class PeBestillBrevRoute extends RouteBuilder {
 				.log(LoggingLevel.INFO, log, BESTILLBREV + " starter behandlingen")
 				.process(exchange -> {
 					log.info("XML til Exstream: " + exchange.getIn().getBody());
-					overrideDestinationWithTargetClient(exchange, brevReplyPe.getQueueName());
+					setDefaultReturnQueue(exchange, brevReplyPe.getQueueName());
 				})
 				.bean(peBestillBrevService)
 				.choice()
 					.when(exchangeProperty(SENDTOMODE).isEqualTo(OPPRETT_BREV))
 						.process(exchange -> {
-							overrideDestination(exchange, dialogueOnlinePe.getQueueName());
+							setDestination(exchange, dialogueOnlinePe.getQueueName());
 						})
 						.to(JMS_OVERRIDDEN)
 						.log(INFO, log, "Brev sendt til opprettelse i Exstream: " + dialogueOnlinePe.getQueueName())
 					.when(exchangeProperty(SENDTOMODE).isEqualTo(GI_FEILMELDING ))
+						.log(INFO, log, "Feilmelding er sendt til:: ${exchange.getIn().getHeader(\"" + OVERRIDE_DESTINATION + "\").toString()}")
 						.to(JMS_OVERRIDDEN)
-						.log(INFO, log, "Feilmelding er sendt til: JMS_OVERRIDDEN")
 					.when(exchangeProperty(SENDTOMODE).isEqualTo(INGEN_TILBAKEMELDING))
+						.log(INFO, log, "Tilgang gitt. Håndtering avsluttes")
 						.stop()
 					.otherwise()
 						.to(JMS + deadletterPe.getQueueName())

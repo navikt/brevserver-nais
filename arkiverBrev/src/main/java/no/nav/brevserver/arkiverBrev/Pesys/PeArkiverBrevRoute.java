@@ -109,18 +109,16 @@ public class PeArkiverBrevRoute extends RouteBuilder {
 				.setExchangePattern(ExchangePattern.InOnly)
 				.log(LoggingLevel.INFO, log, PE_ARKIVER_BREV_ROUTE + " starter behandlingen")
 				.process(exchange -> {
-					setDefaultReturnQueue(exchange, brevReplyPe.getQueueName()+"?targetClient=1");
+					setDefaultReturnQueue(exchange, brevReplyPe.getQueueName());
 				})
 				.bean(peArkiverBrevService)
 				.choice()
 					.when(exchangeProperty(SENDTOMODE).isEqualTo(GI_TILBAKEMELDING))
 						.log(INFO, log, "Sender tilbakemelding til: ${exchange.getIn().getHeader(\"" + OVERRIDE_DESTINATION + "\").toString()}")
 						.to(JMS_OVERRIDDEN)
-						.log(INFO, log, "Tilbakemelding er sendt til: JMS_OVERRIDDEN")
 					.when(exchangeProperty(SENDTOMODE).isEqualTo(GI_FEILMELDING))
 						.log(INFO, log, "Sender feilmelding til: ${exchange.getIn().getHeader(\"" + OVERRIDE_DESTINATION + "\").toString()}")
 						.to(JMS_OVERRIDDEN)
-						.log(INFO, log, "Feilmelding sendt til: JMS_OVERRIDDEN")
 					.otherwise()
 						.to(JMS + deadletterPe.getQueueName())
 						.log(ERROR, log, "En melding er sendt til deadletter pga ukjent mode!")

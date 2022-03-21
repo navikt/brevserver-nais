@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service;
 import javax.inject.Inject;
 
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.GI_TILBAKEMELDING;
-import static no.nav.brevserver.core.utils.ExchangeUtils.setBodyAndReturnQueueOverriddenWithMode;
+import static no.nav.brevserver.core.utils.ExchangeUtils.setBodyAndReturnQueueWithMode;
 
 
 /**
@@ -112,7 +112,7 @@ public class ArkiverBrevService {
 			log.info("Brev med brevref: " + brevStatusVo.getBrevreferanse() +" er arkivert i Brevlageret");
 		}
 
-		setBodyAndReturnQueueOverriddenWithMode(exchange,
+		setBodyAndReturnQueueWithMode(exchange,
 				createReturKvittering(brevStatusVo, kvittering),
 				brevStatusVo.getReturKoe(),
 				GI_TILBAKEMELDING);

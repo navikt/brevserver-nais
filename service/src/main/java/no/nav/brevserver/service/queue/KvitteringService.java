@@ -12,12 +12,11 @@ import org.apache.camel.ProducerTemplate;
 import org.apache.camel.builder.ExchangeBuilder;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import javax.jms.JMSException;
 import javax.jms.Queue;
 
-import static no.nav.brevserver.core.utils.ExchangeUtils.overrideDestination;
+import static no.nav.brevserver.core.utils.ExchangeUtils.setDestination;
 import static no.nav.brevserver.service.queue.KvitteringRoute.DIRECT_SENDKVITTERINGROUTE;
 
 @Component
@@ -67,7 +66,7 @@ public class KvitteringService {
 		try {
 			ExchangeBuilder exchangeBuilder = new ExchangeBuilder(context);
 			Exchange kvitteringExchange = exchangeBuilder.withBody(xmlKvittering).build();
-			overrideDestination(kvitteringExchange, returKoe);
+			setDestination(kvitteringExchange, returKoe);
 
 			kvitteringExchange.getIn().setHeader("JMS_IBM_Format", "MQSTR");
 

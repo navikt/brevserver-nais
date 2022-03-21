@@ -15,12 +15,13 @@ import javax.jms.Queue;
 
 import static no.nav.brevserver.core.utils.ExchangeUtils.JMS;
 import static no.nav.brevserver.core.utils.ExchangeUtils.JMS_OVERRIDDEN;
+import static no.nav.brevserver.core.utils.ExchangeUtils.OVERRIDE_DESTINATION;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SENDTOMODE;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.GI_FEILMELDING;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.INGEN_TILBAKEMELDING;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.OPPRETT_BREV;
-import static no.nav.brevserver.core.utils.ExchangeUtils.overrideDestinationWithTargetClient;
 import static no.nav.brevserver.core.utils.ExchangeUtils.setDefaultReturnQueue;
+import static no.nav.brevserver.core.utils.ExchangeUtils.setDestination;
 import static org.apache.camel.LoggingLevel.ERROR;
 import static org.apache.camel.LoggingLevel.INFO;
 
@@ -115,15 +116,15 @@ public class BestillBrevRoute extends RouteBuilder {
 				.choice()
 					.when(exchangeProperty(SENDTOMODE).isEqualTo(OPPRETT_BREV))
 						.process(exchange -> {
-							overrideDestinationWithTargetClient(exchange, dialogueOnline.getQueueName());
+							setDestination(exchange, dialogueOnline.getQueueName());
 						})
 						.to(JMS_OVERRIDDEN)
 						.log(INFO, log, "Brev sendt til opprettelse i Exstream: " + dialogueOnline.getQueueName())
 					.when(exchangeProperty(SENDTOMODE).isEqualTo(GI_FEILMELDING ))
+				.log(INFO, log, "Feilmelding er sendt til:: ${exchange.getIn().getHeader(\"" + OVERRIDE_DESTINATION + "\").toString()}")
 						.to(JMS_OVERRIDDEN)
-						.log(INFO, log, "Feilmelding er sendt til: JMS_OVERRIDDEN")
 					.when(exchangeProperty(SENDTOMODE).isEqualTo(INGEN_TILBAKEMELDING))
-						.log(INFO, log, "TIlgang gitt. Håndtering avsluttes")
+						.log(INFO, log, "Tilgang gitt. Håndtering avsluttes")
 						.stop()
 					.otherwise()
 						.to(JMS + deadletter.getQueueName())

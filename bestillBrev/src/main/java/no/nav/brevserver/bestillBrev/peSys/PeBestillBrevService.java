@@ -19,14 +19,13 @@ import org.springframework.stereotype.Component;
 import java.io.StringReader;
 
 import static no.nav.brevserver.bestillBrev.utils.Utils.lagFeilmelding;
-import static no.nav.brevserver.core.utils.ExchangeUtils.PROPERTY_SENDTOMODE;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SENDTOMODE;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.GI_FEILMELDING;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.INGEN_TILBAKEMELDING;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.OPPRETT_BREV;
 import static no.nav.brevserver.core.utils.ExchangeUtils.notEmpty;
 import static no.nav.brevserver.core.utils.ExchangeUtils.setBodyAndMode;
-import static no.nav.brevserver.core.utils.ExchangeUtils.setBodyAndReturnQueueOverriddenWithMode;
+import static no.nav.brevserver.core.utils.ExchangeUtils.setBodyAndReturnQueueWithMode;
 
 @Slf4j
 @Component
@@ -85,7 +84,7 @@ public class PeBestillBrevService {
 			BrevStatusVO tmp = brevstatusService.hentBrevStatus(brevStatusVo.getSystemID(), brevStatusVo.getBrevreferanse());
 			if (tmp != null) {
 				log.warn("Brevet eksisterer fra før " + brevStatusVo.getBrevreferanse());
-				setBodyAndReturnQueueOverriddenWithMode(
+				setBodyAndReturnQueueWithMode(
 						exchange,
 						lagFeilmelding(Konstanter.FEIL_BREV_EKSISTERER, brevStatusVo),
 						brevStatusVo.getReturKoe(),
@@ -123,7 +122,6 @@ public class PeBestillBrevService {
 		messageVO.setTilgangsXML(Konstanter.BREVMODUS_FRALAGER.equals(brevStatusVo.getModus()));
 		brevStatusVo.setReturKoe(messageVO.getReplyQueueName());
 		messageVO.setBrevreferanse(brevStatusVo.getBrevreferanse());
-		log.info("Returkø er satt til: " + brevStatusVo.getReturKoe());;
 
 		if (!brevStatusVo.getSystemID().startsWith(SystemType.PE.toString())) {
 			String errorMessage = "Brev med feil systemID mottatt: '" + brevStatusVo.getSystemID()

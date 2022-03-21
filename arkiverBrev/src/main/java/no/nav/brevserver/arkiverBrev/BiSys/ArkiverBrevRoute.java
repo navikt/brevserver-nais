@@ -12,14 +12,12 @@ import org.springframework.stereotype.Component;
 import javax.inject.Inject;
 import javax.jms.Queue;
 
-import static no.nav.brevserver.core.utils.ExchangeUtils.DEFAULT_RETURN_QUEUE;
 import static no.nav.brevserver.core.utils.ExchangeUtils.JMS;
 import static no.nav.brevserver.core.utils.ExchangeUtils.JMS_OVERRIDDEN;
 import static no.nav.brevserver.core.utils.ExchangeUtils.OVERRIDE_DESTINATION;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SENDTOMODE;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.GI_FEILMELDING;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.GI_TILBAKEMELDING;
-import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.TIL_FEILKO;
 import static no.nav.brevserver.core.utils.ExchangeUtils.setDefaultReturnQueue;
 import static org.apache.camel.LoggingLevel.ERROR;
 import static org.apache.camel.LoggingLevel.INFO;
@@ -106,11 +104,8 @@ public class ArkiverBrevRoute extends RouteBuilder {
 						.log(INFO, log, "Sender svar til: ${exchange.getIn().getHeader(\"" + OVERRIDE_DESTINATION + "\").toString()}")
 						.to(JMS_OVERRIDDEN)
 				.when(exchangeProperty(SENDTOMODE).isEqualTo(GI_FEILMELDING))
+						.log(INFO, log, "Sender feilmelding til: ${exchange.getIn().getHeader(\"" + OVERRIDE_DESTINATION + "\").toString()}")
 						.to(JMS_OVERRIDDEN)
-						.log(INFO, log, "Feilmelding er sendt til: JMS_OVERRIDDEN")
-					.when(exchangeProperty(SENDTOMODE).isEqualTo(TIL_FEILKO))
-						.to(JMS + deadletter.getQueueName())
-						.log(INFO, log, "Feilmelding er sendt til: " + deadletter.getQueueName())
 					.otherwise()
 						.to(JMS + deadletter.getQueueName())
 						.log(ERROR, log, "En melding er sendt til deadletter pga ukjent mode!")

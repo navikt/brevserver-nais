@@ -25,7 +25,7 @@ import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.INGEN_TILBAK
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.OPPRETT_BREV;
 import static no.nav.brevserver.core.utils.ExchangeUtils.notEmpty;
 import static no.nav.brevserver.core.utils.ExchangeUtils.setBodyAndMode;
-import static no.nav.brevserver.core.utils.ExchangeUtils.setBodyAndReturnQueueOverriddenWithMode;
+import static no.nav.brevserver.core.utils.ExchangeUtils.setBodyAndReturnQueueWithMode;
 
 
 /**
@@ -79,7 +79,7 @@ public class BestillBrevService {
 			BrevStatusVO tmp = brevstatusService.hentBrevStatus(brevStatusVo.getSystemID(), brevStatusVo.getBrevreferanse());
 			if (tmp != null) {
 				log.warn("Brevet eksisterer fra før " + brevStatusVo.getBrevreferanse());
-				setBodyAndReturnQueueOverriddenWithMode(
+				setBodyAndReturnQueueWithMode(
 						exchange,
 						lagFeilmelding(Konstanter.FEIL_BREV_EKSISTERER, brevStatusVo),
 						brevStatusVo.getReturKoe(),
@@ -115,7 +115,6 @@ public class BestillBrevService {
 
 		messageVO.setTilgangsXML(brevStatusVo != null && Konstanter.BREVMODUS_FRALAGER.equals(brevStatusVo.getModus()));
 		brevStatusVo.setReturKoe(messageVO.getReplyQueueName());
-		log.info("Returkø er satt til: " + brevStatusVo.getReturKoe());
 		messageVO.setBrevreferanse(brevStatusVo.getBrevreferanse());
 
 		if (brevStatusVo.getSystemID().startsWith(SystemType.PE.toString())) {
