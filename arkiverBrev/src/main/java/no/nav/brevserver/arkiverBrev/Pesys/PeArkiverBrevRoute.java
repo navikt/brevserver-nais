@@ -14,7 +14,6 @@ import javax.inject.Inject;
 import javax.jms.Queue;
 
 import static no.nav.brevserver.core.utils.ExchangeUtils.DEFAULT_RETURN_QUEUE;
-import static no.nav.brevserver.core.utils.ExchangeUtils.DESTINATION;
 import static no.nav.brevserver.core.utils.ExchangeUtils.JMS;
 import static no.nav.brevserver.core.utils.ExchangeUtils.JMS_OVERRIDDEN;
 import static no.nav.brevserver.core.utils.ExchangeUtils.OVERRIDE_DESTINATION;
@@ -114,7 +113,7 @@ public class PeArkiverBrevRoute extends RouteBuilder {
 				.bean(peArkiverBrevService)
 				.choice()
 					.when(exchangeProperty(SENDTOMODE).isEqualTo(GI_TILBAKEMELDING))
-						.log(INFO, log, "Sender tilbakemelding til: ${exchange.getIn().getHeader(\"" + OVERRIDE_DESTINATION + "\").toString()}")
+						.log(INFO, log, "Sender tilbakemelding til: ${exchange.getIn().getHeader(\"" + OVERRIDE_DESTINATION + "\").toString()} eller default for pensjon")
 						.to(JMS_OVERRIDDEN)
 					.when(exchangeProperty(SENDTOMODE).isEqualTo(GI_FEILMELDING))
 						.log(INFO, log, "Sender feilmelding til: ${exchange.getIn().getHeader(\"" + OVERRIDE_DESTINATION + "\").toString()}")

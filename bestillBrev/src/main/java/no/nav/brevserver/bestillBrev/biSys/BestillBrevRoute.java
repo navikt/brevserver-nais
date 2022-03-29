@@ -115,10 +115,7 @@ public class BestillBrevRoute extends RouteBuilder {
 				})
 				.choice()
 					.when(exchangeProperty(SENDTOMODE).isEqualTo(OPPRETT_BREV))
-						.process(exchange -> {
-							setDestination(exchange, dialogueOnline.getQueueName());
-						})
-						.to(JMS_OVERRIDDEN)
+						.to(JMS + dialogueOnline.getQueueName())
 						.log(INFO, log, "Brev sendt til opprettelse i Exstream: " + dialogueOnline.getQueueName())
 					.when(exchangeProperty(SENDTOMODE).isEqualTo(GI_FEILMELDING ))
 				.log(INFO, log, "Feilmelding er sendt til:: ${exchange.getIn().getHeader(\"" + OVERRIDE_DESTINATION + "\").toString()}")

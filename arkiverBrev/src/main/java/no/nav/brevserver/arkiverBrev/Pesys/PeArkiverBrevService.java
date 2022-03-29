@@ -15,7 +15,6 @@ import no.nav.brevserver.core.vo.KvitteringVO;
 import no.nav.brevserver.core.vo.MessageVO;
 import no.nav.brevserver.joark.JoarkService;
 import no.nav.brevserver.service.BrevstatusService;
-import no.nav.brevserver.service.BrevtilgangService;
 import org.apache.camel.Exchange;
 import org.apache.camel.Handler;
 import org.springframework.stereotype.Service;
@@ -30,16 +29,13 @@ import static no.nav.brevserver.core.utils.ExchangeUtils.setBodyAndReturnQueueWi
 public class PeArkiverBrevService {
 
 	private BrevstatusService brevstatusService;
-	private BrevtilgangService brevtilgangService;
 	private JoarkService joarkService;
 
 	@Inject
 	public PeArkiverBrevService(
 			BrevstatusService brevstatusService,
-			BrevtilgangService brevtilgangService,
 			JoarkService joarkService) {
 		this.brevstatusService = brevstatusService;
-		this.brevtilgangService = brevtilgangService;
 		this.joarkService = joarkService;
 	}
 
@@ -131,7 +127,7 @@ public class PeArkiverBrevService {
 
 		if (!kvitteringVo.getSystemID().startsWith(SystemType.PE.toString())) {
 			String errorMessage = "Brev med feil systemID mottatt: '" + kvitteringVo.getSystemID()
-					+ "', forventet ikke pensjonsbrev";
+					+ "', forventet bidragsbrev!";
 			log.error(errorMessage);
 			throw new BrevTechnicalException(errorMessage);
 		}

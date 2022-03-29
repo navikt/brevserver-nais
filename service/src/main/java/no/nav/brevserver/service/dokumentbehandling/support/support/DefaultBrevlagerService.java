@@ -190,7 +190,7 @@ public class DefaultBrevlagerService implements BrevlagerService {
 			log.info("Sender kvittering for brevreferanse=" + brevStatus.getBrevreferanse());
 			kvitteringService.sendKvitteringBi(xmlKvittering, brevStatus.getReturKoe());
 		}
-		log.info("Brevet ble avbrutt");
+		log.info("Brevet ble avbrutt. Brevref: " + brevStatus.getBrevreferanse());
 	}
 
 	@Override

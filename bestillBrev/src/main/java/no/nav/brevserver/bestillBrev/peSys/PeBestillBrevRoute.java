@@ -105,10 +105,7 @@ public class PeBestillBrevRoute extends RouteBuilder {
 				.bean(peBestillBrevService)
 				.choice()
 					.when(exchangeProperty(SENDTOMODE).isEqualTo(OPPRETT_BREV))
-						.process(exchange -> {
-							setDestination(exchange, dialogueOnlinePe.getQueueName());
-						})
-						.to(JMS_OVERRIDDEN)
+						.to(JMS + dialogueOnlinePe.getQueueName())
 						.log(INFO, log, "Brev sendt til opprettelse i Exstream: " + dialogueOnlinePe.getQueueName())
 					.when(exchangeProperty(SENDTOMODE).isEqualTo(GI_FEILMELDING ))
 						.log(INFO, log, "Feilmelding er sendt til:: ${exchange.getIn().getHeader(\"" + OVERRIDE_DESTINATION + "\").toString()}")

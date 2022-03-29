@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import javax.jms.JMSException;
 import javax.jms.Queue;
 
+import static no.nav.brevserver.core.utils.ExchangeUtils.buildReturnQueue;
 import static no.nav.brevserver.core.utils.ExchangeUtils.setDestination;
 import static no.nav.brevserver.service.queue.KvitteringRoute.DIRECT_SENDKVITTERINGROUTE;
 
@@ -44,7 +45,7 @@ public class KvitteringService {
 			if( SystemType.PE.equals(systemType)) {
 				try {
 					returKoe = brevReplyPe.getQueueName();
-					log.info("Setter returkø til default for pensjons-kvitteringer.");
+					log.info("Setter returkø-header til default for pensjons-kvitteringer.");
 				} catch (JMSException exception) {
 					log.error("Klarte ikke hente kønavn. Avbryter kvitteringen.");
 					return;
@@ -54,7 +55,7 @@ public class KvitteringService {
 			}
 		}
 
-		doSendKvittering(xmlKvittering, returKoe);
+		doSendKvittering(xmlKvittering, buildReturnQueue(returKoe));
 	}
 
 	public void sendKvitteringBi(String xmlKvittering, String returKoe){

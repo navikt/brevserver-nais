@@ -12,6 +12,7 @@ import javax.jms.Queue;
 import java.util.regex.Pattern;
 
 import static no.nav.brevserver.core.mdc.MDCConstants.MDC_CALL_ID;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 @Slf4j
 public class ExchangeUtils {
@@ -50,7 +51,6 @@ public class ExchangeUtils {
 			log.error("Klarte ikke hente replyq");
 		}
 
-
 		return vo;
 	}
 
@@ -61,9 +61,9 @@ public class ExchangeUtils {
 	public static void setBodyAndReturnQueueWithMode(Exchange exchange, Object Body, String returnQueue, SendToMode sendToMode) {
 		exchange.getIn().setBody(Body);
 		String returKo = StringUtils.isBlank(returnQueue) ? (String) exchange.getIn().getHeader(DEFAULT_RETURN_QUEUE) : returnQueue;
-		setDestination(exchange, stripQueueManager(returKo));
+		setDestination(exchange, buildReturnQueue(returKo));
 		exchange.setProperty(SENDTOMODE, sendToMode.name());
-		log.info("Setter returkø til: " + returKo + " og sendToMode til: " + sendToMode);
+		log.info("Setter returkø-header til: " + returKo + " og sendToMode til: " + sendToMode);
 	}
 
 	/*
@@ -72,7 +72,6 @@ public class ExchangeUtils {
 	 */
 	public static void setDestination(Exchange exchange, String newDestination) {
 		exchange.getIn().setHeader(OVERRIDE_DESTINATION, setTargetClientForQueue(newDestination));
-		log.info("Setter returkø til: " + exchange.getIn().getHeader(OVERRIDE_DESTINATION));
 	}
 
 	public static void setBodyAndMode(Exchange exchange, Object Body, SendToMode sendToMode) {
@@ -104,10 +103,22 @@ public class ExchangeUtils {
 
 			return ((Queue) exchange.getIn().getHeaders().get(JMSReplyTo)).getQueueName();
 		} else {
-			return (String) exchange.getIn().getHeaders().get(DEFAULT_RETURN_QUEUE);
+			log.info("JMS replyTo er ikke satt. Returkø er null.");
+			return null;
+			//return (String) exchange.getIn().getHeaders().get(DEFAULT_RETURN_QUEUE);
 		}
 	}
 
+
+	public static String buildReturnQueue(String queuename){
+		if(!isEmpty(queuename)) {
+			//delete queuemanager om den finnes
+			queuename = stripQueueManager(queuename);
+			//Set target client om den ikke er satt
+			queuename = setTargetClientForQueue(queuename);
+		}
+		return queuename;
+	}
 	/*
 	 * Vi lar mq selv bestemme hvilken queuemanager køen tilhører ved å fjerne den spesifikke.
 	 */
@@ -121,6 +132,15 @@ public class ExchangeUtils {
 	 * Ved å sende denne propertien håndterer ibm-mq selv hvor meldingen skal sendes og overstyrer camel sin to()
 	 */
 	private static String setTargetClientForQueue(String queuename) {
+		queuename = setQueueString(queuename);
 		return queuename.toLowerCase().contains("targetclient") ? queuename : queuename + "?targetClient=1";
+	}
+
+	private static String setQueueString(String queuename){
+		log.info("input-kønavn inneholder ikke queue-string: " + queuename);
+		if(!queuename.toLowerCase().contains("queue:///")) {
+			return "queue:///" + queuename;
+		}
+		return queuename;
 	}
 }

@@ -41,19 +41,16 @@ public class JmsConfig {
 		connectionFactory.setQueueManager(mqGatewayAlias.getName());
 		connectionFactory.setTransportType(WMQConstants.WMQ_CM_CLIENT);
 
-		//Gammel, for connection mot nye exstream
 		connectionFactory.setCCSID(1208);
-		//connectionFactory.rf
-		//connectionFactory.setIntProperty(WMQConstants.JMS_IBM_ENCODING, MQConstants.MQENC_NATIVE);
 		connectionFactory.setIntProperty(WMQConstants.JMS_IBM_CHARACTER_SET, 1208);
+		UserCredentialsConnectionFactoryAdapter adapter = new UserCredentialsConnectionFactoryAdapter();
+		adapter.setTargetConnectionFactory(connectionFactory);
 
 		/*connectionFactory.setCCSID(1208);
 		connectionFactory.setIntProperty(WMQConstants.JMS_IBM_ENCODING, 1208);
 		//connectionFactory.setIntProperty(WMQConstants.JMS_IBM_CHARACTER_SET, ISO_8859_1);*/
 
 		//connectionFactory.setIntProperty(WMQConstants.JMS_IBM_CHARACTER_SET, ISO_8859_1);  MQConstants.MQENC_NATIVE
-		UserCredentialsConnectionFactoryAdapter adapter = new UserCredentialsConnectionFactoryAdapter();
-		adapter.setTargetConnectionFactory(connectionFactory);
 
 		PooledConnectionFactory pooledFactory = new PooledConnectionFactory();
 		pooledFactory.setConnectionFactory(adapter);
