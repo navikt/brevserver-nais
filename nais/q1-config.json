@@ -1,8 +1,7 @@
 {
+  "APPD_NAME": "brevserver-nais-q1",
   "MIN_REPLICAS": 1,
   "MAX_REPLICAS": 2,
-  "APP_NAME": "brevserver-nais-q1",
-  "APPD_NAME": "brevserver-nais-q1",
   "INGRESSES": [
     "https://brevserver-nais-q1.dev.intern.nav.no",
     "https://brevserver-nais-q1.dev.adeo.no",
@@ -33,5 +32,7 @@
   "SRVBREVSERVER": "/serviceuser/data/dev/srvbrevserver",
   "BREVSERVER_SERVER": "https://brevserver-nais-q1.dev.intern.nav.no/brevweb/",
   "BREVSERVERCHANNEL_NAME": "Q1_BREVSERVER",
-  "BREVSERVER_DS": "/oracle/data/dev/creds/brevserver_q1-user"
+  "BREVSERVER_DS": "/oracle/data/dev/creds/brevserver_q1-user",
+  "APPDYNAMICS": "/apikey/appdynamics/dev",
+  "APPD_NAME": "brevserver-nais-q1"
 }

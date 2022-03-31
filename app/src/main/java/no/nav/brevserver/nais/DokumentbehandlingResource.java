@@ -39,6 +39,7 @@ public class DokumentbehandlingResource {
 	@GetMapping("/hent")
 	public @ResponseBody HentDokumentResponse2 hentDokument(HentDokumentRequest hentDokumentRequest) {
 
+		log.info("Prøver å hente dokument: " + hentDokumentRequest.getBrevreferanse() + " fra " + hentDokumentRequest.getSystemId() + " med token: " + hentDokumentRequest.getToken());
 		try {
 			return dokumentbehandlingProvider.hentDokument(hentDokumentRequest);
 		} catch (RuntimeException e) {

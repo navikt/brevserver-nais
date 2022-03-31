@@ -91,3 +91,5 @@ spec:
         mountPath: /var/run/secrets/nais.io/vault
       - kvPath: {{ BREVSERVER_DS }}
         mountPath: /var/run/secrets/nais.io/brevserverDS
+      - kvPath: {{ APPDYNAMICS }}
+        mountPath: "/var/run/secrets/nais.io/appdynamics"
