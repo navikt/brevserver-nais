@@ -18,6 +18,7 @@ import javax.jms.Queue;
 
 import static no.nav.brevserver.core.utils.ExchangeUtils.buildReturnQueue;
 import static no.nav.brevserver.core.utils.ExchangeUtils.setDestination;
+import static no.nav.brevserver.core.utils.ExchangeUtils.setDestinationWithQueueString;
 import static no.nav.brevserver.service.queue.KvitteringRoute.DIRECT_SENDKVITTERINGROUTE;
 
 @Component
@@ -67,7 +68,7 @@ public class KvitteringService {
 		try {
 			ExchangeBuilder exchangeBuilder = new ExchangeBuilder(context);
 			Exchange kvitteringExchange = exchangeBuilder.withBody(xmlKvittering).build();
-			setDestination(kvitteringExchange, returKoe);
+			setDestination(kvitteringExchange, buildReturnQueue(returKoe));
 
 			kvitteringExchange.getIn().setHeader("JMS_IBM_Format", "MQSTR");
 

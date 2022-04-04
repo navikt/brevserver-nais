@@ -1,4 +1,5 @@
 {
+  "APP_NAME": "brevserver-nais-q1",
   "APPD_NAME": "brevserver-nais-q1",
   "MIN_REPLICAS": 1,
   "MAX_REPLICAS": 2,
@@ -34,5 +35,4 @@
   "BREVSERVERCHANNEL_NAME": "Q1_BREVSERVER",
   "BREVSERVER_DS": "/oracle/data/dev/creds/brevserver_q1-user",
   "APPDYNAMICS": "/apikey/appdynamics/dev",
-  "APPD_NAME": "brevserver-nais-q1"
 }

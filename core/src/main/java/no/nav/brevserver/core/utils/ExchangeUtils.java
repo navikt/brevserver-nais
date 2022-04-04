@@ -73,6 +73,9 @@ public class ExchangeUtils {
 	public static void setDestination(Exchange exchange, String newDestination) {
 		exchange.getIn().setHeader(OVERRIDE_DESTINATION, setTargetClientForQueue(newDestination));
 	}
+	public static void setDestinationWithQueueString(Exchange exchange, String newDestination) {
+		exchange.getIn().setHeader(OVERRIDE_DESTINATION, buildReturnQueue(newDestination));
+	}
 
 	public static void setBodyAndMode(Exchange exchange, Object Body, SendToMode sendToMode) {
 		exchange.getIn().setBody(Body);
@@ -116,6 +119,8 @@ public class ExchangeUtils {
 			queuename = stripQueueManager(queuename);
 			//Set target client om den ikke er satt
 			queuename = setTargetClientForQueue(queuename);
+			//set queue-string
+			queuename = setQueueString(queuename);
 		}
 		return queuename;
 	}
@@ -132,7 +137,6 @@ public class ExchangeUtils {
 	 * Ved å sende denne propertien håndterer ibm-mq selv hvor meldingen skal sendes og overstyrer camel sin to()
 	 */
 	private static String setTargetClientForQueue(String queuename) {
-		queuename = setQueueString(queuename);
 		return queuename.toLowerCase().contains("targetclient") ? queuename : queuename + "?targetClient=1";
 	}
 
