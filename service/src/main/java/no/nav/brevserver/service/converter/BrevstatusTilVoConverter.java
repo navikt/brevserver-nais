@@ -3,6 +3,7 @@ package no.nav.brevserver.service.converter;
 import no.nav.brevserver.core.domain.entities.Brevstatus;
 import no.nav.brevserver.core.vo.BrevStatusVO;
 import no.nav.brevserver.service.utility.KnappStatusUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
@@ -32,7 +33,11 @@ public class BrevstatusTilVoConverter implements Converter<Brevstatus, BrevStatu
 		brevStatusVO.setSkriver(brevstatus.getSkriver());
 		brevStatusVO.setSkuff(brevstatus.getSkuff());
 		brevStatusVO.setSkrivertype(brevstatus.getSkrivertype());
-		brevStatusVO.setKnappStatus(knappStatusUtil.getKnappStatus(brevstatus.getBrevmal(), brevstatus.getId().getSystemId()));
+		brevStatusVO.setKnappStatus(knappStatusUtil.getKnappStatus(brevstatus.getBrevmal(), determineSystemid(brevstatus.getId().getSystemId())));
 		return brevStatusVO;
+	}
+
+	private String determineSystemid(String systemId){
+		return StringUtils.isEmpty(systemId) ? "" : systemId;
 	}
 }
