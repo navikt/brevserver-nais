@@ -50,6 +50,7 @@ public class ArkiverBrevRoute extends RouteBuilder {
 
 	@Override
 	public void configure() throws Exception {
+		//@formatter:off
 		errorHandler(defaultErrorHandler()
 				.maximumRedeliveries(0)
 				.log(log)
@@ -110,6 +111,6 @@ public class ArkiverBrevRoute extends RouteBuilder {
 						.to(JMS + deadletter.getQueueName())
 						.log(ERROR, log, "En melding er sendt til deadletter pga ukjent mode!")
 				.end();
-
+		//@formatter:on
 	}
 }
