@@ -15,14 +15,12 @@ import no.nav.brevserver.core.vo.KvitteringVO;
 import no.nav.brevserver.core.vo.MessageVO;
 import no.nav.brevserver.joark.JoarkService;
 import no.nav.brevserver.service.BrevstatusService;
-import no.nav.brevserver.service.BrevtilgangService;
 import org.apache.camel.Exchange;
 import org.apache.camel.Handler;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 
-import static no.nav.brevserver.core.utils.ExchangeUtils.DESTINATION;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.GI_TILBAKEMELDING;
 import static no.nav.brevserver.core.utils.ExchangeUtils.setBodyAndReturnQueueWithMode;
 
@@ -31,16 +29,13 @@ import static no.nav.brevserver.core.utils.ExchangeUtils.setBodyAndReturnQueueWi
 public class PeArkiverBrevService {
 
 	private BrevstatusService brevstatusService;
-	private BrevtilgangService brevtilgangService;
 	private JoarkService joarkService;
 
 	@Inject
 	public PeArkiverBrevService(
 			BrevstatusService brevstatusService,
-			BrevtilgangService brevtilgangService,
 			JoarkService joarkService) {
 		this.brevstatusService = brevstatusService;
-		this.brevtilgangService = brevtilgangService;
 		this.joarkService = joarkService;
 	}
 
@@ -110,17 +105,14 @@ public class PeArkiverBrevService {
 
 		if (brevStatusVo.getBrevreferanse() != null && brevStatusVo.getSystemID() != null) {
 			brevstatusService.lagreBrevStatus(brevStatusVo);
+			log.info("Brev med brevref: " + brevStatusVo.getBrevreferanse() +" er arkivert i Brevlageret");
 		}
-
-		/*
-		MessageProducer producer = MessageProducerFactory.getInstance().createMessageProducer(SystemType.PE);
-		producer.sendKvittering(brevStatusVo, messageVo, kvittering);
-		*/
 
 		setBodyAndReturnQueueWithMode(exchange,
 				createReturKvittering(brevStatusVo, kvittering),
-				messageVo.getReplyQueueName(),
+				brevStatusVo.getReturKoe(),
 				GI_TILBAKEMELDING);
+		exchange.getIn().setHeader("JMS_IBM_Format", "MQSTR");
 	}
 
 
@@ -135,7 +127,7 @@ public class PeArkiverBrevService {
 
 		if (!kvitteringVo.getSystemID().startsWith(SystemType.PE.toString())) {
 			String errorMessage = "Brev med feil systemID mottatt: '" + kvitteringVo.getSystemID()
-					+ "', forventet ikke pensjonsbrev";
+					+ "', forventet bidragsbrev!";
 			log.error(errorMessage);
 			throw new BrevTechnicalException(errorMessage);
 		}

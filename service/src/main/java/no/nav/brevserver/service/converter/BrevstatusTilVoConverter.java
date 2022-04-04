@@ -3,15 +3,17 @@ package no.nav.brevserver.service.converter;
 import no.nav.brevserver.core.domain.entities.Brevstatus;
 import no.nav.brevserver.core.vo.BrevStatusVO;
 import no.nav.brevserver.service.utility.KnappStatusUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 @Component
 public class BrevstatusTilVoConverter implements Converter<Brevstatus, BrevStatusVO> {
 
-	@Autowired
-	KnappStatusUtil knappStatusUtil;
+	private final KnappStatusUtil knappStatusUtil;
+
+	public BrevstatusTilVoConverter(KnappStatusUtil knappStatusUtil) {
+		this.knappStatusUtil = knappStatusUtil;
+	}
 
 	@Override
 	public BrevStatusVO convert(Brevstatus brevstatus) {

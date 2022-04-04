@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 import java.io.StringReader;
 
 import static no.nav.brevserver.bestillBrev.utils.Utils.lagFeilmelding;
-import static no.nav.brevserver.core.utils.ExchangeUtils.PROPERTY_SENDTOMODE;
+import static no.nav.brevserver.core.utils.ExchangeUtils.SENDTOMODE;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.GI_FEILMELDING;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.INGEN_TILBAKEMELDING;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.OPPRETT_BREV;
@@ -49,6 +49,7 @@ public class PeBestillBrevService {
 
 		MessageVO messageVo = ExchangeUtils.getMessageVoFromExchange(exchange);
 		BrevStatusVO brevStatusVo = generateBrevStatusVo(messageVo);
+
 		if (brevStatusVo == null) {
 			throw new BrevFunctionalException("BrevStatus er null");
 		}
@@ -71,12 +72,12 @@ public class PeBestillBrevService {
 			boolean ok = brevtilgangService.lagreTilgang(brevStatusVo.getSystemID(), brevStatusVo.getBrevreferanse(),
 					brevStatusVo.getToken());
 			if (ok) {
-				log.info("Tilgang gitt for systemID '" + brevStatusVo.getSystemID() + "'");
+				log.info("Tilgang gitt for systemID '" + brevStatusVo.getSystemID() + "' med brevref: " + brevStatusVo.getBrevreferanse());
 			} else {
 				log.warn("Kunne ikke gi tilgang '" + brevStatusVo.getCensoredToken()
-						+ "' for systemID '" + brevStatusVo.getSystemID() + "'");
+						+ "' for systemID '" + brevStatusVo.getSystemID() + "' med brevref: " + brevStatusVo.getBrevreferanse());
 			}
-			exchange.setProperty(PROPERTY_SENDTOMODE, INGEN_TILBAKEMELDING);
+			exchange.setProperty(SENDTOMODE, INGEN_TILBAKEMELDING);
 
 			// Bestill fra Dialogue
 		} else {
@@ -92,7 +93,12 @@ public class PeBestillBrevService {
 			}
 
 			brevStatusVo.setStatus(Konstanter.BREVSTATUS_BREVPAKKE);
+			if(brevStatusVo.getReturKoe() == null) {
+				log.info("brevStatusVo.returkoe er null!");
+				brevStatusVo.setReturKoe(messageVo.getReplyQueueName());
+			}
 			brevstatusService.lagreBrevStatus(brevStatusVo);
+			log.info("Brev med brevref: " + brevStatusVo.getBrevreferanse() +" er arkivert i Brevlageret");
 			setBodyAndMode(exchange,
 					messageVo.getStringBody(),
 					OPPRETT_BREV);
@@ -116,7 +122,6 @@ public class PeBestillBrevService {
 		messageVO.setTilgangsXML(Konstanter.BREVMODUS_FRALAGER.equals(brevStatusVo.getModus()));
 		brevStatusVo.setReturKoe(messageVO.getReplyQueueName());
 		messageVO.setBrevreferanse(brevStatusVo.getBrevreferanse());
-		log.info("Returkø er satt til: " + brevStatusVo.getReturKoe());;
 
 		if (!brevStatusVo.getSystemID().startsWith(SystemType.PE.toString())) {
 			String errorMessage = "Brev med feil systemID mottatt: '" + brevStatusVo.getSystemID()

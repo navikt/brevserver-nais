@@ -19,7 +19,6 @@ import org.springframework.stereotype.Component;
 import java.io.StringReader;
 
 import static no.nav.brevserver.bestillBrev.utils.Utils.lagFeilmelding;
-import static no.nav.brevserver.core.utils.ExchangeUtils.PROPERTY_SENDTOMODE;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SENDTOMODE;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.GI_FEILMELDING;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.INGEN_TILBAKEMELDING;
@@ -56,19 +55,21 @@ public class BestillBrevService {
 
 		MessageVO messageVo = ExchangeUtils.getMessageVoFromExchange(exchange);
 		BrevStatusVO brevStatusVo = generateBrevStatusVo(messageVo);
+
 		if (brevStatusVo == null) {
 			throw new BrevFunctionalException("BrevStatusVo er null");
 		}
 
 		// Hvis modus="frabrevlager" ønsker et fagsystem å gi en tilgang til brevet fra brevklient med en token
 		if (brevStatusVo.getModus() != null && Konstanter.BREVMODUS_FRALAGER.equals(brevStatusVo.getModus())) {
+			brevStatusVo.setReturKoe("ko");
 			boolean ok = brevtilgangService.lagreTilgang(brevStatusVo.getSystemID(), brevStatusVo.getBrevreferanse(),
 					brevStatusVo.getToken());
 			if (ok) {
-				log.info("Tilgang gitt for systemID '" + brevStatusVo.getSystemID() + "'");
+				log.info("Tilgang gitt for systemID '" + brevStatusVo.getSystemID() + "' med brevref: " + brevStatusVo.getBrevreferanse());
 			} else {
 				log.warn("Kunne ikke gi tilgang '" + brevStatusVo.getCensoredToken()
-						+ "' for systemID '" + brevStatusVo.getSystemID() + "'");
+						+ "' for systemID '" + brevStatusVo.getSystemID() + "'  med brevref: " + brevStatusVo.getBrevreferanse());
 			}
 			exchange.setProperty(SENDTOMODE, INGEN_TILBAKEMELDING);
 			return;
@@ -82,12 +83,15 @@ public class BestillBrevService {
 						exchange,
 						lagFeilmelding(Konstanter.FEIL_BREV_EKSISTERER, brevStatusVo),
 						brevStatusVo.getReturKoe(),
-						GI_FEILMELDING);
+						GI_FEILMELDING
+				);
 				return;
 			}
 
 			brevStatusVo.setStatus(Konstanter.BREVSTATUS_BREVPAKKE);
+			brevStatusVo.setReturKoe(messageVo.getReplyQueueName());
 			brevstatusService.lagreBrevStatus(brevStatusVo);
+			log.info("Brev med brevref: " + brevStatusVo.getBrevreferanse() +" er arkivert i Brevlageret");
 			setBodyAndMode(exchange,
 					messageVo.getStringBody(),
 					OPPRETT_BREV);
@@ -111,7 +115,6 @@ public class BestillBrevService {
 
 		messageVO.setTilgangsXML(brevStatusVo != null && Konstanter.BREVMODUS_FRALAGER.equals(brevStatusVo.getModus()));
 		brevStatusVo.setReturKoe(messageVO.getReplyQueueName());
-		log.info("Returkø er satt til: " + brevStatusVo.getReturKoe());
 		messageVO.setBrevreferanse(brevStatusVo.getBrevreferanse());
 
 		if (brevStatusVo.getSystemID().startsWith(SystemType.PE.toString())) {

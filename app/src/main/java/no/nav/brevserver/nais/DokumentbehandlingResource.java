@@ -7,6 +7,8 @@ import no.nav.brevserver.core.exception.BrevException;
 import no.nav.brevserver.core.exception.BrevFunctionalException;
 import no.nav.brevserver.core.exception.BrevSecurityException;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
+import no.nav.tjenester.brevogarkiv.dokumentbehandling.AvbrytDokumentRequest;
+import no.nav.tjenester.brevogarkiv.dokumentbehandling.FerdigstillDokumentRequest;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.HentDokumentRequest;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.HentDokumentResponse2;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.LagreDokumentRequest;
@@ -37,6 +39,7 @@ public class DokumentbehandlingResource {
 	@GetMapping("/hent")
 	public @ResponseBody HentDokumentResponse2 hentDokument(HentDokumentRequest hentDokumentRequest) {
 
+		log.info("Prøver å hente dokument: " + hentDokumentRequest.getBrevreferanse() + " fra " + hentDokumentRequest.getSystemId() + " med token: " + hentDokumentRequest.getToken());
 		try {
 			return dokumentbehandlingProvider.hentDokument(hentDokumentRequest);
 		} catch (RuntimeException e) {
@@ -64,27 +67,27 @@ public class DokumentbehandlingResource {
 			throw e;
 		}
 	}
-/*
+
 	@PostMapping("/avbryt")
-	public void avbrytDokument(AvbrytDokumentRequest avbrytDokumentRequest) {
+	public void avbrytDokument(AvbrytDokumentRequest avbrytDokumentRequest) throws BrevException {
 		try {
 			dokumentbehandlingProvider.avbrytDokument(avbrytDokumentRequest);
 		} catch (RuntimeException e) {
-			logger.error("avbrytDokument", EXCEPTION_MESSAGE, e);
+			log.error("avbrytDokument", EXCEPTION_MESSAGE, e);
 			throw e;
 		}
 	}
 
 	@PostMapping("/ferdigstill")
-	public void ferdigstillDokument(FerdigstillDokumentRequest ferdigstillDokumentRequest) {
+	public void ferdigstillDokument(FerdigstillDokumentRequest ferdigstillDokumentRequest) throws BrevException {
 		try {
 			dokumentbehandlingProvider.ferdigstillDokument(ferdigstillDokumentRequest);
 		} catch (RuntimeException e) {
-			logger.error("ferdigstillDokument", EXCEPTION_MESSAGE, e);
+			log.error("ferdigstillDokument", EXCEPTION_MESSAGE, e);
 			throw e;
 		}
 	}
-*/
+
 	@GetMapping("/ping")
 	public void ping(PingRequest pingRequest) {
 		try {

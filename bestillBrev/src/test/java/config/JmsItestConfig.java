@@ -20,16 +20,6 @@ import javax.jms.Queue;
 public class JmsItestConfig {
 
 	@Bean
-	public Queue mottakArkiv(@Value("${mottak_arkiv.queuename}") String mottakArkivQueueName) {
-		return new ActiveMQQueue(mottakArkivQueueName);
-	}
-
-	@Bean
-	public Queue mottakOnline(@Value("${mottak_arkiv_pe.queuename}") String mottakArkivPeQueueName) {
-		return new ActiveMQQueue(mottakArkivPeQueueName);
-	}
-
-	@Bean
 	public Queue onlinebrev(@Value("${onlinebrev.queuename}") String brevserverOnlinebrev) {
 		return new ActiveMQQueue(brevserverOnlinebrev);
 	}
@@ -54,17 +44,8 @@ public class JmsItestConfig {
 	}
 
 	@Bean
-	// exstream -> brevserver
-	// returkø fra exstream til brevserver
-	public Queue mottakArkivPe(@Value("${mottak_arkiv_pe.queuename}") String mottakArkivPeQueueName) throws JMSException {
-		return new MQQueue(mottakArkivPeQueueName);
-	}
-
-	@Bean
-	// exstream -> brevserver
-	// returkø fra exstream til brevserver
-	public Queue mottakOnlinePe(@Value("${mottak_online_pe.queuename}") String brevserverMottakOnlinePe) throws JMSException {
-		return new ActiveMQQueue(brevserverMottakOnlinePe);
+	public Queue brevReplyPe(@Value("${brev_reply_pe.queuename}") String brevReplyPe) throws JMSException {
+		return new MQQueue(brevReplyPe);
 	}
 
 	@Bean

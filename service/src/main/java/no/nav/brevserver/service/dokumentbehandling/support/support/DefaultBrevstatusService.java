@@ -1,5 +1,6 @@
 package no.nav.brevserver.service.dokumentbehandling.support.support;
 
+import lombok.extern.slf4j.Slf4j;
 import no.nav.brevserver.core.audit.AuditTrail;
 import no.nav.brevserver.core.domain.entities.Brevstatus;
 import no.nav.brevserver.core.domain.entities.id.BrevreferanseSystemCompositeId;
@@ -19,6 +20,7 @@ import java.util.Optional;
 
 @Service
 @Transactional
+@Slf4j
 public class DefaultBrevstatusService implements BrevstatusService {
 
 	private final BrevstatusRepository brevstatusRepository;
@@ -93,6 +95,7 @@ public class DefaultBrevstatusService implements BrevstatusService {
 				}
 			}
 			Brevstatus brevstatus = voTilBrevstatusConverter.convert(brevStatusVO);
+			//log.info("lagrer brevstatus:" + brevstatus.getId().getBrevreferanse() + " fra " + brevstatus.getId().getSystemId());
 			brevstatusRepository.save(brevstatus);
 
 			if (token != null) {

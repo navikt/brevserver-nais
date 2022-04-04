@@ -11,6 +11,7 @@ import org.springframework.core.io.ClassPathResource;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.URL;
 
 /**
  * Converts documents to different types using the aspose library.
@@ -61,8 +62,9 @@ public final class FileConverter {
 					"Feil ved oppsett av fonter for Aspose! Sti til fontmappe ble ikke funnet i konfigurasjonen");
 		}
 		try {
-			FontSettings.setFontsFolder(new ClassPathResource(fontsLocation).getFile().getAbsolutePath(), true);
-		} catch (IOException e) {
+			URL folder = getClass().getClassLoader().getResource(fontsLocation);
+			FontSettings.setFontsFolder(folder.getPath(), true);
+		} catch (Exception e) {
 			throw new RuntimeException("Feil ved oppsett av fonter for Aspose! "
 					+ "Sjekk at mappen som er angitt i konfigurasjonen eksisterer: " + fontsLocation, e);
 		}

@@ -51,6 +51,8 @@ spec:
       value: {{ BREVSERVER_SERVER }}
     - name: BREVSERVERCHANNEL_NAME
       value: {{ BREVSERVERCHANNEL_NAME }}
+    - name: APPD_NAME
+      value: {{ APPD_NAME }}
   image: {{ image }}
   ingresses:
     {{#each INGRESSES}}
@@ -71,8 +73,8 @@ spec:
     initialDelay: 30
     timeout: 3
   replicas:
-    min: 2
-    max: 4
+    min: {{ MIN_REPLICAS }}
+    max: {{ MAX_REPLICAS }}
     cpuThresholdPercentage: 50
   resources:
     limits:
@@ -89,3 +91,5 @@ spec:
         mountPath: /var/run/secrets/nais.io/vault
       - kvPath: {{ BREVSERVER_DS }}
         mountPath: /var/run/secrets/nais.io/brevserverDS
+      - kvPath: {{ APPDYNAMICS }}
+        mountPath: "/var/run/secrets/nais.io/appdynamics"

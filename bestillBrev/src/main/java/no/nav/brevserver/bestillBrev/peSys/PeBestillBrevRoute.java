@@ -13,12 +13,14 @@ import javax.inject.Inject;
 import javax.jms.Queue;
 
 import static no.nav.brevserver.core.utils.ExchangeUtils.JMS;
-import static no.nav.brevserver.core.utils.ExchangeUtils.PROPERTY_SENDTOMODE;
-import static no.nav.brevserver.core.utils.ExchangeUtils.DESTINATION;
+import static no.nav.brevserver.core.utils.ExchangeUtils.JMS_OVERRIDDEN;
+import static no.nav.brevserver.core.utils.ExchangeUtils.OVERRIDE_DESTINATION;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SENDTOMODE;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.GI_FEILMELDING;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.INGEN_TILBAKEMELDING;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.OPPRETT_BREV;
+import static no.nav.brevserver.core.utils.ExchangeUtils.setDefaultReturnQueue;
+import static no.nav.brevserver.core.utils.ExchangeUtils.setDestination;
 import static org.apache.camel.LoggingLevel.ERROR;
 import static org.apache.camel.LoggingLevel.INFO;
 
@@ -31,19 +33,21 @@ public class PeBestillBrevRoute extends RouteBuilder {
 	private final Queue onlinebrevPe;
 	private final Queue dialogueOnlinePe;
 	private final Queue deadletterPe;
+	private final Queue brevReplyPe;
 	private final BestillBrevMetricsRoutePolicy bestillBrevMetricsRoutePolicy;
 	private final PeBestillBrevService peBestillBrevService;
 
 	@Inject
 	public PeBestillBrevRoute(Queue onlinebrevPe,
-							Queue deadletterPe,
-							Queue dialogueOnlinePe,
-							//TODO: PeBestillBrevMetrics? Unødvendig? Undersøk!
-							BestillBrevMetricsRoutePolicy peBestillBrevMetricsRoutePolicy,
-							PeBestillBrevService peBestillBrevService) {
+							  Queue deadletterPe,
+							  Queue dialogueOnlinePe,
+							  //TODO: PeBestillBrevMetrics? Unødvendig? Undersøk!
+							  Queue brevReplyPe, BestillBrevMetricsRoutePolicy peBestillBrevMetricsRoutePolicy,
+							  PeBestillBrevService peBestillBrevService) {
 		this.onlinebrevPe = onlinebrevPe;
 		this.deadletterPe = deadletterPe;
 		this.dialogueOnlinePe = dialogueOnlinePe;
+		this.brevReplyPe = brevReplyPe;
 		this.bestillBrevMetricsRoutePolicy = peBestillBrevMetricsRoutePolicy;
 		this.peBestillBrevService = peBestillBrevService;
 	}
@@ -94,19 +98,20 @@ public class PeBestillBrevRoute extends RouteBuilder {
 				.routePolicy(bestillBrevMetricsRoutePolicy)
 				.setExchangePattern(ExchangePattern.InOnly)
 				.log(LoggingLevel.INFO, log, BESTILLBREV + " starter behandlingen")
+				.process(exchange -> {
+					log.info("XML til Exstream: " + exchange.getIn().getBody());
+					setDefaultReturnQueue(exchange, brevReplyPe.getQueueName());
+				})
 				.bean(peBestillBrevService)
 				.choice()
 					.when(exchangeProperty(SENDTOMODE).isEqualTo(OPPRETT_BREV))
 						.to(JMS + dialogueOnlinePe.getQueueName())
 						.log(INFO, log, "Brev sendt til opprettelse i Exstream: " + dialogueOnlinePe.getQueueName())
 					.when(exchangeProperty(SENDTOMODE).isEqualTo(GI_FEILMELDING ))
-						.process(exchange -> {
-							if (exchange.getIn().getHeader(DESTINATION) == null)
-								exchange.getIn().setHeader(DESTINATION, deadletterPe.getQueueName());
-						})
-						.toD(JMS + header(DESTINATION))
-						.log(INFO, log, "Feilmelding er sendt til: " +  header(DESTINATION))
+						.log(INFO, log, "Feilmelding er sendt til:: ${exchange.getIn().getHeader(\"" + OVERRIDE_DESTINATION + "\").toString()}")
+						.to(JMS_OVERRIDDEN)
 					.when(exchangeProperty(SENDTOMODE).isEqualTo(INGEN_TILBAKEMELDING))
+						.log(INFO, log, "Tilgang gitt. Håndtering avsluttes")
 						.stop()
 					.otherwise()
 						.to(JMS + deadletterPe.getQueueName())
