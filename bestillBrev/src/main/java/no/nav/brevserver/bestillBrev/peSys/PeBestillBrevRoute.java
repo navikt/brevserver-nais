@@ -54,6 +54,7 @@ public class PeBestillBrevRoute extends RouteBuilder {
 
 	@Override
 	public void configure() throws Exception {
+		//@formatter:off
 		errorHandler(defaultErrorHandler()
 				.maximumRedeliveries(0)
 				.log(log)
@@ -117,6 +118,7 @@ public class PeBestillBrevRoute extends RouteBuilder {
 						.to(JMS + deadletterPe.getQueueName())
 						.log(ERROR, log, "En melding er sendt til deadletter pga ukjent mode!")
 				.end();
+		//@formatter:on
 
 	}
 }

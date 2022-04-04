@@ -64,6 +64,7 @@ public class BestillBrevRoute extends RouteBuilder {
 
 	@Override
 	public void configure() throws Exception {
+		//@formatter:off
 		errorHandler(defaultErrorHandler()
 				.maximumRedeliveries(0)
 				.log(log)
@@ -121,7 +122,7 @@ public class BestillBrevRoute extends RouteBuilder {
 						.to(JMS_OVERRIDDEN)
 						.log(INFO, log, "Brev sendt til opprettelse i Exstream: " + dialogueOnline.getQueueName())
 					.when(exchangeProperty(SENDTOMODE).isEqualTo(GI_FEILMELDING ))
-				.log(INFO, log, "Feilmelding er sendt til:: ${exchange.getIn().getHeader(\"" + OVERRIDE_DESTINATION + "\").toString()}")
+						.log(INFO, log, "Feilmelding er sendt til:: ${exchange.getIn().getHeader(\"" + OVERRIDE_DESTINATION + "\").toString()}")
 						.to(JMS_OVERRIDDEN)
 					.when(exchangeProperty(SENDTOMODE).isEqualTo(INGEN_TILBAKEMELDING))
 						.log(INFO, log, "Tilgang gitt. Håndtering avsluttes")
@@ -130,7 +131,7 @@ public class BestillBrevRoute extends RouteBuilder {
 						.to(JMS + deadletter.getQueueName())
 						.log(ERROR, log, "En melding er sendt til deadletter pga ukjent mode!")
 				.end();
-
+		//@formatter:on
 	}
 }
 
