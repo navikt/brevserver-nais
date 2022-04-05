@@ -1,5 +1,6 @@
 package no.nav.brevserver.service.converter;
 
+import lombok.extern.slf4j.Slf4j;
 import no.nav.brevserver.core.domain.entities.Brevstatus;
 import no.nav.brevserver.core.vo.BrevStatusVO;
 import no.nav.brevserver.service.utility.KnappStatusUtil;
@@ -8,6 +9,7 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 @Component
+@Slf4j
 public class BrevstatusTilVoConverter implements Converter<Brevstatus, BrevStatusVO> {
 
 	private final KnappStatusUtil knappStatusUtil;
@@ -38,6 +40,7 @@ public class BrevstatusTilVoConverter implements Converter<Brevstatus, BrevStatu
 	}
 
 	private String determineSystemid(String systemId){
+		log.info("SystemId : " + systemId);
 		return StringUtils.isEmpty(systemId) ? "" : systemId;
 	}
 }
