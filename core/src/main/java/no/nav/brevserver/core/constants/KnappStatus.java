@@ -27,6 +27,10 @@ public class KnappStatus {
 		return new KnappStatus(getDefaultValue());
 	}
 
+	public static int getAllExceptUtskriftValue() {
+		return SKRIV_UT_KLADD + LAGRE_KLADD + FERDIGSTILL;
+	}
+
 	public KnappStatus(int value) {
 		knappStatus = value;
 	}
