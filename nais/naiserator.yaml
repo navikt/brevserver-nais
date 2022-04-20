@@ -53,6 +53,8 @@ spec:
       value: {{ BREVSERVERCHANNEL_NAME }}
     - name: APPD_NAME
       value: {{ APPD_NAME }}
+    - name: BREVSERVERQUEUE_AUTOSTARTUP
+      value: "{{ BREVSERVERQUEUE_AUTOSTARTUP }}"
   image: {{ image }}
   ingresses:
     {{#each INGRESSES}}

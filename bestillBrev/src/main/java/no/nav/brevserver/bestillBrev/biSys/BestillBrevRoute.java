@@ -3,6 +3,7 @@ package no.nav.brevserver.bestillBrev.biSys;
 import com.ibm.msg.client.jms.DetailedJMSException;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.brevserver.bestillBrev.BestillBrevMetricsRoutePolicy;
+import no.nav.brevserver.core.alias.QueueProperties;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
 import org.apache.camel.ExchangePattern;
 import org.apache.camel.LoggingLevel;
@@ -37,18 +38,21 @@ public class BestillBrevRoute extends RouteBuilder {
 	private final Queue deadletter;
 	private final BestillBrevMetricsRoutePolicy bestillBrevMetricsRoutePolicy;
 	private final BestillBrevService bestillBrevService;
+	private final QueueProperties queueProperties;
 
 	@Inject
 	public BestillBrevRoute(Queue onlinebrev,
 							Queue deadletter,
 							Queue dialogueOnline,
 							BestillBrevMetricsRoutePolicy arkiverBrevMetricsRoutePolicy,
-							BestillBrevService arkiverBrevService) {
+							BestillBrevService arkiverBrevService,
+							QueueProperties queueProperties) {
 		this.onlinebrev = onlinebrev;
 		this.deadletter = deadletter;
 		this.dialogueOnline = dialogueOnline;
 		this.bestillBrevMetricsRoutePolicy = arkiverBrevMetricsRoutePolicy;
 		this.bestillBrevService = arkiverBrevService;
+		this.queueProperties = queueProperties;
 	}
 
 	/*
@@ -100,11 +104,13 @@ public class BestillBrevRoute extends RouteBuilder {
 
 
 		from("jms:" + onlinebrev.getQueueName() + ROUTE_OPTIONS)
+				.autoStartup(queueProperties.isAutoStartup())
 				.log(INFO, log, "Starter behandlingen")
 				.to(BESTILL_BREV_ROUTE);
 		
 		//Brevbestilling fra Bisys
 		from(BESTILL_BREV_ROUTE)
+				.autoStartup(queueProperties.isAutoStartup())
 				.routeId(BESTILLBREV)
 				.routePolicy(bestillBrevMetricsRoutePolicy)
 				.setExchangePattern(ExchangePattern.InOnly)

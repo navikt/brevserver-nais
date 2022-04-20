@@ -3,6 +3,7 @@ package no.nav.brevserver.arkiverBrev.Pesys;
 import com.ibm.msg.client.jms.DetailedInvalidDestinationException;
 import com.ibm.msg.client.jms.DetailedJMSException;
 import no.nav.brevserver.arkiverBrev.ArkiverBrevMetricsRoutePolicy;
+import no.nav.brevserver.core.alias.QueueProperties;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
 import org.apache.camel.ExchangePattern;
 import org.apache.camel.LoggingLevel;
@@ -13,7 +14,6 @@ import org.springframework.stereotype.Component;
 import javax.inject.Inject;
 import javax.jms.Queue;
 
-import static no.nav.brevserver.core.utils.ExchangeUtils.DEFAULT_RETURN_QUEUE;
 import static no.nav.brevserver.core.utils.ExchangeUtils.JMS;
 import static no.nav.brevserver.core.utils.ExchangeUtils.JMS_OVERRIDDEN;
 import static no.nav.brevserver.core.utils.ExchangeUtils.OVERRIDE_DESTINATION;
@@ -36,20 +36,23 @@ public class PeArkiverBrevRoute extends RouteBuilder {
 	private final Queue brevReplyPe;
 	private final ArkiverBrevMetricsRoutePolicy arkiverBrevMetricsRoutePolicy;
 	private final PeArkiverBrevService peArkiverBrevService;
-
+	private final QueueProperties queueProperties;
 
 	@Inject
 	public PeArkiverBrevRoute(Queue mottakArkivPe,
 							  Queue mottakOnlinePe,
 							  Queue deadletterPe,
-							  Queue brevReplyPe, ArkiverBrevMetricsRoutePolicy arkiverBrevMetricsRoutePolicy,
-							  PeArkiverBrevService peArkiverBrevService) {
+							  Queue brevReplyPe,
+							  ArkiverBrevMetricsRoutePolicy arkiverBrevMetricsRoutePolicy,
+							  PeArkiverBrevService peArkiverBrevService,
+							  QueueProperties queueProperties) {
 		this.mottakArkivPe = mottakArkivPe;
 		this.mottakOnlinePe = mottakOnlinePe;
 		this.deadletterPe = deadletterPe;
 		this.brevReplyPe = brevReplyPe;
 		this.arkiverBrevMetricsRoutePolicy = arkiverBrevMetricsRoutePolicy;
 		this.peArkiverBrevService = peArkiverBrevService;
+		this.queueProperties = queueProperties;
 	}
 
 	@Override
@@ -96,14 +99,18 @@ public class PeArkiverBrevRoute extends RouteBuilder {
 				.to(JMS + deadletterPe.getQueueName());
 
 		from("jms:" + mottakArkivPe.getQueueName() + ROUTE_OPTIONS)
+				.autoStartup(queueProperties.isAutoStartup())
 				.log(INFO, log, "mottat melding fra mq mottakArkivPe")
 				.to(PE_ARKIVER_BREV_ROUTE);
 		from("jms:" + mottakOnlinePe.getQueueName() + ROUTE_OPTIONS)
+				.autoStartup(queueProperties.isAutoStartup())
 				.log(INFO, log, "mottat melding fra mq mottakOnlinePe")
+				.autoStartup(queueProperties.isAutoStartup())
 				.to(PE_ARKIVER_BREV_ROUTE);
 
 		//Hent svar fra exstream
 		from(PE_ARKIVER_BREV_ROUTE)
+				.autoStartup(queueProperties.isAutoStartup())
 				.routeId(PE_ARKIVER_BREV_ROUTE)
 				.routePolicy(arkiverBrevMetricsRoutePolicy)
 				.setExchangePattern(ExchangePattern.InOnly)

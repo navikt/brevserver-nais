@@ -35,4 +35,5 @@
   "BREVSERVERCHANNEL_NAME": "Q1_BREVSERVER",
   "BREVSERVER_DS": "/oracle/data/dev/creds/brevserver_q1-user",
   "APPDYNAMICS": "/apikey/appdynamics/dev",
+  "BREVSERVERQUEUE_AUTOSTARTUP": "true"
 }

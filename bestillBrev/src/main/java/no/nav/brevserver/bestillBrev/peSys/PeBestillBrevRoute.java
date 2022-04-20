@@ -2,6 +2,7 @@ package no.nav.brevserver.bestillBrev.peSys;
 
 import com.ibm.msg.client.jms.DetailedJMSException;
 import no.nav.brevserver.bestillBrev.BestillBrevMetricsRoutePolicy;
+import no.nav.brevserver.core.alias.QueueProperties;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
 import org.apache.camel.ExchangePattern;
 import org.apache.camel.LoggingLevel;
@@ -20,7 +21,6 @@ import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.GI_FEILMELDI
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.INGEN_TILBAKEMELDING;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.OPPRETT_BREV;
 import static no.nav.brevserver.core.utils.ExchangeUtils.setDefaultReturnQueue;
-import static no.nav.brevserver.core.utils.ExchangeUtils.setDestination;
 import static org.apache.camel.LoggingLevel.ERROR;
 import static org.apache.camel.LoggingLevel.INFO;
 
@@ -36,6 +36,7 @@ public class PeBestillBrevRoute extends RouteBuilder {
 	private final Queue brevReplyPe;
 	private final BestillBrevMetricsRoutePolicy bestillBrevMetricsRoutePolicy;
 	private final PeBestillBrevService peBestillBrevService;
+	private final QueueProperties queueProperties;
 
 	@Inject
 	public PeBestillBrevRoute(Queue onlinebrevPe,
@@ -43,13 +44,15 @@ public class PeBestillBrevRoute extends RouteBuilder {
 							  Queue dialogueOnlinePe,
 							  //TODO: PeBestillBrevMetrics? Unødvendig? Undersøk!
 							  Queue brevReplyPe, BestillBrevMetricsRoutePolicy peBestillBrevMetricsRoutePolicy,
-							  PeBestillBrevService peBestillBrevService) {
+							  PeBestillBrevService peBestillBrevService,
+							  QueueProperties queueProperties) {
 		this.onlinebrevPe = onlinebrevPe;
 		this.deadletterPe = deadletterPe;
 		this.dialogueOnlinePe = dialogueOnlinePe;
 		this.brevReplyPe = brevReplyPe;
 		this.bestillBrevMetricsRoutePolicy = peBestillBrevMetricsRoutePolicy;
 		this.peBestillBrevService = peBestillBrevService;
+		this.queueProperties = queueProperties;
 	}
 
 	@Override
@@ -90,11 +93,13 @@ public class PeBestillBrevRoute extends RouteBuilder {
 
 
 		from("jms:" + onlinebrevPe.getQueueName() + ROUTE_OPTIONS)
+				.autoStartup(queueProperties.isAutoStartup())
 				.log(INFO, log, "mottat melding fra mq")
 				.to(BESTILL_BREV_ROUTE_PE);
 
 		//Brevbestilling fra Pesys
 		from(BESTILL_BREV_ROUTE_PE)
+				.autoStartup(queueProperties.isAutoStartup())
 				.routeId(BESTILLBREV)
 				.routePolicy(bestillBrevMetricsRoutePolicy)
 				.setExchangePattern(ExchangePattern.InOnly)

@@ -1,6 +1,7 @@
 package config;
 
 import no.nav.brevserver.core.alias.MqGatewayProperties;
+import no.nav.brevserver.core.alias.QueueProperties;
 import no.nav.brevserver.core.properties.SrvAppserverProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.ComponentScan;
@@ -12,7 +13,8 @@ import org.springframework.context.annotation.Profile;
 @Profile("itest")
 @EnableConfigurationProperties({
 		MqGatewayProperties.class,
-		SrvAppserverProperties.class
+		SrvAppserverProperties.class,
+		QueueProperties.class
 })
 @Import({JmsItestConfig.class})
 @ComponentScan(basePackages = "no.nav.brevserver")
