@@ -4,6 +4,7 @@
   "MAX_REPLICAS": 2,
   "INGRESSES": [
     "https://brevserver-nais.intern.nav.no",
+    "https://brevserver-nais.nais.adeo.no",
     "https://wasapp.adeo.no"
   ],
   "MQGATEWAY01_HOSTNAME": "a01apvl061.adeo.no",
