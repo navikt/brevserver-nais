@@ -46,7 +46,6 @@ public class KvitteringService {
 			if( SystemType.PE.equals(systemType)) {
 				try {
 					returKoe = brevReplyPe.getQueueName();
-					log.info("Setter returkø-header til default for pensjons-kvitteringer.");
 				} catch (JMSException exception) {
 					log.error("Klarte ikke hente kønavn. Avbryter kvitteringen.");
 					return;

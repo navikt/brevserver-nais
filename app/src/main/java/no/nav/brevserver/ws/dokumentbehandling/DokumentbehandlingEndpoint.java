@@ -20,15 +20,14 @@ import no.nav.tjenester.brevogarkiv.dokumentbehandling.LagreDokumentRequest;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.ObjectFactory;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.Ping;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.PingRequest;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 
-import javax.activation.DataHandler;
-import javax.activation.FileDataSource;
-import java.io.File;
+import static no.nav.brevserver.core.mdc.MDCConstants.MDC_CALL_ID;
 
 /**
  * Implementation of the JAX-WS generated service interface DokumentbehandlingPortType.
@@ -55,6 +54,7 @@ public class DokumentbehandlingEndpoint implements DokumentbehandlingPortType {
 	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "hentDokument")
 	@ResponsePayload
 	public HentDokumentResponse hentDokumentEndpoint(@RequestPayload HentDokument hentDokument) {
+		MDC.put(MDC_CALL_ID, hentDokument.getRequest().getBrevreferanse() + hentDokument.getRequest().getSystemId());
 		HentDokumentResponse response = this.objectFactory.createHentDokumentResponse();
 		response.setResponse(hentDokument(hentDokument.getRequest()));
 		return response;
@@ -83,6 +83,7 @@ public class DokumentbehandlingEndpoint implements DokumentbehandlingPortType {
 	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "lagreDokument")
 	@ResponsePayload
 	public void lagreDokumentEndpoint(@RequestPayload LagreDokument lagreDokument) {
+		MDC.put(MDC_CALL_ID, lagreDokument.getRequest().getBrevreferanse() + lagreDokument.getRequest().getSystemId());
 		lagreDokument(lagreDokument.getRequest());
 	}
 
@@ -102,6 +103,7 @@ public class DokumentbehandlingEndpoint implements DokumentbehandlingPortType {
 	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "avbrytDokument")
 	@ResponsePayload
 	public void avbrytDokumentEndpoint(@RequestPayload AvbrytDokument avbrytDokument) {
+		MDC.put(MDC_CALL_ID, avbrytDokument.getRequest().getBrevreferanse() + avbrytDokument.getRequest().getSystemId());
 		avbrytDokument(avbrytDokument.getRequest());
 	}
 

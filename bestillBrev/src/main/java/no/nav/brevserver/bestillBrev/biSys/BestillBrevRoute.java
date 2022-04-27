@@ -117,7 +117,6 @@ public class BestillBrevRoute extends RouteBuilder {
 				.log(INFO, log, BESTILLBREV + " starter behandlingen")
 				.bean(bestillBrevService)
 				.process(exchange -> {
-					log.info("XML til Exstream: " + exchange.getIn().getBody());
 					setDefaultReturnQueue(exchange, deadletter.getQueueName());
 				})
 				.choice()

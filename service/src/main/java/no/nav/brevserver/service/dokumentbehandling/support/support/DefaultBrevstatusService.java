@@ -95,7 +95,6 @@ public class DefaultBrevstatusService implements BrevstatusService {
 				}
 			}
 			Brevstatus brevstatus = voTilBrevstatusConverter.convert(brevStatusVO);
-			//log.info("lagrer brevstatus:" + brevstatus.getId().getBrevreferanse() + " fra " + brevstatus.getId().getSystemId());
 			brevstatusRepository.save(brevstatus);
 
 			if (token != null) {

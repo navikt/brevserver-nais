@@ -94,7 +94,6 @@ public class PeBestillBrevService {
 
 			brevStatusVo.setStatus(Konstanter.BREVSTATUS_BREVPAKKE);
 			if(brevStatusVo.getReturKoe() == null) {
-				log.info("brevStatusVo.returkoe er null!");
 				brevStatusVo.setReturKoe(messageVo.getReplyQueueName());
 			}
 			brevstatusService.lagreBrevStatus(brevStatusVo);

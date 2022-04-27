@@ -24,10 +24,8 @@ public class ExchangeUtils {
 		INGEN_TILBAKEMELDING
 	}
 
-	public static final String DESTINATION = "CamelJmsDestinationName";
 	public static final String JMS = "jms:";
 	public static final String SENDTOMODE = "SENDTOMODE";
-	public static final String PROPERTY_SENDTOMODE = "property.SENDTOMODE";
 	private static final String JMSReplyTo = "JMSReplyTo";
 	public static final String DEFAULT_RETURN_QUEUE = "defaultReturnQueue";
 
@@ -46,7 +44,6 @@ public class ExchangeUtils {
 
 		try {
 			vo.setReplyQueueName(getReplyTo(exchange));
-			log.info("Setter messageVo.replyQ til: " + vo.getReplyQueueName());
 		} catch (JMSException e) {
 			log.error("Klarte ikke hente replyq");
 		}
@@ -63,7 +60,7 @@ public class ExchangeUtils {
 		String returKo = StringUtils.isBlank(returnQueue) ? (String) exchange.getIn().getHeader(DEFAULT_RETURN_QUEUE) : returnQueue;
 		setDestination(exchange, buildReturnQueue(returKo));
 		exchange.setProperty(SENDTOMODE, sendToMode.name());
-		log.info("Setter returkø-header til: " + returKo + " og sendToMode til: " + sendToMode);
+		log.debug("Setter returkø-header til: " + returKo + " og sendToMode til: " + sendToMode);
 	}
 
 	/*
@@ -108,12 +105,12 @@ public class ExchangeUtils {
 		} else {
 			log.info("JMS replyTo er ikke satt. Returkø er null.");
 			return null;
-			//return (String) exchange.getIn().getHeaders().get(DEFAULT_RETURN_QUEUE);
 		}
 	}
 
 
 	public static String buildReturnQueue(String queuename){
+		String oldQname = queuename;
 		if(!isEmpty(queuename)) {
 			//delete queuemanager om den finnes
 			queuename = stripQueueManager(queuename);
@@ -122,6 +119,7 @@ public class ExchangeUtils {
 			//set queue-string
 			queuename = setQueueString(queuename);
 		}
+		log.debug("original queuname: " + oldQname + " nytt queuename: " + queuename);
 		return queuename;
 	}
 	/*
@@ -141,8 +139,7 @@ public class ExchangeUtils {
 	}
 
 	private static String setQueueString(String queuename){
-		log.info("input-kønavn inneholder ikke queue-string: " + queuename);
-		if(!queuename.toLowerCase().contains("queue:///")) {
+		if(!isEmpty(queuename) && !queuename.toLowerCase().contains("queue:///")) {
 			return "queue:///" + queuename;
 		}
 		return queuename;

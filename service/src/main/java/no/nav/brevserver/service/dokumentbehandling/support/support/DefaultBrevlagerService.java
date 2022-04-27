@@ -94,7 +94,6 @@ public class DefaultBrevlagerService implements BrevlagerService {
 		try {
 			backupIfExistingBrev(brev.getBrevreferanse(), brev.getSystemID());
 			BrevStatusVO gmlStatus = brevstatusService.lagreBrevStatus(brevstatus);
-			//log.info("lagrer brev: "+ brevstatus.getBrevreferanse() + " fra " + brev.getSystemID());
 			translateContentTypeDocxToDb2(brev);
 			if (brevstatus.getSystemID()!=null && brevstatus.getSystemID().startsWith(SystemType.PE.toString())) {
 				joarkService.lagreDokument(brevstatus.getBrevreferanse(), brev.getContentType(), brev.getBrevdata());
