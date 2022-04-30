@@ -34,5 +34,5 @@
   "BREVSERVER_DS": "/oracle/data/prod/creds/brevserver-user",
   "APPDYNAMICS": "/apikey/appdynamics/prod",
   "APPD_NAME": "brevserver-nais",
-  "BREVSERVERQUEUE_AUTOSTARTUP": "false"
+  "BREVSERVERQUEUE_AUTOSTARTUP": "true"
 }
