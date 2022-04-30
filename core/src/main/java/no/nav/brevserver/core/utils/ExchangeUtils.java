@@ -9,6 +9,7 @@ import org.slf4j.MDC;
 
 import javax.jms.JMSException;
 import javax.jms.Queue;
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 import static no.nav.brevserver.core.mdc.MDCConstants.MDC_CALL_ID;
@@ -135,7 +136,16 @@ public class ExchangeUtils {
 	 * Ved å sende denne propertien håndterer ibm-mq selv hvor meldingen skal sendes og overstyrer camel sin to()
 	 */
 	private static String setTargetClientForQueue(String queuename) {
-		return queuename.toLowerCase().contains("targetclient") ? queuename : queuename + "?targetClient=1";
+		if(!isEmpty(queuename)) {
+            //targetclient er allerede satt, returner kønavnet som det er
+            if(queuename.toLowerCase().contains("targetclient")){
+                return queuename;
+            }
+			//Noen svarkøer inneholder allerede parametre definert etter ?
+			//Legg på ?targetclient=1 om det ikke allerede finnes parametre og &targerclient=1 om det finnes parametre fra før
+			return queuename.contains("?") ? queuename + "&targetClient=1" : queuename + "?targetClient=1";
+		}
+        return queuename;
 	}
 
 	private static String setQueueString(String queuename){

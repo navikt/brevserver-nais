@@ -20,6 +20,7 @@ import static no.nav.brevserver.core.utils.ExchangeUtils.buildReturnQueue;
 import static no.nav.brevserver.core.utils.ExchangeUtils.setDestination;
 import static no.nav.brevserver.core.utils.ExchangeUtils.setDestinationWithQueueString;
 import static no.nav.brevserver.service.queue.KvitteringRoute.DIRECT_SENDKVITTERINGROUTE;
+import static org.apache.logging.log4j.util.Strings.isEmpty;
 
 @Component
 @Slf4j
@@ -65,6 +66,10 @@ public class KvitteringService {
 
 	private void doSendKvittering(String xmlKvittering, String returKoe) {
 		try {
+			if(isEmpty(returKoe)){
+				log.warn("Ingen returkø er definert. Avbryter kvitteringsløpet.");
+				return;
+			}
 			ExchangeBuilder exchangeBuilder = new ExchangeBuilder(context);
 			Exchange kvitteringExchange = exchangeBuilder.withBody(xmlKvittering).build();
 			setDestination(kvitteringExchange, buildReturnQueue(returKoe));
