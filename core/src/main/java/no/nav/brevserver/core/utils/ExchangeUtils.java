@@ -58,6 +58,9 @@ public class ExchangeUtils {
 	 */
 	public static void setBodyAndReturnQueueWithMode(Exchange exchange, Object Body, String returnQueue, SendToMode sendToMode) {
 		exchange.getIn().setBody(Body);
+		if(returnQueue!=null) {
+			returnQueue = returnQueue.trim();
+		}
 		String returKo = StringUtils.isBlank(returnQueue) ? (String) exchange.getIn().getHeader(DEFAULT_RETURN_QUEUE) : returnQueue;
 		setDestination(exchange, buildReturnQueue(returKo));
 		exchange.setProperty(SENDTOMODE, sendToMode.name());
@@ -112,6 +115,9 @@ public class ExchangeUtils {
 
 	public static String buildReturnQueue(String queuename){
 		String oldQname = queuename;
+		if(queuename!=null) {
+			queuename = queuename.trim();
+		}
 		if(!isEmpty(queuename)) {
 			//delete queuemanager om den finnes
 			queuename = stripQueueManager(queuename);
