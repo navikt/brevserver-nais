@@ -38,21 +38,17 @@ public class KvitteringService {
 	}
 
 	public void sendKvittering(BrevVO brev, BrevStatusVO brevstatus, SystemType systemType, String returKoe) {
-		log.info("Sender kvittering, brevStatus: " + brev.getLagerStatus());
+		log.info("Sender kvittering, brevStatus: " + brev.getLagerStatus() + " til svarkø: " + returKoe);
 
 		KvitteringVO kvittering = createKvittering(brevstatus, brev);
 		String xmlKvittering = XMLService.unmarshal(kvittering, brevstatus);
 
-		if(StringUtils.isEmpty(returKoe)){
-			if( SystemType.PE.equals(systemType)) {
-				try {
-					returKoe = brevReplyPe.getQueueName();
-				} catch (JMSException exception) {
-					log.error("Klarte ikke hente kønavn. Avbryter kvitteringen.");
-					return;
-				}
-			} else {
-				log.warn("ReturKo er tom. Sender ikke kvittering");
+		if(returKoe == null || isEmpty(returKoe.trim()) && SystemType.PE.equals(systemType)) {
+			try {
+				returKoe = brevReplyPe.getQueueName();
+			} catch (JMSException exception) {
+				log.error("Klarte ikke hente kønavn. Avbryter kvitteringen.");
+				return;
 			}
 		}
 
@@ -66,6 +62,11 @@ public class KvitteringService {
 
 	private void doSendKvittering(String xmlKvittering, String returKoe) {
 		try {
+
+			if(returKoe != null){
+				returKoe = returKoe.trim();
+			}
+
 			if(isEmpty(returKoe)){
 				log.warn("Ingen returkø er definert. Avbryter kvitteringsløpet.");
 				return;
