@@ -43,7 +43,7 @@ public class KvitteringService {
 		KvitteringVO kvittering = createKvittering(brevstatus, brev);
 		String xmlKvittering = XMLService.unmarshal(kvittering, brevstatus);
 
-		if(returKoe == null || isEmpty(returKoe.trim()) && SystemType.PE.equals(systemType)) {
+		if(SystemType.PE.equals(systemType) && (returKoe == null || isEmpty(returKoe.trim()))) {
 			try {
 				returKoe = brevReplyPe.getQueueName();
 			} catch (JMSException exception) {
