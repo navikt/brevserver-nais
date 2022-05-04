@@ -38,7 +38,7 @@ public class KvitteringService {
 	}
 
 	public void sendKvittering(BrevVO brev, BrevStatusVO brevstatus, SystemType systemType, String returKoe) {
-		log.info("Sender kvittering, brevStatus: " + brev.getLagerStatus() + " til svarkø: " + returKoe);
+		log.info("Sender kvittering for brevref: " + brev.getBrevreferanse() + ", brevStatus: " + brev.getLagerStatus());
 
 		KvitteringVO kvittering = createKvittering(brevstatus, brev);
 		String xmlKvittering = XMLService.unmarshal(kvittering, brevstatus);
@@ -77,6 +77,7 @@ public class KvitteringService {
 
 			kvitteringExchange.getIn().setHeader("JMS_IBM_Format", "MQSTR");
 
+			log.info("Brevserver leverer kvitteringen til: " + returKoe);
 			producerTemplate.send(DIRECT_SENDKVITTERINGROUTE, kvitteringExchange);
 		} catch (Exception e) {
 			log.error("Klarte ikke sende melding: " + e.getMessage() + " \n" + e.getStackTrace());

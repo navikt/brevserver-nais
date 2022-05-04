@@ -2,7 +2,7 @@ package no.nav.brevserver.arkiverBrev.BiSys;
 
 import com.ibm.msg.client.jms.DetailedJMSException;
 import no.nav.brevserver.arkiverBrev.ArkiverBrevMetricsRoutePolicy;
-import no.nav.brevserver.core.alias.QueueProperties;
+import no.nav.brevserver.core.alias.BrevserverProperties;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
 import org.apache.camel.ExchangePattern;
 import org.apache.camel.LoggingLevel;
@@ -34,17 +34,17 @@ public class ArkiverBrevRoute extends RouteBuilder {
 	private final Queue deadletter;
 	private final ArkiverBrevMetricsRoutePolicy arkiverBrevMetricsRoutePolicy;
 	private final ArkiverBrevService arkiverBrevService;
-	private final QueueProperties queueProperties;
+	private final BrevserverProperties brevserverProperties;
 
 
 	@Inject
-	public ArkiverBrevRoute(final QueueProperties queueProperties,
+	public ArkiverBrevRoute(final BrevserverProperties brevserverProperties,
 							Queue mottakArkiv,
 							Queue mottakOnline,
 							Queue deadletter,
 							ArkiverBrevMetricsRoutePolicy arkiverBrevMetricsRoutePolicy,
 							ArkiverBrevService arkiverBrevService) {
-		this.queueProperties = queueProperties; 
+		this.brevserverProperties = brevserverProperties; 
 		this.mottakArkiv = mottakArkiv;
 		this.mottakOnline = mottakOnline;
 		this.deadletter = deadletter;
@@ -90,19 +90,16 @@ public class ArkiverBrevRoute extends RouteBuilder {
 
 
 		from("jms:" + mottakArkiv.getQueueName() + ROUTE_OPTIONS)
-				.autoStartup(queueProperties.isAutoStartup())
 				.to(ARKIVER_BREV_ROUTE);
 		from("jms:" + mottakOnline.getQueueName() + ROUTE_OPTIONS)
-				.autoStartup(queueProperties.isAutoStartup())
 				.to(ARKIVER_BREV_ROUTE);
 
 		//Hent svar fra exstream
 		from(ARKIVER_BREV_ROUTE)
-				.autoStartup(queueProperties.isAutoStartup())
 				.routeId(ARKIVER_BREV_ROUTE)
 				.routePolicy(arkiverBrevMetricsRoutePolicy)
 				.setExchangePattern(ExchangePattern.InOnly)
-				.log(LoggingLevel.INFO, log, ARKIVER_BREV_ROUTE + " starter behandlingen")
+				.log(LoggingLevel.INFO, log, ARKIVER_BREV_ROUTE + " starter arkiveringen av ny melding fra Bisys")
 				.process(exchange -> {
 					setDefaultReturnQueue(exchange, deadletter.getQueueName());
 				})

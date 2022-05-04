@@ -26,7 +26,6 @@ public class KvitteringRoute extends RouteBuilder {
 
 		from(DIRECT_SENDKVITTERINGROUTE)
 				.log(INFO, log, "Sender svar til: ${exchange.getIn().getHeader(\"" + OVERRIDE_DESTINATION + "\").toString()}")
-				.to(JMS_OVERRIDDEN)
-				.log(LoggingLevel.INFO, log, "Brevserver har levert kvitteringen");
+				.to(JMS_OVERRIDDEN);
 	}
 }

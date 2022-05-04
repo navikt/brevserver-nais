@@ -1,7 +1,6 @@
 package no.nav.brevserver.core.alias;
 
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -10,11 +9,10 @@ import org.springframework.validation.annotation.Validated;
 @Getter
 @Setter
 @ToString
-@ConfigurationProperties("brevserverqueue")
+@ConfigurationProperties("brevserverproperties")
 @Validated
-public class QueueProperties {
+public class BrevserverProperties {
 
-	@NonNull
-	private boolean autoStartup;
+	private boolean loggXML;
 
 }

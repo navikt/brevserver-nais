@@ -3,7 +3,7 @@ package no.nav.brevserver.bestillBrev.biSys;
 import com.ibm.msg.client.jms.DetailedJMSException;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.brevserver.bestillBrev.BestillBrevMetricsRoutePolicy;
-import no.nav.brevserver.core.alias.QueueProperties;
+import no.nav.brevserver.core.alias.BrevserverProperties;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
 import org.apache.camel.ExchangePattern;
 import org.apache.camel.LoggingLevel;
@@ -38,7 +38,7 @@ public class BestillBrevRoute extends RouteBuilder {
 	private final Queue deadletter;
 	private final BestillBrevMetricsRoutePolicy bestillBrevMetricsRoutePolicy;
 	private final BestillBrevService bestillBrevService;
-	private final QueueProperties queueProperties;
+	private final BrevserverProperties brevserverProperties;
 
 	@Inject
 	public BestillBrevRoute(Queue onlinebrev,
@@ -46,25 +46,14 @@ public class BestillBrevRoute extends RouteBuilder {
 							Queue dialogueOnline,
 							BestillBrevMetricsRoutePolicy arkiverBrevMetricsRoutePolicy,
 							BestillBrevService arkiverBrevService,
-							QueueProperties queueProperties) {
+							BrevserverProperties brevserverProperties) {
 		this.onlinebrev = onlinebrev;
 		this.deadletter = deadletter;
 		this.dialogueOnline = dialogueOnline;
 		this.bestillBrevMetricsRoutePolicy = arkiverBrevMetricsRoutePolicy;
 		this.bestillBrevService = arkiverBrevService;
-		this.queueProperties = queueProperties;
+		this.brevserverProperties = brevserverProperties;
 	}
-
-	/*
-	config for new exstream:
-	    "DIALOGUE_ONLINE_QUEUENAME": "QA.Q1_EDP.BISYS_ONLINE",
-  		"MOTTAK_ARKIV_QUEUENAME": "QA.Q1_EDP.BS_BISYS_MOTTAK_ARKIV",
-  		"MOTTAK_ONLINE_QUEUENAME": "QA.Q1_EDP.BS_BISYS_REDIGERBART_DOK",
-	config for old:
-		  "DIALOGUE_ONLINE_QUEUENAME": "QA.Q475.DIALOGUE_ONLINE",
-		  "MOTTAK_ARKIV_QUEUENAME": "QA.Q475.BREVSERVER_MOTTAK_ARKIV",
-		  "MOTTAK_ONLINE_QUEUENAME": "QA.Q475.BREVSERVER_MOTTAK_ONLINE",
-	 */
 
 	@Override
 	public void configure() throws Exception {
@@ -104,17 +93,14 @@ public class BestillBrevRoute extends RouteBuilder {
 
 
 		from("jms:" + onlinebrev.getQueueName() + ROUTE_OPTIONS)
-				.autoStartup(queueProperties.isAutoStartup())
-				.log(INFO, log, "Starter behandlingen")
 				.to(BESTILL_BREV_ROUTE);
 		
 		//Brevbestilling fra Bisys
 		from(BESTILL_BREV_ROUTE)
-				.autoStartup(queueProperties.isAutoStartup())
 				.routeId(BESTILLBREV)
 				.routePolicy(bestillBrevMetricsRoutePolicy)
 				.setExchangePattern(ExchangePattern.InOnly)
-				.log(INFO, log, BESTILLBREV + " starter behandlingen")
+				.log(INFO, log, BESTILLBREV + " starter behandlingen av ny brevbestilling fra Bisys")
 				.bean(bestillBrevService)
 				.process(exchange -> {
 					setDefaultReturnQueue(exchange, deadletter.getQueueName());

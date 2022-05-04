@@ -3,7 +3,7 @@ package no.nav.brevserver.arkiverBrev.Pesys;
 import com.ibm.msg.client.jms.DetailedInvalidDestinationException;
 import com.ibm.msg.client.jms.DetailedJMSException;
 import no.nav.brevserver.arkiverBrev.ArkiverBrevMetricsRoutePolicy;
-import no.nav.brevserver.core.alias.QueueProperties;
+import no.nav.brevserver.core.alias.BrevserverProperties;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
 import org.apache.camel.ExchangePattern;
 import org.apache.camel.LoggingLevel;
@@ -36,7 +36,7 @@ public class PeArkiverBrevRoute extends RouteBuilder {
 	private final Queue brevReplyPe;
 	private final ArkiverBrevMetricsRoutePolicy arkiverBrevMetricsRoutePolicy;
 	private final PeArkiverBrevService peArkiverBrevService;
-	private final QueueProperties queueProperties;
+	private final BrevserverProperties brevserverProperties;
 
 	@Inject
 	public PeArkiverBrevRoute(Queue mottakArkivPe,
@@ -45,14 +45,14 @@ public class PeArkiverBrevRoute extends RouteBuilder {
 							  Queue brevReplyPe,
 							  ArkiverBrevMetricsRoutePolicy arkiverBrevMetricsRoutePolicy,
 							  PeArkiverBrevService peArkiverBrevService,
-							  QueueProperties queueProperties) {
+							  BrevserverProperties brevserverProperties) {
 		this.mottakArkivPe = mottakArkivPe;
 		this.mottakOnlinePe = mottakOnlinePe;
 		this.deadletterPe = deadletterPe;
 		this.brevReplyPe = brevReplyPe;
 		this.arkiverBrevMetricsRoutePolicy = arkiverBrevMetricsRoutePolicy;
 		this.peArkiverBrevService = peArkiverBrevService;
-		this.queueProperties = queueProperties;
+		this.brevserverProperties = brevserverProperties;
 	}
 
 	@Override
@@ -99,22 +99,16 @@ public class PeArkiverBrevRoute extends RouteBuilder {
 				.to(JMS + deadletterPe.getQueueName());
 
 		from("jms:" + mottakArkivPe.getQueueName() + ROUTE_OPTIONS)
-				.autoStartup(queueProperties.isAutoStartup())
-				.log(INFO, log, "mottat melding fra mq mottakArkivPe")
 				.to(PE_ARKIVER_BREV_ROUTE);
 		from("jms:" + mottakOnlinePe.getQueueName() + ROUTE_OPTIONS)
-				.autoStartup(queueProperties.isAutoStartup())
-				.log(INFO, log, "mottat melding fra mq mottakOnlinePe")
-				.autoStartup(queueProperties.isAutoStartup())
 				.to(PE_ARKIVER_BREV_ROUTE);
 
 		//Hent svar fra exstream
 		from(PE_ARKIVER_BREV_ROUTE)
-				.autoStartup(queueProperties.isAutoStartup())
 				.routeId(PE_ARKIVER_BREV_ROUTE)
 				.routePolicy(arkiverBrevMetricsRoutePolicy)
 				.setExchangePattern(ExchangePattern.InOnly)
-				.log(LoggingLevel.INFO, log, PE_ARKIVER_BREV_ROUTE + " starter behandlingen")
+				.log(LoggingLevel.INFO, log, PE_ARKIVER_BREV_ROUTE + " starter behandlingen av melding fra peSys")
 				.process(exchange -> {
 					setDefaultReturnQueue(exchange, brevReplyPe.getQueueName());
 				})

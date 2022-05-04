@@ -1,6 +1,7 @@
 package no.nav.brevserver.bestillBrev.peSys;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.brevserver.core.alias.BrevserverProperties;
 import no.nav.brevserver.core.constants.Konstanter;
 import no.nav.brevserver.core.constants.SystemType;
 import no.nav.brevserver.core.exception.BrevException;
@@ -33,12 +34,15 @@ public class PeBestillBrevService {
 
 	private final BrevstatusService brevstatusService;
 	private final BrevtilgangService brevtilgangService;
+	private final BrevserverProperties brevserverProperties;
 
 
 	public PeBestillBrevService(BrevstatusService brevstatusService,
-								BrevtilgangService brevtilgangService) {
+								BrevtilgangService brevtilgangService,
+								BrevserverProperties brevserverProperties) {
 		this.brevstatusService = brevstatusService;
 		this.brevtilgangService = brevtilgangService;
+		this.brevserverProperties = brevserverProperties;
 	}
 
 	/**
@@ -98,6 +102,10 @@ public class PeBestillBrevService {
 			}
 			brevstatusService.lagreBrevStatus(brevStatusVo);
 			log.info("Brev med brevref: " + brevStatusVo.getBrevreferanse() +" er arkivert i Brevlageret");
+
+			if(brevserverProperties.isLoggXML()){
+				log.info("Pensjons-XML til Exstream:\n" + messageVo.getStringBody());
+			}
 			setBodyAndMode(exchange,
 					messageVo.getStringBody(),
 					OPPRETT_BREV);

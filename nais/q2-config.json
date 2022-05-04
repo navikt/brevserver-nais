@@ -34,5 +34,6 @@
   "BREVSERVER_DS": "/oracle/data/dev/creds/brevserver_q2-user",
   "APPDYNAMICS": "/apikey/appdynamics/dev",
   "APPD_NAME": "brevserver-nais",
-  "BREVSERVERQUEUE_AUTOSTARTUP": "true"
+  "brevserverProperties_AUTOSTARTUP": "true",
+  "BREVSERVERPROPERTIES_LOGGXML": "true"
 }
