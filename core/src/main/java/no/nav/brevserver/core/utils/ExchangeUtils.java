@@ -36,6 +36,7 @@ public class ExchangeUtils {
 
 
 	private static Pattern containsQueuemanager = Pattern.compile("//(.*)/");
+	private static Pattern containsReadAheadAllowed = Pattern.compile("(&readAheadAllowed=1)|(readAheadAllowed=1&)|(\\?readAheadAllowed=1)(?!&)");
 
 	public static MessageVO getMessageVoFromExchange(Exchange exchange) {
 
@@ -121,6 +122,8 @@ public class ExchangeUtils {
 		if(!isEmpty(queuename)) {
 			//delete queuemanager om den finnes
 			queuename = stripQueueManager(queuename);
+			//delete unwanted parameters
+			queuename = stripExtraParameters(queuename);
 			//Set target client om den ikke er satt
 			queuename = setTargetClientForQueue(queuename);
 			//set queue-string
@@ -134,6 +137,11 @@ public class ExchangeUtils {
 	 */
 	private static String stripQueueManager(String queuename){
 		return containsQueuemanager.matcher(queuename).replaceAll("///");
+	}
+
+	//Noen parametre gjør at vi ikke klarer å sende til køen. Fjern disse.
+	private static String stripExtraParameters(String queuename){
+		return containsReadAheadAllowed.matcher(queuename).replaceAll("");
 	}
 
 	/*
