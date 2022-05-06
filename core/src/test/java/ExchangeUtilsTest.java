@@ -1,30 +1,24 @@
 import no.nav.brevserver.core.utils.ExchangeUtils;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.hamcrest.Matchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 public class ExchangeUtilsTest {
 
     @Test
     public void shouldCreateGoodQueueString(){
-        String expectedQueueStringWithAsynch = "queue:///QA.P464.BISYS_REPLY_QUE?putAsyncAllowed=1&targetClient=1";
-        String expectedQueueStringWithOutAsynch = "queue:///QA.P464.BISYS_REPLY_QUE?targetClient=1";
+        String expectedQueueString = "queue:///QA.P464.BISYS_REPLY_QUE?targetClient=1";
 
-        String badQueueStringAnd = "queue://MPLSC01/QA.P464.BISYS_REPLY_QUE?putAsyncAllowed=1&readAheadAllowed=1";
-        String goodQueueStringAnd = ExchangeUtils.buildReturnQueue(badQueueStringAnd);
-        assertThat(expectedQueueStringWithAsynch, is(goodQueueStringAnd));
+        String actualProblemQ = "queue://MPLSC02/QA.P464.BISYS_REPLY_QUE?putAsyncAllowed=1&readAheadAllowed=1";
+        String actualProblemQ2 = " queue://MPLSC02/QA.P464.BISYS_REPLY_QUE?readAheadAllowed=1&putAsyncAllowed=1";
 
+        String goodq1 = ExchangeUtils.buildReturnQueue(actualProblemQ);
+        assertThat(expectedQueueString, is(goodq1));
 
-        String badQueueStringQuestion = "queue://MPLSC01/QA.P464.BISYS_REPLY_QUE?readAheadAllowed=1&putAsyncAllowed=1";
-        String goodQueueStringQuestion = ExchangeUtils.buildReturnQueue(badQueueStringQuestion);
-        assertThat(expectedQueueStringWithAsynch, is(goodQueueStringQuestion));
+        String goodq2 = ExchangeUtils.buildReturnQueue(actualProblemQ2);
+        assertThat(expectedQueueString, is(goodq2));
 
-        String badQueueStringOnlyBadParameter = "queue://MPLSC01/QA.P464.BISYS_REPLY_QUE?readAheadAllowed=1";
-        String goodQueueStringOnlyBadParameter = ExchangeUtils.buildReturnQueue(badQueueStringOnlyBadParameter);
-        assertThat(expectedQueueStringWithOutAsynch, is(goodQueueStringOnlyBadParameter));
     }
 
     @Test
@@ -41,6 +35,5 @@ public class ExchangeUtilsTest {
         String expectedQueueString = "queue:///QA.P464.BREV_REPLY_QUE?targetClient=1";
         String goodQueueString = ExchangeUtils.buildReturnQueue(badQueueString);
         assertThat(expectedQueueString, is(goodQueueString));
-
     }
 }
