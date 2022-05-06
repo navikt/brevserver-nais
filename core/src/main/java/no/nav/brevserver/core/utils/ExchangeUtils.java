@@ -36,6 +36,9 @@ public class ExchangeUtils {
 
 
 	private static Pattern containsQueuemanager = Pattern.compile("//(.*)/");
+
+	private static Pattern containsReadAheadAllowed = Pattern.compile("(&readAheadAllowed=1)|(readAheadAllowed=1&)|(\\?readAheadAllowed=1)(?!&)");
+	private static Pattern containsPutAsync = Pattern.compile("(&putAsyncAllowed=1)|(putAsyncAllowed=1&)|(\\?putAsyncAllowed=1)(?!&)");
 	public static MessageVO getMessageVoFromExchange(Exchange exchange) {
 
 		MessageVO vo = new MessageVO(exchange.getIn().getBody(byte[].class));
@@ -127,7 +130,7 @@ public class ExchangeUtils {
 			//set queue-string
 			queuename = setQueueString(queuename);
 		}
-		log.debug("original queuname: " + oldQname + " nytt queuename: " + queuename);
+		log.info("original queuname: " + oldQname + " nytt queuename: " + queuename);
 		return queuename;
 	}
 	/*
@@ -139,13 +142,8 @@ public class ExchangeUtils {
 
 	//Noen parametre gjør at vi ikke klarer å sende til køen. Fjern disse.
 	private static String stripExtraParameters(String queuename){
-		if(queuename.contains("?readAheadAllowed=1&putAsyncAllowed=1")) {
-			queuename = queuename.replaceAll("\\?readAheadAllowed=1&putAsyncAllowed=1", "");
-		}
-		else if(queuename.contains("?putAsyncAllowed=1&readAheadAllowed=1")) {
-			queuename = queuename.replaceAll("\\?putAsyncAllowed=1&readAheadAllowed=1", "");
-		}
-		return queuename;
+		queuename = containsReadAheadAllowed.matcher(queuename).replaceAll("");
+		return containsPutAsync.matcher(queuename).replaceAll("");
 
 	}
 

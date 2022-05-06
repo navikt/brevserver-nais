@@ -11,13 +11,17 @@ public class ExchangeUtilsTest {
         String expectedQueueString = "queue:///QA.P464.BISYS_REPLY_QUE?targetClient=1";
 
         String actualProblemQ = "queue://MPLSC02/QA.P464.BISYS_REPLY_QUE?putAsyncAllowed=1&readAheadAllowed=1";
-        String actualProblemQ2 = " queue://MPLSC02/QA.P464.BISYS_REPLY_QUE?readAheadAllowed=1&putAsyncAllowed=1";
+        String actualProblemQ2 = "queue://MPLSC02/QA.P464.BISYS_REPLY_QUE?readAheadAllowed=1&putAsyncAllowed=1";
+        String actualProblemQ3 = "queue://MPLSC02/QA.P464.BISYS_REPLY_QUE?putAsyncAllowed=1&targetClient=1";
 
         String goodq1 = ExchangeUtils.buildReturnQueue(actualProblemQ);
         assertThat(expectedQueueString, is(goodq1));
 
         String goodq2 = ExchangeUtils.buildReturnQueue(actualProblemQ2);
         assertThat(expectedQueueString, is(goodq2));
+
+        String goodq3 = ExchangeUtils.buildReturnQueue(actualProblemQ3);
+        assertThat(expectedQueueString, is(goodq3));
 
     }
 
