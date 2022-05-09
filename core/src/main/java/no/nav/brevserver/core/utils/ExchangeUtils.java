@@ -10,6 +10,7 @@ import org.slf4j.MDC;
 import javax.jms.JMSException;
 import javax.jms.Queue;
 import java.util.Locale;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import static no.nav.brevserver.core.mdc.MDCConstants.MDC_CALL_ID;
@@ -45,6 +46,9 @@ public class ExchangeUtils {
 		vo.setStringBody(exchange.getIn().getBody(String.class));
 		MDC.put(MDC_CALL_ID, exchange.getExchangeId());
 
+		log.debug("JMS-headers: " + getJMSHeaders(exchange));
+
+
 		try {
 			vo.setReplyQueueName(getReplyTo(exchange));
 		} catch (JMSException e) {
@@ -52,6 +56,30 @@ public class ExchangeUtils {
 		}
 
 		return vo;
+	}
+
+	public static String getJMSHeaders(Exchange exchange){
+		String JMSHeaders = "";
+		Map headers = exchange.getIn().getHeaders();
+
+		JMSHeaders += "JMSMessage: " + headers.get("JMSMessage")+"\n";
+		JMSHeaders += "JMSType: " + headers.get("JMSType")+"\n";
+		JMSHeaders += "JMSDeliveryMode: " + headers.get("JMSDeliveryMode")+"\n";
+		JMSHeaders += "JMSDeliveryDelay: " + headers.get("JMSDeliveryDelay")+"\n";
+		JMSHeaders += "JMSDeliveryTime: " + headers.get("JMSDeliveryTime")+"\n";
+		JMSHeaders += "JMSExpiration: " + headers.get("JMSExpiration")+"\n";
+		JMSHeaders += "JMSPriority: " + headers.get("JMSPriority")+"\n";
+		JMSHeaders += "JMSMessageID: " + headers.get("JMSMessageID")+"\n";
+		JMSHeaders += "JMSTimestamp: " + headers.get("JMSTimestamp")+"\n";
+		JMSHeaders += "JMSCorrelationID: " + headers.get("JMSCorrelationID")+"\n";
+		JMSHeaders += "JMSDestination: "+ headers.get("JMSDestination")+"\n";
+		JMSHeaders += "JMSReplyTo: " + headers.get("JMSReplyTo")+"\n";
+		JMSHeaders += "JMSRedelivered: " + headers.get("JMSRedelivered")+"\n";
+		JMSHeaders += "JMS_IBM_Format:" + headers.get("JMS_IBM_Format")+"\n";
+		JMSHeaders += "JMS_IBM_Character_Set: " + headers.get("JMS_IBM_Character_Set")+"\n";
+		JMSHeaders += "JMS_IBM_Encoding: " + headers.get("JMS_IBM_Encoding")+"\n";
+
+		return JMSHeaders;
 	}
 
 	/*
