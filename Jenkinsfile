@@ -1,5 +1,5 @@
 naiseratorPipeline {
     applicationName = "brevserver-nais"
     dockerfileDir = "."
-    deployEnvironmentQ = "q5"
+    deployEnvironmentQ = "q1,q2"
 }
