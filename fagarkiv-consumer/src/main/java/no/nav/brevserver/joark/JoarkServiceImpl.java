@@ -11,7 +11,10 @@ import no.nav.virksomhet.tjenester.arkiv.journalbehandling.meldinger.v1.Dokument
 import no.nav.virksomhet.tjenester.arkiv.journalbehandling.meldinger.v1.Fildetaljer;
 import no.nav.virksomhet.tjenester.arkiv.journalbehandling.meldinger.v1.JournalpostDokumentInfoRelasjon;
 import no.nav.virksomhet.tjenester.arkiv.journalbehandling.meldinger.v1.OppdaterJournalRequest;
+import no.stelvio.common.context.RequestContext;
 import no.stelvio.common.context.RequestContextHolder;
+import no.stelvio.common.context.support.RequestContextSetter;
+import no.stelvio.common.context.support.SimpleRequestContext;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -38,6 +41,7 @@ public class JoarkServiceImpl implements JoarkService {
 
 	@Override
 	public void lagreDokument(String brevreferanse, String contentType, byte[] brevdata) throws BrevTechnicalException {
+		setRequestContextIfMissing();
 		OppdaterJournalRequest oppdaterJournalRequest = createOppdaterJournalRequest(brevreferanse);
 		setBrevDataOnRequest(contentType, brevdata, oppdaterJournalRequest);
 		journalbehandlingClient.oppdaterJournalpost(oppdaterJournalRequest);
@@ -47,10 +51,28 @@ public class JoarkServiceImpl implements JoarkService {
 	@Override
 	public void lagreFerdigstiltDokument(String brevreferanse, BrevVO redBrevVO, BrevVO pdfBrevVO)
 			throws BrevTechnicalException {
+		setRequestContextIfMissing();
 		OppdaterJournalRequest oppdaterJournalRequest = createOppdaterJournalRequest(brevreferanse);
 		setBrevDataOnRequest(redBrevVO.getContentType(), redBrevVO.getBrevdata(), oppdaterJournalRequest);
 		setBrevDataOnRequest(pdfBrevVO.getContentType(), pdfBrevVO.getBrevdata(), oppdaterJournalRequest);
 		journalbehandlingClient.oppdaterJournalpost(oppdaterJournalRequest);
+	}
+
+	@Override
+	public BrevVO hentDokument(String brevreferanse) throws BrevTechnicalException {
+		setRequestContextIfMissing();
+		Journalpost journalpost = journalClient.hentJournalpost(getBrevreferanseAsLong(brevreferanse));
+		String journalstatus = journalpost.getJournalstatus().getKode();
+
+		String[] filUuidAndContentType = getFilUuid(journalpost);
+		String filUuid = filUuidAndContentType[0];
+		String contentType = filUuidAndContentType[1];
+
+		HentDokumentRequest hentDokumentRequest = createHentDokumentRequest(brevreferanse, filUuid);
+		HentDokumentResponse hentDokumentResponse = hentDokument(hentDokumentRequest);
+
+		BrevVO brevVO = createBrevVO(brevreferanse, journalstatus, contentType, hentDokumentResponse.getDokument());
+		return brevVO;
 	}
 
 	private OppdaterJournalRequest createOppdaterJournalRequest(String brevreferanse) throws BrevTechnicalException {
@@ -130,21 +152,7 @@ public class JoarkServiceImpl implements JoarkService {
 	}
 
 
-	@Override
-	public BrevVO hentDokument(String brevreferanse) throws BrevTechnicalException {
-		Journalpost journalpost = journalClient.hentJournalpost(getBrevreferanseAsLong(brevreferanse));
-		String journalstatus = journalpost.getJournalstatus().getKode();
 
-		String[] filUuidAndContentType = getFilUuid(journalpost);
-		String filUuid = filUuidAndContentType[0];
-		String contentType = filUuidAndContentType[1];
-
-		HentDokumentRequest hentDokumentRequest = createHentDokumentRequest(brevreferanse, filUuid);
-		HentDokumentResponse hentDokumentResponse = hentDokument(hentDokumentRequest);
-
-		BrevVO brevVO = createBrevVO(brevreferanse, journalstatus, contentType, hentDokumentResponse.getDokument());
-		return brevVO;
-	}
 
 	/**
 	 * Extracts the filUUid from a Journalpost. If both fildetaljer with VariantFormat = ARKIV and VariantFormat = PRODUKSJON
@@ -233,6 +241,18 @@ public class JoarkServiceImpl implements JoarkService {
 			return Long.valueOf(brevreferanse);
 		} catch (NumberFormatException e) {
 			throw new BrevTechnicalException("Ugyldig JournalpostID '" + brevreferanse + "' mottatt, kan ikke lagre i JOARK.");
+		}
+	}
+
+	/**
+	 * The RequestContext must be set on the current thread as it is used to set the Stelvio Context header in the Joark JAX-WS
+	 * calls.
+	 */
+	private void setRequestContextIfMissing() {
+		if (!RequestContextHolder.isRequestContextSet()) {
+			RequestContext requestContext = new SimpleRequestContext.Builder().userId("srvbrevserver")
+					.componentId("Brevserver").build();
+			RequestContextSetter.setRequestContext(requestContext);
 		}
 	}
 
