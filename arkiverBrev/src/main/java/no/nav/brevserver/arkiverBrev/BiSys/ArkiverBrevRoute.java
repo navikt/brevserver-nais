@@ -2,9 +2,7 @@ package no.nav.brevserver.arkiverBrev.BiSys;
 
 import com.ibm.msg.client.jms.DetailedJMSException;
 import no.nav.brevserver.arkiverBrev.ArkiverBrevMetricsRoutePolicy;
-import no.nav.brevserver.core.alias.BrevserverProperties;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
-import org.apache.camel.ExchangePattern;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.ValidationException;
 import org.apache.camel.builder.RouteBuilder;
@@ -14,14 +12,17 @@ import javax.inject.Inject;
 import javax.jms.Queue;
 
 import static no.nav.brevserver.core.utils.ExchangeUtils.JMS;
+import static no.nav.brevserver.core.utils.ExchangeUtils.JMSReplyTo;
 import static no.nav.brevserver.core.utils.ExchangeUtils.JMS_OVERRIDDEN;
 import static no.nav.brevserver.core.utils.ExchangeUtils.OVERRIDE_DESTINATION;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SENDTOMODE;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.GI_FEILMELDING;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.GI_TILBAKEMELDING;
 import static no.nav.brevserver.core.utils.ExchangeUtils.setDefaultReturnQueue;
+import static org.apache.camel.ExchangePattern.InOnly;
 import static org.apache.camel.LoggingLevel.ERROR;
 import static org.apache.camel.LoggingLevel.INFO;
+import static org.apache.camel.LoggingLevel.WARN;
 
 @Component
 public class ArkiverBrevRoute extends RouteBuilder {
@@ -34,17 +35,14 @@ public class ArkiverBrevRoute extends RouteBuilder {
 	private final Queue deadletter;
 	private final ArkiverBrevMetricsRoutePolicy arkiverBrevMetricsRoutePolicy;
 	private final ArkiverBrevService arkiverBrevService;
-	private final BrevserverProperties brevserverProperties;
 
 
 	@Inject
-	public ArkiverBrevRoute(final BrevserverProperties brevserverProperties,
-							Queue mottakArkiv,
+	public ArkiverBrevRoute(Queue mottakArkiv,
 							Queue mottakOnline,
 							Queue deadletter,
 							ArkiverBrevMetricsRoutePolicy arkiverBrevMetricsRoutePolicy,
 							ArkiverBrevService arkiverBrevService) {
-		this.brevserverProperties = brevserverProperties; 
 		this.mottakArkiv = mottakArkiv;
 		this.mottakOnline = mottakOnline;
 		this.deadletter = deadletter;
@@ -67,27 +65,25 @@ public class ArkiverBrevRoute extends RouteBuilder {
 				.handled(true)
 				.useOriginalMessage()
 				.logExhaustedMessageBody(false)
-				.log(LoggingLevel.WARN, log, "${exception}; ")
-				.to("jms:" + deadletter.getQueueName());
+				.log(WARN, log, "${exception}; ")
+				.to(InOnly, "jms:" + deadletter.getQueueName());
 
 		onException(BrevTechnicalException.class)
 				.handled(true)
 				.useOriginalMessage()
 				.logExhaustedMessageBody(false)
 				.log(ERROR, log, "${exception}; ")
-				.to("jms:" + deadletter.getQueueName());
+				.to(InOnly, "jms:" + deadletter.getQueueName());
 
 
 		onException(DetailedJMSException.class)
-				.log(LoggingLevel.WARN, "DetailedJMSException oppstått i ArkiverBrevRoute. ${exception};" )
+				.log(WARN, "DetailedJMSException oppstått i ArkiverBrevRoute. ${exception};" )
 				.useOriginalMessage()
 				.logExhaustedMessageBody(true)
 				.logExhaustedMessageHistory(true)
 				.logStackTrace(true)
 				.handled(true)
-				.to("jms:" + deadletter.getQueueName());
-
-
+				.to(InOnly, "jms:" + deadletter.getQueueName());
 
 		from("jms:" + mottakArkiv.getQueueName() + ROUTE_OPTIONS)
 				.to(ARKIVER_BREV_ROUTE);
@@ -98,22 +94,23 @@ public class ArkiverBrevRoute extends RouteBuilder {
 		from(ARKIVER_BREV_ROUTE)
 				.routeId(ARKIVER_BREV_ROUTE)
 				.routePolicy(arkiverBrevMetricsRoutePolicy)
-				.setExchangePattern(ExchangePattern.InOnly)
+				.setExchangePattern(InOnly)
 				.log(LoggingLevel.INFO, log, ARKIVER_BREV_ROUTE + " starter arkiveringen av ny melding fra Bisys")
 				.process(exchange -> {
 					setDefaultReturnQueue(exchange, deadletter.getQueueName());
 				})
 				.bean(arkiverBrevService)
+				.removeHeader(JMSReplyTo)
 				.choice()
 					.when(exchangeProperty(SENDTOMODE).isEqualTo(GI_TILBAKEMELDING))
-						.log(INFO, log, "Sender svar til: ${exchange.getIn().getHeader(\"" + OVERRIDE_DESTINATION + "\").toString()}")
-						.to(JMS_OVERRIDDEN)
+						.log(INFO, log, "Sender svar til destinasjon " + OVERRIDE_DESTINATION + "=${header." + OVERRIDE_DESTINATION + "}")
+						.to(InOnly, JMS_OVERRIDDEN)
 				.when(exchangeProperty(SENDTOMODE).isEqualTo(GI_FEILMELDING))
-						.log(INFO, log, "Sender feilmelding til: ${exchange.getIn().getHeader(\"" + OVERRIDE_DESTINATION + "\").toString()}")
-						.to(JMS_OVERRIDDEN)
+						.log(INFO, log, "Sender feilmelding til destinasjon " + OVERRIDE_DESTINATION + "=${header." + OVERRIDE_DESTINATION + "}")
+						.to(InOnly, JMS_OVERRIDDEN)
 					.otherwise()
-						.to(JMS + deadletter.getQueueName())
-						.log(ERROR, log, "En melding er sendt til deadletter pga ukjent mode!")
+						.to(InOnly, JMS + deadletter.getQueueName())
+						.log(ERROR, log, "En melding er sendt til destinasjon deadletter pga ukjent mode!")
 				.end();
 		//@formatter:on
 	}

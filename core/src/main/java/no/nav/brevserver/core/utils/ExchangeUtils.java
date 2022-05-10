@@ -9,7 +9,6 @@ import org.slf4j.MDC;
 
 import javax.jms.JMSException;
 import javax.jms.Queue;
-import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -28,7 +27,7 @@ public class ExchangeUtils {
 
 	public static final String JMS = "jms:";
 	public static final String SENDTOMODE = "SENDTOMODE";
-	private static final String JMSReplyTo = "JMSReplyTo";
+	public static final String JMSReplyTo = "JMSReplyTo";
 	public static final String DEFAULT_RETURN_QUEUE = "defaultReturnQueue";
 
 	public static final String OVERRIDE_DESTINATION = "CamelJmsDestinationName";
@@ -46,7 +45,9 @@ public class ExchangeUtils {
 		vo.setStringBody(exchange.getIn().getBody(String.class));
 		MDC.put(MDC_CALL_ID, exchange.getExchangeId());
 
-		log.debug("JMS-headers: " + getJMSHeaders(exchange));
+		if(log.isDebugEnabled()) {
+			log.debug("JMS-headers: " + getJMSHeaders(exchange));
+		}
 
 
 		try {
@@ -60,7 +61,7 @@ public class ExchangeUtils {
 
 	public static String getJMSHeaders(Exchange exchange){
 		String JMSHeaders = "";
-		Map headers = exchange.getIn().getHeaders();
+		Map<String, Object> headers = exchange.getIn().getHeaders();
 
 		JMSHeaders += "JMSMessage: " + headers.get("JMSMessage")+"\n";
 		JMSHeaders += "JMSType: " + headers.get("JMSType")+"\n";
@@ -92,9 +93,12 @@ public class ExchangeUtils {
 			returnQueue = returnQueue.trim();
 		}
 		String returKo = StringUtils.isBlank(returnQueue) ? (String) exchange.getIn().getHeader(DEFAULT_RETURN_QUEUE) : returnQueue;
-		setDestination(exchange, buildReturnQueue(returKo));
+		String newReturKo = buildReturnQueue(returKo);
+		setDestination(exchange, newReturKo);
 		exchange.setProperty(SENDTOMODE, sendToMode.name());
-		log.debug("Setter returkø-header til: " + returKo + " og sendToMode til: " + sendToMode);
+		if(log.isDebugEnabled()) {
+			log.debug("Setter returkø-header til: " + newReturKo + " og sendToMode til: " + sendToMode);
+		}
 	}
 
 	/*

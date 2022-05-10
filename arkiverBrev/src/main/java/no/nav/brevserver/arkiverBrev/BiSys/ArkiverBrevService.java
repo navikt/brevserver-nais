@@ -109,7 +109,7 @@ public class ArkiverBrevService {
 			}
 			// Lagre i Brevlageret
 			brevlagerService.lagreBrev(kvittering, brevStatusVo);
-			log.info("Brev med brevref: " + brevStatusVo.getBrevreferanse() +" er arkivert i Brevlageret");
+			log.info("Brev med brevreferanse=" + brevStatusVo.getBrevreferanse() +" er arkivert i Brevlageret");
 		}
 
 		setBodyAndReturnQueueWithMode(exchange,
