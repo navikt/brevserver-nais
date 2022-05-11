@@ -20,9 +20,7 @@ import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.GI_FEILMELDI
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.GI_TILBAKEMELDING;
 import static no.nav.brevserver.core.utils.ExchangeUtils.setDefaultReturnQueue;
 import static org.apache.camel.ExchangePattern.InOnly;
-import static org.apache.camel.LoggingLevel.ERROR;
-import static org.apache.camel.LoggingLevel.INFO;
-import static org.apache.camel.LoggingLevel.WARN;
+import static org.apache.camel.LoggingLevel.*;
 
 @Component
 public class ArkiverBrevRoute extends RouteBuilder {
@@ -103,9 +101,10 @@ public class ArkiverBrevRoute extends RouteBuilder {
 				.removeHeader(JMSReplyTo)
 				.choice()
 					.when(exchangeProperty(SENDTOMODE).isEqualTo(GI_TILBAKEMELDING))
-						.log(INFO, log, "Sender svar til destinasjon " + OVERRIDE_DESTINATION + "=${header." + OVERRIDE_DESTINATION + "}")
-						.to(InOnly, JMS_OVERRIDDEN)
-				.when(exchangeProperty(SENDTOMODE).isEqualTo(GI_FEILMELDING))
+						//Tilbakemeldingen blir sendt i kvitteringService
+						.log(DEBUG, log, "Kvitteringsmelding har blitt sendt via kvitteringService. Avslutter behandling")
+						.stop()
+					.when(exchangeProperty(SENDTOMODE).isEqualTo(GI_FEILMELDING))
 						.log(INFO, log, "Sender feilmelding til destinasjon " + OVERRIDE_DESTINATION + "=${header." + OVERRIDE_DESTINATION + "}")
 						.to(InOnly, JMS_OVERRIDDEN)
 					.otherwise()

@@ -117,6 +117,10 @@ public class ExchangeUtils {
 		exchange.setProperty(SENDTOMODE, sendToMode);
 	}
 
+	public static void setMode(Exchange exchange, SendToMode sendToMode) {
+		exchange.setProperty(SENDTOMODE, sendToMode);
+	}
+
 	public static void setDefaultReturnQueue(Exchange exchange, String returnQueue) {
 		exchange.getIn().setHeader(DEFAULT_RETURN_QUEUE, setTargetClientForQueue(returnQueue));
 	}

@@ -15,6 +15,7 @@ import no.nav.brevserver.core.vo.KvitteringVO;
 import no.nav.brevserver.core.vo.MessageVO;
 import no.nav.brevserver.service.BrevlagerService;
 import no.nav.brevserver.service.BrevstatusService;
+import no.nav.brevserver.service.queue.KvitteringService;
 import org.apache.camel.Exchange;
 import org.apache.camel.Handler;
 import org.springframework.stereotype.Service;
@@ -22,7 +23,7 @@ import org.springframework.stereotype.Service;
 import javax.inject.Inject;
 
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.GI_TILBAKEMELDING;
-import static no.nav.brevserver.core.utils.ExchangeUtils.setBodyAndReturnQueueWithMode;
+import static no.nav.brevserver.core.utils.ExchangeUtils.setMode;
 
 
 /**
@@ -36,13 +37,16 @@ public class ArkiverBrevService {
 
 	private BrevstatusService brevstatusService;
 	private BrevlagerService brevlagerService;
+	private KvitteringService kvitteringService;
 
 	@Inject
 	public ArkiverBrevService(
 			BrevstatusService brevstatusService,
-			BrevlagerService brevlagerService) {
+			BrevlagerService brevlagerService,
+			KvitteringService kvitteringService) {
 		this.brevstatusService = brevstatusService;
 		this.brevlagerService = brevlagerService;
+		this.kvitteringService = kvitteringService;
 	}
 
 	@Handler
@@ -112,13 +116,17 @@ public class ArkiverBrevService {
 			log.info("Brev med brevreferanse=" + brevStatusVo.getBrevreferanse() +" er arkivert i Brevlageret");
 		}
 
+		kvitteringService.sendKvitteringBi(createReturKvittering(brevStatusVo, kvittering), brevStatusVo.getReturKoe());
+
+		setMode(exchange, GI_TILBAKEMELDING);
+		/*
 		setBodyAndReturnQueueWithMode(exchange,
 				createReturKvittering(brevStatusVo, kvittering),
 				brevStatusVo.getReturKoe(),
 				GI_TILBAKEMELDING);
 
 		exchange.getIn().setHeader("JMS_IBM_Format", "MQSTR");
-
+		*/
 	}
 
 
