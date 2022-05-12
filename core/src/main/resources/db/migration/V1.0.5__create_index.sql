@@ -1,0 +1,1 @@
+create index IDX_BREVREFERANSE_SYSTEMID on T_BREVTILGANG(brevreferanse, systemid);
