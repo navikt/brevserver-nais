@@ -1,9 +1,10 @@
 package no.nav.brevserver.joark;
 
-import no.nav.brevserver.fagarkiv.mapper.OppdaterJournalRequestMapper;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
 import no.nav.brevserver.core.vo.BrevVO;
 import no.nav.brevserver.core.vo.FilType;
+import no.nav.brevserver.fagarkiv.mapper.OppdaterJournalRequestMapper;
 import no.nav.virksomhet.gjennomforing.arkiv.journal.v2.Journalpost;
 import no.nav.virksomhet.tjenester.arkiv.journal.meldinger.v2.HentDokumentRequest;
 import no.nav.virksomhet.tjenester.arkiv.journal.meldinger.v2.HentDokumentResponse;
@@ -18,6 +19,7 @@ import no.stelvio.common.context.support.SimpleRequestContext;
 import org.springframework.stereotype.Service;
 
 @Service
+@Slf4j
 public class JoarkServiceImpl implements JoarkService {
 
 	static final String VARIANT_FORMAT_PRODUKSJON = "PRODUKSJON";
@@ -36,7 +38,6 @@ public class JoarkServiceImpl implements JoarkService {
 		this.journalbehandlingClient = journalbehandlingClient;
 		this.oppdaterJournalRequestMapper = oppdaterJournalRequestMapper;
 	}
-
 
 
 	@Override
@@ -77,10 +78,17 @@ public class JoarkServiceImpl implements JoarkService {
 
 	private OppdaterJournalRequest createOppdaterJournalRequest(String brevreferanse) throws BrevTechnicalException {
 		Journalpost journalpost = journalClient.hentJournalpost(getBrevreferanseAsLong(brevreferanse));
+		verifyNotEmptyBruker(journalpost);
 		verifyJournalStatus(journalpost);
 		OppdaterJournalRequest oppdaterJournalRequest = oppdaterJournalRequestMapper.map(journalpost);
 		oppdaterJournalRequest.setEndretAvNavn(RequestContextHolder.isRequestContextSet() ? RequestContextHolder.currentRequestContext().getUserId() : "srvbrevserver");
 		return oppdaterJournalRequest;
+	}
+
+	private void verifyNotEmptyBruker(Journalpost journalpost) {
+		if (journalpost != null && (journalpost.getGjelderListe() == null || journalpost.getGjelderListe().isEmpty())) {
+			log.error("Journalpost {} har ingen gyldige brukere før oppdatering", journalpost.getJournalpostId());
+		}
 	}
 
 	private void verifyJournalStatus(Journalpost journalpost) throws BrevTechnicalException {
@@ -150,8 +158,6 @@ public class JoarkServiceImpl implements JoarkService {
 		}
 		return dokumentInfo;
 	}
-
-
 
 
 	/**
