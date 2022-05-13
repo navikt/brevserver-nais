@@ -35,5 +35,6 @@
   "BREVSERVERCHANNEL_NAME": "Q4_BREVSERVER",
   "BREVSERVER_DS": "/oracle/data/dev/creds/brevserver_q4-user",
   "APPDYNAMICS": "/apikey/appdynamics/dev",
-  "BREVSERVERPROPERTIES_LOGGXML": "true"
+  "BREVSERVERPROPERTIES_LOGGXML": "true",
+  "BREVSERVERPROPERTIES_DATABASE_POOLSIZE": "10"
 }

@@ -55,6 +55,8 @@ spec:
       value: {{ APPD_NAME }}
     - name: BREVSERVERPROPERTIES_LOGGXML
       value: "{{ BREVSERVERPROPERTIES_LOGGXML }}"
+    - name: BREVSERVERPROPERTIES_DATABASE_POOLSIZE
+      value: "{{ BREVSERVERPROPERTIES_DATABASE_POOLSIZE }}"
   image: {{ image }}
   ingresses:
     {{#each INGRESSES}}

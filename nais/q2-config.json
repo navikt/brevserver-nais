@@ -34,5 +34,6 @@
   "BREVSERVER_DS": "/oracle/data/dev/creds/brevserver_q2-user",
   "APPDYNAMICS": "/apikey/appdynamics/dev",
   "APPD_NAME": "brevserver-nais",
-  "BREVSERVERPROPERTIES_LOGGXML": "true"
+  "BREVSERVERPROPERTIES_LOGGXML": "true",
+  "BREVSERVERPROPERTIES_DATABASE_POOLSIZE": "10"
 }
