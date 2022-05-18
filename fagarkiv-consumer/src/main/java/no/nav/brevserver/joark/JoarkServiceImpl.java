@@ -82,7 +82,14 @@ public class JoarkServiceImpl implements JoarkService {
 		verifyJournalStatus(journalpost);
 		OppdaterJournalRequest oppdaterJournalRequest = oppdaterJournalRequestMapper.map(journalpost);
 		oppdaterJournalRequest.setEndretAvNavn(RequestContextHolder.isRequestContextSet() ? RequestContextHolder.currentRequestContext().getUserId() : "srvbrevserver");
+		verifyNotEmptyBruker(oppdaterJournalRequest);
 		return oppdaterJournalRequest;
+	}
+
+	private void verifyNotEmptyBruker(OppdaterJournalRequest journalpost) {
+		if (journalpost != null && (journalpost.getGjelderListe() == null || journalpost.getGjelderListe().isEmpty())) {
+			log.error("OppdaterJournalpostRequest {} har ingen gyldige brukere etter oppdatering", journalpost.getJournalpostId());
+		}
 	}
 
 	private void verifyNotEmptyBruker(Journalpost journalpost) {
