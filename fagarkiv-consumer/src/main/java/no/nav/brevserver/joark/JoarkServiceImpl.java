@@ -89,6 +89,8 @@ public class JoarkServiceImpl implements JoarkService {
 	private void verifyNotEmptyBruker(OppdaterJournalRequest journalpost) {
 		if (journalpost != null && (journalpost.getGjelderListe() == null || journalpost.getGjelderListe().isEmpty())) {
 			log.error("OppdaterJournalpostRequest {} har ingen gyldige brukere etter oppdatering", journalpost.getJournalpostId());
+		} else if (journalpost != null && journalpost.getGjelderListe().size() > 0) {
+			log.info("Journalpost {} har {} gyldige bruker, f.eks: {} versjon {}", journalpost.getJournalpostId(), journalpost.getGjelderListe().size(), journalpost.getGjelderListe().get(0).getBrukerId()!=null?journalpost.getGjelderListe().get(0).getBrukerId().substring(0, 3):"Ingen brukerId", journalpost.getGjelderListe().get(0).getVersjon());
 		}
 	}
 
