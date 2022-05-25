@@ -1,0 +1,1 @@
+create index IDX_HIST_BREVREFERANSE_SYSTEMID on T_BREVLAGER_HISTORIKK(brevreferanse, systemid);
