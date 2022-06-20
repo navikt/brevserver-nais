@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.brevserver.core.constants.SystemType;
 import no.nav.brevserver.core.domain.entities.Brev;
 import no.nav.brevserver.core.domain.entities.id.BrevreferanseSystemCompositeId;
+import no.nav.brevserver.core.exception.BrevFinnesAlleredeException;
 import no.nav.brevserver.core.repository.BrevRepository;
 import no.nav.brevserver.core.utils.xmlHandlers.XMLService;
 import no.nav.brevserver.joark.JoarkService;
@@ -247,7 +248,7 @@ public class DefaultBrevlagerService implements BrevlagerService {
 	private void verifyEditableStatus(BrevStatusVO brevStatus) throws BrevException {
 		if (Konstanter.BREVSTATUS_FERDIG.equals(brevStatus.getStatus())
 				|| Konstanter.BREVSTATUS_UTSKRIFT.equals(brevStatus.getStatus())) {
-			throw new BrevFunctionalException("Brevet med brevreferanse " + brevStatus.getBrevreferanse() + " har status " + brevStatus.getStatus() + " og kan ikke endres");
+			throw new BrevFinnesAlleredeException("Brevet med brevreferanse " + brevStatus.getBrevreferanse() + " har status " + brevStatus.getStatus() + " og kan ikke endres");
 		}
 	}
 
