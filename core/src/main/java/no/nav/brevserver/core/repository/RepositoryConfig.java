@@ -37,13 +37,29 @@ public class RepositoryConfig {
 
 	@Bean
 	@Primary
-	DataSource dataSource(final DataSourceProperties dataSourceProperties) throws SQLException {
-		DriverManagerDataSource dataSource = new DriverManagerDataSource();
-		dataSource.setDriverClassName(dataSourceProperties.getDriverClassName());
-		dataSource.setUrl(dataSourceProperties.getUrl());
-		dataSource.setUsername(dataSourceProperties.getUsername());
-		dataSource.setPassword(dataSourceProperties.getPassword());
-		return dataSource;
+	DataSource dataSource(final DataSourceProperties dataSourceProperties,
+						  final BrevserverProperties brevserverProperties) throws SQLException {
+		PoolDataSource poolDataSource = PoolDataSourceFactory.getPoolDataSource();
+		poolDataSource.setConnectionFactoryClassName(dataSourceProperties.getDriverClassName());
+		poolDataSource.setURL(dataSourceProperties.getUrl());
+		poolDataSource.setUser(dataSourceProperties.getUsername());
+		poolDataSource.setPassword(dataSourceProperties.getPassword());
+
+		Properties connProperties = new Properties();
+		connProperties.setProperty(SQLnetDef.TCP_CONNTIMEOUT_STR, "3000");
+		connProperties.setProperty("oracle.jdbc.thinForceDNSLoadBalancing", "true");
+		// Statisk poolsize. Se brevserverProperties.java
+		int poolsize = brevserverProperties.getDatabase().getPoolsize();
+		log.info("Setter brevserverdb poolsize til: " + poolsize);
+
+		poolDataSource.setInitialPoolSize(poolsize);
+		poolDataSource.setMinPoolSize(poolsize);
+		poolDataSource.setMaxPoolSize(poolsize);
+		poolDataSource.setMaxConnectionReuseTime(300); // 5min
+		poolDataSource.setMaxConnectionReuseCount(1000);
+		poolDataSource.setConnectionProperties(connProperties);
+
+		return poolDataSource;
 	}
 
 	@Bean
