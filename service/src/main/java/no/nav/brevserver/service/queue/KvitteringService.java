@@ -10,7 +10,6 @@ import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.builder.ExchangeBuilder;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import javax.jms.JMSException;
@@ -18,7 +17,6 @@ import javax.jms.Queue;
 
 import static no.nav.brevserver.core.utils.ExchangeUtils.buildReturnQueue;
 import static no.nav.brevserver.core.utils.ExchangeUtils.setDestination;
-import static no.nav.brevserver.core.utils.ExchangeUtils.setDestinationWithQueueString;
 import static no.nav.brevserver.service.queue.KvitteringRoute.DIRECT_SENDKVITTERINGROUTE;
 import static org.apache.logging.log4j.util.Strings.isEmpty;
 
@@ -26,6 +24,7 @@ import static org.apache.logging.log4j.util.Strings.isEmpty;
 @Slf4j
 public class KvitteringService {
 
+	private static final String JMSCORRELATIONID = "JMSCorrelationID";
 	private final ProducerTemplate producerTemplate;
 	private final CamelContext context;
 	private final Queue brevReplyPe;
@@ -43,7 +42,7 @@ public class KvitteringService {
 		KvitteringVO kvittering = createKvittering(brevstatus, brev);
 		String xmlKvittering = XMLService.unmarshal(kvittering, brevstatus);
 
-		if(SystemType.PE.equals(systemType) && (returKoe == null || isEmpty(returKoe.trim()))) {
+		if (SystemType.PE.equals(systemType) && (returKoe == null || isEmpty(returKoe.trim()))) {
 			try {
 				returKoe = brevReplyPe.getQueueName();
 			} catch (JMSException exception) {
@@ -55,19 +54,32 @@ public class KvitteringService {
 		doSendKvittering(xmlKvittering, buildReturnQueue(returKoe));
 	}
 
-	public void sendKvitteringBi(String xmlKvittering, String returKoe){
+	/*
+	 * Elin / predator leter etter kvitteringsmeldinger basert på correlationID'en; Legger den på her.
+	 */
+	public void sendKvitteringBiMedCorrelationID(String xmlKvittering, String returKoe, Exchange exchange) {
+
+		String correlationID = (String) exchange.getIn().getHeader(JMSCORRELATIONID);
+		doSendKvitteringMedCorrelationID(xmlKvittering, returKoe, correlationID);
+	}
+
+	public void sendKvitteringBi(String xmlKvittering, String returKoe) {
 
 		doSendKvittering(xmlKvittering, returKoe);
 	}
 
 	private void doSendKvittering(String xmlKvittering, String returKoe) {
+		doSendKvitteringMedCorrelationID(xmlKvittering, returKoe, null);
+	}
+
+	private void doSendKvitteringMedCorrelationID(String xmlKvittering, String returKoe, String correlationID) {
 		try {
 
-			if(returKoe != null){
+			if (returKoe != null) {
 				returKoe = returKoe.trim();
 			}
 
-			if(isEmpty(returKoe)){
+			if (isEmpty(returKoe)) {
 				log.warn("Ingen returkø er definert. Avbryter kvitteringsløpet.");
 				return;
 			}
@@ -76,13 +88,17 @@ public class KvitteringService {
 			setDestination(kvitteringExchange, buildReturnQueue(returKoe));
 
 			kvitteringExchange.getIn().setHeader("JMS_IBM_Format", "MQSTR");
+			if (!isEmpty(correlationID)) {
+				kvitteringExchange.getIn().setHeader(JMSCORRELATIONID, correlationID);
+			}
 
-			log.info("Brevserver leverer kvitteringen til: " + returKoe);
+			log.info("Brevserver leverer kvitteringen til: " + returKoe + " med correlationID: " + correlationID);
 			producerTemplate.send(DIRECT_SENDKVITTERINGROUTE, kvitteringExchange);
 		} catch (Exception e) {
 			log.error("Klarte ikke sende melding: " + e.getMessage() + " \n" + e.getStackTrace());
 		}
 	}
+
 
 	private KvitteringVO createKvittering(BrevStatusVO brevstatus, BrevVO brev) {
 		KvitteringVO kvittering = new KvitteringVO();

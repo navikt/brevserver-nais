@@ -116,17 +116,9 @@ public class ArkiverBrevService {
 			log.info("Brev med brevreferanse=" + brevStatusVo.getBrevreferanse() +" er arkivert i Brevlageret");
 		}
 
-		kvitteringService.sendKvitteringBi(createReturKvittering(brevStatusVo, kvittering), brevStatusVo.getReturKoe());
+		kvitteringService.sendKvitteringBiMedCorrelationID(createReturKvittering(brevStatusVo, kvittering), brevStatusVo.getReturKoe(), exchange);
 
 		setMode(exchange, GI_TILBAKEMELDING);
-		/*
-		setBodyAndReturnQueueWithMode(exchange,
-				createReturKvittering(brevStatusVo, kvittering),
-				brevStatusVo.getReturKoe(),
-				GI_TILBAKEMELDING);
-
-		exchange.getIn().setHeader("JMS_IBM_Format", "MQSTR");
-		*/
 	}
 
 
