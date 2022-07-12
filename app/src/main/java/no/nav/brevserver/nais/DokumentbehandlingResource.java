@@ -8,10 +8,7 @@ import no.nav.brevserver.core.exception.BrevFunctionalException;
 import no.nav.brevserver.core.exception.BrevSecurityException;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
 import no.nav.brevserver.nais.swagger.SwaggerLagreBrev;
-import no.nav.security.token.support.core.api.Protected;
-import no.nav.security.token.support.core.context.TokenValidationContext;
-import no.nav.security.token.support.core.context.TokenValidationContextHolder;
-import no.nav.security.token.support.core.jwt.JwtToken;
+import no.nav.security.token.support.core.api.Unprotected;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.AvbrytDokumentRequest;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.FerdigstillDokumentRequest;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.HentDokumentRequest;
@@ -32,20 +29,18 @@ import javax.activation.DataHandler;
 import javax.mail.util.ByteArrayDataSource;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Optional;
 
 @Api(description = "Tjenester for å arkivere i brevserver")
 @RequestMapping("rest")
 @RestController
 @Slf4j
-@Protected
+@Unprotected
 public class DokumentbehandlingResource {
 
 	private static final String EXCEPTION_MESSAGE = "Rest-Kall feilet";
 	public static final String APPLICATION_XML = "application/xml";
 
-	private final DokumentbehandlingProvider dokumentbehandlingProvider;
-
+	private DokumentbehandlingProvider dokumentbehandlingProvider;
 
 	@Autowired
 	public DokumentbehandlingResource(DokumentbehandlingProvider dokumentbehandlingProvider) {
