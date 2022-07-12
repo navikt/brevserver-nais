@@ -6,6 +6,7 @@ import no.nav.brevserver.core.exception.BrevFunctionalException;
 import no.nav.brevserver.core.exception.BrevSecurityException;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
 import no.nav.brevserver.service.loggmottak.Log;
+import no.nav.security.token.support.core.api.Unprotected;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.AvbrytDokument;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.AvbrytDokumentRequest;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.DokumentbehandlingPortType;

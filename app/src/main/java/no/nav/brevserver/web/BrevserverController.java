@@ -1,5 +1,6 @@
 package no.nav.brevserver.web;
 
+import no.nav.security.token.support.core.api.Unprotected;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
@@ -16,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 @Controller
+@Unprotected
 public class BrevserverController {
 
 	@Value("${brevserver.server}")

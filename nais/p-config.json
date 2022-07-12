@@ -35,5 +35,7 @@
   "APPDYNAMICS": "/apikey/appdynamics/prod",
   "APPD_NAME": "brevserver-nais",
   "BREVSERVERPROPERTIES_LOGGXML": "false",
-  "BREVSERVERPROPERTIES_DATABASE_POOLSIZE": "60"
+  "BREVSERVERPROPERTIES_DATABASE_POOLSIZE": "60",
+  "NO_NAV_SECURITY_JWT_ISSUER_RESTSTS_ACCEPTED_AUDIENCE": "srvdokprodbatch",
+  "NO_NAV_SECURITY_JWT_ISSUER_RESTSTS_DISCOVERYURL": "https://security-token-service.nais.adeo.no/rest/v1/sts/.well-known/openid-configuration"
 }
