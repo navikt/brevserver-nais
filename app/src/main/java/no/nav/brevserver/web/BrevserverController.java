@@ -1,5 +1,6 @@
 package no.nav.brevserver.web;
 
+import lombok.extern.slf4j.Slf4j;
 import no.nav.security.token.support.core.api.Unprotected;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
@@ -18,13 +19,18 @@ import java.io.InputStream;
 
 @Controller
 @Unprotected
+@Slf4j
 public class BrevserverController {
 
 	@Value("${brevserver.server}")
 	private String server;
 
+	private final String systemidPattern = "^[A-Za-z]{1,2}[0-9]{1,2}";
+	private final String brevreferansePattern = "^[0-9]*$";
+
 	@GetMapping("/StartBrevKlient.jsp")
 	public String startBrevklient(@RequestParam(name = "systemid") String systemid, @RequestParam(name = "dokid") String dokid, @RequestParam(name = "token") String token, @RequestParam(name = "height", required = false) String height, @RequestParam(name = "width", required = false) String width, Model model) {
+		validateInput(systemid, dokid);
 		model.addAttribute("server", server);
 		model.addAttribute("systemid", systemid);
 		model.addAttribute("token", token);
@@ -50,6 +56,17 @@ public class BrevserverController {
 				.contentType(mediaType)
 				.contentLength(resource.getByteArray().length)
 				.body(resource);
+	}
+
+	private void validateInput(String systemid, String dokid) {
+		if(!systemid.matches(systemidPattern)){
+			log.error("Systemid {} is not valid", systemid);
+			throw new RuntimeException("Systemid er ikke gyldig");
+		}
+		if(!dokid.matches(brevreferansePattern)) {
+			log.error("Brevreferanse {} is not valid", systemid);
+			throw new RuntimeException("Brevreferanse er ikke gyldig");
+		}
 	}
 
 }
