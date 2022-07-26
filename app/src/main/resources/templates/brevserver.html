@@ -10,8 +10,8 @@
         const ua = window.navigator.userAgent; //Check the userAgent property of the window.navigator object
         const msie = ua.indexOf('MSIE '); // IE 10 or older
         const trident = ua.indexOf('Trident/'); //IE 11
-
-        return (msie > 0 || trident > 0);
+        const edge = ua.indexOf('Edg'); //Edge
+        return (msie > 0 || trident > 0 || edge > 0);
     }
     function cleanUrl(url) {
         return url.replace(":", "%3A")
