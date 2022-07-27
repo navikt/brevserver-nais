@@ -30,7 +30,6 @@ public class BrevserverController {
 
 	@GetMapping("/StartBrevKlient.jsp")
 	public String startBrevklient(@RequestParam(name = "systemid") String systemid, @RequestParam(name = "dokid") String dokid, @RequestParam(name = "token") String token, @RequestParam(name = "height", required = false) String height, @RequestParam(name = "width", required = false) String width, Model model) {
-		validateInput(systemid, dokid);
 		model.addAttribute("server", server);
 		model.addAttribute("systemid", systemid);
 		model.addAttribute("token", token);
