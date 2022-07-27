@@ -4,34 +4,6 @@
 
     <TITLE>Start av Brevklient</TITLE>
 </HEAD>
-<script th:inline="javascript">
-    /*<![CDATA[*/
-    function isIE() {
-        const ua = window.navigator.userAgent; //Check the userAgent property of the window.navigator object
-        const msie = ua.indexOf('MSIE '); // IE 10 or older
-        const trident = ua.indexOf('Trident/'); //IE 11
-        const edge = ua.indexOf('Edg'); //Edge
-        return (msie > 0 || trident > 0 || edge > 0);
-    }
-    function cleanUrl(url) {
-        return url.replace(":", "%3A")
-            .replaceAll("/", "%2F")
-            .replace("?", "%3F")
-            .replace("=", "%3D")
-            .replace("&", "%26")
-            .replace("#", "%23");
-    }
-    if(!isIE()){
-        const server = /*[[${server}]]*/ 'default';
-        const systemid = /*[[${systemid}]]*/ 'default';
-        const token = /*[[${token}]]*/ 'default';
-        const dokid = /*[[${dokid}]]*/ 'default';
-        const redirectUrl = 'mbdok://' + systemid + '@brevklient/dokument/' + dokid + '?token=' + token + '&server=' + cleanUrl(server);
-        console.log("UserAgent is not IE, redirecting: "+redirectUrl);
-        location.replace(redirectUrl);
-    }
-    /*]]>*/
-</script>
 <BODY>
 <P>
     <APPLET codebase="/brevweb" archive="StartBrevklientApplet.jar" code="StartBrevklientApplet.class" th:height="${height}" th:width="${width}">
