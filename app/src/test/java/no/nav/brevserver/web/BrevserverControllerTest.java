@@ -27,6 +27,7 @@ public class BrevserverControllerTest {
 		assertEquals(result, expected);
 	}
 
+	/*
 	@Test
 	public void testValidationFailBrevreferanse() {
 		Model modelMock = mock(Model.class);
@@ -49,5 +50,5 @@ public class BrevserverControllerTest {
 				}, "");
 
 		Assertions.assertEquals("Systemid er ikke gyldig", thrown.getMessage());
-	}
+	}*/
 }
