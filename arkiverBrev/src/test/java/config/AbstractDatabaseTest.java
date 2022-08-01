@@ -1,7 +1,9 @@
 package config;
 
 import org.junit.runner.RunWith;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Profile;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -13,7 +15,9 @@ import org.springframework.test.context.junit4.SpringRunner;
  * @author Joakim Bjornstad, Visma Consulting
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {H2JpaConfig.class})
+@SpringBootTest(classes = {H2JpaConfig.class, ApplicationTestConfig.class})
+@Profile("itest")
+@EnableAutoConfiguration
 //@Sql(scripts = "classpath:sql/drop-all.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 //@Sql(scripts = {"classpath:sql/create-database.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 public abstract class AbstractDatabaseTest {

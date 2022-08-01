@@ -5,14 +5,12 @@ import no.nav.brevserver.core.exception.BrevException;
 import no.nav.brevserver.core.vo.MessageVO;
 import org.apache.camel.Exchange;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.MDC;
 
 import javax.jms.JMSException;
 import javax.jms.Queue;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import static no.nav.brevserver.core.mdc.MDCConstants.MDC_CALL_ID;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 @Slf4j
@@ -43,7 +41,6 @@ public class ExchangeUtils {
 
 		MessageVO vo = new MessageVO(exchange.getIn().getBody(byte[].class));
 		vo.setStringBody(exchange.getIn().getBody(String.class));
-		MDC.put(MDC_CALL_ID, exchange.getExchangeId());
 
 		if(log.isDebugEnabled()) {
 			log.debug("JMS-headers: " + getJMSHeaders(exchange));

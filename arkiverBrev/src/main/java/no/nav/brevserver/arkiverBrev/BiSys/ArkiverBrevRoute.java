@@ -3,6 +3,8 @@ package no.nav.brevserver.arkiverBrev.BiSys;
 import com.ibm.msg.client.jms.DetailedJMSException;
 import no.nav.brevserver.arkiverBrev.ArkiverBrevMetricsRoutePolicy;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
+import no.nav.brevserver.core.utils.MDC.MdcRemoverProcessor;
+import no.nav.brevserver.core.utils.MDC.MdcSetterProcessor;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.ValidationException;
 import org.apache.camel.builder.RouteBuilder;
@@ -93,6 +95,7 @@ public class ArkiverBrevRoute extends RouteBuilder {
 				.routeId(ARKIVER_BREV_ROUTE)
 				.routePolicy(arkiverBrevMetricsRoutePolicy)
 				.setExchangePattern(InOnly)
+				.process(new MdcSetterProcessor())
 				.log(LoggingLevel.INFO, log, ARKIVER_BREV_ROUTE + " starter arkiveringen av ny melding fra Bisys")
 				.process(exchange -> {
 					setDefaultReturnQueue(exchange, deadletter.getQueueName());
@@ -110,7 +113,8 @@ public class ArkiverBrevRoute extends RouteBuilder {
 					.otherwise()
 						.to(InOnly, JMS + deadletter.getQueueName())
 						.log(ERROR, log, "En melding er sendt til destinasjon deadletter pga ukjent mode!")
-				.end();
+				.end()
+				.process(new MdcRemoverProcessor());
 		//@formatter:on
 	}
 }

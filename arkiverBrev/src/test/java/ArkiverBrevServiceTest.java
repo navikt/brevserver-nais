@@ -43,7 +43,6 @@ import static utils.Utils.*;
 @SpringBootTest(classes = {ApplicationTestConfig.class})
 @ActiveProfiles("itest")
 @DirtiesContext
-@Ignore
 public class ArkiverBrevServiceTest {
 
 	@Inject
@@ -61,6 +60,7 @@ public class ArkiverBrevServiceTest {
 
 	private String CORRELATION_ID = "corr-id";
 	private String CALL_ID = "1234-callid-5678";
+	private static final String SVARKOSTRING = "queue:///SvarKo?targetClient=1";
 
 	@Test
 	public void shouldSaveAsKladd() throws Exception{
@@ -70,7 +70,7 @@ public class ArkiverBrevServiceTest {
 		sendStringMessage(mottakArkiv, header, CALL_ID);
 
 		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
-			String recieved = receive(svarKo);
+			String recieved = receive(SVARKOSTRING);
 			assertEquals(recieved, createReplyToBisysKvittering(STATUS_LAGRET, BISYS_SYSTEM_ID, FILTYPE_XML, "0"));
 		});
 	}
@@ -83,7 +83,7 @@ public class ArkiverBrevServiceTest {
 		sendStringMessage(mottakArkiv, header, CALL_ID);
 
 		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
-			String recieved = receive(svarKo);
+			String recieved = receive(SVARKOSTRING);
 			assertEquals(recieved, createReplyToBisysKvittering(STATUS_FERDIG, BISYS_SYSTEM_ID, FilType.PDF.getContentType(), "0"));
 		});
 	}
@@ -96,7 +96,7 @@ public class ArkiverBrevServiceTest {
 		sendStringMessage(mottakArkiv, header, CALL_ID);
 
 		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
-			String recieved = receive(svarKo);
+			String recieved = receive(SVARKOSTRING);
 			assertEquals(recieved, createReplyToBisysKvittering(BREVSTATUS_FEIL, BISYS_SYSTEM_ID, FilType.PDF.getContentType(), FEIL_UKJENT));
 		});
 		verify(brevstatusServiceMock, times(1)).lagreBrevStatus(any(BrevStatusVO.class));
@@ -111,7 +111,7 @@ public class ArkiverBrevServiceTest {
 		sendStringMessage(mottakArkiv, message, CALL_ID);
 
 		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
-			String recieved = receive(svarKo);
+			String recieved = receive(SVARKOSTRING);
 			assertEquals(recieved, createReplyToBisysKvittering(BREVSTATUS_FEIL, BISYS_SYSTEM_ID, FORMAT, FEIL_BREV_EKSISTERER));
 			verifyZeroInteractions(brevlagerServiceMock);
 		});
@@ -128,7 +128,6 @@ public class ArkiverBrevServiceTest {
 			verifyZeroInteractions(brevlagerServiceMock, brevstatusServiceMock);
 		});
 	}
-
 
 	@Test
 	public void shouldFailOnNullKvittering(){
@@ -148,6 +147,14 @@ public class ArkiverBrevServiceTest {
 	}
 
 	private <T> T receive(Queue queue) {
+		Object response = jmsTemplate.receiveAndConvert(queue);
+		if (response instanceof JAXBElement) {
+			response = ((JAXBElement) response).getValue();
+		}
+		return (T) response;
+	}
+
+	private <T> T receive(String queue) {
 		Object response = jmsTemplate.receiveAndConvert(queue);
 		if (response instanceof JAXBElement) {
 			response = ((JAXBElement) response).getValue();

@@ -5,6 +5,8 @@ import com.ibm.msg.client.jms.DetailedJMSException;
 import no.nav.brevserver.arkiverBrev.ArkiverBrevMetricsRoutePolicy;
 import no.nav.brevserver.core.alias.BrevserverProperties;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
+import no.nav.brevserver.core.utils.MDC.MdcRemoverProcessor;
+import no.nav.brevserver.core.utils.MDC.MdcSetterProcessor;
 import org.apache.camel.ExchangePattern;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.ValidationException;
@@ -108,6 +110,7 @@ public class PeArkiverBrevRoute extends RouteBuilder {
 				.routeId(PE_ARKIVER_BREV_ROUTE)
 				.routePolicy(arkiverBrevMetricsRoutePolicy)
 				.setExchangePattern(ExchangePattern.InOnly)
+				.process(new MdcSetterProcessor())
 				.log(LoggingLevel.INFO, log, PE_ARKIVER_BREV_ROUTE + " starter behandlingen av melding fra peSys")
 				.process(exchange -> {
 					setDefaultReturnQueue(exchange, brevReplyPe.getQueueName());
@@ -123,7 +126,8 @@ public class PeArkiverBrevRoute extends RouteBuilder {
 					.otherwise()
 						.to(JMS + deadletterPe.getQueueName())
 						.log(ERROR, log, "En melding er sendt til deadletter pga ukjent mode!")
-				.end();
+				.end()
+				.process(new MdcRemoverProcessor());
 		//@formatter:on
 	}
 }

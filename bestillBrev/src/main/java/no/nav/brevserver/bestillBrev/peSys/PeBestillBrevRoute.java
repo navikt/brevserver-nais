@@ -4,6 +4,8 @@ import com.ibm.msg.client.jms.DetailedJMSException;
 import no.nav.brevserver.bestillBrev.BestillBrevMetricsRoutePolicy;
 import no.nav.brevserver.core.alias.BrevserverProperties;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
+import no.nav.brevserver.core.utils.MDC.MdcRemoverProcessor;
+import no.nav.brevserver.core.utils.MDC.MdcSetterProcessor;
 import org.apache.camel.ExchangePattern;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.ValidationException;
@@ -96,6 +98,7 @@ public class PeBestillBrevRoute extends RouteBuilder {
 				.routeId(PE_BESTILLBREV_ROUTE)
 				.routePolicy(bestillBrevMetricsRoutePolicy)
 				.setExchangePattern(ExchangePattern.InOnly)
+				.process(new MdcSetterProcessor())
 				.log(LoggingLevel.INFO, log, PE_BESTILLBREV_ROUTE + " starter behandlingen av ny brevbestilling fra PeSys")
 				.process(exchange -> {
 					setDefaultReturnQueue(exchange, brevReplyPe.getQueueName());
@@ -117,7 +120,8 @@ public class PeBestillBrevRoute extends RouteBuilder {
 					.otherwise()
 						.to(JMS + deadletterPe.getQueueName())
 						.log(ERROR, log, "En melding er sendt til deadletter pga ukjent mode!")
-				.end();
+				.end()
+				.process(new MdcRemoverProcessor());
 		//@formatter:on
 
 	}

@@ -1,35 +1,27 @@
 package no.nav.brevserver.bestillBrev.biSys;
 
+import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
-import config.AbstractDatabaseTest;
-import config.ApplicationTestConfig;
-import lombok.extern.slf4j.Slf4j;
+import config.AbstractTest;
 import no.nav.brevserver.bestillBrev.Utils;
 import no.nav.brevserver.core.vo.BrevStatusVO;
-import no.nav.brevserver.core.vo.SysTilgangVO;
 import no.nav.brevserver.service.BrevstatusService;
 import no.nav.brevserver.service.BrevtilgangService;
 import org.apache.activemq.command.ActiveMQTextMessage;
-import org.apache.commons.lang3.StringUtils;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.slf4j.LoggerFactory;
 import org.springframework.jms.core.JmsTemplate;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.transaction.TestTransaction;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import javax.jms.Queue;
 import javax.jms.TextMessage;
 import javax.xml.bind.JAXBElement;
 import java.util.concurrent.TimeUnit;
-import ch.qos.logback.classic.Logger;
-import org.slf4j.LoggerFactory;
 
 import static no.nav.brevserver.core.constants.Konstanter.BREVSTATUS_BREVPAKKE;
 import static org.awaitility.Awaitility.await;
@@ -38,13 +30,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @RunWith(SpringRunner.class)
-@EnableAutoConfiguration
-@SpringBootTest(classes = {ApplicationTestConfig.class})
-@ActiveProfiles("itest")
-@Transactional
-@Slf4j
-@Ignore
-public class BestillBrevRouteIT extends AbstractDatabaseTest {
+@DirtiesContext
+public class BestillBrevRouteIT extends AbstractTest {
 
 	@Inject
 	private Queue onlinebrev;
@@ -62,7 +49,6 @@ public class BestillBrevRouteIT extends AbstractDatabaseTest {
 	private BrevtilgangService brevtilgangService;
 
 	private final String BREVREF_XML = "3835845842";
-	private final String BISYS = "BI12";
 
 
 	@Test

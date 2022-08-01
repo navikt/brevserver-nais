@@ -62,7 +62,6 @@ public class BestillBrevService {
 		if (brevStatusVo == null) {
 			throw new BrevFunctionalException("BrevStatusVo er null");
 		}
-
 		// Hvis modus="frabrevlager" ønsker et fagsystem å gi en tilgang til brevet fra brevklient med en token
 		if (brevStatusVo.getModus() != null && Konstanter.BREVMODUS_FRALAGER.equals(brevStatusVo.getModus())) {
 			brevStatusVo.setReturKoe("ko");

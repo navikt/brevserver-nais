@@ -55,10 +55,14 @@ public class DokumentbehandlingEndpoint implements DokumentbehandlingPortType {
 	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "hentDokument")
 	@ResponsePayload
 	public HentDokumentResponse hentDokumentEndpoint(@RequestPayload HentDokument hentDokument) {
-		MDC.put(MDC_CALL_ID, hentDokument.getRequest().getBrevreferanse() + hentDokument.getRequest().getSystemId());
-		HentDokumentResponse response = this.objectFactory.createHentDokumentResponse();
-		response.setResponse(hentDokument(hentDokument.getRequest()));
-		return response;
+		try {
+			MDC.put(MDC_CALL_ID, hentDokument.getRequest().getBrevreferanse() + hentDokument.getRequest().getSystemId());
+			HentDokumentResponse response = this.objectFactory.createHentDokumentResponse();
+			response.setResponse(hentDokument(hentDokument.getRequest()));
+			return response;
+		} finally {
+			MDC.clear();
+		}
 	}
 
 	@Override
@@ -84,8 +88,12 @@ public class DokumentbehandlingEndpoint implements DokumentbehandlingPortType {
 	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "lagreDokument")
 	@ResponsePayload
 	public void lagreDokumentEndpoint(@RequestPayload LagreDokument lagreDokument) {
-		MDC.put(MDC_CALL_ID, lagreDokument.getRequest().getBrevreferanse() + lagreDokument.getRequest().getSystemId());
-		lagreDokument(lagreDokument.getRequest());
+		try {
+			MDC.put(MDC_CALL_ID, lagreDokument.getRequest().getBrevreferanse() + lagreDokument.getRequest().getSystemId());
+			lagreDokument(lagreDokument.getRequest());
+		} finally {
+			MDC.clear();
+		}
 	}
 
 	@Override
@@ -104,8 +112,12 @@ public class DokumentbehandlingEndpoint implements DokumentbehandlingPortType {
 	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "avbrytDokument")
 	@ResponsePayload
 	public void avbrytDokumentEndpoint(@RequestPayload AvbrytDokument avbrytDokument) {
-		MDC.put(MDC_CALL_ID, avbrytDokument.getRequest().getBrevreferanse() + avbrytDokument.getRequest().getSystemId());
-		avbrytDokument(avbrytDokument.getRequest());
+		try {
+			MDC.put(MDC_CALL_ID, avbrytDokument.getRequest().getBrevreferanse() + avbrytDokument.getRequest().getSystemId());
+			avbrytDokument(avbrytDokument.getRequest());
+		} finally {
+			MDC.clear();
+		}
 	}
 
 	@Override
@@ -124,7 +136,12 @@ public class DokumentbehandlingEndpoint implements DokumentbehandlingPortType {
 	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "ferdigstillDokument")
 	@ResponsePayload
 	public void ferdigstillDokumentEndpoint(@RequestPayload FerdigstillDokument ferdigstillDokument) {
-		ferdigstillDokument(ferdigstillDokument.getRequest());
+		try{
+			MDC.put(MDC_CALL_ID, ferdigstillDokument.getRequest().getBrevreferanse() + ferdigstillDokument.getRequest().getSystemId());
+			ferdigstillDokument(ferdigstillDokument.getRequest());
+		} finally {
+			MDC.clear();
+		}
 	}
 
 	@Override

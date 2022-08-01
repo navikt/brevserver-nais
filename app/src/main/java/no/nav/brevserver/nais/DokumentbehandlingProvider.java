@@ -93,23 +93,15 @@ public class DokumentbehandlingProvider {
 	}
 
 	public void lagreDokument(LagreDokumentRequest lagreDokumentRequest) throws BrevException {
-		String systemIdKey = "systemId";
-		String brevreferanseKey = "brevreferanse";
-		try {
-			MDC.put(systemIdKey, lagreDokumentRequest.getSystemId());
-			MDC.put(brevreferanseKey, lagreDokumentRequest.getBrevreferanse());
-			no.nav.brevserver.app.dokumentbehandling.to.LagreDokumentRequest request = lagreDokumentRequestMapper.map(lagreDokumentRequest);
-			request.validate();
-			BrevVO brev = request.getBrev();
-			BrevStatusVO brevStatus = request.getBrevStatus();
-			SystemType systemType = brevStatus.getSystemID().startsWith("PE") ? SystemType.PE : SystemType.BI;
-			brev.setLagerStatus(Konstanter.BREVLAGER_STATUS_KLADD);
-			brevStatus.setStatus(Konstanter.BREVSTATUS_LAGRET_KLADD);
-			brevlagerService.lagreDokument(brev, brevStatus, systemType);
-		} finally {
-			MDC.remove(systemIdKey);
-			MDC.remove(brevreferanseKey);
-		}
+		no.nav.brevserver.app.dokumentbehandling.to.LagreDokumentRequest request = lagreDokumentRequestMapper.map(lagreDokumentRequest);
+		request.validate();
+		BrevVO brev = request.getBrev();
+		BrevStatusVO brevStatus = request.getBrevStatus();
+		SystemType systemType = brevStatus.getSystemID().startsWith("PE") ? SystemType.PE : SystemType.BI;
+		brev.setLagerStatus(Konstanter.BREVLAGER_STATUS_KLADD);
+		brevStatus.setStatus(Konstanter.BREVSTATUS_LAGRET_KLADD);
+		brevlagerService.lagreDokument(brev, brevStatus, systemType);
+
 	}
 
 		public void avbrytDokument(AvbrytDokumentRequest avbrytDokumentRequest) throws BrevException {

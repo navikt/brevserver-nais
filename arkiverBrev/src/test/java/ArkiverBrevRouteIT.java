@@ -1,28 +1,22 @@
-import config.AbstractDatabaseTest;
-import config.ApplicationTestConfig;
+import lombok.SneakyThrows;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
 import no.nav.brevserver.core.vo.BrevStatusVO;
 import no.nav.brevserver.service.BrevstatusService;
 import org.apache.activemq.command.ActiveMQTextMessage;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.jupiter.api.Disabled;
 import org.junit.runner.RunWith;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.transaction.TestTransaction;
-import org.springframework.transaction.annotation.Transactional;
 import utils.Utils;
 
-import javax.inject.Inject;
+import javax.jms.Message;
 import javax.jms.Queue;
 import javax.jms.TextMessage;
 import javax.xml.bind.JAXBElement;
 import java.util.concurrent.TimeUnit;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -34,27 +28,23 @@ import static utils.Utils.classpathToString;
 import static utils.Utils.createBisysKvittering2;
 import static utils.Utils.createBrevstatus;
 
+
 @RunWith(SpringRunner.class)
-@EnableAutoConfiguration
-@SpringBootTest(classes = {ApplicationTestConfig.class})
-@ActiveProfiles("itest")
-
-//TODO:  Fjern. Ser ikke mer på problemet nå da det kan hende modulen deles opp
-@DirtiesContext
-@Transactional
-@Ignore
-public class ArkiverBrevRouteIT  extends AbstractDatabaseTest {
-
-	@Inject
+public class ArkiverBrevRouteIT  extends AbstractTest {
+	@Autowired
 	private Queue mottakArkiv;
-	@Inject
+	@Autowired
 	private Queue deadletter;
-	@Inject
+	@Autowired
 	private JmsTemplate jmsTemplate;
-	@Inject
+	@Autowired
 	private Queue svarKo;
-	@Inject
+	@Autowired
 	private BrevstatusService brevstatusService;
+
+	private static final String CORRELATION_ID="1890432+12342341";
+	//Kan ikke bruke selve køen da vi legger på ?targetclient=1 på kønavnet i servicen.
+	private static final String SVARKOSTRING = "queue:///SvarKo?targetClient=1";
 
 	@Test
 	//happypath
@@ -63,17 +53,19 @@ public class ArkiverBrevRouteIT  extends AbstractDatabaseTest {
 		TestTransaction.flagForCommit();
 		TestTransaction.end();
 		TestTransaction.start();
+
+		assertThat(brevstatusService.hentBrevStatus(Utils.BREVREFERANSE, BISYS_SYSTEM_ID).getStatus() != STATUS_FERDIG);
+
 		String header = Utils.createBisysKvittering();
 		sendStringMessage(mottakArkiv, header + "Dette er en pdf".getBytes(), CALLID);
-		await().atMost(100, TimeUnit.SECONDS).untilAsserted(() -> {
-			String recieved = receive(svarKo);
-			assertThat(recieved.equals(classpathToString("svarXml/happySvarko.xml")));
+		await().atMost(5, TimeUnit.SECONDS).untilAsserted(() -> {
+			Message recieved = jmsTemplate.receive(SVARKOSTRING);
+			assertThat(recieved.getJMSCorrelationID().equals(CORRELATION_ID));
+			assertThat(brevstatusService.hentBrevStatus(Utils.BREVREFERANSE, BISYS_SYSTEM_ID).getStatus().equals(STATUS_FERDIG));
 		});
 		TestTransaction.flagForCommit();
 		TestTransaction.end();
 
-		BrevStatusVO endretBrevstatusVo  = brevstatusService.hentBrevStatus(Utils.BREVREFERANSE, BISYS_SYSTEM_ID);
-		assertThat(endretBrevstatusVo.getStatus().equals(STATUS_FERDIG));
 	}
 
 	@Test
@@ -81,8 +73,8 @@ public class ArkiverBrevRouteIT  extends AbstractDatabaseTest {
 		String header = createBisysKvittering2();
 		sendStringMessage(mottakArkiv, header + "Dette er en pdf".getBytes(), CALLID);
 		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
-			String recieved = receive(svarKo);
-			assertThat(recieved.equals(classpathToString("svarXml/happySvarko.xml")));
+			String recieved2 = receive(SVARKOSTRING);
+			assertThat(recieved2.equals(classpathToString("svarXml/happySvarko.xml")));
 		});
 		TestTransaction.flagForCommit();
 		TestTransaction.end();
@@ -92,7 +84,7 @@ public class ArkiverBrevRouteIT  extends AbstractDatabaseTest {
 	}
 
 	@Test
-	public void shouldSendToFeilko() throws Exception{
+	public void shouldSendToFeilko() {
 		String header = Utils.createBadXmlKvitteringHeader();
 		sendStringMessage(mottakArkiv, header, CALLID);
 		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
@@ -109,6 +101,15 @@ public class ArkiverBrevRouteIT  extends AbstractDatabaseTest {
 		brevstatusService.lagreBrevStatus(brevstatus);
 	}
 
+
+	private <T> T receive(String queue) {
+		Object response = jmsTemplate.receiveAndConvert(queue);
+		if (response instanceof JAXBElement) {
+			response = ((JAXBElement) response).getValue();
+		}
+		return (T) response;
+	}
+
 	private <T> T receive(Queue queue) {
 		Object response = jmsTemplate.receiveAndConvert(queue);
 		if (response instanceof JAXBElement) {
@@ -117,6 +118,7 @@ public class ArkiverBrevRouteIT  extends AbstractDatabaseTest {
 		return (T) response;
 	}
 
+	@SneakyThrows
 	private void sendStringMessage(Queue queue, final String message, final String callId) {
 		jmsTemplate.send(queue, session -> {
 			TextMessage msg = new ActiveMQTextMessage();

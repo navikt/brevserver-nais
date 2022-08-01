@@ -24,7 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Unit tests for BrevserverServiceBean
@@ -35,10 +35,6 @@ import static org.junit.Assert.assertThat;
 @ActiveProfiles("itest")
 @Transactional
 public class BrevserverServiceBeanTest extends AbstractDatabaseTest {
-
-
-
-	private static final String NO_DB2_OPTIMIZATION = BLANK;
 
 	@Autowired
 	private CacheManager cacheManager;

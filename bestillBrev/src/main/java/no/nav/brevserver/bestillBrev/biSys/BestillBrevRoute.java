@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.brevserver.bestillBrev.BestillBrevMetricsRoutePolicy;
 import no.nav.brevserver.core.alias.BrevserverProperties;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
+import no.nav.brevserver.core.utils.MDC.MdcRemoverProcessor;
+import no.nav.brevserver.core.utils.MDC.MdcSetterProcessor;
 import org.apache.camel.ExchangePattern;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.ValidationException;
@@ -100,6 +102,7 @@ public class BestillBrevRoute extends RouteBuilder {
 				.routeId(BESTILLBREV)
 				.routePolicy(bestillBrevMetricsRoutePolicy)
 				.setExchangePattern(ExchangePattern.InOnly)
+				.process(new MdcSetterProcessor())
 				.log(INFO, log, BESTILLBREV + " starter behandlingen av ny brevbestilling fra Bisys")
 				.bean(bestillBrevService)
 				.process(exchange -> {
@@ -121,7 +124,8 @@ public class BestillBrevRoute extends RouteBuilder {
 					.otherwise()
 						.to(JMS + deadletter.getQueueName())
 						.log(ERROR, log, "En melding er sendt til deadletter pga ukjent mode!")
-				.end();
+				.end()
+				.process(new MdcRemoverProcessor());
 		//@formatter:on
 	}
 }
