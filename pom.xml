@@ -37,17 +37,30 @@
 		<wmq.version>9.2.2.0</wmq.version>
 		<activemq.version>5.16.2</activemq.version>
 		<camel.version>3.7.1</camel.version>
-		<lombok.version>1.18.20</lombok.version>
+		<commons-io.version>2.7</commons-io.version>
+		<lombok.version>1.18.24</lombok.version>
+		<dozer.version>5.5.1</dozer.version>
+		<odapi.version>1.0</odapi.version>
+		<xercesImpl.version>2.12.2</xercesImpl.version>
+		<jms.version>1.1</jms.version>
+		<mail.version>1.6.6</mail.version>
+		<commons-lang3.version>3.1</commons-lang3.version>
+		<springfox-boot-starter.version>3.0.0</springfox-boot-starter.version>
+		<xmlbeans.version>3.0.0</xmlbeans.version>
 		<cxf.version>3.4.4</cxf.version>
-		<stelvio.version>2.2.0</stelvio.version>
+		<stelvio.version>5.0.12</stelvio.version>
 		<journalbehandling-tjenestespesifikasjon.version>1.3.3</journalbehandling-tjenestespesifikasjon.version>
-		<nav-journal-v2-tjenestespesifikasjon.version>1.0.3</nav-journal-v2-tjenestespesifikasjon.version>
+		<loggmottak-tjenestespesifikasjon.version>1.0.1</loggmottak-tjenestespesifikasjon.version>
+		<nav-journal-tjenestespesifikasjon.version>2.1.0</nav-journal-tjenestespesifikasjon.version>
+		<dokumentbehandling-tjenestespesifikasjon.version>1.0.2</dokumentbehandling-tjenestespesifikasjon.version>
 		<javax.inject.version>1</javax.inject.version>
 		<xmlbeans.version>5.0.1</xmlbeans.version>
 		<spring-cloud-contract-wiremock.version>3.0.3</spring-cloud-contract-wiremock.version>
 		<wiremock.standalone.version>2.27.2</wiremock.standalone.version>
 		<logstash-logback-encoder.version>6.6</logstash-logback-encoder.version>
+		<logback-classic.version>1.2.11</logback-classic.version>
 		<maven-toolchains-plugin.version>3.0.0</maven-toolchains-plugin.version>
+		<aspose-words-jdk15.version>11.2.0</aspose-words-jdk15.version>
 	</properties>
 
 	<scm>
@@ -169,24 +182,24 @@
 			<dependency>
 				<groupId>no.nav.tjenester.brevogarkiv</groupId>
 				<artifactId>dokumentbehandling-tjenestespesifikasjon</artifactId>
-				<version>1.0.2</version>
+				<version>${dokumentbehandling-tjenestespesifikasjon.version}</version>
 				<classifier>jaxws</classifier>
 			</dependency>
 			<dependency>
 				<groupId>no.nav.tjenester.brevogarkiv</groupId>
 				<artifactId>loggmottak-tjenestespesifikasjon</artifactId>
-				<version>1.0.1</version>
+				<version>${loggmottak-tjenestespesifikasjon.version}</version>
 				<classifier>jaxws</classifier>
 			</dependency>
 			<dependency>
 				<groupId>aspose</groupId>
 				<artifactId>aspose-words-jdk15</artifactId>
-				<version>11.2.0</version>
+				<version>${aspose-words-jdk15.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>commons-io</groupId>
 				<artifactId>commons-io</artifactId>
-				<version>2.7</version>
+				<version>${commons-io.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>
@@ -201,22 +214,27 @@
 			<dependency>
 				<groupId>ch.qos.logback</groupId>
 				<artifactId>logback-classic</artifactId>
-				<version>1.2.3</version>
+				<version>${logback-classic.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>net.logstash.logback</groupId>
+				<artifactId>logstash-logback-encoder</artifactId>
+				<version>${logstash-logback-encoder.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>rtv-brev</groupId>
 				<artifactId>odapi</artifactId>
-				<version>1.0</version>
+				<version>${odapi.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>xerces</groupId>
 				<artifactId>xercesImpl</artifactId>
-				<version>2.12.2</version>
+				<version>${xercesImpl.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>net.sf.dozer</groupId>
 				<artifactId>dozer</artifactId>
-				<version>5.5.1</version>
+				<version>${dozer.version}</version>
 				<exclusions>
 					<exclusion>
 						<groupId>org.slf4j</groupId>
@@ -227,27 +245,27 @@
 			<dependency>
 				<groupId>org.apache.xmlbeans</groupId>
 				<artifactId>xmlbeans</artifactId>
-				<version>3.0.0</version>
+				<version>${xmlbeans.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>javax.jms</groupId>
 				<artifactId>jms</artifactId>
-				<version>1.1</version>
+				<version>${jms.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>javax.mail</groupId>
 				<artifactId>mail</artifactId>
-				<version>1.6.6</version>
+				<version>${mail.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.commons</groupId>
 				<artifactId>commons-lang3</artifactId>
-				<version>3.1</version>
+				<version>${commons-lang3.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>no.nav.tjenester</groupId>
 				<artifactId>nav-journal-tjenestespesifikasjon</artifactId>
-				<version>2.1.0</version>
+				<version>${nav-journal-tjenestespesifikasjon.version}</version>
 				<classifier>jaxws</classifier>
 			</dependency>
 			<dependency>
@@ -260,7 +278,7 @@
 			<dependency>
 				<groupId>io.springfox</groupId>
 				<artifactId>springfox-boot-starter</artifactId>
-				<version>3.0.0</version>
+				<version>${springfox-boot-starter.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.webjars</groupId>
@@ -443,11 +461,6 @@
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>net.logstash.logback</groupId>
-			<artifactId>logstash-logback-encoder</artifactId>
-			<version>${logstash-logback-encoder.version}</version>
 		</dependency>
 
 		<!-- Test -->
