@@ -5,6 +5,9 @@ metadata:
   namespace: teamdokumenthandtering
   labels:
     team: teamdokumenthandtering
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "256m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
 spec:
   env:
     - name: SPRING_DATASOURCE_URL
