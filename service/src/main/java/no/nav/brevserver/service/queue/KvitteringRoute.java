@@ -25,7 +25,6 @@ public class KvitteringRoute extends RouteBuilder {
 				.loggingLevel(ERROR));
 
 		from(DIRECT_SENDKVITTERINGROUTE)
-				.log(INFO, log, "Sender svar til: ${exchange.getIn().getHeader(\"" + OVERRIDE_DESTINATION + "\").toString()}")
 				.to(JMS_OVERRIDDEN);
 	}
 }

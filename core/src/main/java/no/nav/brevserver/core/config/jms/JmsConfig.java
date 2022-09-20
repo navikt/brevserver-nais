@@ -81,6 +81,13 @@ public class JmsConfig {
 
 	@Bean
 	//exstream -> brevserver
+	// returkø fra exstream på linux til brevserver
+	public Queue mottakOnlineLinux(@Value("${mottak_online_linux.queuename}") String brevserverMottakOnlineLinux) throws JMSException {
+		return new MQQueue(brevserverMottakOnlineLinux);
+	}
+
+	@Bean
+	//exstream -> brevserver
 	// returkø fra exstream til brevserver
 	public Queue mottakOnline(@Value("${mottak_online.queuename}") String brevserverMottakOnline) throws JMSException {
 		return new MQQueue(brevserverMottakOnline);

@@ -1,11 +1,10 @@
 package no.nav.brevserver.service.dokumentbehandling.support.support;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.brevserver.core.audit.AuditTrail;
 import no.nav.brevserver.core.domain.entities.Brevstatus;
 import no.nav.brevserver.core.domain.entities.id.BrevreferanseSystemCompositeId;
-import no.nav.brevserver.core.repository.BrevstatusRepository;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
+import no.nav.brevserver.core.repository.BrevstatusRepository;
 import no.nav.brevserver.core.vo.BrevStatusVO;
 import no.nav.brevserver.service.BrevstatusService;
 import no.nav.brevserver.service.BrevtilgangService;
@@ -15,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Date;
 import java.util.Optional;
 
 @Service

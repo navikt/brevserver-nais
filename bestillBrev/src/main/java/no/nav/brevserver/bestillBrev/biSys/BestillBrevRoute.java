@@ -119,7 +119,6 @@ public class BestillBrevRoute extends RouteBuilder {
 						.log(INFO, log, "Feilmelding er sendt til:: ${exchange.getIn().getHeader(\"" + OVERRIDE_DESTINATION + "\").toString()}")
 						.to(JMS_OVERRIDDEN)
 					.when(exchangeProperty(SENDTOMODE).isEqualTo(INGEN_TILBAKEMELDING))
-						.log(INFO, log, "Tilgang gitt. Håndtering avsluttes")
 						.stop()
 					.otherwise()
 						.to(JMS + deadletter.getQueueName())

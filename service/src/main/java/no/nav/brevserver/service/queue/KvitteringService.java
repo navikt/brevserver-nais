@@ -92,7 +92,6 @@ public class KvitteringService {
 				kvitteringExchange.getIn().setHeader(JMSCORRELATIONID, correlationID);
 			}
 
-			log.info("Brevserver leverer kvitteringen til: " + returKoe + " med correlationID: " + correlationID);
 			producerTemplate.send(DIRECT_SENDKVITTERINGROUTE, kvitteringExchange);
 		} catch (Exception e) {
 			log.error("Klarte ikke sende melding: " + e.getMessage() + " \n" + e.getStackTrace());
