@@ -15,6 +15,10 @@ spec:
       value: "{{ MQGATEWAY01_PORT }}"
     - name: MQGATEWAY01_NAME
       value: {{ MQGATEWAY01_NAME }}
+    - name: MQGATEWAY01_CHANNEL_NAME
+      value: { { MQGATEWAY01_CHANNEL_NAME } }
+    - name: MQGATEWAY01_CHANNEL_SECURENAME
+      value: { { MQGATEWAY01_CHANNEL_SECURENAME } }
     - name: MOTTAK_ARKIV_QUEUENAME
       value: {{ MOTTAK_ARKIV_QUEUENAME }}
     - name: MOTTAK_ARKIV_PE_QUEUENAME
@@ -49,8 +53,6 @@ spec:
       value: {{ SECURITY_TOKEN_SERVICE_TOKEN_URL }}
     - name: BREVSERVER_SERVER
       value: {{ BREVSERVER_SERVER }}
-    - name: BREVSERVERCHANNEL_NAME
-      value: {{ BREVSERVERCHANNEL_NAME }}
     - name: APPD_NAME
       value: {{ APPD_NAME }}
     - name: BREVSERVERPROPERTIES_LOGGXML
@@ -101,3 +103,5 @@ spec:
         mountPath: /var/run/secrets/nais.io/brevserverDS
       - kvPath: {{ APPDYNAMICS }}
         mountPath: "/var/run/secrets/nais.io/appdynamics"
+      - kvPath: { { BREVSERVERCERT } }
+        mountPath: /var/run/secrets/nais.io/certificate/srvbrevserver

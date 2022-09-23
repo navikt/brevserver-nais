@@ -1,10 +1,8 @@
 package no.nav.brevserver.core.config.jms;
 
-import com.ibm.mq.constants.MQConstants;
 import com.ibm.mq.jms.MQConnectionFactory;
 import com.ibm.mq.jms.MQQueue;
 import com.ibm.msg.client.jms.JmsConstants;
-import com.ibm.msg.client.wmq.WMQConstants;
 import no.nav.brevserver.core.alias.MqGatewayProperties;
 import no.nav.brevserver.core.properties.SrvAppserverProperties;
 import org.apache.activemq.jms.pool.PooledConnectionFactory;
@@ -17,41 +15,49 @@ import org.springframework.jms.connection.UserCredentialsConnectionFactoryAdapte
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
 import javax.jms.Queue;
+import javax.net.ssl.SSLSocketFactory;
+
+import static com.ibm.mq.constants.CMQC.MQENC_NATIVE;
+import static com.ibm.msg.client.jms.JmsConstants.JMS_IBM_CHARACTER_SET;
+import static com.ibm.msg.client.jms.JmsConstants.JMS_IBM_ENCODING;
+import static com.ibm.msg.client.wmq.common.CommonConstants.WMQ_CM_CLIENT;
 
 @Profile({"nais", "local"})
 @Configuration
 public class JmsConfig {
 
-	private static final int ISO_8859_1 = 819;
+	private static final int UTF_8_WITH_PUA = 1208;
+	private static final String ANY_TLS13_OR_HIGHER = "*TLS13ORHIGHER";
 
 	@Bean
 	public ConnectionFactory wmqConnectionFactory(final MqGatewayProperties mqGatewayAlias,
-												  final @Value("${brevserverchannel.name}") String channelName,
 												  final SrvAppserverProperties srvAppserverProperties) throws JMSException {
-		return createConnectionFactory(mqGatewayAlias, channelName, srvAppserverProperties);
+		return createConnectionFactory(mqGatewayAlias, srvAppserverProperties);
 	}
 
 	private PooledConnectionFactory createConnectionFactory(final MqGatewayProperties mqGatewayAlias,
-															final String channelName,
 															final SrvAppserverProperties srvAppserverProperties) throws JMSException {
 		MQConnectionFactory connectionFactory = new MQConnectionFactory();
 		connectionFactory.setHostName(mqGatewayAlias.getHostname());
 		connectionFactory.setPort(mqGatewayAlias.getPort());
-		connectionFactory.setChannel(channelName);
 		connectionFactory.setQueueManager(mqGatewayAlias.getName());
-		connectionFactory.setTransportType(WMQConstants.WMQ_CM_CLIENT);
+		connectionFactory.setTransportType(WMQ_CM_CLIENT);
+		connectionFactory.setCCSID(UTF_8_WITH_PUA);
+		connectionFactory.setIntProperty(JMS_IBM_ENCODING, MQENC_NATIVE);
+		connectionFactory.setIntProperty(JMS_IBM_CHARACTER_SET, UTF_8_WITH_PUA);
+		connectionFactory.setBooleanProperty(JmsConstants.USER_AUTHENTICATION_MQCSP, true);
 
-		connectionFactory.setCCSID(1208);
-		connectionFactory.setIntProperty(WMQConstants.JMS_IBM_CHARACTER_SET, 1208);
+		if (mqGatewayAlias.getChannel().isEnabletls()) {
+			connectionFactory.setSSLCipherSuite(ANY_TLS13_OR_HIGHER);
+			SSLSocketFactory sslSocketFactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
+			connectionFactory.setSSLSocketFactory(sslSocketFactory);
+			connectionFactory.setChannel(mqGatewayAlias.getChannel().getSecurename());
+		} else {
+			connectionFactory.setChannel(mqGatewayAlias.getChannel().getName());
+		}
+
 		UserCredentialsConnectionFactoryAdapter adapter = new UserCredentialsConnectionFactoryAdapter();
 		adapter.setTargetConnectionFactory(connectionFactory);
-
-		/*connectionFactory.setCCSID(1208);
-		connectionFactory.setIntProperty(WMQConstants.JMS_IBM_ENCODING, 1208);
-		//connectionFactory.setIntProperty(WMQConstants.JMS_IBM_CHARACTER_SET, ISO_8859_1);*/
-
-		//connectionFactory.setIntProperty(WMQConstants.JMS_IBM_CHARACTER_SET, ISO_8859_1);  MQConstants.MQENC_NATIVE
-
 		PooledConnectionFactory pooledFactory = new PooledConnectionFactory();
 		pooledFactory.setConnectionFactory(adapter);
 		pooledFactory.setMaxConnections(10);
