@@ -3,7 +3,6 @@ package no.nav.brevserver.bestillBrev.biSys;
 import com.ibm.msg.client.jms.DetailedJMSException;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.brevserver.bestillBrev.BestillBrevMetricsRoutePolicy;
-import no.nav.brevserver.core.alias.BrevserverProperties;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
 import no.nav.brevserver.core.utils.MDC.MdcRemoverProcessor;
 import no.nav.brevserver.core.utils.MDC.MdcSetterProcessor;
@@ -40,21 +39,18 @@ public class BestillBrevRoute extends RouteBuilder {
 	private final Queue deadletter;
 	private final BestillBrevMetricsRoutePolicy bestillBrevMetricsRoutePolicy;
 	private final BestillBrevService bestillBrevService;
-	private final BrevserverProperties brevserverProperties;
 
 	@Inject
 	public BestillBrevRoute(Queue onlinebrev,
 							Queue deadletter,
 							Queue dialogueOnline,
 							BestillBrevMetricsRoutePolicy arkiverBrevMetricsRoutePolicy,
-							BestillBrevService arkiverBrevService,
-							BrevserverProperties brevserverProperties) {
+							BestillBrevService arkiverBrevService) {
 		this.onlinebrev = onlinebrev;
 		this.deadletter = deadletter;
 		this.dialogueOnline = dialogueOnline;
 		this.bestillBrevMetricsRoutePolicy = arkiverBrevMetricsRoutePolicy;
 		this.bestillBrevService = arkiverBrevService;
-		this.brevserverProperties = brevserverProperties;
 	}
 
 	@Override
@@ -119,7 +115,6 @@ public class BestillBrevRoute extends RouteBuilder {
 						.log(INFO, log, "Feilmelding er sendt til:: ${exchange.getIn().getHeader(\"" + OVERRIDE_DESTINATION + "\").toString()}")
 						.to(JMS_OVERRIDDEN)
 					.when(exchangeProperty(SENDTOMODE).isEqualTo(INGEN_TILBAKEMELDING))
-						.log(INFO, log, "Tilgang gitt. Håndtering avsluttes")
 						.stop()
 					.otherwise()
 						.to(JMS + deadletter.getQueueName())

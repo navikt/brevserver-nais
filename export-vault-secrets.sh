@@ -36,12 +36,6 @@ then
     export BREVSERVERCERT_KEYSTORE=$CERT_PATH
 fi
 
-if test -f /var/run/secrets/nais.io/certificate/srvbrevserver/keystorealias
-then
-    echo "Setting BREVSERVERCERT_KEYSTOREALIAS"
-    export BREVSERVERCERT_KEYSTOREALIAS=$(cat /var/run/secrets/nais.io/certificate/srvbrevserver/keystorealias)
-fi
-
 if test -f /var/run/secrets/nais.io/certificate/srvbrevserver/keystorepassword
 then
     echo "Setting BREVSERVERCERT_PASSWORD"

@@ -32,6 +32,7 @@ public class ArkiverBrevRoute extends RouteBuilder {
 
 	private final Queue mottakArkiv;
 	private final Queue mottakOnline;
+	private final Queue mottakOnlineLinux;
 	private final Queue deadletter;
 	private final ArkiverBrevMetricsRoutePolicy arkiverBrevMetricsRoutePolicy;
 	private final ArkiverBrevService arkiverBrevService;
@@ -40,11 +41,12 @@ public class ArkiverBrevRoute extends RouteBuilder {
 	@Inject
 	public ArkiverBrevRoute(Queue mottakArkiv,
 							Queue mottakOnline,
-							Queue deadletter,
+							Queue mottakOnlineLinux, Queue deadletter,
 							ArkiverBrevMetricsRoutePolicy arkiverBrevMetricsRoutePolicy,
 							ArkiverBrevService arkiverBrevService) {
 		this.mottakArkiv = mottakArkiv;
 		this.mottakOnline = mottakOnline;
+		this.mottakOnlineLinux = mottakOnlineLinux;
 		this.deadletter = deadletter;
 		this.arkiverBrevMetricsRoutePolicy = arkiverBrevMetricsRoutePolicy;
 		this.arkiverBrevService = arkiverBrevService;
@@ -86,8 +88,13 @@ public class ArkiverBrevRoute extends RouteBuilder {
 				.to(InOnly, "jms:" + deadletter.getQueueName());
 
 		from("jms:" + mottakArkiv.getQueueName() + ROUTE_OPTIONS)
+				.log(INFO, log, ARKIVER_BREV_ROUTE + " starter behandlingen av melding fra: " + mottakArkiv.getQueueName() )
 				.to(ARKIVER_BREV_ROUTE);
 		from("jms:" + mottakOnline.getQueueName() + ROUTE_OPTIONS)
+				.log(INFO, log, ARKIVER_BREV_ROUTE + " starter behandlingen av melding fra: " + mottakOnline.getQueueName() )
+				.to(ARKIVER_BREV_ROUTE);
+		from("jms:" + mottakOnlineLinux.getQueueName() + ROUTE_OPTIONS)
+				.log(INFO, log, ARKIVER_BREV_ROUTE + " starter behandlingen av melding fra: " + mottakOnlineLinux.getQueueName() )
 				.to(ARKIVER_BREV_ROUTE);
 
 		//Hent svar fra exstream
@@ -96,7 +103,6 @@ public class ArkiverBrevRoute extends RouteBuilder {
 				.routePolicy(arkiverBrevMetricsRoutePolicy)
 				.setExchangePattern(InOnly)
 				.process(new MdcSetterProcessor())
-				.log(LoggingLevel.INFO, log, ARKIVER_BREV_ROUTE + " starter arkiveringen av ny melding fra Bisys")
 				.process(exchange -> {
 					setDefaultReturnQueue(exchange, deadletter.getQueueName());
 				})

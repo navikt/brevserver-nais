@@ -93,9 +93,6 @@ public class ExchangeUtils {
 		String newReturKo = buildReturnQueue(returKo);
 		setDestination(exchange, newReturKo);
 		exchange.setProperty(SENDTOMODE, sendToMode.name());
-		if(log.isDebugEnabled()) {
-			log.debug("Setter returkø-header til: " + newReturKo + " og sendToMode til: " + sendToMode);
-		}
 	}
 
 	/*
@@ -142,7 +139,6 @@ public class ExchangeUtils {
 
 			return ((Queue) exchange.getIn().getHeaders().get(JMSReplyTo)).getQueueName();
 		} else {
-			log.info("JMS replyTo er ikke satt. Returkø er null.");
 			return null;
 		}
 	}
@@ -163,7 +159,7 @@ public class ExchangeUtils {
 			//set queue-string
 			queuename = setQueueString(queuename);
 		}
-		log.info("original queuname: " + oldQname + " nytt queuename: " + queuename);
+		log.debug("original returkø: " + oldQname + " ny returkø: " + queuename);
 		return queuename;
 	}
 	/*
