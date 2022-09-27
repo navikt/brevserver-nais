@@ -43,7 +43,6 @@ public class JmsConfig {
 		connectionFactory.setQueueManager(mqGatewayAlias.getName());
 		connectionFactory.setTransportType(WMQ_CM_CLIENT);
 		connectionFactory.setCCSID(UTF_8_WITH_PUA);
-		connectionFactory.setIntProperty(JMS_IBM_ENCODING, MQENC_NATIVE);
 		connectionFactory.setIntProperty(JMS_IBM_CHARACTER_SET, UTF_8_WITH_PUA);
 		connectionFactory.setBooleanProperty(JmsConstants.USER_AUTHENTICATION_MQCSP, true);
 
