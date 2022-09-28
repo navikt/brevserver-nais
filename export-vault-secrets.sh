@@ -28,16 +28,16 @@ else
     echo "No such file or directory found at /var/run/secrets/nais.io/appdynamics/appdynamics.env"
 fi
 
-if test -f /var/run/secrets/nais.io/vault/keystore
+if test -f /var/run/secrets/nais.io/certificate/keystore
 then
     echo "Setting BREVSERVERCERT_KEYSTORE"
-    CERT_PATH='/var/run/secrets/nais.io/vault/keystore-extracted'
-    openssl base64 -d -A -in /var/run/secrets/nais.io/vault/keystore -out $CERT_PATH
+    CERT_PATH='/var/run/secrets/nais.io/certificate/keystore-extracted'
+    openssl base64 -d -A -in /var/run/secrets/nais.io/certificate/keystore -out $CERT_PATH
     export BREVSERVERCERT_KEYSTORE=$CERT_PATH
 fi
 
-if test -f /var/run/secrets/nais.io/vault/keystorepassword
+if test -f /var/run/secrets/nais.io/certificate/keystorepassword
 then
     echo "Setting BREVSERVERCERT_PASSWORD"
-    export BREVSERVERCERT_PASSWORD=$(cat /var/run/secrets/nais.io/vault/keystorepassword)
+    export BREVSERVERCERT_PASSWORD=$(cat /var/run/secrets/nais.io/certificate/keystorepassword)
 fi

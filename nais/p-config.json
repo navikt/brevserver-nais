@@ -35,7 +35,7 @@
   "SRVBREVSERVER": "/serviceuser/data/prod/srvbrevserver",
   "BREVSERVER_SERVER": "https://brevserver-nais.nais.adeo.no/brevweb/",
   "BREVSERVER_DS": "/oracle/data/prod/creds/brevserver-user",
-  "BREVSERVERCERT": "/certificate/data/prod/srvbrevserver",
+  "BREVSERVERCERT": "/kv/prod/fss/brevserver-nais/certificate",
   "APPDYNAMICS": "/apikey/appdynamics/prod",
   "APPD_NAME": "brevserver-nais",
   "BREVSERVERPROPERTIES_LOGGXML": "false",

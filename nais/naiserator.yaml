@@ -111,4 +111,4 @@ spec:
       - kvPath: {{ APPDYNAMICS }}
         mountPath: "/var/run/secrets/nais.io/appdynamics"
       - kvPath: { { BREVSERVERCERT } }
-        mountPath: /var/run/secrets/nais.io/certificate/srvbrevserver
+        mountPath: /var/run/secrets/nais.io/certificate
