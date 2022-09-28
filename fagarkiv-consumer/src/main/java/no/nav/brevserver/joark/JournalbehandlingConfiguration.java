@@ -1,6 +1,6 @@
 package no.nav.brevserver.joark;
 
-import no.nav.brevserver.fagarkiv.FagarkivProperties;
+import no.nav.brevserver.core.alias.FagarkivProperties;
 import org.apache.wss4j.dom.WSConstants;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

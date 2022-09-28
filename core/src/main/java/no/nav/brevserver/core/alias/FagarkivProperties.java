@@ -1,4 +1,4 @@
-package no.nav.brevserver.fagarkiv;
+package no.nav.brevserver.core.alias;
 
 import lombok.Data;
 import lombok.ToString;

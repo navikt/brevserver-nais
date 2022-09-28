@@ -3,8 +3,8 @@ package no.nav.brevserver.core.config.jms;
 import com.ibm.mq.jms.MQConnectionFactory;
 import com.ibm.mq.jms.MQQueue;
 import com.ibm.msg.client.jms.JmsConstants;
+import no.nav.brevserver.core.alias.FagarkivProperties;
 import no.nav.brevserver.core.alias.MqGatewayProperties;
-import no.nav.brevserver.core.properties.SrvAppserverProperties;
 import org.apache.activemq.jms.pool.PooledConnectionFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -17,9 +17,7 @@ import javax.jms.JMSException;
 import javax.jms.Queue;
 import javax.net.ssl.SSLSocketFactory;
 
-import static com.ibm.mq.constants.CMQC.MQENC_NATIVE;
 import static com.ibm.msg.client.jms.JmsConstants.JMS_IBM_CHARACTER_SET;
-import static com.ibm.msg.client.jms.JmsConstants.JMS_IBM_ENCODING;
 import static com.ibm.msg.client.wmq.common.CommonConstants.WMQ_CM_CLIENT;
 
 @Profile({"nais", "local"})
@@ -31,12 +29,12 @@ public class JmsConfig {
 
 	@Bean
 	public ConnectionFactory wmqConnectionFactory(final MqGatewayProperties mqGatewayAlias,
-												  final SrvAppserverProperties srvAppserverProperties) throws JMSException {
-		return createConnectionFactory(mqGatewayAlias, srvAppserverProperties);
+												  final FagarkivProperties fagarkivProperties) throws JMSException {
+		return createConnectionFactory(mqGatewayAlias, fagarkivProperties);
 	}
 
 	private PooledConnectionFactory createConnectionFactory(final MqGatewayProperties mqGatewayAlias,
-															final SrvAppserverProperties srvAppserverProperties) throws JMSException {
+															final FagarkivProperties fagarkivProperties) throws JMSException {
 		MQConnectionFactory connectionFactory = new MQConnectionFactory();
 		connectionFactory.setHostName(mqGatewayAlias.getHostname());
 		connectionFactory.setPort(mqGatewayAlias.getPort());
@@ -57,14 +55,13 @@ public class JmsConfig {
 
 		UserCredentialsConnectionFactoryAdapter adapter = new UserCredentialsConnectionFactoryAdapter();
 		adapter.setTargetConnectionFactory(connectionFactory);
+		adapter.setUsername(fagarkivProperties.getServiceuser().getUsername());
+		adapter.setPassword(fagarkivProperties.getServiceuser().getPassword());
+
 		PooledConnectionFactory pooledFactory = new PooledConnectionFactory();
 		pooledFactory.setConnectionFactory(adapter);
 		pooledFactory.setMaxConnections(10);
 		pooledFactory.setMaximumActiveSessionPerConnection(10);
-
-		connectionFactory.setBooleanProperty(JmsConstants.USER_AUTHENTICATION_MQCSP, false);
-		adapter.setUsername(srvAppserverProperties.getUsername());
-		adapter.setPassword(srvAppserverProperties.getPassword());
 
 		return pooledFactory;
 	}

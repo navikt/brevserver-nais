@@ -1,6 +1,5 @@
 package no.nav.brevserver;
 
-import no.nav.brevserver.fagarkiv.FagarkivProperties;
 import no.nav.brevserver.nais.Appconfig;
 import no.nav.brevserver.nais.DokumentbehandlingResource;
 import no.nav.brevserver.service.config.ServiceConfig;
@@ -11,7 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
 
 @SpringBootApplication
-@Import({DokumentbehandlingResource.class, ServiceConfig.class, Appconfig.class, FagarkivProperties.class, WebServiceConfig.class})
+@Import({DokumentbehandlingResource.class, ServiceConfig.class, Appconfig.class, WebServiceConfig.class})
 @EnableJwtTokenValidation(ignore = {"org.springframework", "springfox.documentation"})
 public class BrevserverApplication {
 
