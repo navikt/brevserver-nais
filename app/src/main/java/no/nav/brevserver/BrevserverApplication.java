@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Import;
 public class BrevserverApplication {
 
 	public static void main(String[] args) {
+		System.setProperty("javax.net.ssl.keyStorePassword", System.getenv("BREVSERVERCERT_PASSWORD"));
 		SpringApplication.run(BrevserverApplication.class, args);
 	}
 }
