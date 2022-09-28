@@ -8,7 +8,7 @@
     "https://brevserver-nais-q4.dev.adeo.no",
     "https://wasapp-q4.adeo.no"
   ],
-  "MQGATEWAY01_HOSTNAME": "b27apvl219.preprod.local",
+  "MQGATEWAY01_HOSTNAME": "mqls01.preprod.local",
   "MQGATEWAY01_PORT": "1413",
   "MQGATEWAY01_NAME": "MQLS01",
   "MQGATEWAY01_CHANNEL_NAME": "Q4_BREVSERVER",
