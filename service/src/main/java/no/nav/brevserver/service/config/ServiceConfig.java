@@ -14,7 +14,6 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 
 
 @Configuration
-@Import({RepositoryConfig.class, FagarkivProperties.class, LokalCacheConfig.class})
 public class ServiceConfig {
 
 	@Bean

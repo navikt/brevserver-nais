@@ -1,15 +1,15 @@
 #!/usr/bin/env sh
 
-if test -f /var/run/secrets/nais.io/srvbrevserver/username;
+if test -f /var/run/secrets/nais.io/srvbrevserver-nais/username;
 then
     echo "Setting SERVICEUSER_USERNAME"
-    export FAGARKIV_SERVICEUSER_USERNAME=$(cat /var/run/secrets/nais.io/srvbrevserver/username)
+    export FAGARKIV_SERVICEUSER_USERNAME=$(cat /var/run/secrets/nais.io/srvbrevserver-nais/username)
 fi
 
-if test -f /var/run/secrets/nais.io/srvbrevserver/password;
+if test -f /var/run/secrets/nais.io/srvbrevserver-nais/password;
 then
     echo "Setting SERVICEUSER_PASSWORD"
-    export FAGARKIV_SERVICEUSER_PASSWORD=$(cat /var/run/secrets/nais.io/srvbrevserver/password)
+    export FAGARKIV_SERVICEUSER_PASSWORD=$(cat /var/run/secrets/nais.io/srvbrevserver-nais/password)
 fi
 
 if test -f /var/run/secrets/nais.io/brevserverDS/password;

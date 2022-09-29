@@ -32,7 +32,7 @@
   "FAGARKIV_ENDPOINTS_JOURNAL": "https://wasapp.adeo.no/joark/Journal",
   "FAGARKIV_ENDPOINTS_JOURNALBEHANDLING": "https://wasapp.adeo.no/joark/Journalbehandling",
   "SECURITY_TOKEN_SERVICE_TOKEN_URL": "https://security-token-service.nais.adeo.no/rest/v1/sts",
-  "SRVBREVSERVER": "/serviceuser/data/prod/srvbrevserver",
+  "SRVBREVSERVER": "/serviceuser/data/prod/srvbrevserver-nais",
   "BREVSERVER_SERVER": "https://brevserver-nais.nais.adeo.no/brevweb/",
   "BREVSERVER_DS": "/oracle/data/prod/creds/brevserver-user",
   "BREVSERVERCERT": "/kv/prod/fss/brevserver-nais/certificate",
