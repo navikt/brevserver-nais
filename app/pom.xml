@@ -106,6 +106,10 @@
 		</dependency>
 		<dependency>
 			<groupId>no.nav.brevserver</groupId>
+			<artifactId>fagarkiv-consumer</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>no.nav.brevserver</groupId>
 			<artifactId>service</artifactId>
 			<exclusions>
 				<exclusion>
