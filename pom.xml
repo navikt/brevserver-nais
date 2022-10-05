@@ -48,6 +48,10 @@
 		<logstash-logback-encoder.version>7.2</logstash-logback-encoder.version>
 		<aspose-words-jdk15.version>11.2.0</aspose-words-jdk15.version>
 
+		<!-- Snyk - fjern innslaget når Spring Boot har oppgradert versjonen -->
+		<snakeyaml.version>1.33</snakeyaml.version>
+		<bcprov-jdk15on.version>1.70</bcprov-jdk15on.version>
+
 		<!-- Plugins -->
 		<maven-toolchains-plugin.version>3.1.0</maven-toolchains-plugin.version>
 	</properties>
@@ -187,6 +191,13 @@
 				<classifier>jaxws</classifier>
 			</dependency>
 
+			<!-- Kan fjernes når spring-ws-security sine avhengigheter har fått oppdatert bcprov-jdk15on	-->
+			<dependency>
+				<groupId>org.bouncycastle</groupId>
+				<artifactId>bcprov-jdk15on</artifactId>
+				<version>${bcprov-jdk15on.version}</version>
+			</dependency>
+
 			<dependency>
 				<groupId>aspose</groupId>
 				<artifactId>aspose-words-jdk15</artifactId>
@@ -295,6 +306,12 @@
 	</dependencyManagement>
 
 	<dependencies>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
 		<!-- Logging -->
 		<dependency>
 			<groupId>org.slf4j</groupId>

@@ -16,11 +16,6 @@
 			<groupId>no.nav.brevserver</groupId>
 			<artifactId>core</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<scope>provided</scope>
-		</dependency>
 
 		<dependency>
 			<groupId>org.apache.camel.springboot</groupId>

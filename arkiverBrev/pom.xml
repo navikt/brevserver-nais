@@ -22,12 +22,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
 			<groupId>org.apache.camel.springboot</groupId>
 			<artifactId>camel-stax-starter</artifactId>
 		</dependency>
@@ -36,7 +30,7 @@
 			<artifactId>xercesImpl</artifactId>
 		</dependency>
 
-		<!-- test-->
+		<!-- test -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
