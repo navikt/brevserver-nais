@@ -19,8 +19,6 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Handler;
 import org.springframework.stereotype.Service;
 
-import javax.inject.Inject;
-
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.GI_TILBAKEMELDING;
 import static no.nav.brevserver.core.utils.ExchangeUtils.setBodyAndReturnQueueWithMode;
 
@@ -28,10 +26,9 @@ import static no.nav.brevserver.core.utils.ExchangeUtils.setBodyAndReturnQueueWi
 @Service
 public class PeArkiverBrevService {
 
-	private BrevstatusService brevstatusService;
-	private JoarkService joarkService;
+	private final BrevstatusService brevstatusService;
+	private final JoarkService joarkService;
 
-	@Inject
 	public PeArkiverBrevService(
 			BrevstatusService brevstatusService,
 			JoarkService joarkService) {

@@ -18,7 +18,6 @@ import no.nav.tjenester.brevogarkiv.dokumentbehandling.LagreDokumentRequest;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.PingRequest;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.MDC;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -50,11 +49,9 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 public class DokumentbehandlingResource {
 
 	private static final String EXCEPTION_MESSAGE = "Rest-Kall feilet";
-	public static final String APPLICATION_XML = "application/xml";
 
-	private DokumentbehandlingProvider dokumentbehandlingProvider;
+	private final DokumentbehandlingProvider dokumentbehandlingProvider;
 
-	@Autowired
 	public DokumentbehandlingResource(DokumentbehandlingProvider dokumentbehandlingProvider) {
 		this.dokumentbehandlingProvider = dokumentbehandlingProvider;
 	}

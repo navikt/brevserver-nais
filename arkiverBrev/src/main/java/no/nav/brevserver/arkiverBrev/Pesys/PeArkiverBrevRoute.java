@@ -13,7 +13,6 @@ import org.apache.camel.ValidationException;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.stereotype.Component;
 
-import javax.inject.Inject;
 import javax.jms.Queue;
 
 import static no.nav.brevserver.core.utils.ExchangeUtils.JMS;
@@ -40,7 +39,6 @@ public class PeArkiverBrevRoute extends RouteBuilder {
 	private final PeArkiverBrevService peArkiverBrevService;
 	private final BrevserverProperties brevserverProperties;
 
-	@Inject
 	public PeArkiverBrevRoute(Queue mottakArkivPe,
 							  Queue mottakOnlinePe,
 							  Queue deadletterPe,

@@ -3,7 +3,6 @@ package no.nav.brevserver.ws.loggmottak;
 import no.nav.brevserver.ws.loggmottak.provider.LoggmottakProvider;
 import no.nav.tjenester.brevogarkiv.loggmottak.LoggRequest;
 import no.nav.tjenester.brevogarkiv.loggmottak.LoggmottakPortType;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
@@ -22,7 +21,6 @@ public class LoggmottakEndpoint implements LoggmottakPortType {
 	private final LoggmottakProvider loggmottakProvider;
 	private static final String NAMESPACE_URI = "http://loggmottak.brevogarkiv.tjenester.nav.no/";
 
-	@Autowired
 	public LoggmottakEndpoint(LoggmottakProvider loggmottakProvider) {
 		this.loggmottakProvider = loggmottakProvider;
 	}

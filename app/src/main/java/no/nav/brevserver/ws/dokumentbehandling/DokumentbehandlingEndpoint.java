@@ -1,12 +1,11 @@
 package no.nav.brevserver.ws.dokumentbehandling;
 
-import no.nav.brevserver.nais.DokumentbehandlingProvider;
 import no.nav.brevserver.core.exception.BrevException;
 import no.nav.brevserver.core.exception.BrevFunctionalException;
 import no.nav.brevserver.core.exception.BrevSecurityException;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
+import no.nav.brevserver.nais.DokumentbehandlingProvider;
 import no.nav.brevserver.service.loggmottak.Log;
-import no.nav.security.token.support.core.api.Unprotected;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.AvbrytDokument;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.AvbrytDokumentRequest;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.DokumentbehandlingPortType;
@@ -22,7 +21,6 @@ import no.nav.tjenester.brevogarkiv.dokumentbehandling.ObjectFactory;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.Ping;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.PingRequest;
 import org.slf4j.MDC;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
@@ -46,7 +44,6 @@ public class DokumentbehandlingEndpoint implements DokumentbehandlingPortType {
 
 	private final DokumentbehandlingProvider dokumentbehandlingProvider;
 
-	@Autowired
 	public DokumentbehandlingEndpoint(DokumentbehandlingProvider dokumentbehandlingProvider) {
 		this.dokumentbehandlingProvider = dokumentbehandlingProvider;
 		this.objectFactory = new ObjectFactory();

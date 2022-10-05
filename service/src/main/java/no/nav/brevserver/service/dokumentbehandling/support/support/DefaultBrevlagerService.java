@@ -1,21 +1,21 @@
 package no.nav.brevserver.service.dokumentbehandling.support.support;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.brevserver.core.constants.Konstanter;
 import no.nav.brevserver.core.constants.SystemType;
 import no.nav.brevserver.core.domain.entities.Brev;
 import no.nav.brevserver.core.domain.entities.id.BrevreferanseSystemCompositeId;
-import no.nav.brevserver.core.exception.BrevFinnesAlleredeException;
-import no.nav.brevserver.core.repository.BrevRepository;
-import no.nav.brevserver.core.utils.xmlHandlers.XMLService;
-import no.nav.brevserver.joark.JoarkService;
-import no.nav.brevserver.core.constants.Konstanter;
 import no.nav.brevserver.core.exception.BrevException;
+import no.nav.brevserver.core.exception.BrevFinnesAlleredeException;
 import no.nav.brevserver.core.exception.BrevFunctionalException;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
+import no.nav.brevserver.core.repository.BrevRepository;
+import no.nav.brevserver.core.utils.xmlHandlers.XMLService;
 import no.nav.brevserver.core.vo.BrevStatusVO;
 import no.nav.brevserver.core.vo.BrevVO;
 import no.nav.brevserver.core.vo.FilType;
 import no.nav.brevserver.core.vo.KvitteringVO;
+import no.nav.brevserver.joark.JoarkService;
 import no.nav.brevserver.service.BrevlagerService;
 import no.nav.brevserver.service.BrevstatusService;
 import no.nav.brevserver.service.BrevtilgangService;
@@ -26,7 +26,6 @@ import no.nav.brevserver.service.converter.VoTilBrevConverter;
 import no.nav.brevserver.service.converter.VoTilBrevstatusConverter;
 import no.nav.brevserver.service.queue.KvitteringService;
 import no.nav.brevserver.service.utility.KnappStatusUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,7 +49,6 @@ public class DefaultBrevlagerService implements BrevlagerService {
 	private final KvitteringService kvitteringService;
 	private final KnappStatusUtil knappStatusUtil;
 
-	@Autowired
 	public DefaultBrevlagerService(JoarkService joarkService,
 								   BrevTilVoConverter brevTilVoConverter,
 								   BrevstatusService brevstatusService,

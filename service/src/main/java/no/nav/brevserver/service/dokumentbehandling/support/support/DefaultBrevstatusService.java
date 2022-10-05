@@ -26,7 +26,6 @@ public class DefaultBrevstatusService implements BrevstatusService {
 	private final VoTilBrevstatusConverter voTilBrevstatusConverter;
 	private final BrevstatusTilVoConverter brevstatusTilVoConverter;
 
-	@Autowired
 	public DefaultBrevstatusService(BrevstatusRepository brevstatusRepository,
 									BrevtilgangService brevtilgangService,
 									VoTilBrevstatusConverter voTilBrevstatusConverter,

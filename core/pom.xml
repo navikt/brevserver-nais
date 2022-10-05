@@ -6,7 +6,7 @@
 	<parent>
 		<artifactId>brevserver</artifactId>
 		<groupId>no.nav.brevserver</groupId>
-		<version>10.2.1-SNAPSHOT</version>
+		<version>1.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>core</artifactId>

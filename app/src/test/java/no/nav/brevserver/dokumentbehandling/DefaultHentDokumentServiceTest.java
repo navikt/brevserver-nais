@@ -1,19 +1,18 @@
 package no.nav.brevserver.dokumentbehandling;
 
 import no.nav.brevserver.core.constants.KnappStatus;
+import no.nav.brevserver.core.exception.BrevRuntimeException;
+import no.nav.brevserver.core.vo.BrevStatusVO;
+import no.nav.brevserver.core.vo.BrevVO;
+import no.nav.brevserver.core.vo.FilType;
 import no.nav.brevserver.nais.DokumentbehandlingProvider;
 import no.nav.brevserver.nais.support.HentDokumentRequestMapper;
 import no.nav.brevserver.nais.support.HentDokumentResponseMapper;
 import no.nav.brevserver.nais.support.impl.DefaultHentDokumentRequestMapper;
 import no.nav.brevserver.nais.support.impl.DefaultHentDokumentResponseMapper;
-import no.nav.brevserver.core.exception.BrevRuntimeException;
-import no.nav.brevserver.core.vo.BrevStatusVO;
-import no.nav.brevserver.core.vo.BrevVO;
-import no.nav.brevserver.core.vo.FilType;
 import no.nav.brevserver.service.BrevlagerService;
 import no.nav.brevserver.service.BrevstatusService;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.HentDokumentRequest;
-import no.nav.tjenester.brevogarkiv.dokumentbehandling.HentDokumentResponse;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.HentDokumentResponse2;
 import org.junit.Before;
 import org.junit.Rule;
@@ -32,10 +31,8 @@ import java.io.IOException;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 /**
  * Unit tests for DefaultHentDokumentService

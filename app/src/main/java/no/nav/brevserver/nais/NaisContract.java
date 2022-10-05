@@ -1,10 +1,7 @@
 package no.nav.brevserver.nais;
 
-import io.micrometer.core.instrument.Gauge;
-import io.micrometer.core.instrument.MeterRegistry;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.security.token.support.core.api.Unprotected;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +24,6 @@ public final class NaisContract {
 	private static final String APPLICATION_READY = "Application is ready for traffic!";
 	private static AtomicInteger isReady = new AtomicInteger(1);
 
-	@Autowired
 	public NaisContract() {
 		//TODO: Legg på meterregistry
 		//Gauge.builder("dok_app_is_ready", isReady, AtomicInteger::get).register(meterRegistry);

@@ -12,7 +12,6 @@ import org.apache.camel.ValidationException;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.stereotype.Component;
 
-import javax.inject.Inject;
 import javax.jms.Queue;
 
 import static no.nav.brevserver.core.utils.ExchangeUtils.JMS;
@@ -40,7 +39,6 @@ public class BestillBrevRoute extends RouteBuilder {
 	private final BestillBrevMetricsRoutePolicy bestillBrevMetricsRoutePolicy;
 	private final BestillBrevService bestillBrevService;
 
-	@Inject
 	public BestillBrevRoute(Queue onlinebrev,
 							Queue deadletter,
 							Queue dialogueOnline,

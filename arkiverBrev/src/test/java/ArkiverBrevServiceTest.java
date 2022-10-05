@@ -8,10 +8,9 @@ import no.nav.brevserver.service.BrevlagerService;
 import no.nav.brevserver.service.BrevstatusService;
 import org.apache.activemq.command.ActiveMQMessage;
 import org.apache.activemq.command.ActiveMQTextMessage;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.jupiter.api.Disabled;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -20,7 +19,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.inject.Inject;
 import javax.jms.Queue;
 import javax.jms.TextMessage;
 import javax.xml.bind.JAXBElement;
@@ -34,9 +32,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.powermock.api.mockito.PowerMockito.when;
-import static utils.Utils.*;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
+import static utils.Utils.BISYS_SYSTEM_ID;
+import static utils.Utils.BREVREFERANSE;
+import static utils.Utils.FILTYPE_XML;
+import static utils.Utils.FORMAT;
+import static utils.Utils.STATUS_FERDIG;
+import static utils.Utils.STATUS_LAGRET;
+import static utils.Utils.createBisysKvittering;
+import static utils.Utils.createBisysKvitteringfeilNiva;
+import static utils.Utils.createPesysKvittering;
 
 @RunWith(SpringRunner.class)
 @EnableAutoConfiguration
@@ -45,21 +51,21 @@ import static utils.Utils.*;
 @DirtiesContext
 public class ArkiverBrevServiceTest {
 
-	@Inject
+	@Autowired
 	private Queue mottakArkiv;
-	@Inject
+	@Autowired
 	private Queue deadletter;
-	@Inject
+	@Autowired
 	private JmsTemplate jmsTemplate;
-	@Inject
+	@Autowired
 	private Queue svarKo;
 	@MockBean
 	private BrevstatusService brevstatusServiceMock;
 	@MockBean
 	private BrevlagerService brevlagerServiceMock;
 
-	private String CORRELATION_ID = "corr-id";
-	private String CALL_ID = "1234-callid-5678";
+	private final String CORRELATION_ID = "corr-id";
+	private final String CALL_ID = "1234-callid-5678";
 	private static final String SVARKOSTRING = "queue:///SvarKo?targetClient=1";
 
 	@Test
@@ -113,7 +119,7 @@ public class ArkiverBrevServiceTest {
 		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
 			String recieved = receive(SVARKOSTRING);
 			assertEquals(recieved, createReplyToBisysKvittering(BREVSTATUS_FEIL, BISYS_SYSTEM_ID, FORMAT, FEIL_BREV_EKSISTERER));
-			verifyZeroInteractions(brevlagerServiceMock);
+			verifyNoInteractions(brevlagerServiceMock);
 		});
 	}
 
@@ -125,7 +131,7 @@ public class ArkiverBrevServiceTest {
 		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
 			String recieved = receive(deadletter);
 			assertEquals(recieved, message);
-			verifyZeroInteractions(brevlagerServiceMock, brevstatusServiceMock);
+			verifyNoInteractions(brevlagerServiceMock, brevstatusServiceMock);
 		});
 	}
 
@@ -136,7 +142,7 @@ public class ArkiverBrevServiceTest {
 		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
 			ActiveMQMessage recieved = receive(deadletter);
 			assertEquals(recieved.getJMSCorrelationID(), CORRELATION_ID);
-			verifyZeroInteractions(brevlagerServiceMock, brevstatusServiceMock);
+			verifyNoInteractions(brevlagerServiceMock, brevstatusServiceMock);
 		});
 	}
 
