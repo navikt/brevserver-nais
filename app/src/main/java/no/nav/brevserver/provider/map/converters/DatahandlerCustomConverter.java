@@ -1,15 +1,13 @@
 package no.nav.brevserver.provider.map.converters;
 
+import com.github.dozermapper.core.DozerConverter;
 import org.apache.commons.io.IOUtils;
-import org.dozer.DozerConverter;
 
 import javax.activation.DataHandler;
 import java.io.IOException;
 
 /**
  * Converts between DataHandler and byte[]
- *
- * @author Joakim Bjørnstad, Visma Consulting
  */
 public class DatahandlerCustomConverter extends DozerConverter<DataHandler, byte[]> {
 	public DatahandlerCustomConverter() {

@@ -1,8 +1,8 @@
 package no.nav.brevserver.provider.map.converters;
 
+import com.github.dozermapper.core.DozerConverter;
 import no.nav.brevserver.service.loggmottak.Log;
 import no.nav.tjenester.brevogarkiv.loggmottak.Severity;
-import org.dozer.DozerConverter;
 
 /**
  * Maps from webservice Severity to a down-scaled Log.severity.

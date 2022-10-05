@@ -43,7 +43,7 @@
 		<activemq.version>5.17.2</activemq.version>
 		<camel.version>3.19.0</camel.version>
 		<commons-io.version>2.11.0</commons-io.version>
-		<dozer.version>5.5.1</dozer.version>
+		<dozer-spring-boot-starter.version>6.5.2</dozer-spring-boot-starter.version>
 		<xercesImpl.version>2.12.2</xercesImpl.version>
 		<logstash-logback-encoder.version>7.2</logstash-logback-encoder.version>
 		<aspose-words-jdk15.version>11.2.0</aspose-words-jdk15.version>
@@ -100,6 +100,10 @@
 				<artifactId>stelvio-consumer-java</artifactId>
 				<version>${stelvio.version}</version>
 				<exclusions>
+					<exclusion>
+						<groupId>net.sf.dozer</groupId>
+						<artifactId>dozer</artifactId>
+					</exclusion>
 					<exclusion>
 						<groupId>no.stelvio</groupId>
 						<artifactId>stelvio-dto-java</artifactId>
@@ -219,15 +223,9 @@
 				<version>${xercesImpl.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>net.sf.dozer</groupId>
-				<artifactId>dozer</artifactId>
-				<version>${dozer.version}</version>
-				<exclusions>
-					<exclusion>
-						<groupId>org.slf4j</groupId>
-						<artifactId>slf4j-log4j12</artifactId>
-					</exclusion>
-				</exclusions>
+				<groupId>com.github.dozermapper</groupId>
+				<artifactId>dozer-spring-boot-starter</artifactId>
+				<version>${dozer-spring-boot-starter.version}</version>
 			</dependency>
 
 			<!--Database-->

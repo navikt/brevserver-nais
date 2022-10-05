@@ -1,16 +1,14 @@
 package no.nav.brevserver.provider.map.converters;
 
+import com.github.dozermapper.core.DozerConverter;
 import no.nav.brevserver.app.dokumentbehandling.to.HentDokumentResponse;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.HentDokumentResponse2;
-import org.dozer.DozerConverter;
 
 import javax.activation.DataHandler;
 import javax.mail.util.ByteArrayDataSource;
 
 /**
  * Converts between domain HentDokumentResponse and webservice HentDokumentResponse2
- *
- * @author Joakim Bjørnstad, Visma Consulting
  */
 public class HentDokumentResponseCustomConverter extends DozerConverter<HentDokumentResponse, HentDokumentResponse2> {
 
