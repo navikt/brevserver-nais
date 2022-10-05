@@ -103,7 +103,7 @@ spec:
     enabled: true
     paths:
       - kvPath: {{ SRVBREVSERVER }}
-        mountPath: /var/run/secrets/nais.io/srvbrevserver-nais
+        mountPath: /var/run/secrets/nais.io/srvbrevserver
       - kvPath: {{ BREVSERVER_VAULT }}
         mountPath: /var/run/secrets/nais.io/vault
       - kvPath: {{ BREVSERVER_DS }}
