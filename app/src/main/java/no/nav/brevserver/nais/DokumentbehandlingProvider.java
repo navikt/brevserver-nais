@@ -1,30 +1,28 @@
 package no.nav.brevserver.nais;
 
+import no.nav.brevserver.app.dokumentbehandling.to.HentDokumentResponse;
 import no.nav.brevserver.core.constants.KnappStatus;
-import no.nav.brevserver.core.constants.SystemType;
-import no.nav.brevserver.nais.support.AvbrytDokumentRequestMapper;
-import no.nav.brevserver.nais.support.FerdigstillDokumentRequestMapper;
-import no.nav.brevserver.nais.support.HentDokumentRequestMapper;
-import no.nav.brevserver.nais.support.HentDokumentResponseMapper;
-import no.nav.brevserver.nais.support.LagreDokumentRequestMapper;
 import no.nav.brevserver.core.constants.Konstanter;
+import no.nav.brevserver.core.constants.SystemType;
 import no.nav.brevserver.core.exception.BrevException;
 import no.nav.brevserver.core.exception.BrevFunctionalException;
 import no.nav.brevserver.core.exception.BrevRuntimeException;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
 import no.nav.brevserver.core.vo.BrevStatusVO;
 import no.nav.brevserver.core.vo.BrevVO;
+import no.nav.brevserver.nais.support.AvbrytDokumentRequestMapper;
+import no.nav.brevserver.nais.support.FerdigstillDokumentRequestMapper;
+import no.nav.brevserver.nais.support.HentDokumentRequestMapper;
+import no.nav.brevserver.nais.support.HentDokumentResponseMapper;
+import no.nav.brevserver.nais.support.LagreDokumentRequestMapper;
 import no.nav.brevserver.service.BrevlagerService;
 import no.nav.brevserver.service.BrevstatusService;
-import no.nav.brevserver.app.dokumentbehandling.to.HentDokumentResponse;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.AvbrytDokumentRequest;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.FerdigstillDokumentRequest;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.HentDokumentRequest;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.HentDokumentResponse2;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.LagreDokumentRequest;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.PingRequest;
-import org.apache.log4j.MDC;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -43,7 +41,6 @@ public class DokumentbehandlingProvider {
 	private final HentDokumentRequestMapper hentDokumentRequestMapper;
 	private final HentDokumentResponseMapper hentDokumentResponseMapper;
 
-	@Autowired
 	public DokumentbehandlingProvider(BrevlagerService brevlagerService,
 									  BrevstatusService brevstatusService,
 									  LagreDokumentRequestMapper lagreDokumentRequestMapper,

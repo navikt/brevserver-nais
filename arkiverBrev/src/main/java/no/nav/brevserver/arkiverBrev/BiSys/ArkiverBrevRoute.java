@@ -5,12 +5,10 @@ import no.nav.brevserver.arkiverBrev.ArkiverBrevMetricsRoutePolicy;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
 import no.nav.brevserver.core.utils.MDC.MdcRemoverProcessor;
 import no.nav.brevserver.core.utils.MDC.MdcSetterProcessor;
-import org.apache.camel.LoggingLevel;
 import org.apache.camel.ValidationException;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.stereotype.Component;
 
-import javax.inject.Inject;
 import javax.jms.Queue;
 
 import static no.nav.brevserver.core.utils.ExchangeUtils.JMS;
@@ -22,7 +20,10 @@ import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.GI_FEILMELDI
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.GI_TILBAKEMELDING;
 import static no.nav.brevserver.core.utils.ExchangeUtils.setDefaultReturnQueue;
 import static org.apache.camel.ExchangePattern.InOnly;
-import static org.apache.camel.LoggingLevel.*;
+import static org.apache.camel.LoggingLevel.DEBUG;
+import static org.apache.camel.LoggingLevel.ERROR;
+import static org.apache.camel.LoggingLevel.INFO;
+import static org.apache.camel.LoggingLevel.WARN;
 
 @Component
 public class ArkiverBrevRoute extends RouteBuilder {
@@ -38,7 +39,6 @@ public class ArkiverBrevRoute extends RouteBuilder {
 	private final ArkiverBrevService arkiverBrevService;
 
 
-	@Inject
 	public ArkiverBrevRoute(Queue mottakArkiv,
 							Queue mottakOnline,
 							Queue mottakOnlineLinux, Queue deadletter,

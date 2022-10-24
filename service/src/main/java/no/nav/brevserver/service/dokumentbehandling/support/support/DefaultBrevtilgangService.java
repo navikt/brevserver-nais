@@ -1,21 +1,17 @@
 package no.nav.brevserver.service.dokumentbehandling.support.support;
 
-import no.nav.brevserver.core.audit.AuditTrail;
 import no.nav.brevserver.core.cache.LokalCacheConfig;
 import no.nav.brevserver.core.domain.entities.BrevSystemTilgang;
 import no.nav.brevserver.core.domain.entities.Brevtilgang;
+import no.nav.brevserver.core.exception.BrevTechnicalException;
 import no.nav.brevserver.core.repository.BrevSystemTilgangRepository;
 import no.nav.brevserver.core.repository.BrevtilgangRepository;
-import no.nav.brevserver.core.exception.BrevTechnicalException;
 import no.nav.brevserver.core.vo.SysTilgangVO;
 import no.nav.brevserver.service.BrevtilgangService;
 import no.nav.brevserver.service.converter.SystemtilgangTilVoConverter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -26,7 +22,6 @@ public class DefaultBrevtilgangService implements BrevtilgangService {
 	private final BrevSystemTilgangRepository brevSystemTilgangRepository;
 	private final SystemtilgangTilVoConverter systemtilgangTilVoConverter;
 
-	@Autowired
 	public DefaultBrevtilgangService(BrevtilgangRepository brevtilgangRepository,
 									 BrevSystemTilgangRepository brevSystemTilgangRepository,
 									 SystemtilgangTilVoConverter systemtilgangTilVoConverter) {

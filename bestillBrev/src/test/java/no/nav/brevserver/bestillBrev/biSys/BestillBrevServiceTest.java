@@ -9,7 +9,7 @@ import org.apache.activemq.command.ActiveMQMessage;
 import org.apache.activemq.command.ActiveMQTextMessage;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.powermock.api.mockito.PowerMockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -18,7 +18,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.inject.Inject;
 import javax.jms.Queue;
 import javax.jms.TextMessage;
 import javax.xml.bind.JAXBElement;
@@ -35,7 +34,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
@@ -45,15 +44,15 @@ import static org.mockito.Mockito.when;
 @DirtiesContext
 public class BestillBrevServiceTest {
 
-	@Inject
+	@Autowired
 	private Queue onlinebrev;
-	@Inject
+	@Autowired
 	private Queue dialogueOnline;
-	@Inject
+	@Autowired
 	private Queue deadletter;
-	@Inject
+	@Autowired
 	private JmsTemplate jmsTemplate;
-	@Inject
+	@Autowired
 	private Queue svarKo;
 	@MockBean
 	private BrevstatusService brevstatusServiceMock;
@@ -70,7 +69,7 @@ public class BestillBrevServiceTest {
 		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
 			ActiveMQMessage recieved = receive(deadletter);
 			assertEquals(recieved.getJMSCorrelationID(), (CORRELATION_ID));
-			verifyZeroInteractions(brevtilgangServiceMock, brevstatusServiceMock);
+			verifyNoInteractions(brevtilgangServiceMock, brevstatusServiceMock);
 		});
 	}
 
@@ -101,16 +100,16 @@ public class BestillBrevServiceTest {
 		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
 			String recieved = receive(deadletter);
 			assertEquals(recieved, header);
-			verifyZeroInteractions(brevstatusServiceMock);
-			verifyZeroInteractions(brevtilgangServiceMock);
+			verifyNoInteractions(brevstatusServiceMock);
+			verifyNoInteractions(brevtilgangServiceMock);
 		});
 	}
 
 	@Test
 	public void shouldFailOnBadXml() throws Exception {
-		PowerMockito.when(brevtilgangServiceMock.sjekkSystemTilgang(BISYS_SYSTEM_ID, SYSTEM_PASSORD)).thenReturn(true);
-		PowerMockito.when(brevstatusServiceMock.hentBrevStatus(BISYS_SYSTEM_ID, BREVREFERANSE)).thenReturn(null);
-		PowerMockito.when(brevstatusServiceMock.lagreBrevStatus(any(BrevStatusVO.class))).thenReturn(createDefaultBrevstatus(BISYS_SYSTEM_ID));
+		when(brevtilgangServiceMock.sjekkSystemTilgang(BISYS_SYSTEM_ID, SYSTEM_PASSORD)).thenReturn(true);
+		when(brevstatusServiceMock.hentBrevStatus(BISYS_SYSTEM_ID, BREVREFERANSE)).thenReturn(null);
+		when(brevstatusServiceMock.lagreBrevStatus(any(BrevStatusVO.class))).thenReturn(createDefaultBrevstatus(BISYS_SYSTEM_ID));
 
 		String header = "<rtv-brev>badXMl<rtv-brev>";
 		sendStringMessage(onlinebrev, header, CALL_ID);
@@ -118,8 +117,8 @@ public class BestillBrevServiceTest {
 		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
 			String recieved = receive(deadletter);
 			assertEquals(recieved, header);
-			verifyZeroInteractions(brevstatusServiceMock);
-			verifyZeroInteractions(brevtilgangServiceMock);
+			verifyNoInteractions(brevstatusServiceMock);
+			verifyNoInteractions(brevtilgangServiceMock);
 		});
 	}
 
@@ -135,8 +134,8 @@ public class BestillBrevServiceTest {
 		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
 			String recieved = receive(deadletter);
 			assertEquals(recieved, header);
-			verifyZeroInteractions(brevstatusServiceMock);
-			verifyZeroInteractions(brevtilgangServiceMock);
+			verifyNoInteractions(brevstatusServiceMock);
+			verifyNoInteractions(brevtilgangServiceMock);
 		});
 	}
 
@@ -168,7 +167,7 @@ public class BestillBrevServiceTest {
 
 		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
 			verify(brevtilgangServiceMock, times(1)).lagreTilgang(BISYS_SYSTEM_ID, BREVREFERANSE, "token");
-			verifyZeroInteractions(brevstatusServiceMock);
+			verifyNoInteractions(brevstatusServiceMock);
 		});
 	}
 

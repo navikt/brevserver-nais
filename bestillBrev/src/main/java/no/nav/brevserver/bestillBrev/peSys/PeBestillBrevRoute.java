@@ -12,13 +12,17 @@ import org.apache.camel.ValidationException;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.stereotype.Component;
 
-import javax.inject.Inject;
 import javax.jms.Queue;
 
-import static no.nav.brevserver.core.utils.ExchangeUtils.*;
+import static no.nav.brevserver.core.utils.ExchangeUtils.JMS;
+import static no.nav.brevserver.core.utils.ExchangeUtils.JMS_OVERRIDDEN;
+import static no.nav.brevserver.core.utils.ExchangeUtils.OVERRIDE_DESTINATION;
+import static no.nav.brevserver.core.utils.ExchangeUtils.SENDTOMODE;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.GI_FEILMELDING;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.INGEN_TILBAKEMELDING;
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.OPPRETT_BREV;
+import static no.nav.brevserver.core.utils.ExchangeUtils.setDefaultReturnQueue;
+import static no.nav.brevserver.core.utils.ExchangeUtils.setDestination;
 import static org.apache.camel.LoggingLevel.ERROR;
 import static org.apache.camel.LoggingLevel.INFO;
 
@@ -36,7 +40,6 @@ public class PeBestillBrevRoute extends RouteBuilder {
 	private final PeBestillBrevService peBestillBrevService;
 	private final BrevserverProperties brevserverProperties;
 
-	@Inject
 	public PeBestillBrevRoute(Queue onlinebrevPe,
 							  Queue deadletterPe,
 							  Queue dialogueOnlinePe,

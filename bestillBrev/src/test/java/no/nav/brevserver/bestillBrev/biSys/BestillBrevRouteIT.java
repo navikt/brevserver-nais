@@ -12,12 +12,12 @@ import org.apache.activemq.command.ActiveMQTextMessage;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.transaction.TestTransaction;
 
-import javax.inject.Inject;
 import javax.jms.Queue;
 import javax.jms.TextMessage;
 import javax.xml.bind.JAXBElement;
@@ -33,19 +33,19 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @DirtiesContext
 public class BestillBrevRouteIT extends AbstractTest {
 
-	@Inject
+	@Autowired
 	private Queue onlinebrev;
-	@Inject
+	@Autowired
 	private Queue deadletter;
-	@Inject
+	@Autowired
 	private Queue dialogueOnline;
-	@Inject
+	@Autowired
 	private JmsTemplate jmsTemplate;
-	@Inject
+	@Autowired
 	private Queue svarKo;
-	@Inject
+	@Autowired
 	private BrevstatusService brevstatusService;
-	@Inject
+	@Autowired
 	private BrevtilgangService brevtilgangService;
 
 	private final String BREVREF_XML = "3835845842";

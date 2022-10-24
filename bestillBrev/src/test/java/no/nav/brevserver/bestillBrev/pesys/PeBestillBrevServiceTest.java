@@ -9,6 +9,7 @@ import org.apache.activemq.command.ActiveMQMessage;
 import org.apache.activemq.command.ActiveMQTextMessage;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -17,7 +18,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.inject.Inject;
 import javax.jms.Queue;
 import javax.jms.TextMessage;
 import javax.xml.bind.JAXBElement;
@@ -35,7 +35,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
@@ -45,15 +45,15 @@ import static org.mockito.Mockito.when;
 @DirtiesContext
 public class PeBestillBrevServiceTest {
 
-	@Inject
+	@Autowired
 	private Queue onlinebrevPe;
-	@Inject
+	@Autowired
 	private Queue dialogueOnlinePe;
-	@Inject
+	@Autowired
 	private Queue deadletterPe;
-	@Inject
+	@Autowired
 	private JmsTemplate jmsTemplate;
-	@Inject
+	@Autowired
 	private Queue svarKo;
 	@MockBean
 	private BrevstatusService brevstatusServiceMock;
@@ -71,7 +71,7 @@ public class PeBestillBrevServiceTest {
 		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
 			ActiveMQMessage recieved = receive(deadletterPe);
 			assertEquals(recieved.getJMSCorrelationID(), (CORRELATION_ID));
-			verifyZeroInteractions(brevtilgangServiceMock, brevstatusServiceMock);
+			verifyNoInteractions(brevtilgangServiceMock, brevstatusServiceMock);
 		});
 	}
 
@@ -102,8 +102,8 @@ public class PeBestillBrevServiceTest {
 		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
 			String recieved = receive(deadletterPe);
 			assertEquals(recieved, header);
-			verifyZeroInteractions(brevstatusServiceMock);
-			verifyZeroInteractions(brevtilgangServiceMock);
+			verifyNoInteractions(brevstatusServiceMock);
+			verifyNoInteractions(brevtilgangServiceMock);
 		});
 	}
 
@@ -119,8 +119,8 @@ public class PeBestillBrevServiceTest {
 		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
 			String recieved = receive(deadletterPe);
 			assertEquals(recieved, header);
-			verifyZeroInteractions(brevstatusServiceMock);
-			verifyZeroInteractions(brevtilgangServiceMock);
+			verifyNoInteractions(brevstatusServiceMock);
+			verifyNoInteractions(brevtilgangServiceMock);
 		});
 	}
 
@@ -136,8 +136,8 @@ public class PeBestillBrevServiceTest {
 		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
 			String recieved = receive(deadletterPe);
 			assertEquals(recieved, header);
-			verifyZeroInteractions(brevstatusServiceMock);
-			verifyZeroInteractions(brevtilgangServiceMock);
+			verifyNoInteractions(brevstatusServiceMock);
+			verifyNoInteractions(brevtilgangServiceMock);
 		});
 	}
 

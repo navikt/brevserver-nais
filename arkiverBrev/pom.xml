@@ -6,7 +6,7 @@
 	<parent>
 		<artifactId>brevserver</artifactId>
 		<groupId>no.nav.brevserver</groupId>
-		<version>10.2.1-SNAPSHOT</version>
+		<version>1.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>arkiverBrev</artifactId>
@@ -22,16 +22,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>javax.inject</groupId>
-			<artifactId>javax.inject</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
 			<groupId>org.apache.camel.springboot</groupId>
 			<artifactId>camel-stax-starter</artifactId>
 		</dependency>
@@ -40,7 +30,7 @@
 			<artifactId>xercesImpl</artifactId>
 		</dependency>
 
-		<!-- test-->
+		<!-- test -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>

@@ -20,8 +20,6 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Handler;
 import org.springframework.stereotype.Service;
 
-import javax.inject.Inject;
-
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.GI_TILBAKEMELDING;
 import static no.nav.brevserver.core.utils.ExchangeUtils.setMode;
 
@@ -35,11 +33,10 @@ import static no.nav.brevserver.core.utils.ExchangeUtils.setMode;
 @Service
 public class ArkiverBrevService {
 
-	private BrevstatusService brevstatusService;
-	private BrevlagerService brevlagerService;
-	private KvitteringService kvitteringService;
+	private final BrevstatusService brevstatusService;
+	private final BrevlagerService brevlagerService;
+	private final KvitteringService kvitteringService;
 
-	@Inject
 	public ArkiverBrevService(
 			BrevstatusService brevstatusService,
 			BrevlagerService brevlagerService,

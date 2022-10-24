@@ -18,12 +18,10 @@ import org.springframework.jms.annotation.EnableJms;
 		FagarkivProperties.class
 })
 @Import({
-		NaisContract.class,
 		CoreConfig.class,
 		JmsConfig.class,
 		JournalbehandlingConfiguration.class
 })
 @Configuration
 public class Appconfig {
-
 }

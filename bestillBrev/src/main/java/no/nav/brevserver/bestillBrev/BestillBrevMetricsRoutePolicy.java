@@ -9,8 +9,6 @@ import org.apache.camel.ValidationException;
 import org.apache.camel.support.RoutePolicySupport;
 import org.springframework.stereotype.Component;
 
-import javax.inject.Inject;
-
 import static no.nav.brevserver.bestillBrev.biSys.BestillBrevRoute.BESTILLBREV;
 import static no.nav.brevserver.core.metrics.MetricLabels.LABEL_ERROR_TYPE;
 import static no.nav.brevserver.core.metrics.MetricLabels.LABEL_EXCEPTION_NAME;
@@ -31,7 +29,6 @@ public class BestillBrevMetricsRoutePolicy extends RoutePolicySupport {
 	private static final String BESTILL_BREV_PROCESS_TIMER_DESCRIPTION = "prosesseringstid for kall inn til arkiverBrev";
 	private static final String BESTILL_BREV_EXCEPTION = "dok_request_exception_total";
 
-	@Inject
 	public BestillBrevMetricsRoutePolicy(MeterRegistry registry) {
 		this.registry = registry;
 	}

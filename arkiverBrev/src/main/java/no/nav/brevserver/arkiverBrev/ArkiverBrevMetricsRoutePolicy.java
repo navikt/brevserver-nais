@@ -9,8 +9,6 @@ import org.apache.camel.ValidationException;
 import org.apache.camel.support.RoutePolicySupport;
 import org.springframework.stereotype.Component;
 
-import javax.inject.Inject;
-
 import static no.nav.brevserver.arkiverBrev.BiSys.ArkiverBrevRoute.ARKIVER_BREV_ROUTE;
 import static no.nav.brevserver.core.metrics.MetricLabels.LABEL_ERROR_TYPE;
 import static no.nav.brevserver.core.metrics.MetricLabels.LABEL_EXCEPTION_NAME;
@@ -31,7 +29,6 @@ public class ArkiverBrevMetricsRoutePolicy extends RoutePolicySupport {
 	private static final String ARKIVER_BREV_PROCESS_TIMER_DESCRIPTION = "prosesseringstid for kall inn til arkiverBrev";
 	private static final String ARKIVER_BREV_EXCEPTION = "dok_request_exception_total";
 
-	@Inject
 	public ArkiverBrevMetricsRoutePolicy(MeterRegistry registry) {
 		this.registry = registry;
 	}
