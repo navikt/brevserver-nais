@@ -74,7 +74,7 @@ public class ArkiverBrevRoute extends RouteBuilder {
 				.handled(true)
 				.useOriginalMessage()
 				.logExhaustedMessageBody(false)
-				.log(ERROR, log, "${exception}; ")
+				.log(WARN, log, "${exception}; ")
 				.to(InOnly, "jms:" + deadletter.getQueueName());
 
 

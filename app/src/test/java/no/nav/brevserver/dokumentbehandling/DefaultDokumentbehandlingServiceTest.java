@@ -1,6 +1,7 @@
 package no.nav.brevserver.dokumentbehandling;
 
 import no.nav.brevserver.core.constants.SystemType;
+import no.nav.brevserver.core.exception.BrevFinnesIkkeException;
 import no.nav.brevserver.nais.DokumentbehandlingProvider;
 import no.nav.brevserver.nais.support.AvbrytDokumentRequestMapper;
 import no.nav.brevserver.nais.support.FerdigstillDokumentRequestMapper;
@@ -85,7 +86,7 @@ public class DefaultDokumentbehandlingServiceTest {
 	private ArgumentCaptor<SystemType> systemTypeCaptor;
 
 	@Test
-	public void shouldCallHentDokument() throws BrevFunctionalException, BrevTechnicalException {
+	public void shouldCallHentDokument() throws BrevFunctionalException, BrevTechnicalException, BrevFinnesIkkeException {
 		HentDokumentRequest hentDokumentRequest = createHentDokumentRequest();
 		when(brevlagerService.hentDokumentFromBrevlagerOrJoark(any())).thenReturn(createBrev());
 		no.nav.brevserver.app.dokumentbehandling.to.HentDokumentRequest request = mock(no.nav.brevserver.app.dokumentbehandling.to.HentDokumentRequest.class);

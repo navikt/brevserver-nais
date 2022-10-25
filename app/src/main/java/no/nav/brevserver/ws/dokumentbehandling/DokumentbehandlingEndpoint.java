@@ -1,5 +1,7 @@
 package no.nav.brevserver.ws.dokumentbehandling;
 
+import no.nav.brevserver.core.exception.BrevFinnesIkkeException;
+import no.nav.brevserver.nais.DokumentbehandlingProvider;
 import no.nav.brevserver.core.exception.BrevException;
 import no.nav.brevserver.core.exception.BrevFunctionalException;
 import no.nav.brevserver.core.exception.BrevSecurityException;
@@ -73,10 +75,13 @@ public class DokumentbehandlingEndpoint implements DokumentbehandlingPortType {
 			log.error("hentDokument", EXCEPTION_MESSAGE, e);
 			throw e;
 		} catch (BrevTechnicalException e) {
-			log.error("hentDokument", EXCEPTION_MESSAGE, e);
+			log.warning("hentDokument feilet teknisk med feilmelding: ", EXCEPTION_MESSAGE, e);
 			throw new RuntimeException(e.getMessage());
 		} catch (BrevFunctionalException e) {
-			log.error("hentDokument", EXCEPTION_MESSAGE, e);
+			log.error("hentDokument feilet funksjonelt med feilmelding: ", EXCEPTION_MESSAGE, e);
+			throw new RuntimeException(e.getMessage());
+		} catch (BrevFinnesIkkeException e){
+			log.warning("hentDokument feilet med BrevFinnesIkke", EXCEPTION_MESSAGE, e);
 			throw new RuntimeException(e.getMessage());
 		}
 	}

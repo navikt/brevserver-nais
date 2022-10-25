@@ -94,7 +94,7 @@ public class DefaultBrevlagerService implements BrevlagerService {
 			backupIfExistingBrev(brev.getBrevreferanse(), brev.getSystemID());
 			BrevStatusVO gmlStatus = brevstatusService.lagreBrevStatus(brevstatus);
 			translateContentTypeDocxToDb2(brev);
-			if (brevstatus.getSystemID()!=null && brevstatus.getSystemID().startsWith(SystemType.PE.toString())) {
+			if (brevstatus.getSystemID() != null && brevstatus.getSystemID().startsWith(SystemType.PE.toString())) {
 				joarkService.lagreDokument(brevstatus.getBrevreferanse(), brev.getContentType(), brev.getBrevdata());
 			} else {
 				brevRepository.save(voTilBrevConverter.convert(brev));
@@ -124,7 +124,7 @@ public class DefaultBrevlagerService implements BrevlagerService {
 			log.info("Ferdigstilte brev " + brevStatus.getBrevreferanse() + " fra " + brevStatus.getSystemID() + " mal: " + brevStatus.getBrevmal());
 			SystemType systemType = brevStatus.getSystemID().startsWith("PE") ? SystemType.PE : SystemType.BI;
 			kvitteringService.sendKvittering(pdfBrev, brevStatus, systemType, brevStatus.getReturKoe());
-		}catch (RuntimeException e) {
+		} catch (RuntimeException e) {
 			throw new BrevTechnicalException(BrevTechnicalException.DATABASE_IKKE_TILGJENGELIG, e);
 		}
 	}
@@ -141,8 +141,8 @@ public class DefaultBrevlagerService implements BrevlagerService {
 				result = getBrev(brevStatus.getSystemID(), brevStatus.getBrevreferanse());
 			}
 			log.info("hentDokumentFromBrevlagerOrJoark har hentet " + brevStatus.getBrevreferanse() + " fra " + brevStatus.getSystemID());
-		}else{
-			log.error("hentDokumentFromBrevlagerOrJoark har ikke tilgang " + brevStatus.getBrevreferanse() + " fra " + brevStatus.getSystemID());
+		} else {
+			log.warn("hentDokumentFromBrevlagerOrJoark: Bruker har ikke tilgang til brev med brevreferanse=" + brevStatus.getBrevreferanse() + " fra=" + brevStatus.getSystemID());
 		}
 
 		return result;
@@ -161,7 +161,7 @@ public class DefaultBrevlagerService implements BrevlagerService {
 		backupIfExistingBrev(pdfBrevVo.getBrevreferanse(), pdfBrevVo.getSystemID());
 		defaultBrevlagerHistorikkService.insertHistorikk(redBrev);
 		brevRepository.save(pdfBrev);
-		log.info("brevlagerdokument "  + brevStatus.getBrevreferanse() + " fra " + brevStatus.getSystemID() + " har blitt ferdigstilt");
+		log.info("brevlagerdokument " + brevStatus.getBrevreferanse() + " fra " + brevStatus.getSystemID() + " har blitt ferdigstilt");
 	}
 
 	@Override
@@ -171,7 +171,7 @@ public class DefaultBrevlagerService implements BrevlagerService {
 	 */
 	public void avbrytDokument(BrevStatusVO brevStatus) throws BrevException {
 
-		if(brevStatus == null){
+		if (brevStatus == null) {
 			throw new IllegalArgumentException("Brevstatus er null!");
 		}
 		verifyChangeRequest(brevStatus);
@@ -194,7 +194,7 @@ public class DefaultBrevlagerService implements BrevlagerService {
 	@Override
 	public void lagreDokument(BrevVO brev, BrevStatusVO brevStatusVO, SystemType systemType) throws BrevException {
 		log.info("Lagrer dokument " + brevStatusVO.getBrevreferanse() + " fra " + brevStatusVO.getSystemID() + " mal: " + brevStatusVO.getBrevmal());
-		if(brev == null || brevStatusVO == null){
+		if (brev == null || brevStatusVO == null) {
 			throw new IllegalArgumentException("Brevstatus er null!");
 		}
 		verifyChangeRequest(brevStatusVO);
@@ -205,8 +205,6 @@ public class DefaultBrevlagerService implements BrevlagerService {
 		}
 		kvitteringService.sendKvittering(brev, brevStatusVO, systemType, brevStatusVO.getReturKoe());
 	}
-
-
 
 
 	private boolean backupIfExistingBrev(String brevreferanse, String systemID) throws BrevTechnicalException {

@@ -1,6 +1,7 @@
 package no.nav.brevserver.dokumentbehandling;
 
 import no.nav.brevserver.core.constants.KnappStatus;
+import no.nav.brevserver.core.exception.BrevFinnesIkkeException;
 import no.nav.brevserver.core.exception.BrevRuntimeException;
 import no.nav.brevserver.core.vo.BrevStatusVO;
 import no.nav.brevserver.core.vo.BrevVO;
@@ -88,7 +89,7 @@ public class DefaultHentDokumentServiceTest {
 
 	@Test
 	public void shouldThrowExceptionIfBrevWasNotFound() throws Exception {
-		thrown.expect(BrevRuntimeException.class);
+		thrown.expect(BrevFinnesIkkeException.class);
 		thrown.expectMessage("Brevserver fant ikke dokumentet med brevreferanse: " + BREVREFERANSE);
 
 		when(brevlagerService.hentDokumentFromBrevlagerOrJoark(any(BrevStatusVO.class))).thenReturn(null);

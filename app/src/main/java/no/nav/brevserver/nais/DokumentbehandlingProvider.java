@@ -2,6 +2,13 @@ package no.nav.brevserver.nais;
 
 import no.nav.brevserver.app.dokumentbehandling.to.HentDokumentResponse;
 import no.nav.brevserver.core.constants.KnappStatus;
+import no.nav.brevserver.core.constants.SystemType;
+import no.nav.brevserver.core.exception.BrevFinnesIkkeException;
+import no.nav.brevserver.nais.support.AvbrytDokumentRequestMapper;
+import no.nav.brevserver.nais.support.FerdigstillDokumentRequestMapper;
+import no.nav.brevserver.nais.support.HentDokumentRequestMapper;
+import no.nav.brevserver.nais.support.HentDokumentResponseMapper;
+import no.nav.brevserver.nais.support.LagreDokumentRequestMapper;
 import no.nav.brevserver.core.constants.Konstanter;
 import no.nav.brevserver.core.constants.SystemType;
 import no.nav.brevserver.core.exception.BrevException;
@@ -57,13 +64,13 @@ public class DokumentbehandlingProvider {
 		this.hentDokumentResponseMapper = hentDokumentResponseMapper;
 	}
 
-	public HentDokumentResponse2 hentDokument(HentDokumentRequest request) throws BrevTechnicalException, BrevFunctionalException {
+	public HentDokumentResponse2 hentDokument(HentDokumentRequest request) throws BrevTechnicalException, BrevFunctionalException, BrevFinnesIkkeException {
 		no.nav.brevserver.app.dokumentbehandling.to.HentDokumentRequest hentDokumentRequest = hentDokumentRequestMapper.map(request);
 		hentDokumentRequest.validate();
 		BrevStatusVO brevStatus = hentDokumentRequest.getBrevStatus();
 		BrevVO brev = brevlagerService.hentDokumentFromBrevlagerOrJoark(brevStatus);
 		if (brev == null) {
-			throw new BrevRuntimeException("Brevserver fant ikke dokumentet med brevreferanse: "
+			throw new BrevFinnesIkkeException("Brevserver fant ikke dokumentet med brevreferanse: "
 					+ brevStatus.getBrevreferanse());
 		}
 		return hentDokumentResponseMapper.map(createResponse(brevStatus, brev));

@@ -4,6 +4,7 @@ import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.brevserver.core.exception.BrevException;
 import no.nav.brevserver.core.exception.BrevFinnesAlleredeException;
+import no.nav.brevserver.core.exception.BrevFinnesIkkeException;
 import no.nav.brevserver.core.exception.BrevFunctionalException;
 import no.nav.brevserver.core.exception.BrevSecurityException;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
@@ -73,10 +74,13 @@ public class DokumentbehandlingResource {
 			log.error("hentDokument", EXCEPTION_MESSAGE, e);
 			throw e;
 		} catch (BrevTechnicalException e) {
-			log.warn("hentDokument", e);
+			log.warn("hentDokument feilet teknisk: ", e);
 			throw new RuntimeException(e.getMessage());
 		} catch (BrevFunctionalException e) {
-			log.warn("hentDokument", e);
+			log.warn("hentDokument feilet funksjonelt: ", e);
+			throw new RuntimeException(e.getMessage());
+		} catch (BrevFinnesIkkeException e) {
+			log.warn("hentDokument feilet med brevFinnesIkke: ", e);
 			throw new RuntimeException(e.getMessage());
 		} finally {
 			MDC.clear();
@@ -133,7 +137,7 @@ public class DokumentbehandlingResource {
 			if (tillatRekjoring != null && tillatRekjoring) {
 				log.info("Brev med referanse er allerede opprettet, tillater rekjoring");
 			} else {
-				log.error("ferdigstillDokument", EXCEPTION_MESSAGE, e);
+				log.warn("ferdigstillDokument", EXCEPTION_MESSAGE, e);
 				throw e;
 			}
 		} catch (RuntimeException e) {
