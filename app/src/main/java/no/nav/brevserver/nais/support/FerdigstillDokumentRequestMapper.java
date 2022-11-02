@@ -4,6 +4,6 @@ import no.nav.brevserver.app.dokumentbehandling.to.FerdigstillDokumentRequest;
 
 public interface FerdigstillDokumentRequestMapper {
 
-	public FerdigstillDokumentRequest map(
+	FerdigstillDokumentRequest map(
 			no.nav.tjenester.brevogarkiv.dokumentbehandling.FerdigstillDokumentRequest ferdigstillDokumentRequest);
 }

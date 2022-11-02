@@ -1,9 +1,9 @@
 package no.nav.brevserver.support;
 
 
-import no.nav.brevserver.nais.support.impl.DefaultHentDokumentResponseMapper;
-import no.nav.brevserver.core.vo.FilType;
 import no.nav.brevserver.app.dokumentbehandling.to.HentDokumentResponse;
+import no.nav.brevserver.core.vo.FilType;
+import no.nav.brevserver.nais.support.impl.DefaultHentDokumentResponseMapper;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.HentDokumentResponse2;
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
@@ -14,13 +14,11 @@ import static org.junit.Assert.assertThat;
 
 /**
  * Unit tests for DefaultHentDokumentResponseMapperTest
- *
- * @author Joakim Bjørnstad, Visma Consulting
  */
 public class DefaultHentDokumentResponseMapperTest {
 	private static final String CONTENT_TYPE = FilType.RTF.getContentType();
 	private static final String KNAPPSTATUS = "1";
-	private static final byte[] DOKUMENTDATA = "hei p� deg".getBytes();
+	private static final byte[] DOKUMENTDATA = "Hallo verden".getBytes();
 
 	private DefaultHentDokumentResponseMapper hentBrevResponseMapper;
 

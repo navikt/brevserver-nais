@@ -20,11 +20,12 @@ public class DefaultLoggRequestMapper implements LoggRequestMapper {
 
 	@Override
 	public LoggRequest map(no.nav.tjenester.brevogarkiv.loggmottak.LoggRequest loggRequest) {
-		LoggRequest loggReq = new LoggRequest();
 		if (loggRequest == null) {
-			log.error("logmottak tom loggrequest mottatt");
-			return loggReq;
+			log.error("logmottak - loggrequest=null mottatt");
+			return new LoggRequest();
 		}
+
+		LoggRequest loggReq = new LoggRequest();
 		BrevklientArguments brevklientArguments = loggRequest.getBrevklientArguments();
 		loggReq.setBrevreferanse(brevklientArguments != null ? brevklientArguments.getBrevreferanse() : null);
 		loggReq.setInfotrygdId(brevklientArguments != null ? brevklientArguments.getInfotrygdId() : null);

@@ -54,10 +54,6 @@
 			<artifactId>token-validation-spring</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.github.dozermapper</groupId>
-			<artifactId>dozer-spring-boot-starter</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>no.nav.tjenester.brevogarkiv</groupId>
 			<artifactId>loggmottak-tjenestespesifikasjon</artifactId>
 			<classifier>jaxws</classifier>

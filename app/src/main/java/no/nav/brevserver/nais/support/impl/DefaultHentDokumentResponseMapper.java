@@ -1,21 +1,24 @@
 package no.nav.brevserver.nais.support.impl;
 
-import no.nav.brevserver.nais.support.AbstractProviderDozerMapper;
-import no.nav.brevserver.nais.support.HentDokumentResponseMapper;
 import no.nav.brevserver.app.dokumentbehandling.to.HentDokumentResponse;
+import no.nav.brevserver.nais.support.HentDokumentResponseMapper;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.HentDokumentResponse2;
 import org.springframework.stereotype.Component;
 
+import javax.activation.DataHandler;
+import javax.mail.util.ByteArrayDataSource;
+
 /**
  * Default implementation of HentDokumentResponseMapper
- *
- * @author Joakim Bjørnstad, Visma Consulting
  */
 @Component
-public class DefaultHentDokumentResponseMapper extends AbstractProviderDozerMapper implements HentDokumentResponseMapper {
+public class DefaultHentDokumentResponseMapper implements HentDokumentResponseMapper {
 
 	@Override
 	public HentDokumentResponse2 map(HentDokumentResponse hentDokumentResponse) {
-		return getDozerMapper().map(hentDokumentResponse, HentDokumentResponse2.class);
+		HentDokumentResponse2 mappedResponse = new HentDokumentResponse2();
+		mappedResponse.setKnappStatus(hentDokumentResponse.getKnappStatus());
+		mappedResponse.setDokumentData(new DataHandler(new ByteArrayDataSource(hentDokumentResponse.getDokumentData(), hentDokumentResponse.getContentType())));
+		return mappedResponse;
 	}
 }
