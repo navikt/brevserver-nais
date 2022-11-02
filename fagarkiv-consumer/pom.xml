@@ -17,17 +17,14 @@
 			<groupId>no.nav.brevserver</groupId>
 			<artifactId>core</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>javax.validation</groupId>
 			<artifactId>validation-api</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-annotations</artifactId>
@@ -46,7 +43,6 @@
 			<artifactId>nav-journalbehandling-tjenestespesifikasjon</artifactId>
 			<classifier>jaxws</classifier>
 		</dependency>
-
 		<dependency>
 			<groupId>org.springframework.retry</groupId>
 			<artifactId>spring-retry</artifactId>
@@ -62,7 +58,6 @@
 		<dependency>
 			<groupId>jakarta.jws</groupId>
 			<artifactId>jakarta.jws-api</artifactId>
-			<version>1.1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
