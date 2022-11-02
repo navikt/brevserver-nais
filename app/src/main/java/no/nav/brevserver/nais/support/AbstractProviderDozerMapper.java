@@ -21,8 +21,7 @@ public abstract class AbstractProviderDozerMapper {
 
 	static {
 		var mappingFiles = Arrays.asList(
-				"dozer/provider-dokumentbehandling-mapping.xml",
-				"dozer/provider-loggmottak-mapping.xml"
+				"dozer/provider-dokumentbehandling-mapping.xml"
 		);
 		dozerMapper = DozerBeanMapperBuilder.create()
 				.withMappingFiles(mappingFiles)

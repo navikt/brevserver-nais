@@ -1,6 +1,5 @@
-package no.nav.brevserver.converters;
+package no.nav.brevserver.ws.loggmottak.map.support;
 
-import no.nav.brevserver.provider.map.converters.SeverityToLogSeverityCustomConverter;
 import no.nav.brevserver.service.loggmottak.Log;
 import no.nav.tjenester.brevogarkiv.loggmottak.Severity;
 import org.junit.Before;
@@ -11,8 +10,6 @@ import static org.junit.Assert.assertThat;
 
 /**
  * Unit tests for SeverityToLogSeverityCustomConverter
- *
- * @author Joakim Bj�rnstad, Visma Consulting
  */
 public class SeverityToLogSeverityCustomConverterTest {
 
@@ -32,7 +29,7 @@ public class SeverityToLogSeverityCustomConverterTest {
 	}
 
 	private void convertAndAssertSeverityToLogSeverity(Severity severity, int expectedLogSeverity) {
-		int actualLogSeverity = severityCustomConverter.convertTo(severity, null);
+		int actualLogSeverity = severityCustomConverter.convertTo(severity);
 		assertThat(actualLogSeverity, is(expectedLogSeverity));
 	}
 }
