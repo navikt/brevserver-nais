@@ -1,7 +1,7 @@
 {
   "APP_NAME": "brevserver-nais",
-  "MIN_REPLICAS": 1,
-  "MAX_REPLICAS": 2,
+  "MIN_REPLICAS": 2,
+  "MAX_REPLICAS": 4,
   "INGRESSES": [
     "https://brevserver-nais.intern.nav.no",
     "https://brevserver-nais.nais.adeo.no",
