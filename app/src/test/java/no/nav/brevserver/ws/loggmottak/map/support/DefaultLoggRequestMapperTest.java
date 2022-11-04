@@ -1,8 +1,7 @@
-package no.nav.brevserver.support;
+package no.nav.brevserver.ws.loggmottak.map.support;
 
 import no.nav.brevserver.service.loggmottak.Log;
 import no.nav.brevserver.service.loggmottak.exception.LoggedException;
-import no.nav.brevserver.ws.loggmottak.map.support.DefaultLoggRequestMapper;
 import no.nav.tjenester.brevogarkiv.loggmottak.BrevklientArguments;
 import no.nav.tjenester.brevogarkiv.loggmottak.LoggRequest;
 import no.nav.tjenester.brevogarkiv.loggmottak.Severity;
@@ -16,8 +15,6 @@ import static org.junit.Assert.assertThat;
 
 /**
  * Unit tests for DefaultLoggRequestMapper
- *
- * @author Joakim Bjørnstad, Visma Consulting
  */
 public class DefaultLoggRequestMapperTest {
 	private static final String SYSTEM_ID = "PE2";

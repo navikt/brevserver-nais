@@ -1,9 +1,9 @@
 package no.nav.brevserver.support;
 
-import no.nav.brevserver.nais.support.impl.DefaultLagreDokumentRequestMapper;
 import no.nav.brevserver.core.vo.BrevStatusVO;
 import no.nav.brevserver.core.vo.BrevVO;
 import no.nav.brevserver.core.vo.FilType;
+import no.nav.brevserver.nais.support.impl.DefaultLagreDokumentRequestMapper;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.LagreDokumentRequest;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,7 +12,7 @@ import javax.activation.DataHandler;
 import javax.mail.util.ByteArrayDataSource;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Unit tests for DefaultLagreDokumentRequestMapper
@@ -44,6 +44,7 @@ public class DefaultLagreDokumentRequestMapperTest {
 	public void shouldMapFromWsRequestToDomainRequest() {
 		domainRequest = lagreBrevRequestMapper.map(wsRequest);
 
+		assertThat(domainRequest.isNewDocument(), is(NYTT_DOKUMENT));
 		assertBrevStatus(domainRequest.getBrevStatus());
 		assertBrev(domainRequest.getBrev());
 	}

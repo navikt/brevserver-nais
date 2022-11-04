@@ -1,9 +1,9 @@
 package no.nav.brevserver.support;
 
-import no.nav.brevserver.nais.support.impl.DefaultFerdigstillDokumentRequestMapper;
 import no.nav.brevserver.core.vo.BrevStatusVO;
 import no.nav.brevserver.core.vo.BrevVO;
 import no.nav.brevserver.core.vo.FilType;
+import no.nav.brevserver.nais.support.impl.DefaultFerdigstillDokumentRequestMapper;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.FerdigstillDokumentRequest;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,12 +12,10 @@ import javax.activation.DataHandler;
 import javax.mail.util.ByteArrayDataSource;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Unit tests for DefaultFerdigstillDokumentRequestMapper
- *
- * @author Joakim Bj�rnstad, Visma Consulting
  */
 public class DefaultFerdigstillDokumentRequestMapperTest {
 	private static final String BREVREFERANSE = "1";
@@ -46,6 +44,7 @@ public class DefaultFerdigstillDokumentRequestMapperTest {
 	public void shouldMapFromWsRequestToDomainRequest() {
 		domainRequest = ferdigstillDokumentRequestMapper.map(wsRequest);
 
+		assertThat(domainRequest.isNewDocument(), is(NYTT_DOKUMENT));
 		assertBrevStatus(domainRequest.getBrevStatus());
 		assertRtfBrev(domainRequest.getBrev());
 		assertPdfBrev(domainRequest.getPdfBrev());

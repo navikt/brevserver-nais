@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.7.4</version>
+		<version>2.7.5</version>
 	</parent>
 
 	<groupId>no.nav.brevserver</groupId>
@@ -33,24 +33,27 @@
 		<nav-journal-tjenestespesifikasjon.version>2.1.0</nav-journal-tjenestespesifikasjon.version>
 		<dokumentbehandling-tjenestespesifikasjon.version>1.0.2</dokumentbehandling-tjenestespesifikasjon.version>
 
-		<!-- Overstyrer Spring Boot sin versjon som gir flyway-feil -->
-		<h2.version>1.4.197</h2.version>
-
-		<swagger.version>3.0.0</swagger.version>
 		<oracle.version>19.16.0.0</oracle.version>
+		<camel.version>3.19.0</camel.version>
 		<token-support.version>1.3.19</token-support.version>
 		<wmq.version>9.3.0.1</wmq.version>
 		<activemq.version>5.17.2</activemq.version>
-		<camel.version>3.19.0</camel.version>
 		<commons-io.version>2.11.0</commons-io.version>
 		<dozer-spring-boot-starter.version>6.5.2</dozer-spring-boot-starter.version>
 		<xercesImpl.version>2.12.2</xercesImpl.version>
 		<logstash-logback-encoder.version>7.2</logstash-logback-encoder.version>
 		<aspose-words-jdk15.version>11.2.0</aspose-words-jdk15.version>
+		<swagger.version>3.0.0</swagger.version>
+		<jakarta.jws-api.version>1.1.1</jakarta.jws-api.version>
 
 		<!-- Snyk - fjern innslaget når Spring Boot har oppgradert versjonen -->
 		<snakeyaml.version>1.33</snakeyaml.version>
 		<bcprov-jdk15on.version>1.70</bcprov-jdk15on.version>
+
+		<!-- test -->
+		<!-- Overstyrer Spring Boot sin versjon som gir flyway-feil -->
+		<h2.version>1.4.197</h2.version>
+		<mockito-core.version>3.11.2</mockito-core.version>
 
 		<!-- Plugins -->
 		<maven-toolchains-plugin.version>3.1.0</maven-toolchains-plugin.version>
@@ -194,14 +197,12 @@
 				<version>${journalbehandling-tjenestespesifikasjon.version}</version>
 				<classifier>jaxws</classifier>
 			</dependency>
-
 			<!-- Kan fjernes når spring-ws-security sine avhengigheter har fått oppdatert bcprov-jdk15on	-->
 			<dependency>
 				<groupId>org.bouncycastle</groupId>
 				<artifactId>bcprov-jdk15on</artifactId>
 				<version>${bcprov-jdk15on.version}</version>
 			</dependency>
-
 			<dependency>
 				<groupId>aspose</groupId>
 				<artifactId>aspose-words-jdk15</artifactId>
@@ -227,8 +228,6 @@
 				<artifactId>dozer-spring-boot-starter</artifactId>
 				<version>${dozer-spring-boot-starter.version}</version>
 			</dependency>
-
-			<!--Database-->
 			<dependency>
 				<groupId>com.oracle.database.jdbc</groupId>
 				<artifactId>ojdbc10</artifactId>
@@ -239,8 +238,6 @@
 				<artifactId>ucp</artifactId>
 				<version>${oracle.version}</version>
 			</dependency>
-
-			<!--Swagger-->
 			<dependency>
 				<groupId>io.springfox</groupId>
 				<artifactId>springfox-swagger2</artifactId>
@@ -251,30 +248,11 @@
 				<artifactId>springfox-swagger-ui</artifactId>
 				<version>${swagger.version}</version>
 			</dependency>
-
-			<!-- Test dependencies -->
-			<dependency>
-				<groupId>no.nav.brevserver</groupId>
-				<artifactId>brevserver-no.nav.brevserver.config</artifactId>
-				<version>${project.version}</version>
-				<type>test-jar</type>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>no.nav.brevserver</groupId>
-				<artifactId>brevserver-consumer-joark-ejb</artifactId>
-				<version>${project.version}</version>
-				<type>test-jar</type>
-				<scope>test</scope>
-			</dependency>
-
 			<dependency>
 				<groupId>no.nav.security</groupId>
 				<artifactId>token-validation-spring</artifactId>
 				<version>${token-support.version}</version>
 			</dependency>
-
-			<!-- Camel / MQ -->
 			<dependency>
 				<groupId>org.apache.camel.springboot</groupId>
 				<artifactId>camel-spring-boot-starter</artifactId>
@@ -299,6 +277,32 @@
 				<groupId>com.ibm.mq</groupId>
 				<artifactId>com.ibm.mq.allclient</artifactId>
 				<version>${wmq.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>jakarta.jws</groupId>
+				<artifactId>jakarta.jws-api</artifactId>
+				<version>${jakarta.jws-api.version}</version>
+			</dependency>
+			<!-- Test dependencies -->
+			<dependency>
+				<groupId>no.nav.brevserver</groupId>
+				<artifactId>brevserver-no.nav.brevserver.config</artifactId>
+				<version>${project.version}</version>
+				<type>test-jar</type>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>no.nav.brevserver</groupId>
+				<artifactId>brevserver-consumer-joark-ejb</artifactId>
+				<version>${project.version}</version>
+				<type>test-jar</type>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.mockito</groupId>
+				<artifactId>mockito-core</artifactId>
+				<version>${mockito-core.version}</version>
+				<scope>test</scope>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

@@ -1,7 +1,7 @@
 package no.nav.brevserver.support;
 
-import no.nav.brevserver.nais.support.impl.DefaultHentDokumentRequestMapper;
 import no.nav.brevserver.core.vo.BrevStatusVO;
+import no.nav.brevserver.nais.support.impl.DefaultHentDokumentRequestMapper;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.HentDokumentRequest;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,8 +11,6 @@ import static org.junit.Assert.assertThat;
 
 /**
  * Unit tests for DefaultHentDokumentRequestMapper
- *
- * @author Joakim Bj�rnstad, Visma Consulting
  */
 public class DefaultHentDokumentRequestMapperTest {
 	private static final String TOKEN = "TOKEN";
