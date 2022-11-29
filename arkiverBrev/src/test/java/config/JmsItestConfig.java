@@ -49,6 +49,20 @@ public class JmsItestConfig {
 	}
 
 	@Bean
+	// exstream -> brevserver
+	// returkø fra exstream til brevserver
+	public Queue mottakArkivPeLinux(@Value("${mottak_arkiv_pe_linux.queuename}") String mottakArkivPeQueueName) throws JMSException {
+		return new MQQueue(mottakArkivPeQueueName);
+	}
+
+	@Bean
+	// exstream -> brevserver
+	// returkø fra exstream til brevserver
+	public Queue mottakOnlinePeLinux(@Value("${mottak_online_pe_linux.queuename}") String brevserverMottakOnlinePe) {
+		return new ActiveMQQueue(brevserverMottakOnlinePe);
+	}
+
+	@Bean
 	public Queue brevReplyPe(@Value("${brev_reply_pe.queuename}") String brevReplyPe) throws JMSException {
 		return new MQQueue(brevReplyPe);
 	}

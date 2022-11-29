@@ -75,15 +75,15 @@ public class JmsConfig {
 	}
 
 	@Bean
-	//exstream -> brevserver
-	//arkivversjonen pdf til dagens brevlagret/db2
+	// default inputkø for brevserver
+	// ferdigproduserte brev fra system y kommer inn her
 	public Queue mottakArkiv(@Value("${mottak_arkiv.queuename}") String mottakArkivQueueName) throws JMSException {
 		return new MQQueue(mottakArkivQueueName);
 	}
 
 	@Bean
 	//exstream -> brevserver
-	// returkø fra exstream på linux til brevserver
+	// returkø fra exstream til brevserver
 	public Queue mottakOnlineLinux(@Value("${mottak_online_linux.queuename}") String brevserverMottakOnlineLinux) throws JMSException {
 		return new MQQueue(brevserverMottakOnlineLinux);
 	}
@@ -103,7 +103,7 @@ public class JmsConfig {
 	}
 
 	@Bean
-	// pesys -> brevserver
+	// pensjon -> brevserver
 	// brevbestilling fra pensjon
 	public Queue onlinebrevPe(@Value("${onlinebrev_pe.queuename}") String brevserverOnlinebrevPe) throws JMSException {
 		return new MQQueue(brevserverOnlinebrevPe);
@@ -117,16 +117,29 @@ public class JmsConfig {
 	}
 
 	@Bean
-	// exstream -> brevserver
-	// returkø fra exstream til brevserver
+	// default inputkø for brevserver
+	// ferdigproduserte brev fra system y kommer inn her
 	public Queue mottakArkivPe(@Value("${mottak_arkiv_pe.queuename}") String mottakArkivPeQueueName) throws JMSException {
 		return new MQQueue(mottakArkivPeQueueName);
 	}
 
 	@Bean
+	// default inputkø for brevserver
+	// ferdigproduserte brev fra system y kommer inn her
+	public Queue mottakArkivPeLinux(@Value("${mottak_arkiv_pe_linux.queuename}") String mottakArkivPeQueueName) throws JMSException {
+		return new MQQueue(mottakArkivPeQueueName);
+	}
+	@Bean
 	// exstream -> brevserver
 	// returkø fra exstream til brevserver
 	public Queue mottakOnlinePe(@Value("${mottak_online_pe.queuename}") String brevserverMottakOnlinePe) throws JMSException {
+		return new MQQueue(brevserverMottakOnlinePe);
+	}
+
+	@Bean
+	// exstream -> brevserver
+	// returkø fra exstream til brevserver
+	public Queue mottakOnlinePeLinux(@Value("${mottak_online_pe_linux.queuename}") String brevserverMottakOnlinePe) throws JMSException {
 		return new MQQueue(brevserverMottakOnlinePe);
 	}
 

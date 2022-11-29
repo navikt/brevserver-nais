@@ -33,6 +33,8 @@ public class PeArkiverBrevRoute extends RouteBuilder {
 
 	private final Queue mottakArkivPe;
 	private final Queue mottakOnlinePe;
+	private final Queue mottakArkivPeLinux;
+	private final Queue mottakOnlinePeLinux;
 	private final Queue deadletterPe;
 	private final Queue brevReplyPe;
 	private final ArkiverBrevMetricsRoutePolicy arkiverBrevMetricsRoutePolicy;
@@ -41,6 +43,8 @@ public class PeArkiverBrevRoute extends RouteBuilder {
 
 	public PeArkiverBrevRoute(Queue mottakArkivPe,
 							  Queue mottakOnlinePe,
+							  Queue mottakArkivPeLinux,
+							  Queue mottakOnlinePeLinux,
 							  Queue deadletterPe,
 							  Queue brevReplyPe,
 							  ArkiverBrevMetricsRoutePolicy arkiverBrevMetricsRoutePolicy,
@@ -48,6 +52,8 @@ public class PeArkiverBrevRoute extends RouteBuilder {
 							  BrevserverProperties brevserverProperties) {
 		this.mottakArkivPe = mottakArkivPe;
 		this.mottakOnlinePe = mottakOnlinePe;
+		this.mottakArkivPeLinux = mottakArkivPeLinux;
+		this.mottakOnlinePeLinux = mottakOnlinePeLinux;
 		this.deadletterPe = deadletterPe;
 		this.brevReplyPe = brevReplyPe;
 		this.arkiverBrevMetricsRoutePolicy = arkiverBrevMetricsRoutePolicy;
@@ -101,6 +107,10 @@ public class PeArkiverBrevRoute extends RouteBuilder {
 		from("jms:" + mottakArkivPe.getQueueName() + ROUTE_OPTIONS)
 				.to(PE_ARKIVER_BREV_ROUTE);
 		from("jms:" + mottakOnlinePe.getQueueName() + ROUTE_OPTIONS)
+				.to(PE_ARKIVER_BREV_ROUTE);
+		from("jms:" + mottakArkivPeLinux.getQueueName() + ROUTE_OPTIONS)
+				.to(PE_ARKIVER_BREV_ROUTE);
+		from("jms:" + mottakOnlinePeLinux.getQueueName() + ROUTE_OPTIONS)
 				.to(PE_ARKIVER_BREV_ROUTE);
 
 		//Hent svar fra exstream
