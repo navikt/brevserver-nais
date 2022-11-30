@@ -1,5 +1,6 @@
 {
   "APP_NAME": "brevserver-nais",
+  "APPD_NAME": "brevserver-nais",
   "MIN_REPLICAS": 1,
   "MAX_REPLICAS": 2,
   "INGRESSES": [
@@ -34,13 +35,11 @@
   "FAGARKIV_ENDPOINTS_JOURNAL": "https://wasapp-q2.adeo.no/joark/Journal",
   "FAGARKIV_ENDPOINTS_JOURNALBEHANDLING": "https://wasapp-q2.adeo.no/joark/Journalbehandling",
   "SECURITY_TOKEN_SERVICE_TOKEN_URL": "https://security-token-service.nais.preprod.local/rest/v1/sts",
-  "SRVBREVSERVER": "/serviceuser/data/dev/srvbrevserver",
   "BREVSERVER_SERVER": "https://brevserver-nais-q2.dev.intern.nav.no/brevweb/",
-  "BREVSERVERCHANNEL_NAME": "Q2_BREVSERVER",
+  "SRVBREVSERVER": "/serviceuser/data/dev/srvbrevserver",
   "BREVSERVER_DS": "/oracle/data/dev/creds/brevserver_q2-user",
   "BREVSERVERCERT": "/kv/preprod/fss/brevserver-nais/certificate",
   "APPDYNAMICS": "/apikey/appdynamics/dev",
-  "APPD_NAME": "brevserver-nais",
   "BREVSERVERPROPERTIES_LOGGXML": "true",
   "BREVSERVERPROPERTIES_DATABASE_POOLSIZE": "10",
   "NO_NAV_SECURITY_JWT_ISSUER_RESTSTS_ACCEPTED_AUDIENCE": "srvdokprodbatch",
