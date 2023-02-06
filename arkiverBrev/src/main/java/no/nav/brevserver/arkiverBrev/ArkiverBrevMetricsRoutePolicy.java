@@ -1,7 +1,6 @@
 package no.nav.brevserver.arkiverBrev;
 
 import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.Timer;
 import no.nav.brevserver.core.exception.BrevFunctionalException;
 import org.apache.camel.Exchange;
 import org.apache.camel.Route;
@@ -23,10 +22,6 @@ import static no.nav.brevserver.core.metrics.MetricLabels.TYPE_TECHNICAL_EXCEPTI
 public class ArkiverBrevMetricsRoutePolicy extends RoutePolicySupport {
 
 	private final MeterRegistry registry;
-	private Timer.Sample timer;
-
-	static final String ARKIVER_BREV_PROCESS_TIMER = "dok_request_latency";
-	private static final String ARKIVER_BREV_PROCESS_TIMER_DESCRIPTION = "prosesseringstid for kall inn til arkiverBrev";
 	private static final String ARKIVER_BREV_EXCEPTION = "dok_request_exception_total";
 
 	public ArkiverBrevMetricsRoutePolicy(MeterRegistry registry) {
@@ -34,19 +29,8 @@ public class ArkiverBrevMetricsRoutePolicy extends RoutePolicySupport {
 	}
 
 	@Override
-	public void onExchangeBegin(Route route, Exchange exchange) {
-		timer = Timer.start(registry);
-	}
-
-	@Override
 	public void onExchangeDone(Route route, Exchange exchange) {
 		Exception exception = getException(exchange);
-
-		timer.stop(Timer.builder(ARKIVER_BREV_PROCESS_TIMER)
-				.description(ARKIVER_BREV_PROCESS_TIMER_DESCRIPTION)
-				.tags(LABEL_PROCESS, ARKIVER_BREV_ROUTE)
-				.publishPercentileHistogram(true)
-				.register(registry));
 
 		if (exception != null) {
 			if (isFunctionalException(exception)) {

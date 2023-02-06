@@ -87,7 +87,7 @@ spec:
   port: 8080
   prometheus:
     enabled: true
-    path: /actuator/prometheus
+    path: brevweb/actuator/prometheus
   readiness:
     path: brevweb/actuator/health/readiness
     port: 8080

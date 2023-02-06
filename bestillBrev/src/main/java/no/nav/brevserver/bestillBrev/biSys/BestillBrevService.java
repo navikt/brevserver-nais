@@ -7,6 +7,7 @@ import no.nav.brevserver.core.constants.SystemType;
 import no.nav.brevserver.core.exception.BrevException;
 import no.nav.brevserver.core.exception.BrevFunctionalException;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
+import no.nav.brevserver.core.metrics.Metrics;
 import no.nav.brevserver.core.utils.ExchangeUtils;
 import no.nav.brevserver.core.utils.xmlHandlers.XMLService;
 import no.nav.brevserver.core.vo.BrevStatusVO;
@@ -38,13 +39,15 @@ import static no.nav.brevserver.core.utils.ExchangeUtils.setBodyAndReturnQueueWi
 @Component
 public class BestillBrevService {
 
+	private final Metrics metrics;
 	private final BrevstatusService brevstatusService;
 	private final BrevtilgangService brevtilgangService;
 	private final BrevserverProperties brevserverProperties;
 
 
-	public BestillBrevService(BrevstatusService brevstatusService,
+	public BestillBrevService(Metrics metrics, BrevstatusService brevstatusService,
 							  BrevtilgangService brevtilgangService, BrevserverProperties brevserverProperties) {
+		this.metrics = metrics;
 		this.brevstatusService = brevstatusService;
 		this.brevtilgangService = brevtilgangService;
 		this.brevserverProperties = brevserverProperties;
@@ -101,6 +104,8 @@ public class BestillBrevService {
 			setBodyAndMode(exchange,
 					messageVo.getStringBody(),
 					OPPRETT_BREV);
+
+			metrics.incrementBrevkodeMetric(brevStatusVo.getSystemID(), brevStatusVo.getBrevmal());
 		}
 	}
 

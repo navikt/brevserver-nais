@@ -89,6 +89,17 @@
 			<artifactId>flyway-core</artifactId>
 		</dependency>
 
+		<!-- micrometer -->
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-registry-prometheus</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-core</artifactId>
+		</dependency>
+		<!-- /micrometer -->
+
 		<!-- Test -->
 		<dependency>
 			<groupId>org.apache.activemq</groupId>
