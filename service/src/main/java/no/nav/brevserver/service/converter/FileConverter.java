@@ -15,10 +15,6 @@ import java.net.URL;
 
 /**
  * Converts documents to different types using the aspose library.
- * 
- * @author Stian Landsnes, Visma Sirius
- * @author Marius Thøring, Visma Consulting
- * 
  */
 public final class FileConverter {
 

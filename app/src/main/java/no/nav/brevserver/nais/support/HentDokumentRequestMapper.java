@@ -4,8 +4,6 @@ import no.nav.brevserver.app.dokumentbehandling.to.HentDokumentRequest;
 
 /**
  * Interface for mapping between webservice and domain hentDokument requests
- *
- * @author Joakim Bjørnstad, Visma Consulting
  */
 public interface HentDokumentRequestMapper {
 	/**

@@ -1,7 +1,5 @@
 /**
  * Beskrivelse av klassen
- *
- * @author Dag Kristiansen
  */
 package no.nav.brevserver.core.constants;
 

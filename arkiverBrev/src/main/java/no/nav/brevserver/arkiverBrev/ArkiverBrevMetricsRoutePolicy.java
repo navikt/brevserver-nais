@@ -15,9 +15,6 @@ import static no.nav.brevserver.core.metrics.MetricLabels.LABEL_PROCESS;
 import static no.nav.brevserver.core.metrics.MetricLabels.TYPE_FUNCTIONAL_EXCEPTION;
 import static no.nav.brevserver.core.metrics.MetricLabels.TYPE_TECHNICAL_EXCEPTION;
 
-/**
- * @author Ugur Alpay Cenar, Visma Consulting.
- */
 @Component
 public class ArkiverBrevMetricsRoutePolicy extends RoutePolicySupport {
 

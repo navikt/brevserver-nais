@@ -2,8 +2,6 @@ package no.nav.brevserver.core.constants;
 
 /**
  * Klasse som inneholder felles konstanter for Brevløsningen.
- *
- * @author Holger Zobel, Accenture
  */
 public final class Konstanter {
 

@@ -33,8 +33,6 @@ import static no.nav.brevserver.core.mdc.MDCConstants.MDC_CALL_ID;
 /**
  * Implementation of the JAX-WS generated service interface DokumentbehandlingPortType.
  * Delegates to DokumentbehandlingProvider at the provider layer.
- *
- * @author Joakim Bjornstad, Visma Consulting
  */
 @Endpoint
 public class DokumentbehandlingEndpoint implements DokumentbehandlingPortType {

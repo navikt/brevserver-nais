@@ -37,8 +37,6 @@ import static org.mockito.Mockito.when;
 
 /**
  * Unit tests for DefaultHentDokumentService
- *
- * @author Joakim BjØrnstad, Visma Consulting
  */
 @RunWith(SpringRunner.class)
 public class DefaultHentDokumentServiceTest {

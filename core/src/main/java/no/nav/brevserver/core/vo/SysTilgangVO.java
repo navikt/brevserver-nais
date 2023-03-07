@@ -1,9 +1,5 @@
 package no.nav.brevserver.core.vo;
 
-/**
- * @author Rune Røren, Accenture
- * @version $Revision: 1991 $ $Author: t133126 $ $Date: 2012-06-14 11:20:26 +0200 (to, 14 jun 2012) $
- */
 public class SysTilgangVO {
 	private String sysId = null;
 	private String pwd = null;

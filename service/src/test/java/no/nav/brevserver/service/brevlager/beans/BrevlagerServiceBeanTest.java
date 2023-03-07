@@ -37,8 +37,6 @@ import static org.mockito.Mockito.when;
 
 /**
  * Unit tests for BrevlagerServiceBean
- *
- * @author Joakim Bjørnstad, Visma Consulting
  */
 @RunWith(SpringRunner.class)
 @ActiveProfiles("itest")

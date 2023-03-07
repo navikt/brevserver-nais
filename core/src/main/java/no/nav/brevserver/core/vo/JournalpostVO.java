@@ -8,10 +8,6 @@ import java.util.List;
 
 /**
  * Represents a Journalpost
- * 
- * @author Joakim Bjørnstad, Visma Consulting
- * @author Rune Røren, Accenture
- *
  */
 public class JournalpostVO {
     private String dato;

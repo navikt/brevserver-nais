@@ -42,8 +42,6 @@ import static org.mockito.Mockito.when;
 
 /**
  * Unit tests for DefaultDokumentbehandlingServiceTest
- *
- * @author Joakim Bjørnstad, Visma Consulting
  */
 @RunWith(SpringRunner.class)
 public class DefaultDokumentbehandlingServiceTest {

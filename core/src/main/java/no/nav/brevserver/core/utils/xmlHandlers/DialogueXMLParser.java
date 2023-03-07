@@ -6,8 +6,6 @@ import org.springframework.stereotype.Component;
 
 /**
  * Beskrivelse av klassen
- *
- * @author Dag Kristiansen
  */
 @Component
 public class DialogueXMLParser {

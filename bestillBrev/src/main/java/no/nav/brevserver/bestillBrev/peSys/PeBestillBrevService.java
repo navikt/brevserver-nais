@@ -61,20 +61,6 @@ public class PeBestillBrevService {
 			throw new BrevFunctionalException("BrevStatus er null");
 		}
 
-		//TODO: Dette ser ikke ut til å være med for pensjon i gamle brevserver? Bare for bisys??
-		/*
-		//Ved feil systempassord send en feilmelding tilbake til fagsystemet over riktig kø.
-		//Setter bodyen til exchangen til feilmeldingen og ruter den til riktig kø
-		if (!brevtilgangService.sjekkSystemTilgang(brevStatusVo.getSystemID(), brevStatusVo.getPassord())) {
-			log.warn("Feil systempassord for melding fra " + brevStatusVo.getSystemID());
-
-			Utils.setBodyAndReturnQueue(exchange,
-					lagFeilmelding(Konstanter.FEIL_IKKE_SYSTEM_TILGANG, brevStatusVo),
-					messageVo.getReplyQueueName(),
-					GI_FEILMELDING);
-			return;
-		}
-*/
 		if (messageVo.isTilgangsXML()) {
 			boolean ok = brevtilgangService.lagreTilgang(brevStatusVo.getSystemID(), brevStatusVo.getBrevreferanse(),
 					brevStatusVo.getToken());

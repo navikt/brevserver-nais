@@ -2,9 +2,6 @@ package no.nav.brevserver.core.exception;
 
 /**
  * Exception som kastes ved tekniske feil
- * 
- * @author Rune Røren, Accenture
- * @version $Revision: 1991 $ $Author: t133126 $ $Date: 2012-06-14 11:20:26 +0200 (to, 14 jun 2012) $
  */
 public class BrevTechnicalException extends BrevException {
 	private static final long serialVersionUID = -4481452292318987654L;

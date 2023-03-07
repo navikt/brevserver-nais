@@ -26,8 +26,6 @@ import static no.nav.brevserver.core.utils.ExchangeUtils.setMode;
 
 /**
  * Håndterer meldinger fra Dialogue. Lagrer brev og setter status og sender kvittering til saksbehandlingsystemet.
- *
- * @author Holger Zobel, Accenture
  */
 @Slf4j
 @Service

@@ -13,8 +13,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 /**
  * Abstract database testclass. Bootstraps an in-memory H2 database.
  * Performs DDL and cleans up for each test. Also provides convenience methods for database query and updates.
- *
- * @author Joakim Bjornstad, Visma Consulting
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {H2JpaConfig.class})

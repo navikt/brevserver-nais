@@ -28,7 +28,7 @@ import static org.apache.camel.LoggingLevel.WARN;
 @Component
 public class ArkiverBrevRoute extends RouteBuilder {
 	public static final String ARKIVER_BREV_ROUTE = "direct:arkiverBrev";
-	private final String ROUTE_OPTIONS = "?transacted=true&concurrentConsumers=1";//&mapJmsMessage=false";
+	private final String ROUTE_OPTIONS = "?transacted=true&concurrentConsumers=1";
 
 
 	private final Queue mottakArkiv;

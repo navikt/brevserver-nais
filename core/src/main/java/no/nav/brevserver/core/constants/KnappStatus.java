@@ -2,9 +2,6 @@ package no.nav.brevserver.core.constants;
 
 /**
  * Denne klassen skal holde orden på hvilke knapper som skal enables / disables.
- * 
- * @author Rune Røren, Accenture
- * @version $Revision: 501 $ $Author: rra2920 $ $Date: 2005-08-30 14:54:19 +0200 (ti, 30 aug 2005) $
  */
 public class KnappStatus {
 	// Disse tallene må tolkes binært for å forstås

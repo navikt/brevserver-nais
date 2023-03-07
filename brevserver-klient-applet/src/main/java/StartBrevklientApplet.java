@@ -1,6 +1,5 @@
 import java.applet.Applet;
-import java.awt.Color;
-import java.awt.Graphics;
+import java.awt.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -40,9 +39,6 @@ import java.util.Date;
  * Denne .class-filen må legges i samme katalog som jsp/html-filen med <APPLET> koden
  * <p/>
  * Tips : Feilmeldinger havner i javakonsollet i IE (Verktøy / Sun Java Console )
- *
- * @author Rune Røren, Accenture
- * @version $Id: StartBrevklientApplet.java 928 2006-03-02 11:17:28Z skb2930 $
  */
 public class StartBrevklientApplet extends Applet {
 	private static final long serialVersionUID = -8667593014766998127L;

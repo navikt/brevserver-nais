@@ -33,8 +33,6 @@ import static org.mockito.Mockito.verify;
 
 /**
  * Unit tests for DefaultLagreDokumentService
- *
- * @author Joakim Bjørnstad, Visma Consulting
  */
 @RunWith(SpringRunner.class)
 public class DefaultLagreDokumentServiceTest extends AbstractBrevserviceTest {

@@ -6,10 +6,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 
-/**
- * @author Rune Røren, Accenture
- * @version $Revision: 2145 $ $Author: t133126 $ $Date: 2013-07-23 12:06:48 +0200 (ti, 23 jul 2013) $
- */
 @Component
 public class KnappStatusUtil {
 

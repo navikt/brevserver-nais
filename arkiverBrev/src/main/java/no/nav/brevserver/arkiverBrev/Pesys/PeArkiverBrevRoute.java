@@ -3,7 +3,6 @@ package no.nav.brevserver.arkiverBrev.Pesys;
 import com.ibm.msg.client.jms.DetailedInvalidDestinationException;
 import com.ibm.msg.client.jms.DetailedJMSException;
 import no.nav.brevserver.arkiverBrev.ArkiverBrevMetricsRoutePolicy;
-import no.nav.brevserver.core.alias.BrevserverProperties;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
 import no.nav.brevserver.core.utils.MDC.MdcRemoverProcessor;
 import no.nav.brevserver.core.utils.MDC.MdcSetterProcessor;
@@ -28,7 +27,7 @@ import static org.apache.camel.LoggingLevel.INFO;
 @Component
 public class PeArkiverBrevRoute extends RouteBuilder {
 	public static final String PE_ARKIVER_BREV_ROUTE = "direct:peArkiverBrev";
-	private final String ROUTE_OPTIONS = "?transacted=true&concurrentConsumers=1";//&mapJmsMessage=false";
+	private final String ROUTE_OPTIONS = "?transacted=true&concurrentConsumers=1";
 
 
 	private final Queue mottakArkivPe;
@@ -39,7 +38,6 @@ public class PeArkiverBrevRoute extends RouteBuilder {
 	private final Queue brevReplyPe;
 	private final ArkiverBrevMetricsRoutePolicy arkiverBrevMetricsRoutePolicy;
 	private final PeArkiverBrevService peArkiverBrevService;
-	private final BrevserverProperties brevserverProperties;
 
 	public PeArkiverBrevRoute(Queue mottakArkivPe,
 							  Queue mottakOnlinePe,
@@ -48,8 +46,7 @@ public class PeArkiverBrevRoute extends RouteBuilder {
 							  Queue deadletterPe,
 							  Queue brevReplyPe,
 							  ArkiverBrevMetricsRoutePolicy arkiverBrevMetricsRoutePolicy,
-							  PeArkiverBrevService peArkiverBrevService,
-							  BrevserverProperties brevserverProperties) {
+							  PeArkiverBrevService peArkiverBrevService) {
 		this.mottakArkivPe = mottakArkivPe;
 		this.mottakOnlinePe = mottakOnlinePe;
 		this.mottakArkivPeLinux = mottakArkivPeLinux;
@@ -58,7 +55,6 @@ public class PeArkiverBrevRoute extends RouteBuilder {
 		this.brevReplyPe = brevReplyPe;
 		this.arkiverBrevMetricsRoutePolicy = arkiverBrevMetricsRoutePolicy;
 		this.peArkiverBrevService = peArkiverBrevService;
-		this.brevserverProperties = brevserverProperties;
 	}
 
 	@Override

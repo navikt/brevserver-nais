@@ -16,8 +16,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Unit tests for DefaultLagreDokumentRequestMapper
- *
- * @author Joakim Bjørnstad, Visma Consulting
  */
 public class DefaultLagreDokumentRequestMapperTest {
 	private static final String BREVREFERANSE = "1";

@@ -1,6 +1,5 @@
 package no.nav.brevserver.support;
 
-import no.nav.brevserver.AbstractBrevserviceTest;
 import no.nav.brevserver.service.loggmottak.LoggmottakService;
 import no.nav.brevserver.ws.loggmottak.map.LoggRequestMapper;
 import no.nav.brevserver.ws.loggmottak.provider.LoggmottakProvider;
@@ -16,8 +15,6 @@ import static org.mockito.Mockito.when;
 
 /**
  * Unit tests for LoggmottakProvider
- *
- * @author Joakim Bjørnstad, Visma Consulting
  */
 @RunWith(SpringRunner.class)
 public class LoggmottakProviderTest {

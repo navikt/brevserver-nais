@@ -32,8 +32,6 @@ import static org.mockito.Mockito.when;
 
 /**
  * Unit tests for DokumentbehandlingProvider
- *
- * @author Joakim Bjørnstad, Visma Consulting
  */
 @RunWith(SpringRunner.class)
 public class DokumentbehandlingProviderTest extends AbstractBrevserviceTest {

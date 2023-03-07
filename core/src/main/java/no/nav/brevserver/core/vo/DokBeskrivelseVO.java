@@ -5,9 +5,6 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 /**
  * Representation of Dokumentbeskrivelse in a Journalpost
- * 
- * @author Joakim Bjørnstad, Visma Consulting
- * @author Rune Røren, Accenture
  */
 public class DokBeskrivelseVO {
     private String kategori;

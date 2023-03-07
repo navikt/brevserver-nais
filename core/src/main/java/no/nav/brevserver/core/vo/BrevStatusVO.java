@@ -9,9 +9,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
 
-/**
- * @author Thomas Kåsene, Visma Consulting AS
- */
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor

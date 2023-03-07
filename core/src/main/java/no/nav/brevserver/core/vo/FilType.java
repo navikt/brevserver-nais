@@ -2,8 +2,6 @@ package no.nav.brevserver.core.vo;
 
 /**
  * Enum that contains the JOARK fileTypeCode and internet media type for a given filetype used
- *
- * @author Joakim Bjørnstad, Visma Consulting
  */
 public enum FilType {
 

@@ -8,8 +8,6 @@ import org.springframework.stereotype.Service;
 
 /**
  * Provider that maps from and to the Loggmottak webservice model and delegates to Service layer implementations.
- *
- * @author Joakim Bjørnstad, Visma Consulting
  */
 @Service
 public class LoggmottakProvider implements LoggmottakPortType {

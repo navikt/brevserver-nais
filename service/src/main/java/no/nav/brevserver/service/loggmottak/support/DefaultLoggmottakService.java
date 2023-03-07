@@ -10,8 +10,6 @@ import org.springframework.stereotype.Service;
 /**
  * Default implementation of LoggmottakService
  * Uses the custom brevserver Log wrapper
- *
- * @author Joakim Bjørnstad, Visma Consulting
  */
 @Service
 @Slf4j

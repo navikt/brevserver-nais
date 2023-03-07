@@ -12,8 +12,6 @@ import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 /**
  * Implementation of the JAX-WS generated service interface LoggmottakPortType.
  * Delegates to LoggmottakProvider at the provider layer.
- *
- * @author Joakim Bjørnstad, Visma Consulting
  */
 @Endpoint
 public class LoggmottakEndpoint implements LoggmottakPortType {

@@ -30,8 +30,6 @@ import static org.mockito.Mockito.verify;
 
 /**
  * Unit tests for DefaultFerdigstillDokumentServiceTest
- *
- * @author Joakim Bjørnstad, Visma Consulting
  */
 @RunWith(SpringRunner.class)
 public class DefaultFerdigstillDokumentServiceTest {

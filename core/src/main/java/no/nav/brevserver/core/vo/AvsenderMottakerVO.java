@@ -5,10 +5,6 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 /**
  * Represents an Avsender and Mottaker
- * 
- * @author Joakim Bjørnstad, Visma Consulting
- * @author Rune Røren, Accenture
- * 
  */
 public class AvsenderMottakerVO {
     private String innholdstype;

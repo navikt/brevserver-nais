@@ -3,7 +3,6 @@ package no.nav.brevserver.nais.swagger;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import io.swagger.annotations.Authorization;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

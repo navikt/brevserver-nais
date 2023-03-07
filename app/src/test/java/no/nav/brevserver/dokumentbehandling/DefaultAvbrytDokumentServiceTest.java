@@ -23,8 +23,6 @@ import static org.mockito.Mockito.verify;
 
 /**
  * Unit tests for DefaultAvbrytDokumentService
- *
- * @author Joakim Bjørnstad, Visma Consulting
  */
 @RunWith(SpringRunner.class)
 public class DefaultAvbrytDokumentServiceTest {
@@ -51,7 +49,7 @@ public class DefaultAvbrytDokumentServiceTest {
 	public ExpectedException thrown = ExpectedException.none();
 
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() {
 		request = createAvbrytDokumentRequest();
 	}
 

@@ -28,8 +28,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Unit tests for BrevserverServiceBean
- *
- * @author Joakim Bjørnstad, Visma Consulting
  */
 @RunWith(SpringRunner.class)
 @ActiveProfiles("itest")

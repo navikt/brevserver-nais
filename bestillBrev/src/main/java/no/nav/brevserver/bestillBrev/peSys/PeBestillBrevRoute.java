@@ -2,7 +2,6 @@ package no.nav.brevserver.bestillBrev.peSys;
 
 import com.ibm.msg.client.jms.DetailedJMSException;
 import no.nav.brevserver.bestillBrev.BestillBrevMetricsRoutePolicy;
-import no.nav.brevserver.core.alias.BrevserverProperties;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
 import no.nav.brevserver.core.utils.MDC.MdcRemoverProcessor;
 import no.nav.brevserver.core.utils.MDC.MdcSetterProcessor;
@@ -29,7 +28,7 @@ import static org.apache.camel.LoggingLevel.INFO;
 @Component
 public class PeBestillBrevRoute extends RouteBuilder {
 	public static final String PE_BESTILLBREV_ROUTE = "peBestill_brev";
-	private final String ROUTE_OPTIONS = "?transacted=true&concurrentConsumers=1";//&mapJmsMessage=false";
+	private final String ROUTE_OPTIONS = "?transacted=true&concurrentConsumers=1";
 	public static final String BESTILL_BREV_ROUTE_PE = "direct:bestillBrevPe";
 
 	private final Queue onlinebrevPe;
@@ -38,22 +37,18 @@ public class PeBestillBrevRoute extends RouteBuilder {
 	private final Queue brevReplyPe;
 	private final BestillBrevMetricsRoutePolicy bestillBrevMetricsRoutePolicy;
 	private final PeBestillBrevService peBestillBrevService;
-	private final BrevserverProperties brevserverProperties;
 
 	public PeBestillBrevRoute(Queue onlinebrevPe,
 							  Queue deadletterPe,
 							  Queue dialogueOnlinePe,
-							  //TODO: PeBestillBrevMetrics? Unødvendig? Undersøk!
 							  Queue brevReplyPe, BestillBrevMetricsRoutePolicy peBestillBrevMetricsRoutePolicy,
-							  PeBestillBrevService peBestillBrevService,
-							  BrevserverProperties brevserverProperties) {
+							  PeBestillBrevService peBestillBrevService) {
 		this.onlinebrevPe = onlinebrevPe;
 		this.deadletterPe = deadletterPe;
 		this.dialogueOnlinePe = dialogueOnlinePe;
 		this.brevReplyPe = brevReplyPe;
 		this.bestillBrevMetricsRoutePolicy = peBestillBrevMetricsRoutePolicy;
 		this.peBestillBrevService = peBestillBrevService;
-		this.brevserverProperties = brevserverProperties;
 	}
 
 	@Override

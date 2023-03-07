@@ -13,8 +13,6 @@ import static org.mockito.Mockito.verify;
 
 /**
  * Unit tests for DefaultPingService
- *
- * @author Joakim Bjørnstad, Visma Consulting
  */
 @RunWith(SpringRunner.class)
 public class DefaultPingServiceTest {

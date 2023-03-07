@@ -4,8 +4,6 @@ import no.nav.brevserver.service.loggmottak.to.LoggRequest;
 
 /**
  * Interface for mapping between webservice and domain logg request
- *
- * @author Joakim Bjørnstad, Visma Consulting
  */
 public interface LoggRequestMapper {
 	/**
