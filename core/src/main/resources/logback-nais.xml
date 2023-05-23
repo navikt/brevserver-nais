@@ -20,17 +20,13 @@
 		<appender-ref ref="applikasjonslogg"/>
 	</root>
 
-	<logger name="no.nav.brevserver" level="DEBUG" additivity="false">
-		<appender-ref ref="applikasjonslogg"/>
-	</logger>
-	<logger name="mf.logger.translog" level="INFO" additivity="false">
+	<logger name="no.nav.brevserver" level="INFO" additivity="false">
 		<appender-ref ref="applikasjonslogg"/>
 	</logger>
 
 	<logger name="org.apache.camel.component.jms" level="WARN"/>
 	<logger name="org.apache.camel.component.jms.JmsConfiguration" level="WARN"/>
 	<logger name="org.apache.camel.component.jms.EndpointMessageListener" level="WARN"/>
-
-	<logger name="org.flywaydb" level="DEBUG"/>
+	<logger name="org.flywaydb" level="INFO"/>
 
 </included>

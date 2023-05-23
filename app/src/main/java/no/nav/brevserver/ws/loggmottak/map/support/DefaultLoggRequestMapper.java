@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 public class DefaultLoggRequestMapper implements LoggRequestMapper {
-
 	private final SeverityToLogSeverityCustomConverter severityCustomConverter;
 
 	public DefaultLoggRequestMapper() {
@@ -21,7 +20,7 @@ public class DefaultLoggRequestMapper implements LoggRequestMapper {
 	@Override
 	public LoggRequest map(no.nav.tjenester.brevogarkiv.loggmottak.LoggRequest loggRequest) {
 		if (loggRequest == null) {
-			log.error("logmottak - loggrequest=null mottatt");
+			log.error("Loggmottak - mottatt loggRequest=null");
 			return new LoggRequest();
 		}
 

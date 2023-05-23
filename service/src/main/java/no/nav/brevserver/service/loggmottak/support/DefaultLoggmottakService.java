@@ -5,7 +5,14 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.brevserver.service.loggmottak.Log;
 import no.nav.brevserver.service.loggmottak.LoggmottakService;
 import no.nav.brevserver.service.loggmottak.to.LoggRequest;
+import org.slf4j.MDC;
 import org.springframework.stereotype.Service;
+
+import static no.nav.brevserver.core.constants.MDCConstants.BREVKLIENT_VERSJON;
+import static no.nav.brevserver.core.constants.MDCConstants.BREVREFERANSE_KEY;
+import static no.nav.brevserver.core.constants.MDCConstants.INFOTRYGD_ID;
+import static no.nav.brevserver.core.constants.MDCConstants.SYSTEMID_KEY;
+import static no.nav.brevserver.core.constants.MDCConstants.USER_ID;
 
 /**
  * Default implementation of LoggmottakService
@@ -20,13 +27,14 @@ public class DefaultLoggmottakService implements LoggmottakService {
 
 	@Override
 	public void logg(LoggRequest loggRequest) {
-		String methSig = String.format(
-				"logg(%s:%s/%s,%s,v%s)",
-				loggRequest.getSystemId(),
-				loggRequest.getBrevreferanse(),
-				loggRequest.getInfotrygdId(),
-				loggRequest.getBrukerId(),
-				loggRequest.getKlientVersion());
+		MDC.put(SYSTEMID_KEY, loggRequest.getSystemId());
+		// saksbehandler
+		MDC.put(USER_ID, loggRequest.getBrukerId());
+		MDC.put(BREVREFERANSE_KEY, loggRequest.getBrevreferanse());
+		if (loggRequest.getInfotrygdId() != null) {
+			MDC.put(INFOTRYGD_ID, loggRequest.getInfotrygdId());
+		}
+		MDC.put(BREVKLIENT_VERSJON, loggRequest.getKlientVersion());
 
 		String logMessage = String.format(
 				"Melding: %s. Exception: %s",
@@ -34,21 +42,12 @@ public class DefaultLoggmottakService implements LoggmottakService {
 				loggRequest.getException());
 
 		switch (loggRequest.getSeverity()) {
-			case Log.FATAL:
-				log.error("Fatal error! " + methSig, logMessage);
-				break;
-			case Log.ERROR:
-				log.error(methSig, logMessage);
-				break;
-			case Log.WARNING:
-				log.warn(methSig, logMessage);
-				break;
-			case Log.INFO:
-				log.info(methSig, logMessage);
-				break;
-			default:
-				log.error(methSig, UNKNOWN_SEVERITY_MESSAGE + ": " + loggRequest.getSeverity() + "."
-						+ " Mottatt loggrequest: " + logMessage);
+			case Log.FATAL -> log.error("Loggmottak - Kritisk uhåndert teknisk feil i brevklient. {}", logMessage);
+			case Log.ERROR -> log.error("Loggmottak - Uhåndtert teknisk feil i brevklient. {}", logMessage);
+			case Log.WARNING -> log.warn("Loggmottak - Funksjonell feil i brevklient. {}", logMessage);
+			case Log.INFO -> log.info("Loggmottak - Brevklient aktivitet. {}", logMessage);
+			default -> log.error(UNKNOWN_SEVERITY_MESSAGE + ": " + loggRequest.getSeverity() + "."
+					+ " Mottatt loggrequest: " + logMessage);
 		}
 	}
 }

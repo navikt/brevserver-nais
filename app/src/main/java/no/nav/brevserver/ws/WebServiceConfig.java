@@ -46,18 +46,20 @@ public class WebServiceConfig {
 
 	@Bean
 	DefaultMethodEndpointAdapter endpointAdapter(MarshallingPayloadMethodProcessor methodProcessor) {
-
 		DefaultMethodEndpointAdapter adapter = new DefaultMethodEndpointAdapter();
 		adapter.setMethodArgumentResolvers(Collections.singletonList(methodProcessor));
 		adapter.setMethodReturnValueHandlers(Collections.singletonList(methodProcessor));
 		return adapter;
 	}
 
-
 	@Bean
 	public Jaxb2Marshaller marshaller() {
 		Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
-		marshaller.setContextPath("no.nav.tjenester.brevogarkiv.dokumentbehandling");
+		marshaller.setContextPaths(
+				"no.nav.tjenester.brevogarkiv.dokumentbehandling",
+				"no.nav.tjenester.brevogarkiv.loggmottak"
+		);
+		marshaller.setCheckForXmlRootElement(false);
 		marshaller.setMtomEnabled(true);
 		return marshaller;
 	}
