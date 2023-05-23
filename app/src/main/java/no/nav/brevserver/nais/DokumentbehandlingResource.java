@@ -1,6 +1,5 @@
 package no.nav.brevserver.nais;
 
-import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.brevserver.core.exception.BrevException;
 import no.nav.brevserver.core.exception.BrevFinnesAlleredeException;
@@ -9,7 +8,6 @@ import no.nav.brevserver.core.exception.BrevFunctionalException;
 import no.nav.brevserver.core.exception.BrevSecurityException;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
 import no.nav.brevserver.core.mdc.MDCConstants;
-import no.nav.brevserver.nais.swagger.SwaggerLagreBrev;
 import no.nav.security.token.support.core.api.Protected;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.AvbrytDokumentRequest;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.FerdigstillDokumentRequest;
@@ -42,7 +40,6 @@ import static no.nav.brevserver.core.constants.MDCConstants.SYSTEMID_KEY;
 import static no.nav.brevserver.core.constants.MDCConstants.X_CORRELATION_ID;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
-@Api(description = "Tjenester for å arkivere i brevserver")
 @RequestMapping("rest")
 @RestController
 @Slf4j
@@ -59,7 +56,8 @@ public class DokumentbehandlingResource {
 
 
 	@GetMapping("/hent")
-	public @ResponseBody HentDokumentResponse2 hentDokument(HentDokumentRequest hentDokumentRequest) {
+	public @ResponseBody
+	HentDokumentResponse2 hentDokument(HentDokumentRequest hentDokumentRequest) {
 
 		log.info("Prøver å hente dokument: " + hentDokumentRequest.getBrevreferanse() + " fra " + hentDokumentRequest.getSystemId());
 		try {
@@ -87,7 +85,6 @@ public class DokumentbehandlingResource {
 		}
 	}
 
-	@SwaggerLagreBrev
 	@PostMapping("/lagre")
 	public void lagreDokument(LagreDokumentRequest lagreDokumentRequest) throws BrevException {
 		try {
@@ -165,7 +162,7 @@ public class DokumentbehandlingResource {
 		}
 	}
 
-	private void handleMDCCallId(){
+	private void handleMDCCallId() {
 		try {
 			HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 			final String navCallId = request.getHeader(NAV_CALL_ID);
