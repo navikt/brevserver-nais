@@ -40,7 +40,6 @@
 		<activemq.version>5.17.2</activemq.version>
 		<commons-io.version>2.11.0</commons-io.version>
 		<dozer-spring-boot-starter.version>6.5.2</dozer-spring-boot-starter.version>
-		<xercesImpl.version>2.12.2</xercesImpl.version>
 		<logstash-logback-encoder.version>7.3</logstash-logback-encoder.version>
 		<aspose-words-jdk15.version>11.2.0</aspose-words-jdk15.version>
 		<jakarta.jws-api.version>1.1.1</jakarta.jws-api.version>
@@ -211,11 +210,6 @@
 				<groupId>net.logstash.logback</groupId>
 				<artifactId>logstash-logback-encoder</artifactId>
 				<version>${logstash-logback-encoder.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>xerces</groupId>
-				<artifactId>xercesImpl</artifactId>
-				<version>${xercesImpl.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.github.dozermapper</groupId>

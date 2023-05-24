@@ -24,10 +24,6 @@
 			<groupId>org.apache.camel.springboot</groupId>
 			<artifactId>camel-stax-starter</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>xerces</groupId>
-			<artifactId>xercesImpl</artifactId>
-		</dependency>
 
 		<!-- test -->
 		<dependency>

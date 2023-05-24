@@ -3,8 +3,6 @@ import no.nav.brevserver.core.vo.BrevStatusVO;
 import no.nav.brevserver.core.vo.FilType;
 import no.nav.brevserver.core.vo.KvitteringVO;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.ByteArrayInputStream;
 import java.io.StringReader;
@@ -12,15 +10,13 @@ import java.io.StringReader;
 import static no.nav.brevserver.core.utils.xmlHandlers.XMLService.marshalBrevStatus;
 import static no.nav.brevserver.core.utils.xmlHandlers.XMLService.marshalHeader;
 import static no.nav.brevserver.core.utils.xmlHandlers.XMLService.unmarshal;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
-@RunWith(SpringRunner.class)
 public class XMLServiceTest {
 	private final String BREVREFERANSE = "12345";
 	private final String SYSTEM_ID = "PE00";
 	private final String FEILKODE = "0";
-
 	private final String TOKEN = "TOKEN";
 	private final String BRUKERID = "b11111";
 	private final String BREVMAL = "PE00.01";
@@ -30,7 +26,6 @@ public class XMLServiceTest {
 	private final String SKRIVER = "LOKAL";
 	private final String ARKIVER = "JA";
 	private final String SKUFF = "01";
-
 
 	@Test
 	public void shouldUnmarshalKvitteringAndBrevstatus() {
@@ -91,10 +86,20 @@ public class XMLServiceTest {
 	}
 
 	private String xmlKvittering() {
-		return "<?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>\n<rtv-brevkvitt>\n<brevref>12345</brevref>\n<sysid>PE00</sysid>\n<type>application/pdf</type>\n<status>FERDIG</status>\n<feilkode>0</feilkode>\n</rtv-brevkvitt>";
+		return """
+				<?xml version="1.0" encoding="ISO-8859-1" ?>
+				<rtv-brevkvitt>
+				<brevref>12345</brevref>
+				<sysid>PE00</sysid>
+				<type>application/pdf</type>
+				<status>FERDIG</status>
+				<feilkode>0</feilkode>
+				</rtv-brevkvitt>""";
 	}
 
 	private String xmlBrevstatus() {
-		return "<rtv-brev klientToken=\"TOKEN\" saksbehandler=\"b11111\" malpakke=\"PE00.01\" sysid=\"PE00\" modus=\"MODUS\" format=\"FORMAT\" skrivertype=\"CANON\" skriver=\"LOKAL\" arkiver=\"JA\" skuff=\"01\"></rtv-brev>";
+		return """
+				<rtv-brev klientToken="TOKEN" saksbehandler="b11111" malpakke="PE00.01" sysid="PE00" modus="MODUS" format="FORMAT" skrivertype="CANON" skriver="LOKAL" arkiver="JA" skuff="01"></rtv-brev>
+				""";
 	}
 }
