@@ -2,6 +2,7 @@ package no.nav.brevserver.joark;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
+import no.nav.brevserver.core.utils.stelvio.RequestContextHolder;
 import no.nav.brevserver.core.vo.BrevVO;
 import no.nav.brevserver.core.vo.FilType;
 import no.nav.brevserver.fagarkiv.mapper.OppdaterJournalRequestMapper;
@@ -13,10 +14,6 @@ import no.nav.virksomhet.tjenester.arkiv.journalbehandling.meldinger.v1.Dokument
 import no.nav.virksomhet.tjenester.arkiv.journalbehandling.meldinger.v1.Fildetaljer;
 import no.nav.virksomhet.tjenester.arkiv.journalbehandling.meldinger.v1.JournalpostDokumentInfoRelasjon;
 import no.nav.virksomhet.tjenester.arkiv.journalbehandling.meldinger.v1.OppdaterJournalRequest;
-import no.stelvio.common.context.RequestContext;
-import no.stelvio.common.context.RequestContextHolder;
-import no.stelvio.common.context.support.RequestContextSetter;
-import no.stelvio.common.context.support.SimpleRequestContext;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -43,7 +40,6 @@ public class JoarkServiceImpl implements JoarkService {
 
 	@Override
 	public void lagreDokument(String brevreferanse, String contentType, byte[] brevdata) throws BrevTechnicalException {
-		setRequestContextIfMissing();
 		OppdaterJournalRequest oppdaterJournalRequest = createOppdaterJournalRequest(brevreferanse);
 		setBrevDataOnRequest(contentType, brevdata, oppdaterJournalRequest);
 		journalbehandlingClient.oppdaterJournalpost(oppdaterJournalRequest);
@@ -53,7 +49,6 @@ public class JoarkServiceImpl implements JoarkService {
 	@Override
 	public void lagreFerdigstiltDokument(String brevreferanse, BrevVO redBrevVO, BrevVO pdfBrevVO)
 			throws BrevTechnicalException {
-		setRequestContextIfMissing();
 		OppdaterJournalRequest oppdaterJournalRequest = createOppdaterJournalRequest(brevreferanse);
 		setBrevDataOnRequest(redBrevVO.getContentType(), redBrevVO.getBrevdata(), oppdaterJournalRequest);
 		setBrevDataOnRequest(pdfBrevVO.getContentType(), pdfBrevVO.getBrevdata(), oppdaterJournalRequest);
@@ -62,7 +57,6 @@ public class JoarkServiceImpl implements JoarkService {
 
 	@Override
 	public BrevVO hentDokument(String brevreferanse) throws BrevTechnicalException {
-		setRequestContextIfMissing();
 		Journalpost journalpost = journalClient.hentJournalpost(getBrevreferanseAsLong(brevreferanse));
 		String journalstatus = journalpost.getJournalstatus().getKode();
 
@@ -73,8 +67,7 @@ public class JoarkServiceImpl implements JoarkService {
 		HentDokumentRequest hentDokumentRequest = createHentDokumentRequest(brevreferanse, filUuid);
 		HentDokumentResponse hentDokumentResponse = hentDokument(hentDokumentRequest);
 
-		BrevVO brevVO = createBrevVO(brevreferanse, journalstatus, contentType, hentDokumentResponse.getDokument());
-		return brevVO;
+		return createBrevVO(brevreferanse, journalstatus, contentType, hentDokumentResponse.getDokument());
 	}
 
 	private OppdaterJournalRequest createOppdaterJournalRequest(String brevreferanse) throws BrevTechnicalException {
@@ -91,8 +84,8 @@ public class JoarkServiceImpl implements JoarkService {
 		if (journalpost != null && (journalpost.getGjelderListe() == null || journalpost.getGjelderListe().isEmpty())) {
 			log.error("OppdaterJournalpostRequest {} har ingen gyldige brukere etter oppdatering", journalpost.getJournalpostId());
 		} else if (journalpost != null && journalpost.getGjelderListe().size() > 0) {
-			for(Bruker bruker : journalpost.getGjelderListe()){
-				log.info("Journalpost {} har gyldig bruker {}, 	{} versjon {}", journalpost.getJournalpostId(), bruker.getBrukerInfoId(), bruker.getBrukerId()!=null?bruker.getBrukerId().substring(0, 3):"Ingen brukerId", bruker.getVersjon());
+			for (Bruker bruker : journalpost.getGjelderListe()) {
+				log.info("Journalpost {} har gyldig bruker {}, 	{} versjon {}", journalpost.getJournalpostId(), bruker.getBrukerInfoId(), bruker.getBrukerId() != null ? bruker.getBrukerId().substring(0, 3) : "Ingen brukerId", bruker.getVersjon());
 			}
 		}
 	}
@@ -105,7 +98,7 @@ public class JoarkServiceImpl implements JoarkService {
 
 	private void verifyJournalStatus(Journalpost journalpost) throws BrevTechnicalException {
 		for (String invalidJournalstatus : JOURNALSTATUS_LAGRE_INVALID_LIST) {
-			if (journalpost.getJournalstatus().equals(invalidJournalstatus)) {
+			if (journalpost.getJournalstatus().toString().equals(invalidJournalstatus)) {
 				String msg = "Feil ved lagring/arkivering av dokument på journalpost med id '" + journalpost.getJournalpostId()
 						+ "'. Journalstatus '" + journalpost.getJournalstatus()
 						+ "' tillater ikke lagring/arkivering";
@@ -231,13 +224,11 @@ public class JoarkServiceImpl implements JoarkService {
 	}
 
 	private HentDokumentResponse hentDokument(HentDokumentRequest hentDokumentRequest) throws BrevTechnicalException {
-		HentDokumentResponse hentDokumentResponse = null;
 		try {
-			hentDokumentResponse = journalClient.hentDokument(hentDokumentRequest);
+			return journalClient.hentDokument(hentDokumentRequest);
 		} catch (Exception e) {
 			throw new BrevTechnicalException("HentDokument feilet", e);
 		}
-		return hentDokumentResponse;
 	}
 
 	private HentDokumentRequest createHentDokumentRequest(String brevreferanse, String filUuid) throws BrevTechnicalException {
@@ -256,22 +247,9 @@ public class JoarkServiceImpl implements JoarkService {
 	 */
 	protected long getBrevreferanseAsLong(String brevreferanse) throws BrevTechnicalException {
 		try {
-			return Long.valueOf(brevreferanse);
+			return Long.parseLong(brevreferanse);
 		} catch (NumberFormatException e) {
 			throw new BrevTechnicalException("Ugyldig JournalpostID '" + brevreferanse + "' mottatt, kan ikke lagre i JOARK.");
 		}
 	}
-
-	/**
-	 * The RequestContext must be set on the current thread as it is used to set the Stelvio Context header in the Joark JAX-WS
-	 * calls.
-	 */
-	private void setRequestContextIfMissing() {
-		if (!RequestContextHolder.isRequestContextSet()) {
-			RequestContext requestContext = new SimpleRequestContext.Builder().userId("srvbrevserver")
-					.componentId("Brevserver").build();
-			RequestContextSetter.setRequestContext(requestContext);
-		}
-	}
-
 }

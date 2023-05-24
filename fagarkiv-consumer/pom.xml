@@ -52,10 +52,6 @@
 			<artifactId>dozer-spring-boot-starter</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>no.stelvio</groupId>
-			<artifactId>stelvio-consumer-java</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>jakarta.jws</groupId>
 			<artifactId>jakarta.jws-api</artifactId>
 		</dependency>
