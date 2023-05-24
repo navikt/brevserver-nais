@@ -49,7 +49,7 @@ public class XMLHandler extends DefaultHandler {
 	 */
 	public void startElement(String namespaceURI, String localName, String qName, Attributes atts) throws SAXException {
 
-		if (qName.equalsIgnoreCase("rtv-brev") || localName.equals("rtv-brev")) {
+		if (matchesQnameLocalName(qName, localName, "rtv-brev")) {
 			// online
 			brevStatusVo.setToken(atts.getValue(nameSpace, "klientToken"));
 			brevStatusVo.setBestillerBrukerID(atts.getValue(nameSpace, "saksbehandler"));
@@ -64,10 +64,10 @@ public class XMLHandler extends DefaultHandler {
 
 			brevStatusVo.setPassord(atts.getValue(nameSpace, "passord"));
 
-		} else if (qName.equalsIgnoreCase("brev") || localName.equalsIgnoreCase("brev")) {
+		} else if (matchesQnameLocalName(qName, localName, "brev")) {
 			brevStatusVo.setBrevreferanse(atts.getValue(nameSpace, "brevref"));
 
-		} else if (qName.equalsIgnoreCase("rtv-brevutskrift") || localName.equalsIgnoreCase("rtv-brevutskrift")) {
+		} else if (matchesQnameLocalName(qName, localName, "rtv-brevutskrift")) {
 			// batch RTF
 			brevStatusVo.setBrevreferanse(atts.getValue(nameSpace, "brevref"));
 			brevStatusVo.setSystemID(atts.getValue(nameSpace, "sysid"));
@@ -76,16 +76,16 @@ public class XMLHandler extends DefaultHandler {
 		thisElement = qName;
 
 		// Journalpost
-		if (qName.equalsIgnoreCase("jPost") || localName.equalsIgnoreCase("jPost")) {
+		if (matchesQnameLocalName(qName, localName, "jPost")) {
 			journal = new JournalpostVO();
 			kvittering.setJournalpost(journal);
 
 		} else if (journal != null) {
-			if (qName.equalsIgnoreCase("jAvsMot") || localName.equalsIgnoreCase("jAvsMot")) {
+			if (matchesQnameLocalName(qName, localName, "jAvsMot")) {
 				avsenderMottaker = new AvsenderMottakerVO();
 				journal.addAvsenderMottaker(avsenderMottaker);
 
-			} else if (qName.equalsIgnoreCase("jTilleggsinfo") || localName.equalsIgnoreCase("jTilleggsinfo")) {
+			} else if (matchesQnameLocalName(qName, localName, "jTilleggsinfo")) {
 				tilleggsinfo = new TilleggsinfoVO();
 
 				String tiType = atts.getValue(nameSpace, "tiType");
@@ -104,7 +104,7 @@ public class XMLHandler extends DefaultHandler {
 
 				journal.addTilleggsinfo(tilleggsinfo);
 
-			} else if (qName.equalsIgnoreCase("jDokBeskrivelse") || localName.equalsIgnoreCase("jDokBeskrivelse")) {
+			} else if (matchesQnameLocalName(qName, localName, "jDokBeskrivelse")) {
 				dokBeskrivelse = new DokBeskrivelseVO();
 
 				dokBeskrivelse.setKategori(atts.getValue(nameSpace, "dbKategori"));
@@ -112,7 +112,7 @@ public class XMLHandler extends DefaultHandler {
 
 				journal.addDokBeskrivelse(dokBeskrivelse);
 
-			} else if (dokBeskrivelse != null && (qName.equalsIgnoreCase("jDokVersjon") || localName.equalsIgnoreCase("jDokVersjon"))) {
+			} else if (dokBeskrivelse != null && matchesQnameLocalName(qName, localName, "jDokVersjon")) {
 				dokBeskrivelse.setVersjon(atts.getValue(nameSpace, "dvVersjon"));
 				dokBeskrivelse.setVariant(atts.getValue(nameSpace, "dvVariant"));
 				dokBeskrivelse.setLagringsFormat(atts.getValue(nameSpace, "dvLagrFormat"));
@@ -342,5 +342,9 @@ public class XMLHandler extends DefaultHandler {
 
 	public BrevStatusVO getBrevStatus() {
 		return brevStatusVo;
+	}
+
+	private boolean matchesQnameLocalName(String qName, String localName, String value) {
+		return qName.equalsIgnoreCase(value) || localName.equals(value);
 	}
 }
