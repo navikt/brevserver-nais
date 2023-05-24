@@ -2,10 +2,7 @@ package no.nav.brevserver.joark;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
-import no.nav.brevserver.core.utils.stelvio.RequestContext;
 import no.nav.brevserver.core.utils.stelvio.RequestContextHolder;
-import no.nav.brevserver.core.utils.stelvio.RequestContextSetter;
-import no.nav.brevserver.core.utils.stelvio.SimpleRequestContext;
 import no.nav.brevserver.core.vo.BrevVO;
 import no.nav.brevserver.core.vo.FilType;
 import no.nav.brevserver.fagarkiv.mapper.OppdaterJournalRequestMapper;
@@ -43,7 +40,6 @@ public class JoarkServiceImpl implements JoarkService {
 
 	@Override
 	public void lagreDokument(String brevreferanse, String contentType, byte[] brevdata) throws BrevTechnicalException {
-		setRequestContextIfMissing();
 		OppdaterJournalRequest oppdaterJournalRequest = createOppdaterJournalRequest(brevreferanse);
 		setBrevDataOnRequest(contentType, brevdata, oppdaterJournalRequest);
 		journalbehandlingClient.oppdaterJournalpost(oppdaterJournalRequest);
@@ -53,7 +49,6 @@ public class JoarkServiceImpl implements JoarkService {
 	@Override
 	public void lagreFerdigstiltDokument(String brevreferanse, BrevVO redBrevVO, BrevVO pdfBrevVO)
 			throws BrevTechnicalException {
-		setRequestContextIfMissing();
 		OppdaterJournalRequest oppdaterJournalRequest = createOppdaterJournalRequest(brevreferanse);
 		setBrevDataOnRequest(redBrevVO.getContentType(), redBrevVO.getBrevdata(), oppdaterJournalRequest);
 		setBrevDataOnRequest(pdfBrevVO.getContentType(), pdfBrevVO.getBrevdata(), oppdaterJournalRequest);
@@ -62,7 +57,6 @@ public class JoarkServiceImpl implements JoarkService {
 
 	@Override
 	public BrevVO hentDokument(String brevreferanse) throws BrevTechnicalException {
-		setRequestContextIfMissing();
 		Journalpost journalpost = journalClient.hentJournalpost(getBrevreferanseAsLong(brevreferanse));
 		String journalstatus = journalpost.getJournalstatus().getKode();
 
@@ -258,17 +252,4 @@ public class JoarkServiceImpl implements JoarkService {
 			throw new BrevTechnicalException("Ugyldig JournalpostID '" + brevreferanse + "' mottatt, kan ikke lagre i JOARK.");
 		}
 	}
-
-	/**
-	 * The RequestContext must be set on the current thread as it is used to set the Stelvio Context header in the Joark JAX-WS
-	 * calls.
-	 */
-	private void setRequestContextIfMissing() {
-		if (!RequestContextHolder.isRequestContextSet()) {
-			RequestContext requestContext = SimpleRequestContext.builder().userId("srvbrevserver")
-					.componentId("Brevserver").build();
-			RequestContextSetter.setRequestContext(requestContext);
-		}
-	}
-
 }
