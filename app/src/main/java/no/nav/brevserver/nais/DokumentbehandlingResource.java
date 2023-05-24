@@ -56,8 +56,7 @@ public class DokumentbehandlingResource {
 
 
 	@GetMapping("/hent")
-	public @ResponseBody
-	HentDokumentResponse2 hentDokument(HentDokumentRequest hentDokumentRequest) {
+	public @ResponseBody HentDokumentResponse2 hentDokument(HentDokumentRequest hentDokumentRequest) {
 
 		log.info("Prøver å hente dokument: " + hentDokumentRequest.getBrevreferanse() + " fra " + hentDokumentRequest.getSystemId());
 		try {
