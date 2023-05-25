@@ -1,24 +1,20 @@
 package no.nav.brevserver.dokumentbehandling;
 
 import no.nav.brevserver.core.constants.SystemType;
+import no.nav.brevserver.core.exception.BrevException;
 import no.nav.brevserver.core.exception.BrevFinnesIkkeException;
+import no.nav.brevserver.core.exception.BrevFunctionalException;
+import no.nav.brevserver.core.exception.BrevTechnicalException;
+import no.nav.brevserver.core.vo.BrevStatusVO;
+import no.nav.brevserver.core.vo.BrevVO;
+import no.nav.brevserver.core.vo.FilType;
 import no.nav.brevserver.nais.DokumentbehandlingProvider;
 import no.nav.brevserver.nais.support.AvbrytDokumentRequestMapper;
 import no.nav.brevserver.nais.support.FerdigstillDokumentRequestMapper;
 import no.nav.brevserver.nais.support.HentDokumentRequestMapper;
 import no.nav.brevserver.nais.support.HentDokumentResponseMapper;
 import no.nav.brevserver.nais.support.LagreDokumentRequestMapper;
-import no.nav.brevserver.nais.support.impl.DefaultAvbrytDokumentRequestMapper;
-import no.nav.brevserver.nais.support.impl.DefaultFerdigstillDokumentRequestMapper;
-import no.nav.brevserver.nais.support.impl.DefaultHentDokumentRequestMapper;
 import no.nav.brevserver.nais.support.impl.DefaultHentDokumentResponseMapper;
-import no.nav.brevserver.nais.support.impl.DefaultLagreDokumentRequestMapper;
-import no.nav.brevserver.core.exception.BrevException;
-import no.nav.brevserver.core.exception.BrevFunctionalException;
-import no.nav.brevserver.core.exception.BrevTechnicalException;
-import no.nav.brevserver.core.vo.BrevStatusVO;
-import no.nav.brevserver.core.vo.BrevVO;
-import no.nav.brevserver.core.vo.FilType;
 import no.nav.brevserver.service.BrevlagerService;
 import no.nav.brevserver.service.BrevstatusService;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.AvbrytDokumentRequest;
@@ -26,13 +22,11 @@ import no.nav.tjenester.brevogarkiv.dokumentbehandling.FerdigstillDokumentReques
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.HentDokumentRequest;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.LagreDokumentRequest;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -43,7 +37,6 @@ import static org.mockito.Mockito.when;
 /**
  * Unit tests for DefaultDokumentbehandlingServiceTest
  */
-@RunWith(SpringRunner.class)
 public class DefaultDokumentbehandlingServiceTest {
 
 	private static final String SYSTEM_ID = "PENSJON";

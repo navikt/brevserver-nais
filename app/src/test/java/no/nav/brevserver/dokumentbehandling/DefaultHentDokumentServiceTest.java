@@ -2,7 +2,6 @@ package no.nav.brevserver.dokumentbehandling;
 
 import no.nav.brevserver.core.constants.KnappStatus;
 import no.nav.brevserver.core.exception.BrevFinnesIkkeException;
-import no.nav.brevserver.core.exception.BrevRuntimeException;
 import no.nav.brevserver.core.vo.BrevStatusVO;
 import no.nav.brevserver.core.vo.BrevVO;
 import no.nav.brevserver.core.vo.FilType;
@@ -19,13 +18,11 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
 
@@ -38,7 +35,6 @@ import static org.mockito.Mockito.when;
 /**
  * Unit tests for DefaultHentDokumentService
  */
-@RunWith(SpringRunner.class)
 public class DefaultHentDokumentServiceTest {
 
 	private static final String SYSTEM_ID = "PENSJON";

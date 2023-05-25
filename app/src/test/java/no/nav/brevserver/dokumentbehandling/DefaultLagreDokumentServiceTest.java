@@ -1,27 +1,25 @@
 package no.nav.brevserver.dokumentbehandling;
 
 import no.nav.brevserver.AbstractBrevserviceTest;
-import no.nav.brevserver.core.constants.SystemType;
-import no.nav.brevserver.nais.DokumentbehandlingProvider;
-import no.nav.brevserver.nais.support.LagreDokumentRequestMapper;
-import no.nav.brevserver.nais.support.impl.DefaultLagreDokumentRequestMapper;
 import no.nav.brevserver.core.constants.Konstanter;
+import no.nav.brevserver.core.constants.SystemType;
 import no.nav.brevserver.core.exception.BrevException;
 import no.nav.brevserver.core.vo.BrevStatusVO;
 import no.nav.brevserver.core.vo.BrevVO;
 import no.nav.brevserver.core.vo.FilType;
+import no.nav.brevserver.nais.DokumentbehandlingProvider;
+import no.nav.brevserver.nais.support.LagreDokumentRequestMapper;
+import no.nav.brevserver.nais.support.impl.DefaultLagreDokumentRequestMapper;
 import no.nav.brevserver.service.BrevlagerService;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.LagreDokumentRequest;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.activation.DataHandler;
 import javax.mail.util.ByteArrayDataSource;
@@ -34,7 +32,6 @@ import static org.mockito.Mockito.verify;
 /**
  * Unit tests for DefaultLagreDokumentService
  */
-@RunWith(SpringRunner.class)
 public class DefaultLagreDokumentServiceTest extends AbstractBrevserviceTest {
 
 	@Mock

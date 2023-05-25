@@ -5,10 +5,8 @@ import no.nav.brevserver.ws.loggmottak.map.LoggRequestMapper;
 import no.nav.brevserver.ws.loggmottak.provider.LoggmottakProvider;
 import no.nav.tjenester.brevogarkiv.loggmottak.LoggRequest;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -16,7 +14,6 @@ import static org.mockito.Mockito.when;
 /**
  * Unit tests for LoggmottakProvider
  */
-@RunWith(SpringRunner.class)
 public class LoggmottakProviderTest {
 
 	@Mock

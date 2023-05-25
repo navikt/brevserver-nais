@@ -13,13 +13,11 @@ import no.nav.tjenester.brevogarkiv.dokumentbehandling.FerdigstillDokumentReques
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.activation.DataHandler;
 import javax.mail.util.ByteArrayDataSource;
@@ -31,7 +29,6 @@ import static org.mockito.Mockito.verify;
 /**
  * Unit tests for DefaultFerdigstillDokumentServiceTest
  */
-@RunWith(SpringRunner.class)
 public class DefaultFerdigstillDokumentServiceTest {
 
 	private static final String BREVREFERANSE = "1";
