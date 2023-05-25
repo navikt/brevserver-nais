@@ -8,7 +8,7 @@ import javax.validation.constraints.Positive;
 
 
 @Data
-@ConfigurationProperties("brevserver")
+@ConfigurationProperties("brevserverproperties")
 @Validated
 public class BrevserverProperties {
 
