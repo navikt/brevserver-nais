@@ -21,10 +21,6 @@
 			<artifactId>camel-stax-starter</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>xerces</groupId>
-			<artifactId>xercesImpl</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>no.nav.brevserver</groupId>
 			<artifactId>service</artifactId>
 		</dependency>
