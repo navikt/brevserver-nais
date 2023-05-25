@@ -2,29 +2,27 @@ package no.nav.brevserver.support;
 
 
 import no.nav.brevserver.AbstractBrevserviceTest;
-import no.nav.brevserver.app.dokumentbehandling.to.HentDokumentResponse;
 import no.nav.brevserver.core.constants.SystemType;
+import no.nav.brevserver.core.exception.BrevException;
+import no.nav.brevserver.core.vo.BrevVO;
 import no.nav.brevserver.nais.DokumentbehandlingProvider;
 import no.nav.brevserver.nais.support.AvbrytDokumentRequestMapper;
 import no.nav.brevserver.nais.support.FerdigstillDokumentRequestMapper;
 import no.nav.brevserver.nais.support.HentDokumentRequestMapper;
 import no.nav.brevserver.nais.support.HentDokumentResponseMapper;
 import no.nav.brevserver.nais.support.LagreDokumentRequestMapper;
-import no.nav.brevserver.core.exception.BrevException;
-import no.nav.brevserver.core.vo.BrevVO;
 import no.nav.brevserver.service.BrevlagerService;
 import no.nav.brevserver.service.BrevstatusService;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.AvbrytDokumentRequest;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.FerdigstillDokumentRequest;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.HentDokumentRequest;
-import no.nav.tjenester.brevogarkiv.dokumentbehandling.HentDokumentResponse2;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.LagreDokumentRequest;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.PingRequest;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -33,7 +31,7 @@ import static org.mockito.Mockito.when;
 /**
  * Unit tests for DokumentbehandlingProvider
  */
-@RunWith(SpringRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class DokumentbehandlingProviderTest extends AbstractBrevserviceTest {
 
 	@Mock
@@ -59,12 +57,9 @@ public class DokumentbehandlingProviderTest extends AbstractBrevserviceTest {
 		HentDokumentRequest wsRequest = new HentDokumentRequest();
 		no.nav.brevserver.app.dokumentbehandling.to.HentDokumentRequest domainRequest =
 				new no.nav.brevserver.app.dokumentbehandling.to.HentDokumentRequest();
-		HentDokumentResponse domainResponse = new HentDokumentResponse();
-		HentDokumentResponse2 wsResponse = new HentDokumentResponse2();
 		domainRequest.setBrevStatus(createBrevStatus());
 		domainRequest.setBrev(createBrev(CONTENT_TYPE_RTF));
 		when(hentDokumentRequestMapper.map(wsRequest)).thenReturn(domainRequest);
-		when(hentDokumentResponseMapper.map(domainResponse)).thenReturn(wsResponse);
 		when(brevlagerService.hentDokumentFromBrevlagerOrJoark(domainRequest.getBrevStatus())).thenReturn(new BrevVO());
 		when(brevstatusService.hentBrevStatus(any(), any())).thenReturn(createBrevStatus());
 		dokumentbehandlingProvider.hentDokument(wsRequest);

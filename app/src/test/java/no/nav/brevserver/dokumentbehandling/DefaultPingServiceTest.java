@@ -3,18 +3,18 @@ package no.nav.brevserver.dokumentbehandling;
 import no.nav.brevserver.nais.DokumentbehandlingProvider;
 import no.nav.brevserver.service.BrevlagerService;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.PingRequest;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.mockito.Mockito.verify;
 
 /**
  * Unit tests for DefaultPingService
  */
-@RunWith(SpringRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class DefaultPingServiceTest {
 
 	@Mock
@@ -28,6 +28,4 @@ public class DefaultPingServiceTest {
 		dokumentbehandlingProvider.ping(new PingRequest());
 		verify(brevlagerServiceMock).ping();
 	}
-
-
 }

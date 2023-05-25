@@ -8,8 +8,7 @@ import no.nav.brevserver.service.BrevlagerService;
 import no.nav.brevserver.service.BrevstatusService;
 import org.apache.activemq.command.ActiveMQMessage;
 import org.apache.activemq.command.ActiveMQTextMessage;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,7 +16,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.jms.Queue;
 import javax.jms.TextMessage;
@@ -44,7 +42,6 @@ import static utils.Utils.createBisysKvittering;
 import static utils.Utils.createBisysKvitteringfeilNiva;
 import static utils.Utils.createPesysKvittering;
 
-@RunWith(SpringRunner.class)
 @EnableAutoConfiguration
 @SpringBootTest(classes = {ApplicationTestConfig.class})
 @ActiveProfiles("itest")

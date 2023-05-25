@@ -7,11 +7,11 @@ import no.nav.tjenester.brevogarkiv.loggmottak.LoggRequest;
 import no.nav.tjenester.brevogarkiv.loggmottak.Severity;
 import no.nav.tjenester.brevogarkiv.loggmottak.WrappedException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Unit tests for DefaultLoggRequestMapper
@@ -31,7 +31,7 @@ public class DefaultLoggRequestMapperTest {
 	private LoggRequest wsRequest;
 	private no.nav.brevserver.service.loggmottak.to.LoggRequest domainRequest;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		loggRequestMapper = new DefaultLoggRequestMapper();
 		wsRequest = createWsLoggRequest();

@@ -2,34 +2,32 @@ package no.nav.brevserver.service.brevserver;
 
 import no.nav.brevserver.core.cache.LokalCacheConfig;
 import no.nav.brevserver.core.domain.entities.BrevSystemTilgang;
-import no.nav.brevserver.core.repository.BrevSystemTilgangRepository;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
+import no.nav.brevserver.core.repository.BrevSystemTilgangRepository;
 import no.nav.brevserver.core.vo.BrevStatusVO;
 import no.nav.brevserver.core.vo.FilType;
 import no.nav.brevserver.core.vo.SysTilgangVO;
 import no.nav.brevserver.service.AbstractDatabaseTest;
 import no.nav.brevserver.service.BrevstatusService;
 import no.nav.brevserver.service.BrevtilgangService;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.interceptor.SimpleKey;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Unit tests for BrevserverServiceBean
  */
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @ActiveProfiles("itest")
 @Transactional
 public class BrevserverServiceBeanTest extends AbstractDatabaseTest {
@@ -42,9 +40,6 @@ public class BrevserverServiceBeanTest extends AbstractDatabaseTest {
 	private BrevstatusService brevstatusService;
 	@Autowired
 	private BrevSystemTilgangRepository brevSystemTilgangRepository;
-
-	@Rule
-	public ExpectedException thrown = ExpectedException.none();
 
 	@Test
 	public void shouldLagreTilgangAndReturnTrue() throws Exception {
@@ -238,6 +233,4 @@ public class BrevserverServiceBeanTest extends AbstractDatabaseTest {
 		BrevSystemTilgang brevSystemTilgang = BrevSystemTilgang.builder().sysId("BI12").pwd("Pensjon123").build();
 		brevSystemTilgangRepository.save(brevSystemTilgang);
 	}
-
-
 }

@@ -2,11 +2,11 @@ package no.nav.brevserver.ws.loggmottak.map.support;
 
 import no.nav.brevserver.service.loggmottak.Log;
 import no.nav.tjenester.brevogarkiv.loggmottak.Severity;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Unit tests for SeverityToLogSeverityCustomConverter
@@ -15,7 +15,7 @@ public class SeverityToLogSeverityCustomConverterTest {
 
 	private SeverityToLogSeverityCustomConverter severityCustomConverter;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		severityCustomConverter = new SeverityToLogSeverityCustomConverter();
 	}

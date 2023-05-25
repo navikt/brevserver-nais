@@ -1,14 +1,13 @@
 package no.nav.brevserver.service.brevlager.beans;
 
+import no.nav.brevserver.core.constants.Konstanter;
 import no.nav.brevserver.core.domain.entities.Brevstatus;
 import no.nav.brevserver.core.domain.entities.id.BrevreferanseSystemCompositeId;
-import no.nav.brevserver.core.constants.Konstanter;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
 import no.nav.brevserver.core.repository.BrevRepository;
 import no.nav.brevserver.core.vo.BrevStatusVO;
 import no.nav.brevserver.core.vo.BrevVO;
 import no.nav.brevserver.core.vo.FilType;
-import no.nav.brevserver.joark.JournalClient;
 import no.nav.brevserver.service.AbstractDatabaseTest;
 import no.nav.brevserver.service.BrevlagerService;
 import no.nav.brevserver.service.BrevstatusService;
@@ -16,29 +15,27 @@ import no.nav.brevserver.service.converter.BrevstatusTilVoConverter;
 import no.nav.brevserver.service.converter.VoTilBrevstatusConverter;
 import no.nav.virksomhet.gjennomforing.arkiv.journal.v2.Journalpost;
 import no.nav.virksomhet.gjennomforing.arkiv.journal.v2.Journalstatus;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertThat;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
  * Unit tests for BrevlagerServiceBean
  */
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @ActiveProfiles("itest")
 public class BrevlagerServiceBeanTest extends AbstractDatabaseTest {
 
@@ -69,11 +66,7 @@ public class BrevlagerServiceBeanTest extends AbstractDatabaseTest {
 	@Autowired
 	private BrevlagerService brevlagerService;
 
-
-	@Rule
-	public ExpectedException thrown = ExpectedException.none();
-
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 	}
@@ -105,7 +98,6 @@ public class BrevlagerServiceBeanTest extends AbstractDatabaseTest {
 
 	@Test
 	public void shouldOppdatereEksisterendeBrevAndVerifyOppdatert() throws Exception {
-
 		brevlagerService.lagreBrev(defaultBrev().build(), new BrevStatusVO());
 		BrevStatusVO initialBrevStatus = defaultBrevStatus().build();
 		initialBrevStatus.setToken("12345");
@@ -129,11 +121,9 @@ public class BrevlagerServiceBeanTest extends AbstractDatabaseTest {
 
 	@Test
 	public void shouldThrowExceptionIfBrevStatusIsFerdig() throws Exception {
-		thrown.expect(BrevTechnicalException.class);
-		thrown.expectMessage("Brevet har status = 'FERDIG' og kan ikke endres");
+		var e = assertThrows(BrevTechnicalException.class, () -> brevlagerService.lagreBrev(defaultBrev().lagerStatus(Konstanter.BREVLAGER_STATUS_FERDIG).build(), new BrevStatusVO()));
 
-		brevlagerService.lagreBrev(defaultBrev().lagerStatus(Konstanter.BREVLAGER_STATUS_FERDIG).build(), new BrevStatusVO());
-		brevlagerService.lagreBrev(defaultBrev().build(), new BrevStatusVO());
+		assertEquals("Brevet har status = 'FERDIG' og kan ikke endres", e.getMessage());
 	}
 
 	@Test

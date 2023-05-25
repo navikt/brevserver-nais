@@ -5,8 +5,8 @@ import no.nav.brevserver.core.vo.BrevVO;
 import no.nav.brevserver.core.vo.FilType;
 import no.nav.brevserver.nais.support.impl.DefaultFerdigstillDokumentRequestMapper;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.FerdigstillDokumentRequest;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.activation.DataHandler;
 import javax.mail.util.ByteArrayDataSource;
@@ -34,7 +34,7 @@ public class DefaultFerdigstillDokumentRequestMapperTest {
 	private FerdigstillDokumentRequest wsRequest;
 	private no.nav.brevserver.app.dokumentbehandling.to.FerdigstillDokumentRequest domainRequest;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		ferdigstillDokumentRequestMapper = new DefaultFerdigstillDokumentRequestMapper();
 		wsRequest = createWsFerdigstillDokumentRequest();

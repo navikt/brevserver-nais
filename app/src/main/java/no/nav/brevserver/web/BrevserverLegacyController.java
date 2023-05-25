@@ -17,16 +17,22 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * Tilbyr JSP som embedder Java Applet for å starte brevklient
+ *
+ * @deprecated Java Applets utgjør en sikkerhetsrisiko og er deprekert siden JDK9
+ */
 @Controller
 @Unprotected
 @Slf4j
-public class BrevserverController {
+@Deprecated(since = "1.15.0")
+public class BrevserverLegacyController {
 
-	@Value("${brevserver.server}")
-	private String server;
+	private final String server;
 
-	private final String systemidPattern = "^[A-Za-z]{1,2}[0-9]{1,2}";
-	private final String brevreferansePattern = "^[0-9]*$";
+	public BrevserverLegacyController(@Value("${brevserver.server}") String server) {
+		this.server = server;
+	}
 
 	@GetMapping("/StartBrevKlient.jsp")
 	public String startBrevklient(@RequestParam(name = "systemid") String systemid, @RequestParam(name = "dokid") String dokid, @RequestParam(name = "token") String token, @RequestParam(name = "height", required = false) String height, @RequestParam(name = "width", required = false) String width, Model model) {
@@ -34,11 +40,11 @@ public class BrevserverController {
 		model.addAttribute("systemid", systemid);
 		model.addAttribute("token", token);
 		model.addAttribute("dokid", dokid);
-		model.addAttribute("height", height!=null?height:800);
-		model.addAttribute("width", width!=null?width:30);
+		model.addAttribute("height", height != null ? height : 800);
+		model.addAttribute("width", width != null ? width : 30);
+		log.warn("startBrevklient - System henter JSP med Applet visning for brev systemid={}, dokid={}", systemid, dokid);
 		return "brevserver";
 	}
-
 
 	@GetMapping("/StartBrevklientApplet.jar")
 	public ResponseEntity<Resource> serverApplet(HttpServletResponse response) throws IOException {
@@ -56,16 +62,4 @@ public class BrevserverController {
 				.contentLength(resource.getByteArray().length)
 				.body(resource);
 	}
-
-	private void validateInput(String systemid, String dokid) {
-		if(!systemid.matches(systemidPattern)){
-			log.error("Systemid {} is not valid", systemid);
-			throw new RuntimeException("Systemid er ikke gyldig");
-		}
-		if(!dokid.matches(brevreferansePattern)) {
-			log.error("Brevreferanse {} is not valid", systemid);
-			throw new RuntimeException("Brevreferanse er ikke gyldig");
-		}
-	}
-
 }

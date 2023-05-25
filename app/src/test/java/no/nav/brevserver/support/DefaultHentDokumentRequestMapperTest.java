@@ -3,11 +3,11 @@ package no.nav.brevserver.support;
 import no.nav.brevserver.core.vo.BrevStatusVO;
 import no.nav.brevserver.nais.support.impl.DefaultHentDokumentRequestMapper;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.HentDokumentRequest;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Unit tests for DefaultHentDokumentRequestMapper
@@ -21,7 +21,7 @@ public class DefaultHentDokumentRequestMapperTest {
 	private HentDokumentRequest wsRequest;
 	private no.nav.brevserver.app.dokumentbehandling.to.HentDokumentRequest domainRequest;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		hentBrevRequestMapper = new DefaultHentDokumentRequestMapper();
 		wsRequest = createWsHentDokumentRequest();
