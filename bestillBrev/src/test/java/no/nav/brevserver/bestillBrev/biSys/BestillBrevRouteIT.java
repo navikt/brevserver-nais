@@ -25,9 +25,9 @@ import java.util.concurrent.TimeUnit;
 
 import static no.nav.brevserver.core.constants.Konstanter.BREVSTATUS_BREVPAKKE;
 import static org.awaitility.Awaitility.await;
-import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(SpringExtension.class)
 @DirtiesContext
