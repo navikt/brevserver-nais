@@ -3,17 +3,14 @@ package no.nav.brevserver.service;
 import no.nav.brevserver.core.constants.Konstanter;
 import no.nav.brevserver.core.vo.BrevVO;
 import no.nav.brevserver.core.vo.FilType;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 
 /**
  * Abstract database testclass. Bootstraps an in-memory H2 database.
  * Performs DDL and cleans up for each test. Also provides convenience methods for database query and updates.
  */
-@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = {H2JpaConfig.class})
 @Import(JmsItestConfig.class)
 public abstract class AbstractDatabaseTest {

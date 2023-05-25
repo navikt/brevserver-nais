@@ -4,10 +4,8 @@ import no.nav.brevserver.core.vo.BrevStatusVO;
 import no.nav.brevserver.service.BrevstatusService;
 import org.apache.activemq.command.ActiveMQTextMessage;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.transaction.TestTransaction;
 import utils.Utils;
 
@@ -29,7 +27,6 @@ import static utils.Utils.createBisysKvittering2;
 import static utils.Utils.createBrevstatus;
 
 
-@ExtendWith(SpringExtension.class)
 public class ArkiverBrevRouteIT  extends AbstractTest {
 	@Autowired
 	private Queue mottakArkiv;
