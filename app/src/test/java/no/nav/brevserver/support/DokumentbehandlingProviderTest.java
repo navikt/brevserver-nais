@@ -20,9 +20,11 @@ import no.nav.tjenester.brevogarkiv.dokumentbehandling.HentDokumentRequest;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.HentDokumentResponse2;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.LagreDokumentRequest;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.PingRequest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -31,6 +33,7 @@ import static org.mockito.Mockito.when;
 /**
  * Unit tests for DokumentbehandlingProvider
  */
+@ExtendWith(MockitoExtension.class)
 public class DokumentbehandlingProviderTest extends AbstractBrevserviceTest {
 
 	@Mock

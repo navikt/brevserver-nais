@@ -3,15 +3,18 @@ package no.nav.brevserver.dokumentbehandling;
 import no.nav.brevserver.nais.DokumentbehandlingProvider;
 import no.nav.brevserver.service.BrevlagerService;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.PingRequest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.mockito.Mockito.verify;
 
 /**
  * Unit tests for DefaultPingService
  */
+@ExtendWith(MockitoExtension.class)
 public class DefaultPingServiceTest {
 
 	@Mock

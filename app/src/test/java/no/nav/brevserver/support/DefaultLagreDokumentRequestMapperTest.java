@@ -5,8 +5,8 @@ import no.nav.brevserver.core.vo.BrevVO;
 import no.nav.brevserver.core.vo.FilType;
 import no.nav.brevserver.nais.support.impl.DefaultLagreDokumentRequestMapper;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.LagreDokumentRequest;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.activation.DataHandler;
 import javax.mail.util.ByteArrayDataSource;
@@ -32,7 +32,7 @@ public class DefaultLagreDokumentRequestMapperTest {
 	private LagreDokumentRequest wsRequest;
 	private no.nav.brevserver.app.dokumentbehandling.to.LagreDokumentRequest domainRequest;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		lagreBrevRequestMapper = new DefaultLagreDokumentRequestMapper();
 		wsRequest = createWsLagreDokumentRequest();

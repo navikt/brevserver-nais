@@ -3,8 +3,8 @@ package no.nav.brevserver.support;
 import no.nav.brevserver.core.vo.BrevStatusVO;
 import no.nav.brevserver.nais.support.impl.DefaultAvbrytDokumentRequestMapper;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.AvbrytDokumentRequest;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -21,7 +21,7 @@ public class DefaultAvbrytDokumentRequestMapperTest {
 	private AvbrytDokumentRequest wsRequest;
 	private no.nav.brevserver.app.dokumentbehandling.to.AvbrytDokumentRequest domainRequest;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		avbrytBrevRequestMapper = new DefaultAvbrytDokumentRequestMapper();
 		wsRequest = createWsAvbrytDokumentRequest();

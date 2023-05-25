@@ -14,20 +14,22 @@ import no.nav.brevserver.service.BrevlagerService;
 import no.nav.brevserver.service.BrevstatusService;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.HentDokumentRequest;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.HentDokumentResponse2;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -35,6 +37,7 @@ import static org.mockito.Mockito.when;
 /**
  * Unit tests for DefaultHentDokumentService
  */
+@ExtendWith(MockitoExtension.class)
 public class DefaultHentDokumentServiceTest {
 
 	private static final String SYSTEM_ID = "PENSJON";
@@ -62,10 +65,7 @@ public class DefaultHentDokumentServiceTest {
 
 	private HentDokumentRequest request;
 
-	@Rule
-	public ExpectedException thrown = ExpectedException.none();
-
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		request = createHentBrevRequest();
 	}
@@ -83,20 +83,18 @@ public class DefaultHentDokumentServiceTest {
 
 	@Test
 	public void shouldThrowExceptionIfBrevWasNotFound() throws Exception {
-		thrown.expect(BrevFinnesIkkeException.class);
-		thrown.expectMessage("Brevserver fant ikke dokumentet med brevreferanse: " + BREVREFERANSE);
-
 		when(brevlagerService.hentDokumentFromBrevlagerOrJoark(any(BrevStatusVO.class))).thenReturn(null);
 
-		dokumentbehandlingProvider.hentDokument(request);
+		var e = assertThrows(BrevFinnesIkkeException.class, () -> dokumentbehandlingProvider.hentDokument(request));
+
+		assertEquals("Brevserver fant ikke dokumentet med brevreferanse: " + BREVREFERANSE, e.getMessage());
 	}
 
 	@Test
 	public void shouldThrowExceptionIfMissingStatus() throws Exception {
-		thrown.expect(NullPointerException.class);
-		thrown.expectMessage("brevStatus.systemID must be set");
+		var e = assertThrows(NullPointerException.class, () -> dokumentbehandlingProvider.hentDokument(new HentDokumentRequest()));
 
-		dokumentbehandlingProvider.hentDokument(new HentDokumentRequest());
+		assertEquals("brevStatus.systemID must be set", e.getMessage());
 	}
 
 	private void assertHentBrevResponse(HentDokumentResponse2 response) throws IOException {

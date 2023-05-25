@@ -1,13 +1,11 @@
 package no.nav.brevserver.web;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.ui.Model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 
-@Disabled
 public class BrevserverLegacyControllerTest {
 
 	private final String expected = "brevserver";

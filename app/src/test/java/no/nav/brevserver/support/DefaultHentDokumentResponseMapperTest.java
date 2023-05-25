@@ -6,8 +6,8 @@ import no.nav.brevserver.core.vo.FilType;
 import no.nav.brevserver.nais.support.impl.DefaultHentDokumentResponseMapper;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.HentDokumentResponse2;
 import org.apache.commons.io.IOUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -25,7 +25,7 @@ public class DefaultHentDokumentResponseMapperTest {
 	private HentDokumentResponse domainResponse;
 	private HentDokumentResponse2 wsResponse;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		hentBrevResponseMapper = new DefaultHentDokumentResponseMapper();
 		domainResponse = createDomainHentDokumentResponse();

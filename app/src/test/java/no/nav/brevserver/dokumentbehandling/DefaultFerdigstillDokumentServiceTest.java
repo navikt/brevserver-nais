@@ -10,25 +10,28 @@ import no.nav.brevserver.nais.support.FerdigstillDokumentRequestMapper;
 import no.nav.brevserver.nais.support.impl.DefaultFerdigstillDokumentRequestMapper;
 import no.nav.brevserver.service.BrevlagerService;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.FerdigstillDokumentRequest;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.activation.DataHandler;
 import javax.mail.util.ByteArrayDataSource;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 
 /**
  * Unit tests for DefaultFerdigstillDokumentServiceTest
  */
+@ExtendWith(MockitoExtension.class)
 public class DefaultFerdigstillDokumentServiceTest {
 
 	private static final String BREVREFERANSE = "1";
@@ -60,9 +63,6 @@ public class DefaultFerdigstillDokumentServiceTest {
 	@Captor
 	private ArgumentCaptor<SystemType> systemTypeCaptor;
 
-	@Rule
-	public ExpectedException thrown = ExpectedException.none();
-
 	@Test
 	public void shouldFerdigstilleDokument() throws BrevException {
 		dokumentbehandlingProvider.ferdigstillDokument(createFerdigstillDokumentRequest());
@@ -77,34 +77,31 @@ public class DefaultFerdigstillDokumentServiceTest {
 
 	@Test
 	public void shouldThrowExceptionIfValidationFails() throws BrevException {
-		thrown.expect(NullPointerException.class);
-		thrown.expectMessage("brevStatus.systemID must be set");
+		var e = assertThrows(NullPointerException.class, () -> dokumentbehandlingProvider.ferdigstillDokument(new FerdigstillDokumentRequest()));
 
-		dokumentbehandlingProvider.ferdigstillDokument(new FerdigstillDokumentRequest());
+		assertEquals("brevStatus.systemID must be set", e.getMessage());
 	}
 
 	@Test
 	public void shouldThrowExceptionIfKvitteringskoeMissingAndNewDokumentSet() throws BrevException {
-		thrown.expect(NullPointerException.class);
-		thrown.expectMessage("brevStatus.returKoe must be set if newDocument is true");
-
 		FerdigstillDokumentRequest ferdigstillDokumentRequest = createFerdigstillDokumentRequest();
 		ferdigstillDokumentRequest.setNyttDokument(true);
 		ferdigstillDokumentRequest.setKvitteringskoe(null);
 
-		dokumentbehandlingProvider.ferdigstillDokument(ferdigstillDokumentRequest);
+		var e = assertThrows(NullPointerException.class, () -> dokumentbehandlingProvider.ferdigstillDokument(ferdigstillDokumentRequest));
+
+		assertEquals("brevStatus.returKoe must be set if newDocument is true", e.getMessage());
 	}
 
 	@Test
 	public void shouldThrowExceptionIfMalpakkeMissingAndNewDokumentSet() throws BrevException {
-		thrown.expect(NullPointerException.class);
-		thrown.expectMessage("brevStatus.brevmal must be set if newDocument is true");
-
 		FerdigstillDokumentRequest ferdigstillDokumentRequest = createFerdigstillDokumentRequest();
 		ferdigstillDokumentRequest.setNyttDokument(true);
 		ferdigstillDokumentRequest.setMalpakke(null);
 
-		dokumentbehandlingProvider.ferdigstillDokument(ferdigstillDokumentRequest);
+		var e = assertThrows(NullPointerException.class, () -> dokumentbehandlingProvider.ferdigstillDokument(ferdigstillDokumentRequest));
+
+		assertEquals("brevStatus.brevmal must be set if newDocument is true", e.getMessage());
 	}
 
 	private void assertBrevStatus(BrevStatusVO brevStatus) {
