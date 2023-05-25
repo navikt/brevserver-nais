@@ -69,20 +69,6 @@
 		<dependency>
 			<groupId>no.nav.brevserver</groupId>
 			<artifactId>core</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>org.junit</groupId>
-					<artifactId>junit</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.mockito</groupId>
-					<artifactId>mockito-core</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.mockito</groupId>
-					<artifactId>mockito-all</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>no.nav.brevserver</groupId>
@@ -91,20 +77,6 @@
 		<dependency>
 			<groupId>no.nav.brevserver</groupId>
 			<artifactId>service</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>org.junit</groupId>
-					<artifactId>junit</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.mockito</groupId>
-					<artifactId>mockito-core</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.mockito</groupId>
-					<artifactId>mockito-all</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>no.nav.brevserver</groupId>

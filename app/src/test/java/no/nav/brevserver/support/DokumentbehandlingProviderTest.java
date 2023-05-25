@@ -2,7 +2,6 @@ package no.nav.brevserver.support;
 
 
 import no.nav.brevserver.AbstractBrevserviceTest;
-import no.nav.brevserver.app.dokumentbehandling.to.HentDokumentResponse;
 import no.nav.brevserver.core.constants.SystemType;
 import no.nav.brevserver.core.exception.BrevException;
 import no.nav.brevserver.core.vo.BrevVO;
@@ -17,7 +16,6 @@ import no.nav.brevserver.service.BrevstatusService;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.AvbrytDokumentRequest;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.FerdigstillDokumentRequest;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.HentDokumentRequest;
-import no.nav.tjenester.brevogarkiv.dokumentbehandling.HentDokumentResponse2;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.LagreDokumentRequest;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.PingRequest;
 import org.junit.jupiter.api.Test;
@@ -59,12 +57,9 @@ public class DokumentbehandlingProviderTest extends AbstractBrevserviceTest {
 		HentDokumentRequest wsRequest = new HentDokumentRequest();
 		no.nav.brevserver.app.dokumentbehandling.to.HentDokumentRequest domainRequest =
 				new no.nav.brevserver.app.dokumentbehandling.to.HentDokumentRequest();
-		HentDokumentResponse domainResponse = new HentDokumentResponse();
-		HentDokumentResponse2 wsResponse = new HentDokumentResponse2();
 		domainRequest.setBrevStatus(createBrevStatus());
 		domainRequest.setBrev(createBrev(CONTENT_TYPE_RTF));
 		when(hentDokumentRequestMapper.map(wsRequest)).thenReturn(domainRequest);
-		when(hentDokumentResponseMapper.map(domainResponse)).thenReturn(wsResponse);
 		when(brevlagerService.hentDokumentFromBrevlagerOrJoark(domainRequest.getBrevStatus())).thenReturn(new BrevVO());
 		when(brevstatusService.hentBrevStatus(any(), any())).thenReturn(createBrevStatus());
 		dokumentbehandlingProvider.hentDokument(wsRequest);

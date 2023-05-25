@@ -9,13 +9,13 @@ import no.nav.brevserver.core.vo.BrevStatusVO;
 import no.nav.brevserver.service.BrevstatusService;
 import no.nav.brevserver.service.BrevtilgangService;
 import org.apache.activemq.command.ActiveMQTextMessage;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.transaction.TestTransaction;
 
 import javax.jms.Queue;
@@ -29,7 +29,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @DirtiesContext
 public class BestillBrevRouteIT extends AbstractTest {
 
@@ -49,7 +49,6 @@ public class BestillBrevRouteIT extends AbstractTest {
 	private BrevtilgangService brevtilgangService;
 
 	private final String BREVREF_XML = "3835845842";
-
 
 	@Test
 	public void shouldBestillNewBrev() throws Exception{

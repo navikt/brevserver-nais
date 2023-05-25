@@ -3,7 +3,7 @@ import no.nav.brevserver.core.exception.BrevTechnicalException;
 import no.nav.brevserver.core.vo.BrevStatusVO;
 import no.nav.brevserver.core.vo.FilType;
 import no.nav.brevserver.core.vo.KvitteringVO;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.StringReader;

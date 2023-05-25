@@ -3,34 +3,34 @@ package no.nav.brevserver.service.brevserver;
 import no.nav.brevserver.core.domain.entities.Brevstatus;
 import no.nav.brevserver.core.domain.entities.Brevtilgang;
 import no.nav.brevserver.core.domain.entities.id.BrevreferanseSystemCompositeId;
+import no.nav.brevserver.core.exception.BrevTechnicalException;
 import no.nav.brevserver.core.repository.BrevSystemTilgangRepository;
 import no.nav.brevserver.core.repository.BrevstatusRepository;
 import no.nav.brevserver.core.repository.BrevtilgangRepository;
-import no.nav.brevserver.core.exception.BrevTechnicalException;
 import no.nav.brevserver.core.vo.BrevStatusVO;
 import no.nav.brevserver.core.vo.SysTilgangVO;
 import no.nav.brevserver.service.AbstractDatabaseTest;
 import no.nav.brevserver.service.BrevstatusService;
 import no.nav.brevserver.service.BrevtilgangService;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @ActiveProfiles("itest")
 @Transactional
-public class DatabaseExceptionTest  extends AbstractDatabaseTest {
+public class DatabaseExceptionTest extends AbstractDatabaseTest {
 
 	private static final String SYSTEM_PASSORD = "Pensjon123";
 	private static final String TOKEN = "Token";
@@ -45,41 +45,41 @@ public class DatabaseExceptionTest  extends AbstractDatabaseTest {
 	private BrevstatusRepository brevstatusRepository;
 	@MockBean
 	private BrevtilgangRepository brevtilgangRepository;
-	@Rule
-	public ExpectedException thrown = ExpectedException.none();
 
 	@Test
 	public void shouldThrowExceptionIfSjekkSystemtilgangFailsBecauseOfWrongStatement() throws Exception {
-		expectExceptionDatabaseNoDatabaseTilgjengelig();
-
 		throwExceptionWhenQueryIsExecuted();
-		brevtilgangService.sjekkSystemTilgang(SYSTEM_ID, SYSTEM_PASSORD);
+		var e = assertThrows(BrevTechnicalException.class, () -> brevtilgangService.sjekkSystemTilgang(SYSTEM_ID, SYSTEM_PASSORD));
+
+		assertEquals("Databasen til brevserveren er ikke tilgjengelig", e.getMessage());
 	}
 
 	@Test
 	public void shouldThrowExceptionIfHentBrevStatusFailsBecauseOfWrongStatement() throws Exception {
-		expectExceptionDatabaseNoDatabaseTilgjengelig();
-
 		throwExceptionWhenQueryIsExecuted();
-		brevstatusService.hentBrevStatus(BREVREFERANSE,SYSTEM_ID);
+
+		var e = assertThrows(BrevTechnicalException.class, () -> brevstatusService.hentBrevStatus(BREVREFERANSE, SYSTEM_ID));
+
+		assertEquals("Databasen til brevserveren er ikke tilgjengelig", e.getMessage());
 	}
 
 	@Test
 	public void shouldThrowExceptionIfLagreBrevStatusFailsBecauseOfWrongStatement() throws Exception {
-		expectExceptionDatabaseNoDatabaseTilgjengelig();
-
 		throwExceptionWhenQueryIsExecuted();
-		brevstatusService.lagreBrevStatus(defaultBrevStatus());
+
+		var e = assertThrows(BrevTechnicalException.class, () -> brevstatusService.lagreBrevStatus(defaultBrevStatus()));
+
+		assertEquals("Databasen til brevserveren er ikke tilgjengelig", e.getMessage());
 	}
 
 	@Test
 	public void shouldThrowExceptionIfLagreTilgangFailsBecauseOfWrongStatement() throws Exception {
-		expectExceptionDatabaseNoDatabaseTilgjengelig();
-
 		throwExceptionWhenQueryIsExecuted();
-		brevtilgangService.lagreTilgang(SYSTEM_ID, BREVREFERANSE, TOKEN);
-	}
 
+		var e = assertThrows(BrevTechnicalException.class, () -> brevtilgangService.lagreTilgang(SYSTEM_ID, BREVREFERANSE, TOKEN));
+
+		assertEquals("Databasen til brevserveren er ikke tilgjengelig", e.getMessage());
+	}
 
 	@Test
 	public void shouldReturnNullforSystilgangSomIkkeEksisterer() throws Exception {
@@ -90,18 +90,21 @@ public class DatabaseExceptionTest  extends AbstractDatabaseTest {
 
 	@Test
 	public void shouldThrowExceptionIfHentTilgangFailsBecauseOfWrongStatement() throws Exception {
-		expectExceptionDatabaseNoDatabaseTilgjengelig();
-
 		throwExceptionWhenQueryIsExecuted();
-		brevtilgangService.hentTilgangUtenCache(SYSTEM_ID);
+
+		var e = assertThrows(BrevTechnicalException.class, () -> brevtilgangService.hentTilgangUtenCache(SYSTEM_ID));
+
+		assertEquals("Databasen til brevserveren er ikke tilgjengelig", e.getMessage());
 	}
 
 	@Test
 	public void shouldThrowExceptionForNotAllowedNullField() throws Exception {
-		expectExceptionDatabaseNoDatabaseTilgjengelig();
 		throwExceptionWhenQueryIsExecuted();
+
 		BrevStatusVO invalidBrevStatus = defaultBrevStatus().toBuilder().brevreferanse(null).systemID(null).build();
-		brevstatusService.lagreBrevStatus(invalidBrevStatus);
+		var e = assertThrows(BrevTechnicalException.class, () -> brevstatusService.lagreBrevStatus(invalidBrevStatus));
+
+		assertEquals("Databasen til brevserveren er ikke tilgjengelig", e.getMessage());
 	}
 
 	private void throwExceptionWhenQueryIsExecuted() throws Exception {
@@ -109,11 +112,6 @@ public class DatabaseExceptionTest  extends AbstractDatabaseTest {
 		when(brevstatusRepository.findById(any(BrevreferanseSystemCompositeId.class))).thenThrow(new RuntimeException("Database nede"));
 		when(brevtilgangRepository.save(any(Brevtilgang.class))).thenThrow(new RuntimeException("Database nede"));
 		when(brevstatusRepository.save(any(Brevstatus.class))).thenThrow(new RuntimeException("Database nede"));
-	}
-
-	private void expectExceptionDatabaseNoDatabaseTilgjengelig() {
-		thrown.expect(BrevTechnicalException.class);
-		thrown.expectMessage("Databasen til brevserveren er ikke tilgjengelig");
 	}
 
 	private BrevStatusVO defaultBrevStatus() {

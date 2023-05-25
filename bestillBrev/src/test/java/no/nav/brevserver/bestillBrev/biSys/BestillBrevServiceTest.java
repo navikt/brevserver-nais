@@ -7,8 +7,8 @@ import no.nav.brevserver.service.BrevstatusService;
 import no.nav.brevserver.service.BrevtilgangService;
 import org.apache.activemq.command.ActiveMQMessage;
 import org.apache.activemq.command.ActiveMQTextMessage;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,7 +16,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.jms.Queue;
 import javax.jms.TextMessage;
@@ -37,7 +37,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @EnableAutoConfiguration
 @SpringBootTest(classes = {ApplicationTestConfig.class})
 @ActiveProfiles("itest")
@@ -60,10 +60,11 @@ public class BestillBrevServiceTest {
 	private BrevtilgangService brevtilgangServiceMock;
 
 	private final String CORRELATION_ID = "abcd-1234-def-5678";
-	private final String CALL_ID="12-callID-34";
+	private final String CALL_ID = "12-callID-34";
 	private final String SVARKOSTRING = "queue:///SvarKo?targetClient=1";
+
 	@Test
-	public void shouldFailOnNullInput(){
+	public void shouldFailOnNullInput() {
 		sendStringMessage(onlinebrev, null, CALL_ID);
 
 		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
@@ -88,6 +89,7 @@ public class BestillBrevServiceTest {
 			verify(brevstatusServiceMock, times(1)).lagreBrevStatus(any(BrevStatusVO.class));
 		});
 	}
+
 	@Test
 	public void shouldFailOnPe() throws Exception {
 		when(brevtilgangServiceMock.sjekkSystemTilgang(BISYS_SYSTEM_ID, SYSTEM_PASSORD)).thenReturn(true);
@@ -179,6 +181,7 @@ public class BestillBrevServiceTest {
 		}
 		return (T) response;
 	}
+
 	private <T> T receive(String queue) {
 		Object response = jmsTemplate.receiveAndConvert(queue);
 		if (response instanceof JAXBElement) {

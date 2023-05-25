@@ -13,8 +13,6 @@ import java.io.InputStream;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class Utils {
-
-
 	public static final String BISYS_SYSTEM_ID = "BI12";
 	public static final String PENSJON_SYSTEM_ID = "PE01";
 	public static final String BREVREFERANSE = "10000000000";
@@ -56,7 +54,6 @@ public class Utils {
 		brevstatus.setSkuff(SKUFF);
 		return brevstatus;
 	}
-
 
 	public static String createPesysKvittering(){
 		return StringUtils.rightPad(generateKvitteringHeader(FORMAT, PENSJON_SYSTEM_ID, BREVREFERANSE).toString(), Konstanter.MELDING_HEADER_LENGTH, ' ');

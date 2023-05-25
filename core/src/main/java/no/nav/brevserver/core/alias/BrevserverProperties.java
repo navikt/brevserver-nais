@@ -1,16 +1,14 @@
 package no.nav.brevserver.core.alias;
 
 import lombok.Data;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.Positive;
 
 
 @Data
-@ConfigurationProperties("brevserverproperties")
+@ConfigurationProperties("brevserver")
 @Validated
 public class BrevserverProperties {
 
