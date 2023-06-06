@@ -27,10 +27,9 @@
 		<java.version>17</java.version>
 
 		<!-- Interne NAV-dependencies -->
+		<dok-legacy-tjenestespesifikasjoner.version>15-47e5fff</dok-legacy-tjenestespesifikasjoner.version>
 		<journalbehandling-tjenestespesifikasjon.version>1.3.3</journalbehandling-tjenestespesifikasjon.version>
-		<loggmottak-tjenestespesifikasjon.version>1.0.1</loggmottak-tjenestespesifikasjon.version>
 		<nav-journal-tjenestespesifikasjon.version>2.1.0</nav-journal-tjenestespesifikasjon.version>
-		<dokumentbehandling-tjenestespesifikasjon.version>7-7e946b1</dokumentbehandling-tjenestespesifikasjon.version>
 
 		<oracle.version>19.16.0.0</oracle.version>
 		<camel.version>3.20.4</camel.version>
@@ -42,7 +41,7 @@
 		<logstash-logback-encoder.version>7.3</logstash-logback-encoder.version>
 		<aspose-words-jdk15.version>11.2.0</aspose-words-jdk15.version>
 		<jakarta.jws-api.version>1.1.1</jakarta.jws-api.version>
-
+		<jaxb2-basics.version>0.13.1</jaxb2-basics.version>
 		<!-- Snyk - fjern innslaget når Spring Boot har oppgradert versjonen -->
 		<snakeyaml.version>2.0</snakeyaml.version>
 		<bcprov-jdk15on.version>1.70</bcprov-jdk15on.version>
@@ -92,13 +91,12 @@
 			<dependency>
 				<groupId>no.nav.tjenester.brevogarkiv</groupId>
 				<artifactId>dokumentbehandling-tjenestespesifikasjon</artifactId>
-				<version>${dokumentbehandling-tjenestespesifikasjon.version}</version>
+				<version>${dok-legacy-tjenestespesifikasjoner.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>no.nav.tjenester.brevogarkiv</groupId>
 				<artifactId>loggmottak-tjenestespesifikasjon</artifactId>
-				<version>${loggmottak-tjenestespesifikasjon.version}</version>
-				<classifier>jaxws</classifier>
+				<version>${dok-legacy-tjenestespesifikasjoner.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>no.nav.tjenester</groupId>
@@ -182,6 +180,18 @@
 				<groupId>jakarta.jws</groupId>
 				<artifactId>jakarta.jws-api</artifactId>
 				<version>${jakarta.jws-api.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jvnet.jaxb2_commons</groupId>
+				<artifactId>jaxb2-basics</artifactId>
+				<version>${jaxb2-basics.version}</version>
+				<optional>true</optional>
+				<exclusions>
+					<exclusion>
+						<groupId>commons-logging</groupId>
+						<artifactId>commons-logging</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

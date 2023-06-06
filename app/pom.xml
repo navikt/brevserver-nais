@@ -34,6 +34,10 @@
 			<artifactId>spring-jms</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.jvnet.jaxb2_commons</groupId>
+			<artifactId>jaxb2-basics</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>io.micrometer</groupId>
 			<artifactId>micrometer-core</artifactId>
 		</dependency>
@@ -48,7 +52,6 @@
 		<dependency>
 			<groupId>no.nav.tjenester.brevogarkiv</groupId>
 			<artifactId>loggmottak-tjenestespesifikasjon</artifactId>
-			<classifier>jaxws</classifier>
 		</dependency>
 		<dependency>
 			<groupId>wsdl4j</groupId>
