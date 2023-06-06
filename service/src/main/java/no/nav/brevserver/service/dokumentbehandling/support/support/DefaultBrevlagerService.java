@@ -1,19 +1,16 @@
 package no.nav.brevserver.service.dokumentbehandling.support.support;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.brevserver.core.constants.Konstanter;
 import no.nav.brevserver.core.constants.SystemType;
 import no.nav.brevserver.core.domain.entities.Brev;
 import no.nav.brevserver.core.domain.entities.id.BrevreferanseSystemCompositeId;
 import no.nav.brevserver.core.exception.BrevException;
 import no.nav.brevserver.core.exception.BrevFinnesAlleredeException;
-import no.nav.brevserver.core.exception.BrevFunctionalException;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
 import no.nav.brevserver.core.repository.BrevRepository;
 import no.nav.brevserver.core.utils.xmlHandlers.XMLService;
 import no.nav.brevserver.core.vo.BrevStatusVO;
 import no.nav.brevserver.core.vo.BrevVO;
-import no.nav.brevserver.core.vo.FilType;
 import no.nav.brevserver.core.vo.KvitteringVO;
 import no.nav.brevserver.joark.JoarkService;
 import no.nav.brevserver.service.BrevlagerService;
@@ -30,6 +27,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+
+import static no.nav.brevserver.core.constants.Konstanter.BREVLAGER_STATUS_FERDIG;
+import static no.nav.brevserver.core.constants.Konstanter.BREVLAGER_STATUS_KLADD;
+import static no.nav.brevserver.core.constants.Konstanter.BREVSTATUS_AVBRUTT;
+import static no.nav.brevserver.core.constants.Konstanter.BREVSTATUS_FERDIG;
+import static no.nav.brevserver.core.constants.Konstanter.BREVSTATUS_UTSKRIFT;
+import static no.nav.brevserver.core.constants.Konstanter.CONTENTTYPE_DOCX_SHORT;
+import static no.nav.brevserver.core.constants.Konstanter.SKRIVERTYPE_INGEN;
+import static no.nav.brevserver.core.constants.SystemType.BI;
+import static no.nav.brevserver.core.constants.SystemType.PE;
+import static no.nav.brevserver.core.exception.BrevTechnicalException.DATABASE_IKKE_TILGJENGELIG;
+import static no.nav.brevserver.core.vo.FilType.DOCX;
+import static no.nav.brevserver.core.vo.FilType.PDF;
+import static no.nav.brevserver.core.vo.FilType.RTF;
 
 @Service
 @Transactional
@@ -83,7 +94,7 @@ public class DefaultBrevlagerService implements BrevlagerService {
 				translateContentTypeDocxFromDb2(brevVO);
 			}
 		} catch (RuntimeException e) {
-			throw new BrevTechnicalException(BrevTechnicalException.DATABASE_IKKE_TILGJENGELIG, e);
+			throw new BrevTechnicalException(DATABASE_IKKE_TILGJENGELIG, e);
 		}
 		return brevVO;
 	}
@@ -94,14 +105,16 @@ public class DefaultBrevlagerService implements BrevlagerService {
 			backupIfExistingBrev(brev.getBrevreferanse(), brev.getSystemID());
 			BrevStatusVO gmlStatus = brevstatusService.lagreBrevStatus(brevstatus);
 			translateContentTypeDocxToDb2(brev);
-			if (brevstatus.getSystemID() != null && brevstatus.getSystemID().startsWith(SystemType.PE.toString())) {
+
+			if (brevstatus.getSystemID() != null && brevstatus.getSystemID().startsWith(PE.toString())) {
 				joarkService.lagreDokument(brevstatus.getBrevreferanse(), brev.getContentType(), brev.getBrevdata());
 			} else {
 				brevRepository.save(voTilBrevConverter.convert(brev));
 			}
+
 			return gmlStatus;
 		} catch (RuntimeException e) {
-			throw new BrevTechnicalException(BrevTechnicalException.DATABASE_IKKE_TILGJENGELIG, e);
+			throw new BrevTechnicalException(DATABASE_IKKE_TILGJENGELIG, e);
 		}
 	}
 
@@ -109,33 +122,36 @@ public class DefaultBrevlagerService implements BrevlagerService {
 	public void ferdigstillBrev(BrevStatusVO brevStatus, BrevVO redBrev, BrevVO pdfBrev) throws BrevException {
 		try {
 			log.info("prøver å ferdigstille brev " + brevStatus.getBrevreferanse() + " fra " + brevStatus.getSystemID() + " mal: " + brevStatus.getBrevmal());
+
 			verifyChangeRequest(brevStatus);
-			brevStatus.setStatus(Konstanter.BREVSTATUS_FERDIG);
-			brevStatus.setSkrivertype(Konstanter.SKRIVERTYPE_INGEN);
-			redBrev.setLagerStatus(Konstanter.BREVLAGER_STATUS_KLADD);
-			pdfBrev.setLagerStatus(Konstanter.BREVLAGER_STATUS_FERDIG);
+			brevStatus.setStatus(BREVSTATUS_FERDIG);
+			brevStatus.setSkrivertype(SKRIVERTYPE_INGEN);
+			redBrev.setLagerStatus(BREVLAGER_STATUS_KLADD);
+			pdfBrev.setLagerStatus(BREVLAGER_STATUS_FERDIG);
 
 			brevstatusService.lagreBrevStatus(brevStatus);
-			if (brevStatus.getSystemID().startsWith(SystemType.PE.toString())) {
+			if (brevStatus.getSystemID().startsWith(PE.toString())) {
 				joarkService.lagreFerdigstiltDokument(brevStatus.getBrevreferanse(), redBrev, pdfBrev);
 			} else {
 				brevferdigstillBrevlagerDokument(brevStatus, redBrev, pdfBrev);
 			}
+
 			log.info("Ferdigstilte brev " + brevStatus.getBrevreferanse() + " fra " + brevStatus.getSystemID() + " mal: " + brevStatus.getBrevmal());
-			SystemType systemType = brevStatus.getSystemID().startsWith("PE") ? SystemType.PE : SystemType.BI;
+			SystemType systemType = brevStatus.getSystemID().startsWith("PE") ? PE : BI;
 			kvitteringService.sendKvittering(pdfBrev, brevStatus, systemType, brevStatus.getReturKoe());
 		} catch (RuntimeException e) {
-			throw new BrevTechnicalException(BrevTechnicalException.DATABASE_IKKE_TILGJENGELIG, e);
+			throw new BrevTechnicalException(DATABASE_IKKE_TILGJENGELIG, e);
 		}
 	}
 
 	@Override
-	public BrevVO hentDokumentFromBrevlagerOrJoark(BrevStatusVO brevStatus) throws BrevTechnicalException, BrevFunctionalException {
+	public BrevVO hentDokumentFromBrevlagerOrJoark(BrevStatusVO brevStatus) throws BrevTechnicalException {
 		checkRequiredFields(brevStatus.getSystemID(), brevStatus.getBrevreferanse(), brevStatus.getToken());
 		log.info("hentDokumentFromBrevlagerOrJoark: " + brevStatus.getBrevreferanse() + " fra " + brevStatus.getSystemID() + " mal: " + brevStatus.getBrevmal());
+
 		BrevVO result = null;
 		if (sjekkSystemTokenTilgang(brevStatus.getSystemID(), brevStatus.getBrevreferanse(), brevStatus.getToken())) {
-			if (brevStatus.getSystemID().startsWith(SystemType.PE.toString())) {
+			if (brevStatus.getSystemID().startsWith(PE.toString())) {
 				result = hentDokumentFraJOARK(brevStatus.getBrevreferanse());
 			} else {
 				result = getBrev(brevStatus.getSystemID(), brevStatus.getBrevreferanse());
@@ -155,12 +171,14 @@ public class DefaultBrevlagerService implements BrevlagerService {
 
 	private void brevferdigstillBrevlagerDokument(BrevStatusVO brevStatus, BrevVO redBrevVo, BrevVO pdfBrevVo) throws BrevTechnicalException {
 		log.info("Prøver å ferdigstille brevlagerdokument " + brevStatus.getBrevreferanse() + " fra " + brevStatus.getSystemID() + " mal: " + brevStatus.getBrevmal());
+
 		translateContentTypeDocxToDb2(redBrevVo);
 		Brev redBrev = voTilBrevConverter.convert(redBrevVo);
 		Brev pdfBrev = voTilBrevConverter.convert(pdfBrevVo);
 		backupIfExistingBrev(pdfBrevVo.getBrevreferanse(), pdfBrevVo.getSystemID());
 		defaultBrevlagerHistorikkService.insertHistorikk(redBrev);
 		brevRepository.save(pdfBrev);
+
 		log.info("brevlagerdokument " + brevStatus.getBrevreferanse() + " fra " + brevStatus.getSystemID() + " har blitt ferdigstilt");
 	}
 
@@ -170,24 +188,25 @@ public class DefaultBrevlagerService implements BrevlagerService {
 	 * Se avbrytDokument i LagreCOntrollerDelegate.java i gamle brevserver
 	 */
 	public void avbrytDokument(BrevStatusVO brevStatus) throws BrevException {
-
 		if (brevStatus == null) {
 			throw new IllegalArgumentException("Brevstatus er null!");
 		}
+
 		verifyChangeRequest(brevStatus);
-		brevStatus.setStatus(Konstanter.BREVSTATUS_AVBRUTT);
+		brevStatus.setStatus(BREVSTATUS_AVBRUTT);
 		brevstatusService.lagreBrevStatus(brevStatus);
 
 		if (brevStatus.getReturKoe() != null) {
 			KvitteringVO kvittering = new KvitteringVO();
 			kvittering.setSystemID(brevStatus.getSystemID());
 			kvittering.setBrevreferanse(brevStatus.getBrevreferanse());
-			brevStatus.setStatus(Konstanter.BREVSTATUS_AVBRUTT);
+			brevStatus.setStatus(BREVSTATUS_AVBRUTT);
 
 			String xmlKvittering = XMLService.unmarshal(kvittering, brevStatus);
 			log.info("Sender kvittering for brevreferanse=" + brevStatus.getBrevreferanse());
 			kvitteringService.sendKvitteringBi(xmlKvittering, brevStatus.getReturKoe());
 		}
+
 		log.info("Brevet ble avbrutt. Brevref: " + brevStatus.getBrevreferanse());
 	}
 
@@ -197,33 +216,32 @@ public class DefaultBrevlagerService implements BrevlagerService {
 		if (brev == null || brevStatusVO == null) {
 			throw new IllegalArgumentException("Brevstatus er null!");
 		}
+
 		verifyChangeRequest(brevStatusVO);
-		if (brevStatusVO.getSystemID().startsWith(SystemType.PE.toString())) {
-			lagreJoarkDokument(brev, brevStatusVO, systemType, brevStatusVO.getReturKoe());
+		if (brevStatusVO.getSystemID().startsWith(PE.toString())) {
+			lagreJoarkDokument(brev);
 		} else {
 			lagreBrev(brev, brevStatusVO);
 		}
+
 		kvitteringService.sendKvittering(brev, brevStatusVO, systemType, brevStatusVO.getReturKoe());
 	}
 
 
-	private boolean backupIfExistingBrev(String brevreferanse, String systemID) throws BrevTechnicalException {
-
+	private void backupIfExistingBrev(String brevreferanse, String systemID) throws BrevTechnicalException {
 		Optional<Brev> brevOpt = brevRepository.findById(BrevreferanseSystemCompositeId.builder().systemId(systemID).brevreferanse(brevreferanse).build());
+
 		if (brevOpt.isPresent()) {
 			Brev brev = brevOpt.get();
-			if (brev.getStatus().equals(Konstanter.BREVLAGER_STATUS_FERDIG)) {
-				throw new BrevTechnicalException("Brevet har status = '" + Konstanter.BREVLAGER_STATUS_FERDIG
+			if (brev.getStatus().equals(BREVLAGER_STATUS_FERDIG)) {
+				throw new BrevTechnicalException("Brevet har status = '" + BREVLAGER_STATUS_FERDIG
 						+ "' og kan ikke endres");
 			}
 			defaultBrevlagerHistorikkService.insertHistorikk(brev);
-			return true;
-		} else {
-			return false;
 		}
 	}
 
-	private void lagreJoarkDokument(BrevVO brev, BrevStatusVO brevstatus, SystemType systemType, String returKoe) {
+	private void lagreJoarkDokument(BrevVO brev) {
 		try {
 			joarkService.lagreDokument(brev.getBrevreferanse(), brev.getContentType(), brev.getBrevdata());
 		} catch (BrevException e) {
@@ -242,8 +260,7 @@ public class DefaultBrevlagerService implements BrevlagerService {
 	}
 
 	private void verifyEditableStatus(BrevStatusVO brevStatus) throws BrevException {
-		if (Konstanter.BREVSTATUS_FERDIG.equals(brevStatus.getStatus())
-				|| Konstanter.BREVSTATUS_UTSKRIFT.equals(brevStatus.getStatus())) {
+		if (BREVSTATUS_FERDIG.equals(brevStatus.getStatus()) || BREVSTATUS_UTSKRIFT.equals(brevStatus.getStatus())) {
 			throw new BrevFinnesAlleredeException("Brevet med brevreferanse " + brevStatus.getBrevreferanse() + " har status " + brevStatus.getStatus() + " og kan ikke endres");
 		}
 	}
@@ -255,8 +272,10 @@ public class DefaultBrevlagerService implements BrevlagerService {
 	private BrevVO hentDokumentFraJOARK(String brevreferanse) throws BrevTechnicalException {
 		BrevVO result = joarkService.hentDokument(brevreferanse);
 
-		if (LAGER_STATUS_A.equals(result.getLagerStatus()) && result.getContentType().equals(FilType.RTF.getContentType())) {
+		if (LAGER_STATUS_A.equals(result.getLagerStatus()) && result.getContentType().equals(RTF.getContentType())) {
+			log.info("Skal konvertere rtf til pdf for dokument med brevreferanse={} og systemId={}", result.getBrevreferanse(), result.getSystemID());
 			konverterRtfTilPdf(result, brevreferanse);
+			log.info("Har konvertert rtf til pdf for dokument med brevreferanse={} og systemId={}", result.getBrevreferanse(), result.getSystemID());
 		}
 		return result;
 	}
@@ -264,7 +283,7 @@ public class DefaultBrevlagerService implements BrevlagerService {
 	private void konverterRtfTilPdf(BrevVO result, String brevreferanse) throws BrevTechnicalException {
 		try {
 			result.setBrevdata(FileConverter.getInstance().convertToPdf(result.getBrevdata()));
-			result.setContentType(FilType.PDF.getContentType());
+			result.setContentType(PDF.getContentType());
 		} catch (Exception e) {
 			throw new BrevTechnicalException("Greide ikke å konvertere dokument med brevreferanse " + brevreferanse
 					+ " til pdf", e);
@@ -272,14 +291,14 @@ public class DefaultBrevlagerService implements BrevlagerService {
 	}
 
 	private void translateContentTypeDocxToDb2(BrevVO brevVO) {
-		if (brevVO.getContentType() != null && brevVO.getContentType().equals(FilType.DOCX.getContentType())) {
-			brevVO.setContentType(Konstanter.CONTENTTYPE_DOCX_SHORT);
+		if (brevVO.getContentType() != null && brevVO.getContentType().equals(DOCX.getContentType())) {
+			brevVO.setContentType(CONTENTTYPE_DOCX_SHORT);
 		}
 	}
 
 	private void translateContentTypeDocxFromDb2(BrevVO brevVO) {
-		if (brevVO.getContentType() != null && brevVO.getContentType().equals(Konstanter.CONTENTTYPE_DOCX_SHORT)) {
-			brevVO.setContentType(FilType.DOCX.getContentType());
+		if (brevVO.getContentType() != null && brevVO.getContentType().equals(CONTENTTYPE_DOCX_SHORT)) {
+			brevVO.setContentType(DOCX.getContentType());
 		}
 	}
 
