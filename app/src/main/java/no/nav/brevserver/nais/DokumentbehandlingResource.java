@@ -3,16 +3,10 @@ package no.nav.brevserver.nais;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.brevserver.core.exception.BrevException;
 import no.nav.brevserver.core.exception.BrevFinnesAlleredeException;
-import no.nav.brevserver.core.exception.BrevFinnesIkkeException;
-import no.nav.brevserver.core.exception.BrevFunctionalException;
-import no.nav.brevserver.core.exception.BrevSecurityException;
-import no.nav.brevserver.core.exception.BrevTechnicalException;
 import no.nav.brevserver.core.mdc.MDCConstants;
 import no.nav.security.token.support.core.api.Protected;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.AvbrytDokumentRequest;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.FerdigstillDokumentRequest;
-import no.nav.tjenester.brevogarkiv.dokumentbehandling.HentDokumentRequest;
-import no.nav.tjenester.brevogarkiv.dokumentbehandling.HentDokumentResponse2;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.LagreDokumentRequest;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.PingRequest;
 import org.apache.commons.io.IOUtils;
@@ -21,7 +15,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -52,36 +45,6 @@ public class DokumentbehandlingResource {
 
 	public DokumentbehandlingResource(DokumentbehandlingProvider dokumentbehandlingProvider) {
 		this.dokumentbehandlingProvider = dokumentbehandlingProvider;
-	}
-
-
-	@GetMapping("/hent")
-	public @ResponseBody HentDokumentResponse2 hentDokument(HentDokumentRequest hentDokumentRequest) {
-
-		log.info("Prøver å hente dokument: " + hentDokumentRequest.getBrevreferanse() + " fra " + hentDokumentRequest.getSystemId());
-		try {
-			handleMDCCallId();
-			MDC.put(SYSTEMID_KEY, hentDokumentRequest.getSystemId());
-			MDC.put(BREVREFERANSE_KEY, hentDokumentRequest.getBrevreferanse());
-			return dokumentbehandlingProvider.hentDokument(hentDokumentRequest);
-		} catch (RuntimeException e) {
-			if (e.getCause() != null && e.getCause() instanceof BrevSecurityException) {
-				throw e;
-			}
-			log.error("hentDokument", EXCEPTION_MESSAGE, e);
-			throw e;
-		} catch (BrevTechnicalException e) {
-			log.warn("hentDokument feilet teknisk: ", e);
-			throw new RuntimeException(e.getMessage());
-		} catch (BrevFunctionalException e) {
-			log.warn("hentDokument feilet funksjonelt: ", e);
-			throw new RuntimeException(e.getMessage());
-		} catch (BrevFinnesIkkeException e) {
-			log.warn("hentDokument feilet med brevFinnesIkke: ", e);
-			throw new RuntimeException(e.getMessage());
-		} finally {
-			MDC.clear();
-		}
 	}
 
 	@PostMapping("/lagre")

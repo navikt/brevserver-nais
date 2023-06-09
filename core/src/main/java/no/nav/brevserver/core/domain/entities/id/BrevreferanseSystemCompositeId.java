@@ -18,9 +18,12 @@ import java.io.Serializable;
 @EqualsAndHashCode
 public class BrevreferanseSystemCompositeId implements Serializable {
 
-	@Column(name = "BREVREFERANSE")
+	public static final int BREVREFERANSE_LENGTH = 32;
+	public static final int SYSTEMID_LENGTH = 4;
+
+	@Column(name = "BREVREFERANSE", length = BREVREFERANSE_LENGTH)
 	private String brevreferanse;
 
-	@Column(name = "SYSTEMID")
+	@Column(name = "SYSTEMID", length = SYSTEMID_LENGTH)
 	private String systemId;
 }
