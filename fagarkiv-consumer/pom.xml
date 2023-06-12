@@ -40,7 +40,6 @@
 		<dependency>
 			<groupId>no.nav.tjenester</groupId>
 			<artifactId>nav-journalbehandling-tjenestespesifikasjon</artifactId>
-			<classifier>jaxws</classifier>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.retry</groupId>
