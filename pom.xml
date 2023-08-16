@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.7.12</version>
+		<version>2.7.14</version>
 	</parent>
 
 	<groupId>no.nav.brevserver</groupId>
@@ -29,24 +29,24 @@
 		<!-- Interne NAV-dependencies -->
 		<dok-legacy-tjenestespesifikasjoner.version>17-28cdad3</dok-legacy-tjenestespesifikasjoner.version>
 
-		<oracle.version>19.16.0.0</oracle.version>
-		<camel.version>3.20.4</camel.version>
-		<token-support.version>1.3.19</token-support.version>
-		<wmq.version>9.3.0.1</wmq.version>
-		<activemq.version>5.17.2</activemq.version>
-		<commons-io.version>2.11.0</commons-io.version>
+		<oracle.version>19.20.0.0</oracle.version>
+		<camel.version>3.20.6</camel.version>
+		<token-support.version>2.1.9</token-support.version>
+		<wmq.version>9.3.3.0</wmq.version>
+		<activemq.version>5.18.2</activemq.version>
+		<commons-io.version>2.13.0</commons-io.version>
 		<dozer-spring-boot-starter.version>6.5.2</dozer-spring-boot-starter.version>
 		<logstash-logback-encoder.version>7.3</logstash-logback-encoder.version>
 		<aspose-words-jdk15.version>11.2.0</aspose-words-jdk15.version>
 		<jakarta.jws-api.version>1.1.1</jakarta.jws-api.version>
 		<jaxb2-basics.version>0.13.1</jaxb2-basics.version>
 		<!-- Snyk - fjern innslaget når Spring Boot har oppgradert versjonen -->
-		<snakeyaml.version>2.0</snakeyaml.version>
+		<snakeyaml.version>2.1</snakeyaml.version>
 		<bcprov-jdk15on.version>1.70</bcprov-jdk15on.version>
 
 		<!-- test -->
-		<!-- Overstyrer Spring Boot sin versjon som gir flyway-feil -->
-		<h2.version>1.4.197</h2.version>
+		<!-- Overstyrer Spring Boot sin versjon som gir flyway-feil - versjon 1.4.200 fungerer heller ikke for testene -->
+		<h2.version>1.4.199</h2.version>
 
 		<!-- Plugins -->
 		<maven-toolchains-plugin.version>3.1.0</maven-toolchains-plugin.version>
@@ -238,8 +238,6 @@
 		</dependency>
 	</dependencies>
 
-
-	<!-- Build settings -->
 	<build>
 		<plugins>
 			<plugin>
