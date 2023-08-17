@@ -70,7 +70,7 @@ public class BrevserverLegacyController {
 								<!DOCTYPE html>
 								<html lang="no">
 								<head>
-                                    <meta charset="UTF-8">
+									<meta charset="UTF-8">
 								    <title>Hentdokument fant ikke dokumentet</title>
 								</head>
 								<body>

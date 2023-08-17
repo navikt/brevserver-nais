@@ -5,15 +5,13 @@ import no.nav.brevserver.core.vo.BrevVO;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
-import java.sql.Timestamp;
-
 @Component
 public class BrevTilVoConverter implements Converter<Brev, BrevVO> {
 
 	@Override
 	public BrevVO convert(Brev brev) {
 		BrevVO brevVO = new BrevVO();
-		brevVO.setBrevdata(brev.getBrevdata()!=null?brev.getBrevdata():null);
+		brevVO.setBrevdata(brev.getBrevdata() != null ? brev.getBrevdata() : null);
 		brevVO.setBrevreferanse(brev.getId().getBrevreferanse());
 		brevVO.setBrukerID(brev.getBrukerId());
 		brevVO.setContentType(brev.getContentType());

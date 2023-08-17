@@ -43,5 +43,12 @@
   "BREVSERVERPROPERTIES_LOGGXML": "true",
   "BREVSERVERPROPERTIES_DATABASE_POOLSIZE": "10",
   "NO_NAV_SECURITY_JWT_ISSUER_RESTSTS_ACCEPTED_AUDIENCE": "srvdokprodbatch",
-  "NO_NAV_SECURITY_JWT_ISSUER_RESTSTS_DISCOVERYURL": "https://security-token-service.dev.adeo.no/rest/v1/sts/.well-known/openid-configuration"
+  "NO_NAV_SECURITY_JWT_ISSUER_RESTSTS_DISCOVERYURL": "https://security-token-service.dev.adeo.no/rest/v1/sts/.well-known/openid-configuration",
+  "AZURE_IAC_RULES": [
+    {
+      "app": "bilag-q1",
+      "namespace": "teamdokumenthandtering",
+      "cluster": "dev-fss"
+    }
+  ]
 }

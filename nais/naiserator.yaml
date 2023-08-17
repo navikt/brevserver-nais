@@ -103,6 +103,21 @@ spec:
       memory: 3072Mi
     requests:
       memory: 1920Mi
+  webproxy: true
+  azure:
+    application:
+      enabled: true
+      allowAllUsers: true
+  {{#if AZURE_IAC_RULES}}
+  accessPolicy:
+    inbound:
+      rules:
+      {{#each AZURE_IAC_RULES}}
+        - application: {{ app }}
+          namespace: {{ namespace }}
+          cluster: {{ cluster }}
+      {{/each}}
+  {{/if}}
   vault:
     enabled: true
     paths:
