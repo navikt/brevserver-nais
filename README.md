@@ -1,5 +1,9 @@
 #Brevserver-nais
 
+> [!WARNING]
+> Dette repoet kan ikke settes til public da det ligger lisensfil og fonter under [core/src/main/resources/aspose](core/src/main/resources/aspose).
+> Disse filene kan vi ikke publisere. De må skrubbes fra git treet og verifiseres at er permanent slettet.
+
 * [Funksjonelle Krav](#1-funksjonelle-krav)
 * [Distribusjon av tjenesten (deployment)](#2-distribusjon-av-tjenesten-deployment)
 * [Utviklingsmiljø](#3-utviklingsmilj)
