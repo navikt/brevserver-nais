@@ -56,7 +56,7 @@ public class HentDokumentController {
 		}
 
 		var contentType = bilag.contentType();
-		if (!contentType.equals(APPLICATION_PDF_VALUE)) {
+		if (!APPLICATION_PDF_VALUE.equals(contentType)) {
 			log.info("dokument med brevreferanse={} har contentType={}, som ikke kan vises frem i nettleseren", brevreferanse, contentType);
 
 			return ResponseEntity.notFound().build();
@@ -66,7 +66,7 @@ public class HentDokumentController {
 
 		return ResponseEntity.ok()
 				.contentType(valueOf(contentType))
-				.header(CONTENT_DISPOSITION, "inline; filename=" + OEBS_SYSTEMID + "_" + brevreferanse + mapExtension(contentType))
+				.header(CONTENT_DISPOSITION, format("inline; filename=%s_%s%s", OEBS_SYSTEMID, brevreferanse, mapExtension(contentType)))
 				.body(bilag.brevdata());
 	}
 
