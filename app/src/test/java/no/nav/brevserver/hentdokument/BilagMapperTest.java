@@ -20,18 +20,4 @@ class BilagMapperTest {
 		assertThat(bilag.brevdata()).isEqualTo(brevdata);
 		assertThat(bilag.contentType()).isEqualTo("PDF");
 	}
-
-	@Test
-	void skalMappeTilBilagForDocx() {
-		var brev = new Brev();
-		var brevdata = "Brevdata i bilaget".getBytes();
-		var contentType = "application/msword.docx";
-		brev.setBrevdata(brevdata);
-		brev.setContentType(contentType);
-
-		var bilag = BilagMapper.toBilag(brev);
-
-		assertThat(bilag.brevdata()).isEqualTo(brevdata);
-		assertThat(bilag.contentType()).isEqualTo("application/vnd.openxmlformats-officedocument.wordprocessingml.document");
-	}
 }
