@@ -189,6 +189,14 @@
 					</exclusion>
 				</exclusions>
 			</dependency>
+
+			<!-- Test -->
+			<dependency>
+				<groupId>no.nav.security</groupId>
+				<artifactId>token-validation-spring-test</artifactId>
+				<version>${token-support.version}</version>
+				<scope>test</scope>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 

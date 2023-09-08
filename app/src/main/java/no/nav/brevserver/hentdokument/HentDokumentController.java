@@ -12,13 +12,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.ConstraintViolationException;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
 import static java.lang.String.format;
 import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.MediaType.APPLICATION_PDF_VALUE;
 import static org.springframework.http.MediaType.valueOf;
@@ -42,7 +41,7 @@ public class HentDokumentController {
 	@GetMapping(value = "/hentdokument/{dokId}")
 	public ResponseEntity<?> hentDokument(
 			@PathVariable("dokId")
-			@NotNull(message = "brevreferanse kan ikke være null")
+			@NotBlank(message = "brevreferanse kan ikke være blank")
 			@Pattern(regexp = "^\\d{1,32}$", message = "brevreferanse må være numerisk og må ha 32 eller færre siffer.")
 			String brevreferanse
 	) {

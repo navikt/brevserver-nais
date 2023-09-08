@@ -5,6 +5,7 @@ import no.nav.brevserver.core.domain.entities.Brev;
 import no.nav.brevserver.core.domain.entities.id.BrevreferanseSystemCompositeId;
 import no.nav.brevserver.core.repository.BrevRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -12,6 +13,7 @@ import static no.nav.brevserver.hentdokument.HentDokumentController.OEBS_SYSTEMI
 
 @Slf4j
 @Service
+@Transactional(readOnly = true)
 public class HentDokumentService {
 
 	private final BrevRepository brevRepository;
