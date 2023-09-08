@@ -15,7 +15,7 @@ class BilagMapperTest {
 		brev.setBrevdata(brevdata);
 		brev.setContentType(contentType);
 
-		var bilag = BilagMapper.toBilag(brev);
+		var bilag = Bilag.from(brev);
 
 		assertThat(bilag.brevdata()).isEqualTo(brevdata);
 		assertThat(bilag.contentType()).isEqualTo("PDF");

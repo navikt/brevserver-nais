@@ -34,7 +34,7 @@ public class HentDokumentService {
 		var id = BrevreferanseSystemCompositeId.builder().systemId(systemId).brevreferanse(brevReferanse).build();
 		Optional<Brev> brev = brevRepository.findById(id);
 
-		return brev.map(BilagMapper::toBilag).orElse(null);
+		return brev.map(Bilag::from).orElse(null);
 	}
 
 }
