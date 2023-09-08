@@ -12,7 +12,7 @@ import static java.lang.System.setProperty;
 
 @SpringBootApplication
 @Import({DokumentbehandlingResource.class, Appconfig.class, WebServiceConfig.class})
-@EnableJwtTokenValidation(ignore = {"org.springframework"})
+@EnableJwtTokenValidation
 public class BrevserverApplication {
 
 	public static void main(String[] args) {
