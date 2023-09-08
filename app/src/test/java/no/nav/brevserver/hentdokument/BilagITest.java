@@ -72,6 +72,23 @@ public class BilagITest extends AbstractOauth2Test {
 	}
 
 	@Test
+	void skalReturnereNotFoundHvisSystemIdIkkeErOebs() {
+		var dokId = "456";
+		var systemId = "FS22";
+
+		var referanse = new BrevreferanseSystemCompositeId(dokId, systemId);
+		var bilag = new Brev(referanse, "status", "application/pdf", "brukerId", "brevdata".getBytes(), Timestamp.valueOf(now()));
+		brevRepository.save(bilag);
+		commitAndBeginNewTransaction();
+
+		webTestClient.get()
+				.uri(HENTDOKUMENT_URL + dokId)
+				.headers(authHeader())
+				.exchange()
+				.expectStatus().isNotFound();
+	}
+
+	@Test
 	void skalReturnereNotFoundHvisDokumentIkkeFinnes() {
 		var dokId = "456";
 

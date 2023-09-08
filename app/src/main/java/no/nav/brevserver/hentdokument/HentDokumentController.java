@@ -45,12 +45,15 @@ public class HentDokumentController {
 			@Pattern(regexp = "^\\d{1,32}$", message = "brevreferanse må være numerisk og må ha 32 eller færre siffer.")
 			String brevreferanse
 	) {
-		log.info("hentdokument henter dokument med brevreferanse={}", brevreferanse);
+		// Endepunktet er tilpasset OEBS og henting av bilag til det skulle bli behov for noe mer
+		var systemId = OEBS_SYSTEMID;
 
-		Bilag bilag = hentDokumentService.hentDokumentFraBrevlager(brevreferanse);
+		log.info("hentdokument henter dokument med brevreferanse={} og systemId={}", brevreferanse, systemId);
+
+		Bilag bilag = hentDokumentService.hentDokumentFraBrevlager(brevreferanse, systemId);
 
 		if (bilag == null) {
-			log.info("hentdokument fant ikke dokument med brevreferanse={} i databasen", brevreferanse);
+			log.info("hentdokument fant ikke dokument med brevreferanse={} og systemId={} i databasen", brevreferanse, systemId);
 			return ResponseEntity.notFound().build();
 		}
 
@@ -61,11 +64,11 @@ public class HentDokumentController {
 			return ResponseEntity.notFound().build();
 		}
 
-		log.info("hentdokument hentet dokument med brevreferanse={}", brevreferanse);
+		log.info("hentdokument hentet dokument med brevreferanse={} og systemId={}", brevreferanse, systemId);
 
 		return ResponseEntity.ok()
 				.contentType(valueOf(contentType))
-				.header(CONTENT_DISPOSITION, format("inline; filename=%s_%s%s", OEBS_SYSTEMID, brevreferanse, mapExtension(contentType)))
+				.header(CONTENT_DISPOSITION, format("inline; filename=%s_%s%s", systemId, brevreferanse, mapExtension(contentType)))
 				.body(bilag.brevdata());
 	}
 

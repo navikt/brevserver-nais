@@ -9,8 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-import static no.nav.brevserver.hentdokument.HentDokumentController.OEBS_SYSTEMID;
-
 @Slf4j
 @Service
 @Transactional(readOnly = true)
@@ -22,18 +20,18 @@ public class HentDokumentService {
 		this.brevRepository = brevRepository;
 	}
 
-	public Bilag hentDokumentFraBrevlager(String brevreferanse) {
-		log.info("Skal hente dokument fra Brevlager med brevreferanse={}", brevreferanse);
+	public Bilag hentDokumentFraBrevlager(String brevreferanse, String systemId) {
+		log.info("Skal hente dokument fra Brevlager med brevreferanse={} og systemId={}", brevreferanse, systemId);
 
-		Bilag dokument = getBrev(brevreferanse);
+		Bilag dokument = getBrev(brevreferanse, systemId);
 
-		log.info("Har hentet dokument fra Brevlager med brevreferanse={}", brevreferanse);
+		log.info("Har hentet dokument fra Brevlager med brevreferanse={} og systemId={}", brevreferanse, systemId);
 
 		return dokument;
 	}
 
-	public Bilag getBrev(String brevReferanse) {
-		var id = BrevreferanseSystemCompositeId.builder().systemId(OEBS_SYSTEMID).brevreferanse(brevReferanse).build();
+	public Bilag getBrev(String brevReferanse, String systemId) {
+		var id = BrevreferanseSystemCompositeId.builder().systemId(systemId).brevreferanse(brevReferanse).build();
 		Optional<Brev> brev = brevRepository.findById(id);
 
 		return brev.map(BilagMapper::toBilag).orElse(null);
