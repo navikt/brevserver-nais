@@ -15,10 +15,6 @@
 	<dependencies>
 		<dependency>
 			<groupId>no.nav.brevserver</groupId>
-			<artifactId>brevserver-klient-applet</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>no.nav.brevserver</groupId>
 			<artifactId>core</artifactId>
 		</dependency>
 		<dependency>
@@ -131,22 +127,6 @@
 							<includeClassifiers>jaxws</includeClassifiers>
 							<outputDirectory>${project.build.directory}/classes/</outputDirectory>
 							<includes>**/*.wsdl,**/*.xsd,dozer/*.xml</includes>
-						</configuration>
-					</execution>
-					<execution>
-						<phase>generate-resources</phase>
-						<goals>
-							<goal>copy</goal>
-						</goals>
-						<configuration>
-							<artifactItems>
-								<artifactItem>
-									<groupId>no.nav.brevserver</groupId>
-									<artifactId>brevserver-klient-applet</artifactId>
-									<outputDirectory>${project.build.directory}/classes</outputDirectory>
-									<destFileName>StartBrevklientApplet.jar</destFileName>
-								</artifactItem>
-							</artifactItems>
 						</configuration>
 					</execution>
 				</executions>

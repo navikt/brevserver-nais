@@ -44,7 +44,6 @@ Push/merge til masterbranch vil teste, bygge og deploye til produksjonsmiljø og
 For å kjøre opp applikasjonen lokal, bruk profile `nais` og systemvariabler hentet fra vault: [System variabler](https://vault.adeo.no/ui/vault/secrets/secret/list/dokument/brevserver/q1/) 
 
 ### Bygge app.jar og kjøre tester
-Alt kan bygges bortsett fra brevserver-klient-applett. 
 `mvn clean package`/`mvn clean install`
 
 

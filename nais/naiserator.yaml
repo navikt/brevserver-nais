@@ -62,8 +62,6 @@ spec:
       value: "{{ FAGARKIV_PROXY_PORT }}"
     - name: SECURITY_TOKEN_SERVICE_TOKEN_URL
       value: {{ SECURITY_TOKEN_SERVICE_TOKEN_URL }}
-    - name: BREVSERVER_SERVER
-      value: {{ BREVSERVER_SERVER }}
     - name: APPD_NAME
       value: {{ APPD_NAME }}
     - name: BREVSERVERPROPERTIES_LOGGXML
