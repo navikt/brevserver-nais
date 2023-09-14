@@ -22,6 +22,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import javax.activation.DataHandler;
 import javax.mail.util.ByteArrayDataSource;
 
+import java.io.IOException;
+import java.io.InputStream;
+
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -74,6 +78,16 @@ public class DefaultFerdigstillDokumentServiceTest {
 		assertRtfBrev(brevCaptor.getAllValues().get(0));
 		assertPdfBrev(brevCaptor.getAllValues().get(1));
 	}
+
+	@Test
+	public void shouldFailIfBrevdataIsEmpty() throws IOException {
+		var request = createFerdigstillDokumentRequest();
+		request.setPdfDokument(new DataHandler(new ByteArrayDataSource(InputStream.nullInputStream(), "application/pdf")));
+
+		assertThatIllegalArgumentException().isThrownBy(() -> dokumentbehandlingProvider.ferdigstillDokument(request))
+				.withMessage("Dokumentet kan ikke ferdigstilles da PDF-dokumentet er tomt");
+	}
+
 
 	@Test
 	public void shouldThrowExceptionIfValidationFails() throws BrevException {

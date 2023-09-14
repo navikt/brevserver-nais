@@ -129,12 +129,13 @@ public class DefaultBrevlagerService implements BrevlagerService {
 			redBrev.setLagerStatus(BREVLAGER_STATUS_KLADD);
 			pdfBrev.setLagerStatus(BREVLAGER_STATUS_FERDIG);
 
-			brevstatusService.lagreBrevStatus(brevStatus);
 			if (brevStatus.getSystemID().startsWith(PE.toString())) {
 				joarkService.lagreFerdigstiltDokument(brevStatus.getBrevreferanse(), redBrev, pdfBrev);
 			} else {
 				brevferdigstillBrevlagerDokument(brevStatus, redBrev, pdfBrev);
 			}
+
+			brevstatusService.lagreBrevStatus(brevStatus);
 
 			log.info("Ferdigstilte brev " + brevStatus.getBrevreferanse() + " fra " + brevStatus.getSystemID() + " mal: " + brevStatus.getBrevmal());
 			SystemType systemType = brevStatus.getSystemID().startsWith("PE") ? PE : BI;

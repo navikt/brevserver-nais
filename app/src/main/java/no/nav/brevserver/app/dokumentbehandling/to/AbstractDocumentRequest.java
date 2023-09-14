@@ -38,6 +38,7 @@ public class AbstractDocumentRequest {
 		Validate.notNull(pdfBrev.getBrevreferanse(), "pdfBrev.brevreferanse must be set");
 		validateNonEditableContentType(pdfBrev.getContentType());
 		Validate.notNull(pdfBrev.getBrevdata(), "pdfBrev.brevdata must be set");
+		Validate.isTrue(pdfBrev.getBrevdata().length > 0, "Dokumentet kan ikke ferdigstilles da PDF-dokumentet er tomt");
 		Validate.notNull(pdfBrev.getBrukerID(), "pdfBrev.brukerID must be set");
 	}
 
