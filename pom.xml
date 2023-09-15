@@ -17,7 +17,6 @@
 		<module>core</module>
 		<module>fagarkiv-consumer</module>
 		<module>service</module>
-		<module>brevserver-klient-applet</module>
 		<module>bestillBrev</module>
 		<module>arkiverBrev</module>
 		<module>app</module>
@@ -77,11 +76,6 @@
 			<dependency>
 				<groupId>no.nav.brevserver</groupId>
 				<artifactId>arkiverBrev</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>no.nav.brevserver</groupId>
-				<artifactId>brevserver-klient-applet</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 
