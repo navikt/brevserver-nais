@@ -63,7 +63,7 @@ public class DefaultBrevlagerService implements BrevlagerService {
 								   VoTilBrevConverter voTilBrevConverter,
 								   DefaultBrevlagerHistorikkService defaultBrevlagerHistorikkService,
 								   BrevtilgangService brevtilgangService, KvitteringService kvitteringService) throws IOException {
-		PDF_MED_FORKLARING = IOUtils.resourceToByteArray("/rtf-konvertering-sanert-forklaring.pdf");
+		PDF_MED_FORKLARING = IOUtils.resourceToByteArray("/static/rtf-konvertering-sanert-forklaring.pdf");
 		this.joarkService = joarkService;
 		this.brevRepository = brevRepository;
 		this.brevTilVoConverter = brevTilVoConverter;
