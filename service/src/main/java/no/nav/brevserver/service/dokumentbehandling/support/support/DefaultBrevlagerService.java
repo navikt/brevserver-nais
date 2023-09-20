@@ -17,15 +17,13 @@ import no.nav.brevserver.service.BrevlagerService;
 import no.nav.brevserver.service.BrevstatusService;
 import no.nav.brevserver.service.BrevtilgangService;
 import no.nav.brevserver.service.converter.BrevTilVoConverter;
-import no.nav.brevserver.service.converter.BrevstatusTilVoConverter;
-import no.nav.brevserver.service.converter.FileConverter;
 import no.nav.brevserver.service.converter.VoTilBrevConverter;
-import no.nav.brevserver.service.converter.VoTilBrevstatusConverter;
 import no.nav.brevserver.service.queue.KvitteringService;
-import no.nav.brevserver.service.utility.KnappStatusUtil;
+import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.Optional;
 
 import static no.nav.brevserver.core.constants.Konstanter.BREVLAGER_STATUS_FERDIG;
@@ -48,17 +46,15 @@ import static no.nav.brevserver.core.vo.FilType.RTF;
 public class DefaultBrevlagerService implements BrevlagerService {
 
 	private static String LAGER_STATUS_A = "A";
+	private final byte[] PDF_MED_FORKLARING;
 	private final JoarkService joarkService;
 	private final BrevstatusService brevstatusService;
 	private final BrevRepository brevRepository;
 	private final DefaultBrevlagerHistorikkService defaultBrevlagerHistorikkService;
 	private final BrevTilVoConverter brevTilVoConverter;
 	private final VoTilBrevConverter voTilBrevConverter;
-	private final VoTilBrevstatusConverter voTilBrevstatusConverter;
-	private final BrevstatusTilVoConverter brevstatusTilVoConverter;
 	private final BrevtilgangService brevtilgangService;
 	private final KvitteringService kvitteringService;
-	private final KnappStatusUtil knappStatusUtil;
 
 	public DefaultBrevlagerService(JoarkService joarkService,
 								   BrevTilVoConverter brevTilVoConverter,
@@ -66,21 +62,16 @@ public class DefaultBrevlagerService implements BrevlagerService {
 								   BrevRepository brevRepository,
 								   VoTilBrevConverter voTilBrevConverter,
 								   DefaultBrevlagerHistorikkService defaultBrevlagerHistorikkService,
-								   VoTilBrevstatusConverter voTilBrevstatusConverter,
-								   BrevstatusTilVoConverter brevstatusTilVoConverter,
-								   BrevtilgangService brevtilgangService, KvitteringService kvitteringService,
-								   KnappStatusUtil knappStatusUtil) {
+								   BrevtilgangService brevtilgangService, KvitteringService kvitteringService) throws IOException {
+		PDF_MED_FORKLARING = IOUtils.resourceToByteArray("/rtf-konvertering-sanert-forklaring.pdf");
 		this.joarkService = joarkService;
 		this.brevRepository = brevRepository;
 		this.brevTilVoConverter = brevTilVoConverter;
-		this.voTilBrevstatusConverter = voTilBrevstatusConverter;
 		this.defaultBrevlagerHistorikkService = defaultBrevlagerHistorikkService;
 		this.voTilBrevConverter = voTilBrevConverter;
-		this.brevstatusTilVoConverter = brevstatusTilVoConverter;
 		this.brevtilgangService = brevtilgangService;
 		this.kvitteringService = kvitteringService;
 		this.brevstatusService = brevstatusService;
-		this.knappStatusUtil = knappStatusUtil;
 	}
 
 
@@ -235,7 +226,7 @@ public class DefaultBrevlagerService implements BrevlagerService {
 			Brev brev = brevOpt.get();
 			if (brev.getStatus().equals(BREVLAGER_STATUS_FERDIG)) {
 				throw new BrevTechnicalException("Brevet har status = '" + BREVLAGER_STATUS_FERDIG
-						+ "' og kan ikke endres");
+												 + "' og kan ikke endres");
 			}
 			defaultBrevlagerHistorikkService.insertHistorikk(brev);
 		}
@@ -247,7 +238,6 @@ public class DefaultBrevlagerService implements BrevlagerService {
 		} catch (BrevException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	protected void verifyChangeRequest(BrevStatusVO brevStatusVO) throws BrevException {
@@ -269,25 +259,24 @@ public class DefaultBrevlagerService implements BrevlagerService {
 		return brevtilgangService.sjekkTilgang(systemID, brevreferanse, token);
 	}
 
-	private BrevVO hentDokumentFraJOARK(String brevreferanse) throws BrevTechnicalException {
-		BrevVO result = joarkService.hentDokument(brevreferanse);
+	private BrevVO hentDokumentFraJOARK(String journalpostId) throws BrevTechnicalException {
+		BrevVO result = joarkService.hentDokument(journalpostId);
 
 		if (LAGER_STATUS_A.equals(result.getLagerStatus()) && result.getContentType().equals(RTF.getContentType())) {
-			log.info("Skal konvertere rtf til pdf for dokument med brevreferanse={} og systemId={}", result.getBrevreferanse(), result.getSystemID());
-			konverterRtfTilPdf(result, brevreferanse);
-			log.info("Har konvertert rtf til pdf for dokument med brevreferanse={} og systemId={}", result.getBrevreferanse(), result.getSystemID());
+			log.warn("Forsøkt hentet avbrutt brev med journalpostId={} med contentType=RTF. " +
+					 "Returnerer i stedet pdf med forklaring på hvorfor RTF til PDF konvertering ikke fungerer lenger", result.getBrevreferanse());
+			return statiskPdfMedForklaring(journalpostId);
 		}
 		return result;
 	}
 
-	private void konverterRtfTilPdf(BrevVO result, String brevreferanse) throws BrevTechnicalException {
-		try {
-			result.setBrevdata(FileConverter.getInstance().convertToPdf(result.getBrevdata()));
-			result.setContentType(PDF.getContentType());
-		} catch (Exception e) {
-			throw new BrevTechnicalException("Greide ikke å konvertere dokument med brevreferanse " + brevreferanse
-					+ " til pdf", e);
-		}
+	private BrevVO statiskPdfMedForklaring(String brevreferanse) throws BrevTechnicalException {
+		BrevVO brevVO = new BrevVO();
+		brevVO.setBrevreferanse(brevreferanse);
+		brevVO.setLagerStatus(LAGER_STATUS_A);
+		brevVO.setContentType(PDF.getContentType());
+		brevVO.setBrevdata(PDF_MED_FORKLARING);
+		return brevVO;
 	}
 
 	private void translateContentTypeDocxToDb2(BrevVO brevVO) {
