@@ -58,8 +58,8 @@ public class BrevlagerServiceBeanTest extends AbstractDatabaseTest {
 	private static final String SKRIVER = "Canon";
 	private static final String ARKIVER = "Ja";
 	private static final String SKUFF = "0";
-	public static final String PENSJON_SYSTEMID = "PE2";
-	public static final String TOKEN = "12345";
+	private static final String PENSJON_SYSTEMID = "PE2";
+	private static final String TOKEN = "12345";
 
 	@MockBean
 	private VoTilBrevstatusConverter voTilBrevstatusConverter;

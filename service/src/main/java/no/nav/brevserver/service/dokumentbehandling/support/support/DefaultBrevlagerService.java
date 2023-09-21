@@ -62,7 +62,8 @@ public class DefaultBrevlagerService implements BrevlagerService {
 								   BrevRepository brevRepository,
 								   VoTilBrevConverter voTilBrevConverter,
 								   DefaultBrevlagerHistorikkService defaultBrevlagerHistorikkService,
-								   BrevtilgangService brevtilgangService, KvitteringService kvitteringService) throws IOException {
+								   BrevtilgangService brevtilgangService,
+								   KvitteringService kvitteringService) throws IOException {
 		PDF_MED_FORKLARING = IOUtils.resourceToByteArray("/static/rtf-konvertering-sanert-forklaring.pdf");
 		this.joarkService = joarkService;
 		this.brevRepository = brevRepository;
@@ -225,8 +226,7 @@ public class DefaultBrevlagerService implements BrevlagerService {
 		if (brevOpt.isPresent()) {
 			Brev brev = brevOpt.get();
 			if (brev.getStatus().equals(BREVLAGER_STATUS_FERDIG)) {
-				throw new BrevTechnicalException("Brevet har status = '" + BREVLAGER_STATUS_FERDIG
-												 + "' og kan ikke endres");
+				throw new BrevTechnicalException("Brevet har status = '" + BREVLAGER_STATUS_FERDIG + "' og kan ikke endres");
 			}
 			defaultBrevlagerHistorikkService.insertHistorikk(brev);
 		}
