@@ -36,7 +36,6 @@
 		<commons-io.version>2.13.0</commons-io.version>
 		<dozer-spring-boot-starter.version>6.5.2</dozer-spring-boot-starter.version>
 		<logstash-logback-encoder.version>7.3</logstash-logback-encoder.version>
-		<aspose-words-jdk15.version>11.2.0</aspose-words-jdk15.version>
 		<jakarta.jws-api.version>1.1.1</jakarta.jws-api.version>
 		<jaxb2-basics.version>0.13.1</jaxb2-basics.version>
 		<!-- Snyk - fjern innslaget når Spring Boot har oppgradert versjonen -->
@@ -105,11 +104,6 @@
 				<groupId>org.bouncycastle</groupId>
 				<artifactId>bcprov-jdk15on</artifactId>
 				<version>${bcprov-jdk15on.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>aspose</groupId>
-				<artifactId>aspose-words-jdk15</artifactId>
-				<version>${aspose-words-jdk15.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>commons-io</groupId>

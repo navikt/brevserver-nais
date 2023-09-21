@@ -29,10 +29,6 @@
 			<artifactId>dokumentbehandling-tjenestespesifikasjon</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>aspose</groupId>
-			<artifactId>aspose-words-jdk15</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
 		</dependency>
