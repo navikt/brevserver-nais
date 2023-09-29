@@ -1,9 +1,5 @@
 # Brevserver-nais
 
-> [!WARNING]
-> Dette repoet kan ikke settes til public da det ligger lisensfil og fonter under [core/src/main/resources/aspose](core/src/main/resources/aspose).
-> Disse filene kan vi ikke publisere. De må skrubbes fra git treet og verifiseres at er permanent slettet.
-
 Brevserver-nais består av gamle tjenester for å bestille og redigere brev fra fagsystemene. Brukes av pesys, bisys, økonomi og skatt (++ ?). 
 
 For mer informasjon (confluencen for gamle brevserver; overordnet fungerer brevserver-nais på samme måte): [confluence](https://confluence.adeo.no/display/BOA/Brevserver+-+Komponenter+og+programmer)
