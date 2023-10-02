@@ -1,8 +1,7 @@
 package no.nav.brevserver.ws.dokumentbehandling;
 
-import no.nav.brevserver.core.exception.BrevFinnesIkkeException;
-import no.nav.brevserver.nais.DokumentbehandlingProvider;
 import no.nav.brevserver.core.exception.BrevException;
+import no.nav.brevserver.core.exception.BrevFinnesIkkeException;
 import no.nav.brevserver.core.exception.BrevFunctionalException;
 import no.nav.brevserver.core.exception.BrevSecurityException;
 import no.nav.brevserver.core.exception.BrevTechnicalException;

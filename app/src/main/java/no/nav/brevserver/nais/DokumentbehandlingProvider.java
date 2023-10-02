@@ -2,16 +2,10 @@ package no.nav.brevserver.nais;
 
 import no.nav.brevserver.app.dokumentbehandling.to.HentDokumentResponse;
 import no.nav.brevserver.core.constants.KnappStatus;
-import no.nav.brevserver.core.constants.SystemType;
-import no.nav.brevserver.core.exception.BrevFinnesIkkeException;
-import no.nav.brevserver.nais.support.AvbrytDokumentRequestMapper;
-import no.nav.brevserver.nais.support.FerdigstillDokumentRequestMapper;
-import no.nav.brevserver.nais.support.HentDokumentRequestMapper;
-import no.nav.brevserver.nais.support.HentDokumentResponseMapper;
-import no.nav.brevserver.nais.support.LagreDokumentRequestMapper;
 import no.nav.brevserver.core.constants.Konstanter;
 import no.nav.brevserver.core.constants.SystemType;
 import no.nav.brevserver.core.exception.BrevException;
+import no.nav.brevserver.core.exception.BrevFinnesIkkeException;
 import no.nav.brevserver.core.exception.BrevFunctionalException;
 import no.nav.brevserver.core.exception.BrevRuntimeException;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
@@ -52,7 +46,7 @@ public class DokumentbehandlingProvider {
 									  AvbrytDokumentRequestMapper avbrytDokumentRequestMapper,
 									  FerdigstillDokumentRequestMapper ferdigstillDokumentRequestMapper,
 									  HentDokumentRequestMapper hentDokumentRequestMapper,
-									  HentDokumentResponseMapper hentDokumentResponseMapper){
+									  HentDokumentResponseMapper hentDokumentResponseMapper) {
 		this.brevlagerService = brevlagerService;
 		this.brevstatusService = brevstatusService;
 		this.lagreDokumentRequestMapper = lagreDokumentRequestMapper;
@@ -69,7 +63,7 @@ public class DokumentbehandlingProvider {
 		BrevVO brev = brevlagerService.hentDokumentFromBrevlagerOrJoark(brevStatus);
 		if (brev == null) {
 			throw new BrevFinnesIkkeException("Brevserver fant ikke dokumentet med brevreferanse: "
-					+ brevStatus.getBrevreferanse());
+											  + brevStatus.getBrevreferanse());
 		}
 		return hentDokumentResponseMapper.map(createResponse(brevStatus, brev));
 	}
@@ -106,20 +100,20 @@ public class DokumentbehandlingProvider {
 
 	}
 
-		public void avbrytDokument(AvbrytDokumentRequest avbrytDokumentRequest) throws BrevException {
-			no.nav.brevserver.app.dokumentbehandling.to.AvbrytDokumentRequest request = avbrytDokumentRequestMapper.map(avbrytDokumentRequest);
-			request.validate();
-			BrevStatusVO brevStatus = request.getBrevStatus();
-			brevlagerService.avbrytDokument(brevStatus);
-		}
+	public void avbrytDokument(AvbrytDokumentRequest avbrytDokumentRequest) throws BrevException {
+		no.nav.brevserver.app.dokumentbehandling.to.AvbrytDokumentRequest request = avbrytDokumentRequestMapper.map(avbrytDokumentRequest);
+		request.validate();
+		BrevStatusVO brevStatus = request.getBrevStatus();
+		brevlagerService.avbrytDokument(brevStatus);
+	}
 
-		public void ferdigstillDokument(FerdigstillDokumentRequest ferdigstillDokumentRequest) throws BrevException {
-			no.nav.brevserver.app.dokumentbehandling.to.FerdigstillDokumentRequest request = ferdigstillDokumentRequestMapper.map(ferdigstillDokumentRequest);
-			request.validate();
-			brevlagerService.ferdigstillBrev(request.getBrevStatus(), request.getBrev(), request.getPdfBrev());
-		}
+	public void ferdigstillDokument(FerdigstillDokumentRequest ferdigstillDokumentRequest) throws BrevException {
+		no.nav.brevserver.app.dokumentbehandling.to.FerdigstillDokumentRequest request = ferdigstillDokumentRequestMapper.map(ferdigstillDokumentRequest);
+		request.validate();
+		brevlagerService.ferdigstillBrev(request.getBrevStatus(), request.getBrev(), request.getPdfBrev());
+	}
 
-		public void ping(PingRequest pingRequest) {
+	public void ping(PingRequest pingRequest) {
 		brevlagerService.ping();
 	}
 }
