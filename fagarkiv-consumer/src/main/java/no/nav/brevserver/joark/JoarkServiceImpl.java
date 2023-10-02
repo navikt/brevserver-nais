@@ -37,14 +37,12 @@ public class JoarkServiceImpl implements JoarkService {
 		this.oppdaterJournalRequestMapper = oppdaterJournalRequestMapper;
 	}
 
-
 	@Override
 	public void lagreDokument(String brevreferanse, String contentType, byte[] brevdata) throws BrevTechnicalException {
 		OppdaterJournalRequest oppdaterJournalRequest = createOppdaterJournalRequest(brevreferanse);
 		setBrevDataOnRequest(contentType, brevdata, oppdaterJournalRequest);
 		journalbehandlingClient.oppdaterJournalpost(oppdaterJournalRequest);
 	}
-
 
 	@Override
 	public void lagreFerdigstiltDokument(String brevreferanse, BrevVO redBrevVO, BrevVO pdfBrevVO)
@@ -106,7 +104,6 @@ public class JoarkServiceImpl implements JoarkService {
 			}
 		}
 	}
-
 
 	private void setBrevDataOnRequest(String contentType, byte[] brevData, OppdaterJournalRequest oppdaterJournalRequest)
 			throws BrevTechnicalException {

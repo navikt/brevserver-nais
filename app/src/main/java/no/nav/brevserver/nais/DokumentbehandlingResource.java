@@ -39,8 +39,6 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @Protected
 public class DokumentbehandlingResource {
 
-	private static final String EXCEPTION_MESSAGE = "Rest-Kall feilet";
-
 	private final DokumentbehandlingProvider dokumentbehandlingProvider;
 
 	public DokumentbehandlingResource(DokumentbehandlingProvider dokumentbehandlingProvider) {
@@ -57,7 +55,7 @@ public class DokumentbehandlingResource {
 			log.info("Brevserver har mottat kall for å lagre dokument " + lagreDokumentRequest.getBrevreferanse() + " fra: " + lagreDokumentRequest.getSystemId());
 			dokumentbehandlingProvider.lagreDokument(lagreDokumentRequest);
 		} catch (RuntimeException e) {
-			log.error("lagreDokument", EXCEPTION_MESSAGE, e);
+			log.error("lagreDokument message={}", e.getMessage(), e);
 			throw e;
 		} finally {
 			MDC.clear();
@@ -74,7 +72,7 @@ public class DokumentbehandlingResource {
 			log.info("Brevserver har mottatt kall for å avbryte dokument " + avbrytDokumentRequest.getBrevreferanse() + " fra " + avbrytDokumentRequest.getSystemId());
 			dokumentbehandlingProvider.avbrytDokument(avbrytDokumentRequest);
 		} catch (RuntimeException e) {
-			log.error("avbrytDokument", EXCEPTION_MESSAGE, e);
+			log.error("avbrytDokument message={}", e.getMessage(), e);
 			throw e;
 		} finally {
 			MDC.clear();
@@ -96,14 +94,14 @@ public class DokumentbehandlingResource {
 			if (tillatRekjoring != null && tillatRekjoring) {
 				log.info("Brev med referanse er allerede opprettet, tillater rekjoring");
 			} else {
-				log.warn("ferdigstillDokument", EXCEPTION_MESSAGE, e);
+				log.warn("ferdigstillDokument message={}", e.getMessage(), e);
 				throw e;
 			}
 		} catch (RuntimeException e) {
-			log.error("ferdigstillDokument", EXCEPTION_MESSAGE, e);
+			log.error("ferdigstillDokument message={}", e.getMessage(), e);
 			throw e;
 		} catch (IOException e) {
-			log.error("ferdigstillDokument", EXCEPTION_MESSAGE, e);
+			log.error("ferdigstillDokument message={}", e.getMessage(), e);
 			throw new RuntimeException(e.getMessage());
 		} finally {
 			MDC.clear();
@@ -116,12 +114,7 @@ public class DokumentbehandlingResource {
 
 	@GetMapping("/ping")
 	public void ping(PingRequest pingRequest) {
-		try {
-			dokumentbehandlingProvider.ping(pingRequest);
-		} catch (RuntimeException e) {
-			log.error("ping", EXCEPTION_MESSAGE, e);
-			throw e;
-		}
+		dokumentbehandlingProvider.ping(pingRequest);
 	}
 
 	private void handleMDCCallId() {
