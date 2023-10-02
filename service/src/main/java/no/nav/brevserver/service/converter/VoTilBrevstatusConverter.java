@@ -1,19 +1,16 @@
 package no.nav.brevserver.service.converter;
 
 
-import no.nav.brevserver.core.audit.AuditTrail;
 import no.nav.brevserver.core.domain.entities.Brevstatus;
 import no.nav.brevserver.core.domain.entities.id.BrevreferanseSystemCompositeId;
 import no.nav.brevserver.core.vo.BrevStatusVO;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 
 @Component
 public class VoTilBrevstatusConverter implements Converter<BrevStatusVO, Brevstatus> {
-
 
 	@Override
 	public Brevstatus convert(BrevStatusVO brevStatusVO) {

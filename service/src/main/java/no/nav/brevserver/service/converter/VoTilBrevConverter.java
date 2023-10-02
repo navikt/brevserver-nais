@@ -1,13 +1,11 @@
 package no.nav.brevserver.service.converter;
 
-import no.nav.brevserver.core.audit.AuditTrail;
 import no.nav.brevserver.core.domain.entities.Brev;
 import no.nav.brevserver.core.domain.entities.id.BrevreferanseSystemCompositeId;
 import no.nav.brevserver.core.vo.BrevVO;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 
 @Component
