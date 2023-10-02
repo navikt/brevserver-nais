@@ -6,10 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import no.nav.brevserver.core.domain.entities.id.BrevreferanseSystemCompositeId;
-import no.nav.brevserver.core.audit.AuditTrail;
 
 import javax.persistence.Column;
-import javax.persistence.Embedded;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -56,10 +54,4 @@ public class Brevstatus {
 
 	@Column(name = "TIMESTAMP")
 	private Timestamp endret;
-
-/*
-	@Embedded
-	@Setter
-	private AuditTrail auditTrail;
-*/
 }
