@@ -1,3 +1,13 @@
+# ⚠️  Les dette før du opensourcer dette repoet: ⚠️
+
+# ⚠️ Pull-Request-historikken i dette repoet inneholder lisensbelagte filer! ⚠️
+
+Selv om selve git-historikken i dette repoet er "vasket" nå, inneholder noen av PR-ene i dette repoet fortsatt
+lisensbelagte filer. Det er to måter å håndtere det om dette repoet skal opensources:
+
+1. kontakt github kundeservice, og få dem til å slette PR-ene i dette repoet
+1. Lag et nytt, åpent github-repo, men bruk samme git-repo. Slett/arkiver det opprinnelige github-repoet.
+
 # Brevserver-nais
 
 Brevserver-nais består av gamle tjenester for å bestille og redigere brev fra fagsystemene. Brukes av pesys, bisys, økonomi og skatt (++ ?). 
