@@ -2,7 +2,6 @@ package no.nav.brevserver.arkiverBrev.Pesys;
 
 import com.ibm.msg.client.jms.DetailedInvalidDestinationException;
 import com.ibm.msg.client.jms.DetailedJMSException;
-import no.nav.brevserver.arkiverBrev.ArkiverBrevMetricsRoutePolicy;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
 import no.nav.brevserver.core.utils.MDC.MdcRemoverProcessor;
 import no.nav.brevserver.core.utils.MDC.MdcSetterProcessor;
@@ -36,7 +35,6 @@ public class PeArkiverBrevRoute extends RouteBuilder {
 	private final Queue mottakOnlinePeLinux;
 	private final Queue deadletterPe;
 	private final Queue brevReplyPe;
-	private final ArkiverBrevMetricsRoutePolicy arkiverBrevMetricsRoutePolicy;
 	private final PeArkiverBrevService peArkiverBrevService;
 
 	public PeArkiverBrevRoute(Queue mottakArkivPe,
@@ -45,7 +43,6 @@ public class PeArkiverBrevRoute extends RouteBuilder {
 							  Queue mottakOnlinePeLinux,
 							  Queue deadletterPe,
 							  Queue brevReplyPe,
-							  ArkiverBrevMetricsRoutePolicy arkiverBrevMetricsRoutePolicy,
 							  PeArkiverBrevService peArkiverBrevService) {
 		this.mottakArkivPe = mottakArkivPe;
 		this.mottakOnlinePe = mottakOnlinePe;
@@ -53,7 +50,6 @@ public class PeArkiverBrevRoute extends RouteBuilder {
 		this.mottakOnlinePeLinux = mottakOnlinePeLinux;
 		this.deadletterPe = deadletterPe;
 		this.brevReplyPe = brevReplyPe;
-		this.arkiverBrevMetricsRoutePolicy = arkiverBrevMetricsRoutePolicy;
 		this.peArkiverBrevService = peArkiverBrevService;
 	}
 
@@ -112,7 +108,6 @@ public class PeArkiverBrevRoute extends RouteBuilder {
 		//Hent svar fra exstream
 		from(PE_ARKIVER_BREV_ROUTE)
 				.routeId(PE_ARKIVER_BREV_ROUTE)
-				.routePolicy(arkiverBrevMetricsRoutePolicy)
 				.setExchangePattern(ExchangePattern.InOnly)
 				.process(new MdcSetterProcessor())
 				.log(LoggingLevel.INFO, log, PE_ARKIVER_BREV_ROUTE + " starter behandlingen av melding fra peSys")

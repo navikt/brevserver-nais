@@ -20,7 +20,6 @@ public class Utils {
 		kvittering.setFeilkode(feilType);
 		brevStatusVo.setStatus(Konstanter.BREVSTATUS_FEIL);
 
-		String xmlKvittering = XMLService.unmarshal(kvittering, brevStatusVo);
-		return xmlKvittering;
+		return XMLService.unmarshal(kvittering, brevStatusVo);
 	}
 }

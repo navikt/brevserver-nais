@@ -2,7 +2,6 @@ package no.nav.brevserver.bestillBrev.biSys;
 
 import com.ibm.msg.client.jms.DetailedJMSException;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.brevserver.bestillBrev.BestillBrevMetricsRoutePolicy;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
 import no.nav.brevserver.core.utils.MDC.MdcRemoverProcessor;
 import no.nav.brevserver.core.utils.MDC.MdcSetterProcessor;
@@ -31,23 +30,20 @@ import static org.apache.camel.LoggingLevel.INFO;
 public class BestillBrevRoute extends RouteBuilder {
 	public static final String BESTILL_BREV_ROUTE = "direct:bestillBrev";
 	public static final String BESTILLBREV = "bestill_brev";
-	private final String ROUTE_OPTIONS = "?transacted=true&concurrentConsumers=1";//&mapJmsMessage=false";
+	private final String ROUTE_OPTIONS = "?transacted=true&concurrentConsumers=1";
 
 	private final Queue onlinebrev;
 	private final Queue dialogueOnline;
 	private final Queue deadletter;
-	private final BestillBrevMetricsRoutePolicy bestillBrevMetricsRoutePolicy;
 	private final BestillBrevService bestillBrevService;
 
 	public BestillBrevRoute(Queue onlinebrev,
 							Queue deadletter,
 							Queue dialogueOnline,
-							BestillBrevMetricsRoutePolicy arkiverBrevMetricsRoutePolicy,
 							BestillBrevService arkiverBrevService) {
 		this.onlinebrev = onlinebrev;
 		this.deadletter = deadletter;
 		this.dialogueOnline = dialogueOnline;
-		this.bestillBrevMetricsRoutePolicy = arkiverBrevMetricsRoutePolicy;
 		this.bestillBrevService = arkiverBrevService;
 	}
 
@@ -94,7 +90,6 @@ public class BestillBrevRoute extends RouteBuilder {
 		//Brevbestilling fra Bisys
 		from(BESTILL_BREV_ROUTE)
 				.routeId(BESTILLBREV)
-				.routePolicy(bestillBrevMetricsRoutePolicy)
 				.setExchangePattern(ExchangePattern.InOnly)
 				.process(new MdcSetterProcessor())
 				.log(INFO, log, BESTILLBREV + " starter behandlingen av ny brevbestilling fra Bisys")

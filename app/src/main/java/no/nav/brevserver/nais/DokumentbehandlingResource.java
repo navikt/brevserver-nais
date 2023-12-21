@@ -114,7 +114,7 @@ public class DokumentbehandlingResource {
 
 	@GetMapping("/ping")
 	public void ping(PingRequest pingRequest) {
-		dokumentbehandlingProvider.ping(pingRequest);
+		// noop
 	}
 
 	private void handleMDCCallId() {

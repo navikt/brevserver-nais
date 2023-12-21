@@ -17,7 +17,6 @@ import no.nav.tjenester.brevogarkiv.dokumentbehandling.AvbrytDokumentRequest;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.FerdigstillDokumentRequest;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.HentDokumentRequest;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.LagreDokumentRequest;
-import no.nav.tjenester.brevogarkiv.dokumentbehandling.PingRequest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -108,13 +107,4 @@ public class DokumentbehandlingProviderTest extends AbstractBrevserviceTest {
 
 		verify(brevlagerService).ferdigstillBrev(domainRequest.getBrevStatus(), domainRequest.getBrev(), domainRequest.getPdfBrev());
 	}
-
-	@Test
-	public void shouldDelegatePingService() {
-		dokumentbehandlingProvider.ping(new PingRequest());
-
-		verify(brevlagerService).ping();
-	}
-
-
 }

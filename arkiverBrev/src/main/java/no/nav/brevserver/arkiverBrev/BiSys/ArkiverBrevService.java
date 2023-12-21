@@ -46,7 +46,6 @@ public class ArkiverBrevService {
 
 	@Handler
 	public void execute(Exchange exchange) throws BrevException {
-
 		//Konverter Exchange til messageVo
 		MessageVO messageVo = ExchangeUtils.getMessageVoFromExchange(exchange);
 		//Marshall xml'en til businessobjekt
@@ -79,7 +78,7 @@ public class ArkiverBrevService {
 
 		// Hvis feilnivå er 0x så endre til x
 		if (kvittering.getFeilniva() != null && kvittering.getFeilniva().length() > 1
-				&& kvittering.getFeilniva().charAt(0) == '0') {
+			&& kvittering.getFeilniva().charAt(0) == '0') {
 			kvittering.setFeilniva(kvittering.getFeilniva().substring(1));
 		}
 
@@ -90,7 +89,7 @@ public class ArkiverBrevService {
 
 			// Ved feilmelding fra dialogue så gi feilmelding
 		} else if (kvittering.getFeilniva() == null ||
-				kvittering.getFeilniva().equals(Konstanter.BREVPAKKE_FEILNIVA_FEIL)) {
+				   kvittering.getFeilniva().equals(Konstanter.BREVPAKKE_FEILNIVA_FEIL)) {
 			brevStatusVo.setStatus(Konstanter.BREVSTATUS_FEIL);
 
 			if (brevStatusVo.getBrevreferanse() != null && brevStatusVo.getSystemID() != null) {
@@ -108,7 +107,7 @@ public class ArkiverBrevService {
 			}
 			// Lagre i Brevlageret
 			brevlagerService.lagreBrev(kvittering, brevStatusVo);
-			log.info("Brev med brevreferanse=" + brevStatusVo.getBrevreferanse() +" er arkivert i Brevlageret");
+			log.info("Brev med brevreferanse=" + brevStatusVo.getBrevreferanse() + " er arkivert i Brevlageret");
 		}
 
 		kvitteringService.sendKvitteringBiMedCorrelationID(createReturKvittering(brevStatusVo, kvittering), brevStatusVo.getReturKoe(), exchange);
@@ -128,7 +127,7 @@ public class ArkiverBrevService {
 
 		if (kvitteringVo.getSystemID().startsWith(SystemType.PE.toString())) {
 			String errorMessage = "Brev med feil systemID mottatt: '" + kvitteringVo.getSystemID()
-					+ "', forventet ikke pensjonsbrev";
+								  + "', forventet ikke pensjonsbrev";
 			log.error(errorMessage);
 			throw new BrevTechnicalException(errorMessage);
 		}

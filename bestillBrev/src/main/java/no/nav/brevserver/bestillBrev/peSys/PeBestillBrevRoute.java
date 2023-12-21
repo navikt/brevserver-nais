@@ -1,7 +1,6 @@
 package no.nav.brevserver.bestillBrev.peSys;
 
 import com.ibm.msg.client.jms.DetailedJMSException;
-import no.nav.brevserver.bestillBrev.BestillBrevMetricsRoutePolicy;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
 import no.nav.brevserver.core.utils.MDC.MdcRemoverProcessor;
 import no.nav.brevserver.core.utils.MDC.MdcSetterProcessor;
@@ -35,19 +34,17 @@ public class PeBestillBrevRoute extends RouteBuilder {
 	private final Queue dialogueOnlinePe;
 	private final Queue deadletterPe;
 	private final Queue brevReplyPe;
-	private final BestillBrevMetricsRoutePolicy bestillBrevMetricsRoutePolicy;
 	private final PeBestillBrevService peBestillBrevService;
 
 	public PeBestillBrevRoute(Queue onlinebrevPe,
 							  Queue deadletterPe,
 							  Queue dialogueOnlinePe,
-							  Queue brevReplyPe, BestillBrevMetricsRoutePolicy peBestillBrevMetricsRoutePolicy,
+							  Queue brevReplyPe,
 							  PeBestillBrevService peBestillBrevService) {
 		this.onlinebrevPe = onlinebrevPe;
 		this.deadletterPe = deadletterPe;
 		this.dialogueOnlinePe = dialogueOnlinePe;
 		this.brevReplyPe = brevReplyPe;
-		this.bestillBrevMetricsRoutePolicy = peBestillBrevMetricsRoutePolicy;
 		this.peBestillBrevService = peBestillBrevService;
 	}
 
@@ -94,7 +91,6 @@ public class PeBestillBrevRoute extends RouteBuilder {
 		//Brevbestilling fra Pesys
 		from(BESTILL_BREV_ROUTE_PE)
 				.routeId(PE_BESTILLBREV_ROUTE)
-				.routePolicy(bestillBrevMetricsRoutePolicy)
 				.setExchangePattern(ExchangePattern.InOnly)
 				.process(new MdcSetterProcessor())
 				.log(LoggingLevel.INFO, log, PE_BESTILLBREV_ROUTE + " starter behandlingen av ny brevbestilling fra PeSys")

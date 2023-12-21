@@ -49,8 +49,6 @@ public interface BrevlagerService {
 
 	BrevVO hentDokumentFromBrevlagerOrJoark(BrevStatusVO brevStatus) throws BrevTechnicalException, BrevFunctionalException;
 
-	void ping();
-
 	void lagreDokument(BrevVO brevVo, BrevStatusVO brevStatusVO, SystemType systemtype) throws BrevException;
 
 	void avbrytDokument(BrevStatusVO brevStatus) throws BrevException;

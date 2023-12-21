@@ -38,7 +38,6 @@ public class PeArkiverBrevService {
 
 	@Handler
 	public void execute(Exchange exchange) throws BrevException {
-
 		//Konverter Exchange til messageVo
 		MessageVO messageVo = ExchangeUtils.getMessageVoFromExchange(exchange);
 		//Marshall xml'en til businessobjekt
@@ -71,7 +70,7 @@ public class PeArkiverBrevService {
 
 		// Hvis feilnivå er 0x så endre til x
 		if (kvittering.getFeilniva() != null && kvittering.getFeilniva().length() > 1
-				&& kvittering.getFeilniva().charAt(0) == '0') {
+			&& kvittering.getFeilniva().charAt(0) == '0') {
 			kvittering.setFeilniva(kvittering.getFeilniva().substring(1));
 		}
 
@@ -92,7 +91,7 @@ public class PeArkiverBrevService {
 				kvittering.setLagerStatus(Konstanter.BREVLAGER_STATUS_FERDIG);
 				brevStatusVo.setStatus(Konstanter.BREVSTATUS_FERDIG);
 			} else if (FilType.RTF.getContentType().equals(kvittering.getContentType())
-					|| FilType.DOCX.getContentType().equals(kvittering.getContentType())) {
+					   || FilType.DOCX.getContentType().equals(kvittering.getContentType())) {
 				kvittering.setLagerStatus(Konstanter.BREVLAGER_STATUS_KLADD);
 				brevStatusVo.setStatus(Konstanter.BREVSTATUS_LAGRET_KLADD);
 			} else {
@@ -102,7 +101,7 @@ public class PeArkiverBrevService {
 
 		if (brevStatusVo.getBrevreferanse() != null && brevStatusVo.getSystemID() != null) {
 			brevstatusService.lagreBrevStatus(brevStatusVo);
-			log.info("Brev med brevref: " + brevStatusVo.getBrevreferanse() +" er arkivert i Brevlageret");
+			log.info("Brev med brevref: " + brevStatusVo.getBrevreferanse() + " er arkivert i Brevlageret");
 		}
 
 		setBodyAndReturnQueueWithMode(exchange,
@@ -124,7 +123,7 @@ public class PeArkiverBrevService {
 
 		if (!kvitteringVo.getSystemID().startsWith(SystemType.PE.toString())) {
 			String errorMessage = "Brev med feil systemID mottatt: '" + kvitteringVo.getSystemID()
-					+ "', forventet bidragsbrev!";
+								  + "', forventet bidragsbrev!";
 			log.error(errorMessage);
 			throw new BrevTechnicalException(errorMessage);
 		}
@@ -139,6 +138,5 @@ public class PeArkiverBrevService {
 		}
 
 		return XMLService.unmarshal(kvittering, brevStatusVo);
-
 	}
 }
