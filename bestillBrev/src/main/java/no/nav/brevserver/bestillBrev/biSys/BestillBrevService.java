@@ -86,22 +86,21 @@ public class BestillBrevService {
 						brevStatusVo.getReturKoe(),
 						GI_FEILMELDING
 				);
-				return;
+			} else {
+				brevStatusVo.setStatus(Konstanter.BREVSTATUS_BREVPAKKE);
+				brevStatusVo.setReturKoe(messageVo.getReplyQueueName());
+				brevstatusService.lagreBrevStatus(brevStatusVo);
+
+				log.info("Brev med brevref: " + brevStatusVo.getBrevreferanse() + " er arkivert i Brevlageret");
+				if (brevserverProperties.isLoggXML()) {
+					log.info("Bidrags-XML til Exstream:\n" + messageVo.getStringBody());
+				}
+				setBodyAndMode(exchange,
+						messageVo.getStringBody(),
+						OPPRETT_BREV);
+
+				metrics.incrementBrevkodeMetric(brevStatusVo.getSystemID(), brevStatusVo.getBrevmal());
 			}
-
-			brevStatusVo.setStatus(Konstanter.BREVSTATUS_BREVPAKKE);
-			brevStatusVo.setReturKoe(messageVo.getReplyQueueName());
-			brevstatusService.lagreBrevStatus(brevStatusVo);
-
-			log.info("Brev med brevref: " + brevStatusVo.getBrevreferanse() + " er arkivert i Brevlageret");
-			if (brevserverProperties.isLoggXML()) {
-				log.info("Bidrags-XML til Exstream:\n" + messageVo.getStringBody());
-			}
-			setBodyAndMode(exchange,
-					messageVo.getStringBody(),
-					OPPRETT_BREV);
-
-			metrics.incrementBrevkodeMetric(brevStatusVo.getSystemID(), brevStatusVo.getBrevmal());
 		}
 	}
 
