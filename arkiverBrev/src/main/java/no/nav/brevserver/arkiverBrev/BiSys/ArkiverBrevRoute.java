@@ -1,7 +1,6 @@
 package no.nav.brevserver.arkiverBrev.BiSys;
 
 import com.ibm.msg.client.jms.DetailedJMSException;
-import no.nav.brevserver.arkiverBrev.ArkiverBrevMetricsRoutePolicy;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
 import no.nav.brevserver.core.utils.MDC.MdcRemoverProcessor;
 import no.nav.brevserver.core.utils.MDC.MdcSetterProcessor;
@@ -30,25 +29,20 @@ public class ArkiverBrevRoute extends RouteBuilder {
 	public static final String ARKIVER_BREV_ROUTE = "direct:arkiverBrev";
 	private final String ROUTE_OPTIONS = "?transacted=true&concurrentConsumers=1";
 
-
 	private final Queue mottakArkiv;
 	private final Queue mottakOnline;
 	private final Queue mottakOnlineLinux;
 	private final Queue deadletter;
-	private final ArkiverBrevMetricsRoutePolicy arkiverBrevMetricsRoutePolicy;
 	private final ArkiverBrevService arkiverBrevService;
-
 
 	public ArkiverBrevRoute(Queue mottakArkiv,
 							Queue mottakOnline,
 							Queue mottakOnlineLinux, Queue deadletter,
-							ArkiverBrevMetricsRoutePolicy arkiverBrevMetricsRoutePolicy,
 							ArkiverBrevService arkiverBrevService) {
 		this.mottakArkiv = mottakArkiv;
 		this.mottakOnline = mottakOnline;
 		this.mottakOnlineLinux = mottakOnlineLinux;
 		this.deadletter = deadletter;
-		this.arkiverBrevMetricsRoutePolicy = arkiverBrevMetricsRoutePolicy;
 		this.arkiverBrevService = arkiverBrevService;
 	}
 
@@ -77,7 +71,6 @@ public class ArkiverBrevRoute extends RouteBuilder {
 				.log(WARN, log, "${exception}; ")
 				.to(InOnly, "jms:" + deadletter.getQueueName());
 
-
 		onException(DetailedJMSException.class)
 				.log(WARN, "DetailedJMSException oppstått i ArkiverBrevRoute. ${exception};" )
 				.useOriginalMessage()
@@ -100,7 +93,6 @@ public class ArkiverBrevRoute extends RouteBuilder {
 		//Hent svar fra exstream
 		from(ARKIVER_BREV_ROUTE)
 				.routeId(ARKIVER_BREV_ROUTE)
-				.routePolicy(arkiverBrevMetricsRoutePolicy)
 				.setExchangePattern(InOnly)
 				.process(new MdcSetterProcessor())
 				.process(exchange -> {

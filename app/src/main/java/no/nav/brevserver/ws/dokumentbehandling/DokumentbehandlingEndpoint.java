@@ -164,12 +164,6 @@ public class DokumentbehandlingEndpoint implements DokumentbehandlingPortType {
 
 	@Override
 	public void ping(PingRequest pingRequest) {
-		try {
-			dokumentbehandlingProvider.ping(pingRequest);
-		} catch (RuntimeException e) {
-			log.error("ping", EXCEPTION_MESSAGE, e);
-			throw e;
-		}
+		// noop
 	}
-
 }

@@ -157,11 +157,6 @@ public class DefaultBrevlagerService implements BrevlagerService {
 		return result;
 	}
 
-	@Override
-	public void ping() {
-		//Return databasecheck
-	}
-
 	private void brevferdigstillBrevlagerDokument(BrevStatusVO brevStatus, BrevVO redBrevVo, BrevVO pdfBrevVo) throws BrevTechnicalException {
 		log.info("Prøver å ferdigstille brevlagerdokument " + brevStatus.getBrevreferanse() + " fra " + brevStatus.getSystemID() + " mal: " + brevStatus.getBrevmal());
 

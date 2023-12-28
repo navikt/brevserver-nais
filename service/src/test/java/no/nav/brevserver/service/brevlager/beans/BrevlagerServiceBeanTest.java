@@ -45,9 +45,6 @@ import static org.mockito.Mockito.when;
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("itest")
 public class BrevlagerServiceBeanTest extends AbstractDatabaseTest {
-
-	private static final String BLANK = "";
-
 	private static final byte[] BREVDATA2 = "Hest er best ingen protest".getBytes();
 
 	private static final String RETURKOE = "ReturKoe";
@@ -217,12 +214,6 @@ public class BrevlagerServiceBeanTest extends AbstractDatabaseTest {
 		assertThat(brevVO.getContentType(), is(PDF.getContentType()));
 	}
 
-	@Test
-	public void shouldPingBrevlager() {
-		brevlagerService.ping();
-	}
-
-
 	private BrevStatusVO.BrevStatusVOBuilder defaultBrevStatus() {
 		return BrevStatusVO.builder().brevreferanse(BREVREFERANSE).systemID(SYSTEM_ID).returKoe(RETURKOE)
 				.bestillerBrukerID(BESTILLER_ID).brevmal(BREVMAL).status(STATUS).format(FORMAT)
@@ -234,6 +225,4 @@ public class BrevlagerServiceBeanTest extends AbstractDatabaseTest {
 				.bestillerBrukerID(BRUKERID).brevmal(BREVMAL).status(STATUS).format(FORMAT).skrivertype(SKRIVERTYPE)
 				.skriver(SKRIVER).arkiver(ARKIVER).skuff(SKUFF);
 	}
-
-
 }

@@ -42,9 +42,10 @@ public class BestillBrevService {
 	private final BrevtilgangService brevtilgangService;
 	private final BrevserverProperties brevserverProperties;
 
-
-	public BestillBrevService(Metrics metrics, BrevstatusService brevstatusService,
-							  BrevtilgangService brevtilgangService, BrevserverProperties brevserverProperties) {
+	public BestillBrevService(Metrics metrics,
+							  BrevstatusService brevstatusService,
+							  BrevtilgangService brevtilgangService,
+							  BrevserverProperties brevserverProperties) {
 		this.metrics = metrics;
 		this.brevstatusService = brevstatusService;
 		this.brevtilgangService = brevtilgangService;
@@ -56,7 +57,6 @@ public class BestillBrevService {
 	 */
 	@Handler
 	public void execute(Exchange exchange) throws BrevException {
-
 		MessageVO messageVo = ExchangeUtils.getMessageVoFromExchange(exchange);
 		BrevStatusVO brevStatusVo = generateBrevStatusVo(messageVo);
 
@@ -72,13 +72,11 @@ public class BestillBrevService {
 				log.info("Tilgang gitt for systemID '" + brevStatusVo.getSystemID() + "' med brevref: " + brevStatusVo.getBrevreferanse());
 			} else {
 				log.warn("Kunne ikke gi tilgang '" + brevStatusVo.getCensoredToken()
-						+ "' for systemID '" + brevStatusVo.getSystemID() + "'  med brevref: " + brevStatusVo.getBrevreferanse());
+						 + "' for systemID '" + brevStatusVo.getSystemID() + "'  med brevref: " + brevStatusVo.getBrevreferanse());
 			}
 			exchange.setProperty(SENDTOMODE, INGEN_TILBAKEMELDING);
-			return;
-
-			// Bestill fra Dialogue
 		} else {
+			// Bestill fra Dialogue
 			BrevStatusVO tmp = brevstatusService.hentBrevStatus(brevStatusVo.getSystemID(), brevStatusVo.getBrevreferanse());
 			if (tmp != null) {
 				log.warn("Brevet eksisterer fra før " + brevStatusVo.getBrevreferanse());
@@ -88,27 +86,25 @@ public class BestillBrevService {
 						brevStatusVo.getReturKoe(),
 						GI_FEILMELDING
 				);
-				return;
+			} else {
+				brevStatusVo.setStatus(Konstanter.BREVSTATUS_BREVPAKKE);
+				brevStatusVo.setReturKoe(messageVo.getReplyQueueName());
+				brevstatusService.lagreBrevStatus(brevStatusVo);
+
+				log.info("Brev med brevref: " + brevStatusVo.getBrevreferanse() + " er arkivert i Brevlageret");
+				if (brevserverProperties.isLoggXML()) {
+					log.info("Bidrags-XML til Exstream:\n" + messageVo.getStringBody());
+				}
+				setBodyAndMode(exchange,
+						messageVo.getStringBody(),
+						OPPRETT_BREV);
+
+				metrics.incrementBrevkodeMetric(brevStatusVo.getSystemID(), brevStatusVo.getBrevmal());
 			}
-
-			brevStatusVo.setStatus(Konstanter.BREVSTATUS_BREVPAKKE);
-			brevStatusVo.setReturKoe(messageVo.getReplyQueueName());
-			brevstatusService.lagreBrevStatus(brevStatusVo);
-
-			log.info("Brev med brevref: " + brevStatusVo.getBrevreferanse() +" er arkivert i Brevlageret");
-			if(brevserverProperties.isLoggXML()){
-				log.info("Bidrags-XML til Exstream:\n" + messageVo.getStringBody());
-			}
-			setBodyAndMode(exchange,
-					messageVo.getStringBody(),
-					OPPRETT_BREV);
-
-			metrics.incrementBrevkodeMetric(brevStatusVo.getSystemID(), brevStatusVo.getBrevmal());
 		}
 	}
 
 	private BrevStatusVO generateBrevStatusVo(MessageVO messageVO) throws BrevTechnicalException {
-
 		if (messageVO == null || messageVO.getStringBody() == null) {
 			throw new BrevTechnicalException("Ugyldig XML: InputMessage er null");
 		}
@@ -128,7 +124,7 @@ public class BestillBrevService {
 
 		if (brevStatusVo.getSystemID().startsWith(SystemType.PE.toString())) {
 			String errorMessage = "Brev med feil systemID mottatt: '" + brevStatusVo.getSystemID()
-					+ "', forventet ikke pensjonsbrev";
+								  + "', forventet ikke pensjonsbrev";
 			throw new BrevTechnicalException(BrevTechnicalException.FEIL_I_XML, errorMessage, null);
 		}
 
@@ -142,8 +138,6 @@ public class BestillBrevService {
 		}
 		return brevStatusVo;
 	}
-
-
 
 }
 

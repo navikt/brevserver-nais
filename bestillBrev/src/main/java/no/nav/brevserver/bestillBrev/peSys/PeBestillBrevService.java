@@ -38,7 +38,6 @@ public class PeBestillBrevService {
 	private final BrevtilgangService brevtilgangService;
 	private final BrevserverProperties brevserverProperties;
 
-
 	public PeBestillBrevService(Metrics metrics, BrevstatusService brevstatusService,
 								BrevtilgangService brevtilgangService,
 								BrevserverProperties brevserverProperties) {
@@ -53,7 +52,6 @@ public class PeBestillBrevService {
 	 */
 	@Handler
 	public void execute(Exchange exchange) throws BrevException {
-
 		MessageVO messageVo = ExchangeUtils.getMessageVoFromExchange(exchange);
 		BrevStatusVO brevStatusVo = generateBrevStatusVo(messageVo);
 
@@ -104,7 +102,6 @@ public class PeBestillBrevService {
 	}
 
 	private BrevStatusVO generateBrevStatusVo(MessageVO messageVO) throws BrevTechnicalException {
-
 		if (messageVO == null || messageVO.getStringBody() == null) {
 			throw new BrevTechnicalException("Ugyldig XML: InputMessage er null");
 		}

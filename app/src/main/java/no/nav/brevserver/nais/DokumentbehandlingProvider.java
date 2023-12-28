@@ -23,7 +23,6 @@ import no.nav.tjenester.brevogarkiv.dokumentbehandling.FerdigstillDokumentReques
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.HentDokumentRequest;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.HentDokumentResponse2;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.LagreDokumentRequest;
-import no.nav.tjenester.brevogarkiv.dokumentbehandling.PingRequest;
 import org.springframework.stereotype.Service;
 
 /**
@@ -111,9 +110,5 @@ public class DokumentbehandlingProvider {
 		no.nav.brevserver.app.dokumentbehandling.to.FerdigstillDokumentRequest request = ferdigstillDokumentRequestMapper.map(ferdigstillDokumentRequest);
 		request.validate();
 		brevlagerService.ferdigstillBrev(request.getBrevStatus(), request.getBrev(), request.getPdfBrev());
-	}
-
-	public void ping(PingRequest pingRequest) {
-		brevlagerService.ping();
 	}
 }

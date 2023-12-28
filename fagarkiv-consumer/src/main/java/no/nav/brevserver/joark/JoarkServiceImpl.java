@@ -9,7 +9,6 @@ import no.nav.brevserver.fagarkiv.mapper.OppdaterJournalRequestMapper;
 import no.nav.virksomhet.gjennomforing.arkiv.journal.v2.Journalpost;
 import no.nav.virksomhet.tjenester.arkiv.journal.meldinger.v2.HentDokumentRequest;
 import no.nav.virksomhet.tjenester.arkiv.journal.meldinger.v2.HentDokumentResponse;
-import no.nav.virksomhet.tjenester.arkiv.journalbehandling.meldinger.v1.Bruker;
 import no.nav.virksomhet.tjenester.arkiv.journalbehandling.meldinger.v1.DokumentInfo;
 import no.nav.virksomhet.tjenester.arkiv.journalbehandling.meldinger.v1.Fildetaljer;
 import no.nav.virksomhet.tjenester.arkiv.journalbehandling.meldinger.v1.JournalpostDokumentInfoRelasjon;
@@ -81,10 +80,6 @@ public class JoarkServiceImpl implements JoarkService {
 	private void verifyNotEmptyBruker(OppdaterJournalRequest journalpost) {
 		if (journalpost != null && (journalpost.getGjelderListe() == null || journalpost.getGjelderListe().isEmpty())) {
 			log.error("OppdaterJournalpostRequest {} har ingen gyldige brukere etter oppdatering", journalpost.getJournalpostId());
-		} else if (journalpost != null && journalpost.getGjelderListe().size() > 0) {
-			for (Bruker bruker : journalpost.getGjelderListe()) {
-				log.info("Journalpost {} har gyldig bruker {}, 	{} versjon {}", journalpost.getJournalpostId(), bruker.getBrukerInfoId(), bruker.getBrukerId() != null ? bruker.getBrukerId().substring(0, 3) : "Ingen brukerId", bruker.getVersjon());
-			}
 		}
 	}
 

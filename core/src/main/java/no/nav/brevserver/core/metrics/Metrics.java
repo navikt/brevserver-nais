@@ -12,12 +12,11 @@ public class Metrics {
 	private final String BREVKODE = "brevkode";
 	private final String FAGSYSTEM = "fagsystem";
 
-	private static MeterRegistry registry;
+	private final MeterRegistry registry;
 
 	public Metrics(MeterRegistry registry) {
 		this.registry = registry;
 	}
-
 
 	public void incrementBrevkodeMetric(String fagsystem, String brevkode) {
 		Counter.builder("dok_brevkode_opprettet_counter")
