@@ -14,7 +14,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
@@ -40,7 +39,7 @@ public class RepositoryConfig {
 	DataSource dataSource(final DataSourceProperties dataSourceProperties,
 						  final BrevserverProperties brevserverProperties) throws SQLException {
 		PoolDataSource poolDataSource = PoolDataSourceFactory.getPoolDataSource();
-		poolDataSource.setConnectionFactoryClassName(dataSourceProperties.getDriverClassName());
+		poolDataSource.setConnectionFactoryClassName(OracleDataSource.class.getName());
 		poolDataSource.setURL(dataSourceProperties.getUrl());
 		poolDataSource.setUser(dataSourceProperties.getUsername());
 		poolDataSource.setPassword(dataSourceProperties.getPassword());
@@ -64,7 +63,7 @@ public class RepositoryConfig {
 
 	@Bean
 	@Primary
-	NamedParameterJdbcTemplate namedParameterJdbcTemplate(final DataSource dataSource) {
+	NamedParameterJdbcTemplate namedParameterJdbcTemplate(final PoolDataSource dataSource) {
 		return new NamedParameterJdbcTemplate(dataSource);
 	}
 }

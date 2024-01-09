@@ -1,24 +1,25 @@
 package no.nav.brevserver.core.config.jms;
 
-import com.ibm.mq.jms.MQConnectionFactory;
-import com.ibm.mq.jms.MQQueue;
-import com.ibm.msg.client.jms.JmsConstants;
+import com.ibm.mq.jakarta.jms.MQConnectionFactory;
+import com.ibm.mq.jakarta.jms.MQQueue;
+import com.ibm.msg.client.jakarta.jms.JmsConstants;
 import no.nav.brevserver.core.alias.FagarkivProperties;
 import no.nav.brevserver.core.alias.MqGatewayProperties;
-import org.apache.activemq.jms.pool.PooledConnectionFactory;
+import org.messaginghub.pooled.jms.JmsPoolConnectionFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.jms.connection.UserCredentialsConnectionFactoryAdapter;
 
-import javax.jms.ConnectionFactory;
-import javax.jms.JMSException;
-import javax.jms.Queue;
+import jakarta.jms.ConnectionFactory;
+import jakarta.jms.JMSException;
+import jakarta.jms.Queue;
+
 import javax.net.ssl.SSLSocketFactory;
 
-import static com.ibm.msg.client.jms.JmsConstants.JMS_IBM_CHARACTER_SET;
-import static com.ibm.msg.client.wmq.common.CommonConstants.WMQ_CM_CLIENT;
+import static com.ibm.msg.client.jakarta.jms.JmsConstants.JMS_IBM_CHARACTER_SET;
+import static com.ibm.msg.client.jakarta.wmq.common.CommonConstants.WMQ_CM_CLIENT;
 
 @Profile({"nais", "local"})
 @Configuration
@@ -33,7 +34,7 @@ public class JmsConfig {
 		return createConnectionFactory(mqGatewayAlias, fagarkivProperties);
 	}
 
-	private PooledConnectionFactory createConnectionFactory(final MqGatewayProperties mqGatewayAlias,
+	private JmsPoolConnectionFactory createConnectionFactory(final MqGatewayProperties mqGatewayAlias,
 															final FagarkivProperties fagarkivProperties) throws JMSException {
 		MQConnectionFactory connectionFactory = new MQConnectionFactory();
 		connectionFactory.setHostName(mqGatewayAlias.getHostname());
@@ -58,10 +59,10 @@ public class JmsConfig {
 		adapter.setUsername(fagarkivProperties.getServiceuser().getUsername());
 		adapter.setPassword(fagarkivProperties.getServiceuser().getPassword());
 
-		PooledConnectionFactory pooledFactory = new PooledConnectionFactory();
+		JmsPoolConnectionFactory pooledFactory = new JmsPoolConnectionFactory();
 		pooledFactory.setConnectionFactory(adapter);
 		pooledFactory.setMaxConnections(10);
-		pooledFactory.setMaximumActiveSessionPerConnection(10);
+		pooledFactory.setMaxSessionsPerConnection(10);
 
 		return pooledFactory;
 	}

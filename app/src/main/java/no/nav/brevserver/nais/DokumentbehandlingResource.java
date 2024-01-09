@@ -20,9 +20,9 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.activation.DataHandler;
-import javax.mail.util.ByteArrayDataSource;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.activation.DataHandler;
+import jakarta.mail.util.ByteArrayDataSource;
+import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;

@@ -1,5 +1,12 @@
 package no.nav.brevserver.core.domain.entities;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -7,12 +14,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
 import java.sql.Timestamp;
 
 @Entity
@@ -23,11 +24,14 @@ import java.sql.Timestamp;
 @Getter
 public class Brevtilgang {
 
+	private static final String BREVTILGANG_SEQ = "brevtilgang_seq";
+
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "brevtilgang_seq")
-	@GenericGenerator(name = "brevtilgang_seq", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator", parameters = {
-			@Parameter(name = "sequence_name", value = "BREVTILGANG_SEQ"),
-			@Parameter(name = "initial_value", value = "1")})
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = BREVTILGANG_SEQ)
+	@SequenceGenerator(name = BREVTILGANG_SEQ, sequenceName = BREVTILGANG_SEQ, allocationSize = 1)
+//	@GenericGenerator(name = "brevtilgang_seq", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator", parameters = {
+//			@Parameter(name = "sequence_name", value = "BREVTILGANG_SEQ"),
+//			@Parameter(name = "initial_value", value = "1")})
 	@Column(name = "ID", nullable = false)
 	private Long journalpostId;
 

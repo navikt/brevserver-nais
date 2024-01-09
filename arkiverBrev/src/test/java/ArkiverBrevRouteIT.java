@@ -1,18 +1,17 @@
+import jakarta.jms.Message;
+import jakarta.jms.Queue;
+import jakarta.jms.TextMessage;
+import jakarta.xml.bind.JAXBElement;
 import lombok.SneakyThrows;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
 import no.nav.brevserver.core.vo.BrevStatusVO;
 import no.nav.brevserver.service.BrevstatusService;
-import org.apache.activemq.command.ActiveMQTextMessage;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.test.context.transaction.TestTransaction;
 import utils.Utils;
 
-import javax.jms.Message;
-import javax.jms.Queue;
-import javax.jms.TextMessage;
-import javax.xml.bind.JAXBElement;
 import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -41,7 +40,7 @@ public class ArkiverBrevRouteIT  extends AbstractTest {
 
 	private static final String CORRELATION_ID="1890432+12342341";
 	//Kan ikke bruke selve køen da vi legger på ?targetclient=1 på kønavnet i servicen.
-	private static final String SVARKOSTRING = "queue:///SvarKo?targetClient=1";
+	private static final String SVARKOSTRING = "queue:///mottakSvarKo?targetClient=1";
 
 	@Test
 	//happypath
@@ -118,7 +117,7 @@ public class ArkiverBrevRouteIT  extends AbstractTest {
 	@SneakyThrows
 	private void sendStringMessage(Queue queue, final String message, final String callId) {
 		jmsTemplate.send(queue, session -> {
-			TextMessage msg = new ActiveMQTextMessage();
+			TextMessage msg = session.createTextMessage();
 			msg.setText(message);
 			msg.setJMSCorrelationID("Dette-er-en-correlation-ID");
 			msg.setJMSReplyTo(svarKo);

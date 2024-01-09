@@ -12,8 +12,8 @@ import org.apache.camel.ProducerTemplate;
 import org.apache.camel.builder.ExchangeBuilder;
 import org.springframework.stereotype.Component;
 
-import javax.jms.JMSException;
-import javax.jms.Queue;
+import jakarta.jms.JMSException;
+import jakarta.jms.Queue;
 
 import static no.nav.brevserver.core.utils.ExchangeUtils.buildReturnQueue;
 import static no.nav.brevserver.core.utils.ExchangeUtils.setDestination;

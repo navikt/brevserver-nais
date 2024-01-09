@@ -10,7 +10,7 @@ import org.apache.camel.ValidationException;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.stereotype.Component;
 
-import javax.jms.Queue;
+import jakarta.jms.Queue;
 
 import static no.nav.brevserver.core.utils.ExchangeUtils.JMS;
 import static no.nav.brevserver.core.utils.ExchangeUtils.JMS_OVERRIDDEN;

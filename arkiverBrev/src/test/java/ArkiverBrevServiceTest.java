@@ -1,4 +1,7 @@
 import config.ApplicationTestConfig;
+import jakarta.jms.Queue;
+import jakarta.jms.TextMessage;
+import jakarta.xml.bind.JAXBElement;
 import no.nav.brevserver.core.constants.Konstanter;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
 import no.nav.brevserver.core.vo.BrevStatusVO;
@@ -6,8 +9,6 @@ import no.nav.brevserver.core.vo.BrevVO;
 import no.nav.brevserver.core.vo.FilType;
 import no.nav.brevserver.service.BrevlagerService;
 import no.nav.brevserver.service.BrevstatusService;
-import org.apache.activemq.command.ActiveMQMessage;
-import org.apache.activemq.command.ActiveMQTextMessage;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -17,9 +18,6 @@ import org.springframework.jms.core.JmsTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
-import javax.jms.Queue;
-import javax.jms.TextMessage;
-import javax.xml.bind.JAXBElement;
 import java.util.concurrent.TimeUnit;
 
 import static no.nav.brevserver.core.constants.Konstanter.BREVSTATUS_FEIL;
@@ -137,7 +135,7 @@ public class ArkiverBrevServiceTest {
 		sendStringMessage(mottakArkiv, null, CALL_ID);
 
 		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
-			ActiveMQMessage recieved = receive(deadletter);
+			TextMessage recieved = receive(deadletter);
 			assertEquals(recieved.getJMSCorrelationID(), CORRELATION_ID);
 			verifyNoInteractions(brevlagerServiceMock, brevstatusServiceMock);
 		});
@@ -186,7 +184,7 @@ public class ArkiverBrevServiceTest {
 
 	private void sendStringMessage(Queue queue, final String message, final String callId) {
 		jmsTemplate.send(queue, session -> {
-			TextMessage msg = new ActiveMQTextMessage();
+			TextMessage msg = session.createTextMessage();
 			msg.setText(message);
 			msg.setJMSCorrelationID(CORRELATION_ID);
 			msg.setJMSReplyTo(svarKo);

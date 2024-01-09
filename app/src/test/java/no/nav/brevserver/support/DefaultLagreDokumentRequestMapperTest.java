@@ -8,8 +8,8 @@ import no.nav.tjenester.brevogarkiv.dokumentbehandling.LagreDokumentRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import javax.activation.DataHandler;
-import javax.mail.util.ByteArrayDataSource;
+import jakarta.activation.DataHandler;
+import jakarta.mail.util.ByteArrayDataSource;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;

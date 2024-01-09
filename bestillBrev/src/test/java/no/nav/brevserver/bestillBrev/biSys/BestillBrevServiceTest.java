@@ -16,9 +16,9 @@ import org.springframework.jms.core.JmsTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
-import javax.jms.Queue;
-import javax.jms.TextMessage;
-import javax.xml.bind.JAXBElement;
+import jakarta.jms.Queue;
+import jakarta.jms.TextMessage;
+import jakarta.xml.bind.JAXBElement;
 import java.util.concurrent.TimeUnit;
 
 import static no.nav.brevserver.bestillBrev.Utils.BISYS_SYSTEM_ID;
@@ -189,7 +189,7 @@ public class BestillBrevServiceTest {
 
 	private void sendStringMessage(Queue queue, final String message, final String callId) {
 		jmsTemplate.send(queue, session -> {
-			TextMessage msg = new ActiveMQTextMessage();
+			TextMessage msg = (TextMessage) new ActiveMQTextMessage();
 			msg.setText(message);
 			msg.setJMSCorrelationID(CORRELATION_ID);
 			msg.setJMSReplyTo(svarKo);

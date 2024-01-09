@@ -1,0 +1,64 @@
+<configuration xmlns="urn:activemq" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			   xsi:schemaLocation="urn:activemq /schema/artemis-configuration.xsd">
+	<core xmlns="urn:activemq:core">
+		<acceptors>
+			<acceptor name="invm">vm://0</acceptor>
+		</acceptors>
+		<security-enabled>false</security-enabled>
+		<persistence-enabled>false</persistence-enabled>
+		<address-settings>
+			<address-setting match="mottak">
+				<dead-letter-address>DLQ</dead-letter-address>
+				<max-delivery-attempts>1</max-delivery-attempts>
+			</address-setting>
+		</address-settings>
+
+		<addresses>
+			<address name="mottakarkiv">
+				<anycast>
+					<queue name="mottakarkiv"/>
+				</anycast>
+			</address>
+			<address name="mottakarkivPe">
+				<anycast>
+					<queue name="mottakarkivPe"/>
+				</anycast>
+			</address>
+			<address name="mottakarkivPeLinux">
+				<anycast>
+					<queue name="mottakarkivPeLinux"/>
+				</anycast>
+			</address>
+			<address name="mottakOnline">
+				<anycast>
+					<queue name="mottakOnline"/>
+				</anycast>
+			</address>
+			<address name="mottakOnlinePe">
+				<anycast>
+					<queue name="mottakOnlinePe"/>
+				</anycast>
+			</address>
+			<address name="mottakOnlineLinux">
+				<anycast>
+					<queue name="mottakOnlineLinux"/>
+				</anycast>
+			</address>
+			<address name="mottakOnlinePeLinux">
+				<anycast>
+					<queue name="mottakOnlinePeLinux"/>
+				</anycast>
+			</address>
+			<address name="mottakDLQ">
+				<anycast>
+					<queue name="mottakDLQ"/>
+				</anycast>
+			</address>
+			<address name="mottakSvarKo">
+				<anycast>
+					<queue name="mottakSvarKoe"/>
+				</anycast>
+			</address>
+		</addresses>
+	</core>
+</configuration>

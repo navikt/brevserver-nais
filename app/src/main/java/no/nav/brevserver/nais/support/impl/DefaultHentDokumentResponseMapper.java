@@ -5,8 +5,8 @@ import no.nav.brevserver.nais.support.HentDokumentResponseMapper;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.HentDokumentResponse2;
 import org.springframework.stereotype.Component;
 
-import javax.activation.DataHandler;
-import javax.mail.util.ByteArrayDataSource;
+import jakarta.activation.DataHandler;
+import jakarta.mail.util.ByteArrayDataSource;
 
 /**
  * Default implementation of HentDokumentResponseMapper

@@ -1,6 +1,6 @@
 package no.nav.brevserver.bestillBrev.biSys;
 
-import com.ibm.msg.client.jms.DetailedJMSException;
+import com.ibm.msg.client.jakarta.jms.DetailedJMSException;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
 import no.nav.brevserver.core.utils.MDC.MdcRemoverProcessor;
@@ -11,7 +11,7 @@ import org.apache.camel.ValidationException;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.stereotype.Component;
 
-import javax.jms.Queue;
+import jakarta.jms.Queue;
 
 import static no.nav.brevserver.core.utils.ExchangeUtils.JMS;
 import static no.nav.brevserver.core.utils.ExchangeUtils.JMS_OVERRIDDEN;

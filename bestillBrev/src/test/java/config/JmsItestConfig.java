@@ -12,9 +12,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 
-import javax.jms.ConnectionFactory;
-import javax.jms.JMSException;
-import javax.jms.Queue;
+import jakarta.jms.ConnectionFactory;
+import jakarta.jms.JMSException;
+import jakarta.jms.Queue;
 
 
 @Configuration

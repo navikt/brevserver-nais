@@ -29,8 +29,8 @@
 			<artifactId>dokumentbehandling-tjenestespesifikasjon</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpclient</artifactId>
+			<groupId>org.apache.httpcomponents.client5</groupId>
+			<artifactId>httpclient5</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.camel.springboot</groupId>
@@ -38,7 +38,7 @@
 		</dependency>
 		<dependency>
 			<groupId>com.ibm.mq</groupId>
-			<artifactId>com.ibm.mq.allclient</artifactId>
+			<artifactId>com.ibm.mq.jakarta.client</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.activemq</groupId>
