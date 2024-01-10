@@ -19,7 +19,7 @@ import no.nav.brevserver.service.BrevtilgangService;
 import no.nav.brevserver.service.converter.BrevTilVoConverter;
 import no.nav.brevserver.service.converter.VoTilBrevConverter;
 import no.nav.brevserver.service.queue.KvitteringService;
-import org.apache.commons.io.IOUtils;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,7 +64,7 @@ public class DefaultBrevlagerService implements BrevlagerService {
 								   DefaultBrevlagerHistorikkService defaultBrevlagerHistorikkService,
 								   BrevtilgangService brevtilgangService,
 								   KvitteringService kvitteringService) throws IOException {
-		PDF_MED_FORKLARING = IOUtils.resourceToByteArray("/static/rtf-konvertering-sanert-forklaring.pdf");
+		PDF_MED_FORKLARING = new ClassPathResource("/static/rtf-konvertering-sanert-forklaring.pdf").getInputStream().readAllBytes();
 		this.joarkService = joarkService;
 		this.brevRepository = brevRepository;
 		this.brevTilVoConverter = brevTilVoConverter;
