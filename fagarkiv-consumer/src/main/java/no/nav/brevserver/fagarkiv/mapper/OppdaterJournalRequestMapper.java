@@ -1,6 +1,7 @@
 package no.nav.brevserver.fagarkiv.mapper;
 
 import no.nav.virksomhet.gjennomforing.arkiv.journal.v2.Journalpost;
+import no.nav.virksomhet.gjennomforing.arkiv.journal.v2.Kodetabell;
 import no.nav.virksomhet.tjenester.arkiv.journalbehandling.meldinger.v1.Bruker;
 import no.nav.virksomhet.tjenester.arkiv.journalbehandling.meldinger.v1.DokumentInfo;
 import no.nav.virksomhet.tjenester.arkiv.journalbehandling.meldinger.v1.Fildetaljer;
@@ -22,20 +23,20 @@ public class OppdaterJournalRequestMapper {
 		oppdaterJournalRequest.setDokumentDato(journalpost.getDokumentDato());
 		oppdaterJournalRequest.setElektroniskDistribusjon(journalpost.isElektroniskDistribusjon());
 		oppdaterJournalRequest.setEkspedertDato(journalpost.getEkspedertDato());
-		oppdaterJournalRequest.setFagomradeKode(journalpost.getFagomrade().getKode());
-		oppdaterJournalRequest.setFaktiskDistribusjonskanalKode(journalpost.getFaktiskDistribusjonskanal().getKode());
+		oppdaterJournalRequest.setFagomradeKode(map(journalpost.getFagomrade()));
+		oppdaterJournalRequest.setFaktiskDistribusjonskanalKode(map(journalpost.getFaktiskDistribusjonskanal()));
 		oppdaterJournalRequest.setFordeling(journalpost.getFordeling());
 		oppdaterJournalRequest.setInnhold(journalpost.getInnhold());
 		oppdaterJournalRequest.setJournalForendeEnhetId(journalpost.getJournalForendeEnhetId());
 		oppdaterJournalRequest.setJournalpostId(journalpost.getJournalpostId());
-		oppdaterJournalRequest.setJournalposttypeKode(journalpost.getJournalposttype().getKode());
-		oppdaterJournalRequest.setJournalstatusKode(journalpost.getJournalstatus().getKode());
+		oppdaterJournalRequest.setJournalposttypeKode(map(journalpost.getJournalposttype()));
+		oppdaterJournalRequest.setJournalstatusKode(map(journalpost.getJournalstatus()));
 		oppdaterJournalRequest.setKravtype(journalpost.getKravtype());
 		oppdaterJournalRequest.setLand(journalpost.getLand());
 		oppdaterJournalRequest.setLestDato(journalpost.getLestDato());
 		oppdaterJournalRequest.setMerknad(journalpost.getMerknad());
-		oppdaterJournalRequest.setMottakskanalKode(journalpost.getMottakskanal().getKode());
-		oppdaterJournalRequest.setUtsendingskanalKode(journalpost.getUtsendingskanal().getKode());
+		oppdaterJournalRequest.setMottakskanalKode(map(journalpost.getMottakskanal()));
+		oppdaterJournalRequest.setUtsendingskanalKode(map(journalpost.getUtsendingskanal()));
 		oppdaterJournalRequest.setMottattAdressatDato(journalpost.getMottattAdressatDato());
 		oppdaterJournalRequest.setMottattDato(journalpost.getMottattDato());
 		oppdaterJournalRequest.setOriginaltBestilt(journalpost.isOriginaltBestilt());
@@ -51,7 +52,7 @@ public class OppdaterJournalRequestMapper {
 	private static Saksrelasjon map(no.nav.virksomhet.gjennomforing.arkiv.journal.v2.Saksrelasjon saksrelasjonInn) {
 		Saksrelasjon saksrelasjon = new Saksrelasjon();
 
-		saksrelasjon.setFagsystemKode(saksrelasjonInn.getFagsystem().getKode());
+		saksrelasjon.setFagsystemKode(map(saksrelasjonInn.getFagsystem()));
 		saksrelasjon.setFeilregistrert(saksrelasjonInn.isFeilregistrert());
 		saksrelasjon.setSakId(saksrelasjonInn.getSakId());
 		saksrelasjon.setSaksrelasjonId(saksrelasjonInn.getSaksrelasjonId());
@@ -65,7 +66,7 @@ public class OppdaterJournalRequestMapper {
 
 		bruker.setBrukerId(brukerInn.getBrukerId());
 		bruker.setBrukerInfoId(brukerInn.getBrukerInfoId());
-		bruker.setBrukertypeKode(brukerInn.getBrukertype().getKode());
+		bruker.setBrukertypeKode(map(brukerInn.getBrukertype()));
 		bruker.setVersjon(brukerInn.getVersjon());
 
 		return bruker;
@@ -82,7 +83,7 @@ public class OppdaterJournalRequestMapper {
 		JournalpostDokumentInfoRelasjon journalpostDokumentInfoRelasjon = new JournalpostDokumentInfoRelasjon();
 		journalpostDokumentInfoRelasjon.setJournalpostDokumentInfoRelasjonId(relasjon.getJournalpostDokumentInfoRelasjonId());
 		journalpostDokumentInfoRelasjon.setDokumentInfo(map(relasjon.getDokumentInfo()));
-		journalpostDokumentInfoRelasjon.setTilknyttetJournalpostSomKode(relasjon.getTilknyttetJournalpostSom().getKode());
+		journalpostDokumentInfoRelasjon.setTilknyttetJournalpostSomKode(map(relasjon.getTilknyttetJournalpostSom()));
 		journalpostDokumentInfoRelasjon.setTilknyttetAvNavn(relasjon.getTilknyttetAvNavn());
 		journalpostDokumentInfoRelasjon.setVersjon(Long.parseLong(relasjon.getVersjon()));
 
@@ -97,9 +98,9 @@ public class OppdaterJournalRequestMapper {
 				.map(OppdaterJournalRequestMapper::map)
 				.toList());
 
-		dokumentInfo.setKategoriKode(info.getKategori().getKode());
+		dokumentInfo.setKategoriKode(map(info.getKategori()));
 		dokumentInfo.setDokumentFerdigDato(info.getDokumentFerdigDato());
-		dokumentInfo.setDokumentstatusKode(info.getDokumentstatus().getKode());
+		dokumentInfo.setDokumentstatusKode(map(info.getDokumentstatus()));
 		dokumentInfo.setTittel(info.getTittel());
 		dokumentInfo.setBrevkode(info.getBrevkode());
 		dokumentInfo.setBrevgruppe(info.getBrevgruppe());
@@ -120,11 +121,15 @@ public class OppdaterJournalRequestMapper {
 		fildetaljer.setBatchNavn(detaljer.getBatchNavn());
 		fildetaljer.setFildetaljerId(detaljer.getFildetaljerId());
 		fildetaljer.setFilnavn(detaljer.getFilnavn());
-		fildetaljer.setFiltypeKode(detaljer.getFiltype().getKode());
-		fildetaljer.setVariantFormatKode(detaljer.getVariantFormat().getKode());
+		fildetaljer.setFiltypeKode(map(detaljer.getFiltype()));
+		fildetaljer.setVariantFormatKode(map(detaljer.getVariantFormat()));
 		fildetaljer.setVersjon(detaljer.getVersjon());
 
 		return fildetaljer;
+	}
+
+	private static String map(Kodetabell kodetabell) {
+		return kodetabell.getKode() != null ? kodetabell.getKode() : null;
 	}
 
 }
