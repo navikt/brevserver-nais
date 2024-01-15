@@ -129,6 +129,9 @@ public class OppdaterJournalRequestMapper {
 	}
 
 	private static String map(Kodetabell kodetabell) {
+		if (kodetabell == null)
+			return null;
+
 		return kodetabell.getKode() != null ? kodetabell.getKode() : null;
 	}
 
