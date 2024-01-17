@@ -50,26 +50,45 @@ public class OpprettJournalRequestMapperTest {
 
 	@Test
 	void shouldMapJournalpost() {
-		Journalpost journapost = createJournapost();
+		Journalpost journalpost = createJournalpost();
 
-		OppdaterJournalRequest oppdaterJournalRequest = OppdaterJournalRequestMapper.map(journapost);
+		OppdaterJournalRequest oppdaterJournalRequest = OppdaterJournalRequestMapper.map(journalpost);
 
 		assertThat(oppdaterJournalRequest)
 				.usingRecursiveComparison()
 				.ignoringFields("endretAvNavn", "saksrelasjon")
 				.ignoringFieldsMatchingRegexes(".*Kode", ".*Liste")
-				.isEqualTo(journapost);
+				.isEqualTo(journalpost);
 
-		assertThat(oppdaterJournalRequest.getFagomradeKode()).isEqualTo(journapost.getFagomrade().getKode());
-		assertThat(oppdaterJournalRequest.getFaktiskDistribusjonskanalKode()).isEqualTo(journapost.getFaktiskDistribusjonskanal().getKode());
-		assertThat(oppdaterJournalRequest.getJournalposttypeKode()).isEqualTo(journapost.getJournalposttype().getKode());
-		assertThat(oppdaterJournalRequest.getJournalstatusKode()).isEqualTo(journapost.getJournalstatus().getKode());
-		assertThat(oppdaterJournalRequest.getMottakskanalKode()).isEqualTo(journapost.getMottakskanal().getKode());
-		assertThat(oppdaterJournalRequest.getUtsendingskanalKode()).isEqualTo(journapost.getUtsendingskanal().getKode());
+		assertThat(oppdaterJournalRequest.getFagomradeKode()).isEqualTo(journalpost.getFagomrade().getKode());
+		assertThat(oppdaterJournalRequest.getFaktiskDistribusjonskanalKode()).isEqualTo(journalpost.getFaktiskDistribusjonskanal().getKode());
+		assertThat(oppdaterJournalRequest.getJournalposttypeKode()).isEqualTo(journalpost.getJournalposttype().getKode());
+		assertThat(oppdaterJournalRequest.getJournalstatusKode()).isEqualTo(journalpost.getJournalstatus().getKode());
+		assertThat(oppdaterJournalRequest.getMottakskanalKode()).isEqualTo(journalpost.getMottakskanal().getKode());
+		assertThat(oppdaterJournalRequest.getUtsendingskanalKode()).isEqualTo(journalpost.getUtsendingskanal().getKode());
 
-		assertJournalpostDokumentInfoRelasjonListe(oppdaterJournalRequest, journapost);
-		assertGjelderListe(oppdaterJournalRequest, journapost);
-		assertSaksrelasjon(oppdaterJournalRequest.getSaksrelasjon(), journapost.getSaksrelasjon());
+		assertJournalpostDokumentInfoRelasjonListe(oppdaterJournalRequest, journalpost);
+		assertGjelderListe(oppdaterJournalRequest, journalpost);
+		assertSaksrelasjon(oppdaterJournalRequest.getSaksrelasjon(), journalpost.getSaksrelasjon());
+	}
+
+	@Test
+	void shouldNotMapExplicitlyHandledNullValues() {
+		Journalpost journalpost = createJournalpost(null);
+		journalpost.setSaksrelasjon(null);
+		journalpost.setFagomrade(null);
+		journalpost.setFaktiskDistribusjonskanal(null);
+		journalpost.setJournalposttype(null);
+		journalpost.setJournalstatus(null);
+		journalpost.setMottakskanal(null);
+		journalpost.setUtsendingskanal(null);
+
+		OppdaterJournalRequest oppdaterJournalRequest = OppdaterJournalRequestMapper.map(journalpost);
+
+		assertThat(oppdaterJournalRequest.getGjelderListe()).containsOnlyNulls();
+		assertThat(oppdaterJournalRequest).extracting(
+				"saksrelasjon", "fagomradeKode", "faktiskDistribusjonskanalKode", "journalposttypeKode", "journalstatusKode", "mottakskanalKode", "utsendingskanalKode")
+				.containsOnlyNulls();
 	}
 
 	private void assertJournalpostDokumentInfoRelasjonListe(OppdaterJournalRequest request, Journalpost journalpost) {
@@ -149,12 +168,16 @@ public class OpprettJournalRequestMapperTest {
 		assertThat(actual.getVersjon()).isEqualTo(expected.getVersjon());
 	}
 
-	private Journalpost createJournapost() {
+	private Journalpost createJournalpost() {
+		return createJournalpost(createBruker());
+	}
+
+	private Journalpost createJournalpost(Bruker bruker) {
 		Journalpost journalpost = new Journalpost();
 
 		journalpost.setJournalpostId(123L);
 		journalpost.setSaksrelasjon(createSaksrelasjon());
-		journalpost.getGjelderListe().add(createBruker());
+		journalpost.getGjelderListe().add(bruker);
 		journalpost.getJournalpostDokumentInfoRelasjonListe().add(createJournalpostDokumentInfoRelasjon());
 		journalpost.setJournalposttype(createKodetabell(Journalposttype.class, "journalposttypeKode"));
 		journalpost.setFagomrade(createKodetabell(Fagomrade.class, "fagomradeKode"));

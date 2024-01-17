@@ -43,21 +43,18 @@ public class OppdaterJournalRequestMapper {
 		oppdaterJournalRequest.setSendtPrintDato(journalpost.getSendtPrintDato());
 		oppdaterJournalRequest.setVersjon(journalpost.getVersjon());
 
-		if (journalpost.getJournalpostDokumentInfoRelasjonListe() != null)
-			oppdaterJournalRequest.getJournalpostDokumentInfoRelasjonListe()
-					.addAll(mapJournalpostDokumentInfoRelasjonListe(journalpost.getJournalpostDokumentInfoRelasjonListe()));
+		oppdaterJournalRequest.getJournalpostDokumentInfoRelasjonListe()
+				.addAll(mapJournalpostDokumentInfoRelasjonListe(journalpost.getJournalpostDokumentInfoRelasjonListe()));
 
-		if (journalpost.getGjelderListe() != null)
-			oppdaterJournalRequest.getGjelderListe()
-					.addAll(mapGjelerderliste(journalpost.getGjelderListe()));
-
+		oppdaterJournalRequest.getGjelderListe()
+				.addAll(mapGjelderliste(journalpost.getGjelderListe()));
 
 		oppdaterJournalRequest.setSaksrelasjon(mapSaksrelasjon(journalpost.getSaksrelasjon()));
 
 		return oppdaterJournalRequest;
 	}
 
-	private static List<Bruker> mapGjelerderliste(List<no.nav.virksomhet.gjennomforing.arkiv.journal.v2.Bruker> gjelderListe) {
+	private static List<Bruker> mapGjelderliste(List<no.nav.virksomhet.gjennomforing.arkiv.journal.v2.Bruker> gjelderListe) {
 		return gjelderListe.stream()
 				.map(OppdaterJournalRequestMapper::mapBruker)
 				.toList();
@@ -115,10 +112,9 @@ public class OppdaterJournalRequestMapper {
 		DokumentInfo dokumentInfo = new DokumentInfo();
 		dokumentInfo.setDokumentInfoId(info.getDokumentInfoId());
 
-		if (info.getFildetaljerListe() != null)
-			dokumentInfo.getFildetaljerListe().addAll(info.getFildetaljerListe().stream()
-					.map(OppdaterJournalRequestMapper::mapFildetaljer)
-					.toList());
+		dokumentInfo.getFildetaljerListe().addAll(info.getFildetaljerListe().stream()
+				.map(OppdaterJournalRequestMapper::mapFildetaljer)
+				.toList());
 
 		dokumentInfo.setKategoriKode(mapKodetabell(info.getKategori()));
 		dokumentInfo.setDokumentFerdigDato(info.getDokumentFerdigDato());
