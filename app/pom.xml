@@ -124,7 +124,7 @@
 						<configuration>
 							<includeClassifiers>jaxws</includeClassifiers>
 							<outputDirectory>${project.build.directory}/classes/</outputDirectory>
-							<includes>**/*.wsdl,**/*.xsd,dozer/*.xml</includes>
+							<includes>**/*.wsdl,**/*.xsd</includes>
 						</configuration>
 					</execution>
 				</executions>

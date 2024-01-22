@@ -26,14 +26,10 @@ public class JoarkServiceImpl implements JoarkService {
 	private final JournalClient journalClient;
 	private final JournalbehandlingClient journalbehandlingClient;
 
-	private final OppdaterJournalRequestMapper oppdaterJournalRequestMapper;
-
 	public JoarkServiceImpl(JournalClient journalClient,
-							JournalbehandlingClient journalbehandlingClient,
-							OppdaterJournalRequestMapper oppdaterJournalRequestMapper) {
+							JournalbehandlingClient journalbehandlingClient) {
 		this.journalClient = journalClient;
 		this.journalbehandlingClient = journalbehandlingClient;
-		this.oppdaterJournalRequestMapper = oppdaterJournalRequestMapper;
 	}
 
 	@Override
@@ -71,7 +67,7 @@ public class JoarkServiceImpl implements JoarkService {
 		Journalpost journalpost = journalClient.hentJournalpost(getBrevreferanseAsLong(brevreferanse));
 		verifyNotEmptyBruker(journalpost);
 		verifyJournalStatus(journalpost);
-		OppdaterJournalRequest oppdaterJournalRequest = oppdaterJournalRequestMapper.map(journalpost);
+		OppdaterJournalRequest oppdaterJournalRequest = OppdaterJournalRequestMapper.map(journalpost);
 		oppdaterJournalRequest.setEndretAvNavn(RequestContextHolder.isRequestContextSet() ? RequestContextHolder.currentRequestContext().getUserId() : "srvbrevserver");
 		verifyNotEmptyBruker(oppdaterJournalRequest);
 		return oppdaterJournalRequest;
