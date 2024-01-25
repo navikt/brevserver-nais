@@ -9,9 +9,13 @@ import no.nav.brevserver.core.vo.BrevVO;
 import no.nav.brevserver.core.vo.FilType;
 import no.nav.brevserver.service.BrevlagerService;
 import no.nav.brevserver.service.BrevstatusService;
+import org.apache.activemq.artemis.jms.client.ActiveMQMessage;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
+import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestEntityManager;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.jms.core.JmsTemplate;
@@ -30,6 +34,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static utils.Utils.BISYS_SYSTEM_ID;
 import static utils.Utils.BREVREFERANSE;
 import static utils.Utils.FILTYPE_XML;
@@ -40,8 +45,11 @@ import static utils.Utils.createBisysKvittering;
 import static utils.Utils.createBisysKvitteringfeilNiva;
 import static utils.Utils.createPesysKvittering;
 
+@AutoConfigureDataJpa
+@AutoConfigureTestDatabase
+@AutoConfigureTestEntityManager
 @EnableAutoConfiguration
-@SpringBootTest(classes = {ApplicationTestConfig.class})
+@SpringBootTest(classes = {ApplicationTestConfig.class}, webEnvironment = RANDOM_PORT)
 @ActiveProfiles("itest")
 @DirtiesContext
 public class ArkiverBrevServiceTest {
@@ -53,7 +61,7 @@ public class ArkiverBrevServiceTest {
 	@Autowired
 	private JmsTemplate jmsTemplate;
 	@Autowired
-	private Queue svarKo;
+	private Queue mottakSvarKo;
 	@MockBean
 	private BrevstatusService brevstatusServiceMock;
 	@MockBean
@@ -61,7 +69,7 @@ public class ArkiverBrevServiceTest {
 
 	private final String CORRELATION_ID = "corr-id";
 	private final String CALL_ID = "1234-callid-5678";
-	private static final String SVARKOSTRING = "queue:///SvarKo?targetClient=1";
+	private static final String SVARKOSTRING = "queue:///mottakSvarKo?targetClient=1";
 
 	@Test
 	public void shouldSaveAsKladd() throws Exception{
@@ -135,7 +143,7 @@ public class ArkiverBrevServiceTest {
 		sendStringMessage(mottakArkiv, null, CALL_ID);
 
 		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
-			TextMessage recieved = receive(deadletter);
+			ActiveMQMessage recieved = receive(deadletter);
 			assertEquals(recieved.getJMSCorrelationID(), CORRELATION_ID);
 			verifyNoInteractions(brevlagerServiceMock, brevstatusServiceMock);
 		});
@@ -187,7 +195,7 @@ public class ArkiverBrevServiceTest {
 			TextMessage msg = session.createTextMessage();
 			msg.setText(message);
 			msg.setJMSCorrelationID(CORRELATION_ID);
-			msg.setJMSReplyTo(svarKo);
+			msg.setJMSReplyTo(mottakSvarKo);
 			if (callId != null) {
 				msg.setStringProperty("callId", callId);
 			}

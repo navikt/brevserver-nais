@@ -1,0 +1,18 @@
+<configuration xmlns="urn:activemq" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			   xsi:schemaLocation="urn:activemq /schema/artemis-configuration.xsd">
+	<core xmlns="urn:activemq:core">
+		<acceptors>
+			<acceptor name="invm">vm://0</acceptor>
+		</acceptors>
+		<security-enabled>false</security-enabled>
+		<persistence-enabled>false</persistence-enabled>
+
+		<addresses>
+			<address name="brevKvittering">
+				<anycast>
+					<queue name="brevKvittering"/>
+				</anycast>
+			</address>
+		</addresses>
+	</core>
+</configuration>

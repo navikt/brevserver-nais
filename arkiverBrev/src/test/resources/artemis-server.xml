@@ -56,7 +56,7 @@
 			</address>
 			<address name="mottakSvarKo">
 				<anycast>
-					<queue name="mottakSvarKoe"/>
+					<queue name="mottakSvarKo"/>
 				</anycast>
 			</address>
 		</addresses>

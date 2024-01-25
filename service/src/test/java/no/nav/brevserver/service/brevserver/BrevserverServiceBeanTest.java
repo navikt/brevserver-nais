@@ -7,30 +7,37 @@ import no.nav.brevserver.core.repository.BrevSystemTilgangRepository;
 import no.nav.brevserver.core.vo.BrevStatusVO;
 import no.nav.brevserver.core.vo.FilType;
 import no.nav.brevserver.core.vo.SysTilgangVO;
-import no.nav.brevserver.service.AbstractDatabaseTest;
+import no.nav.brevserver.service.config.AbstractTest;
+import no.nav.brevserver.service.config.ApplicationTestConfig;
 import no.nav.brevserver.service.BrevstatusService;
 import no.nav.brevserver.service.BrevtilgangService;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
+import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestEntityManager;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.interceptor.SimpleKey;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
-/**
- * Unit tests for BrevserverServiceBean
- */
-@ExtendWith(SpringExtension.class)
+@AutoConfigureDataJpa
+@AutoConfigureTestDatabase
+@AutoConfigureTestEntityManager
+@EnableAutoConfiguration
+@SpringBootTest(classes = {ApplicationTestConfig.class}, webEnvironment = RANDOM_PORT)
 @ActiveProfiles("itest")
-@Transactional
-public class BrevserverServiceBeanTest extends AbstractDatabaseTest {
+@DirtiesContext
+public class BrevserverServiceBeanTest extends AbstractTest {
 
 	@Autowired
 	private CacheManager cacheManager;

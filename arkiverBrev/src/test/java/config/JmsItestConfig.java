@@ -65,6 +65,11 @@ public class JmsItestConfig {
 	}
 
 	@Bean
+	public Queue mottakSvarKo() {
+		return new ActiveMQQueue("mottakSvarKo");
+	}
+
+	@Bean
 	public Queue deadletter() {
 		return new ActiveMQQueue("mottakDLQ");
 	}
@@ -79,11 +84,6 @@ public class JmsItestConfig {
 		EmbeddedActiveMQ service = new EmbeddedActiveMQ();
 		service.setConfigResourcePath("artemis-server.xml");
 		return service;
-	}
-
-	@Bean
-	public Queue svarKo() {
-		return new ActiveMQQueue("mottakSvarKo");
 	}
 
 	@Bean

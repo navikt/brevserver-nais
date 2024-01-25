@@ -11,7 +11,8 @@ package no.nav.tjenester.brevogarkiv.dokumentbehandling;
 import jakarta.xml.bind.JAXBElement;
 import jakarta.xml.bind.annotation.XmlElementDecl;
 import jakarta.xml.bind.annotation.XmlRegistry;
-import jakarta.xml.namespace.QName;
+
+import javax.xml.namespace.QName;
 
 
 /**

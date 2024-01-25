@@ -1,6 +1,6 @@
 package no.nav.brevserver.bestillBrev.peSys;
 
-import com.ibm.msg.client.jms.DetailedJMSException;
+import com.ibm.msg.client.jakarta.jms.DetailedJMSException;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
 import no.nav.brevserver.core.utils.MDC.MdcRemoverProcessor;
 import no.nav.brevserver.core.utils.MDC.MdcSetterProcessor;

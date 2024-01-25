@@ -1,11 +1,10 @@
 package config;
 
-import com.ibm.mq.jms.MQQueue;
 import no.nav.brevserver.core.config.jms.JmsConfig;
-import org.apache.activemq.ActiveMQConnectionFactory;
-import org.apache.activemq.RedeliveryPolicy;
-import org.apache.activemq.broker.BrokerService;
-import org.apache.activemq.command.ActiveMQQueue;
+import org.apache.activemq.artemis.core.server.embedded.EmbeddedActiveMQ;
+import org.apache.activemq.artemis.jms.client.ActiveMQConnectionFactory;
+import org.apache.activemq.artemis.jms.client.ActiveMQQueue;
+import org.messaginghub.pooled.jms.JmsPoolConnectionFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,7 +12,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 
 import jakarta.jms.ConnectionFactory;
-import jakarta.jms.JMSException;
 import jakarta.jms.Queue;
 
 
@@ -35,20 +33,20 @@ public class JmsItestConfig {
 	@Bean
 	// pesys -> brevserver
 	// brevbestilling fra pensjon
-	public Queue onlinebrevPe(@Value("${onlinebrev_pe.queuename}") String brevserverOnlinebrevPe) throws JMSException {
+	public Queue onlinebrevPe(@Value("${onlinebrev_pe.queuename}") String brevserverOnlinebrevPe) {
 		return new ActiveMQQueue(brevserverOnlinebrevPe);
 	}
 
 	@Bean
 	// brevserver -> exstream
 	// brevbestillingskøen fra brevserver til exstream
-	public Queue dialogueOnlinePe(@Value("${dialogue_online_pe.queuename}") String dialogueOnlinePe) throws JMSException {
+	public Queue dialogueOnlinePe(@Value("${dialogue_online_pe.queuename}") String dialogueOnlinePe) {
 		return new ActiveMQQueue(dialogueOnlinePe);
 	}
 
 	@Bean
-	public Queue brevReplyPe(@Value("${brev_reply_pe.queuename}") String brevReplyPe) throws JMSException {
-		return new MQQueue(brevReplyPe);
+	public Queue brevReplyPe(@Value("${brev_reply_pe.queuename}") String brevReplyPe) {
+		return new ActiveMQQueue(brevReplyPe);
 	}
 
 	@Bean
@@ -67,18 +65,19 @@ public class JmsItestConfig {
 	}
 
 	@Bean(initMethod = "start", destroyMethod = "stop")
-	public BrokerService broker() {
-		BrokerService service = new BrokerService();
-		service.setPersistent(false);
+	public EmbeddedActiveMQ broker() {
+		EmbeddedActiveMQ service = new EmbeddedActiveMQ();
+		service.setConfigResourcePath("artemis-server.xml");
 		return service;
 	}
 
 	@Bean
-	public ConnectionFactory activemqConnectionFactory() {
+	public ConnectionFactory activemqConnectionFactory(EmbeddedActiveMQ embeddedActiveMQ) { // EmbeddedActiveMQ must be initialized before we try to connect, therefore we depend on it here
 		ActiveMQConnectionFactory activeMQConnectionFactory = new ActiveMQConnectionFactory("vm://localhost?create=false");
-		RedeliveryPolicy redeliveryPolicy = new RedeliveryPolicy();
-		redeliveryPolicy.setMaximumRedeliveries(0);
-		activeMQConnectionFactory.setRedeliveryPolicy(redeliveryPolicy);
-		return activeMQConnectionFactory;
+
+		JmsPoolConnectionFactory pooledFactory = new JmsPoolConnectionFactory();
+		pooledFactory.setConnectionFactory(activeMQConnectionFactory);
+		pooledFactory.setMaxConnections(1);
+		return pooledFactory;
 	}
 }

@@ -63,7 +63,7 @@ public class RepositoryConfig {
 
 	@Bean
 	@Primary
-	NamedParameterJdbcTemplate namedParameterJdbcTemplate(final PoolDataSource dataSource) {
+	NamedParameterJdbcTemplate namedParameterJdbcTemplate(final DataSource dataSource) {
 		return new NamedParameterJdbcTemplate(dataSource);
 	}
 }

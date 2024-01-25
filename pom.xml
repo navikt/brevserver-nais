@@ -34,8 +34,7 @@
 		<ibm-mq.version>9.3.3.1</ibm-mq.version>
 <!--		<activemq.version>5.18.2</activemq.version>-->
 		<commons-io.version>2.15.1</commons-io.version>
-		<dozer-spring-boot-starter.version>6.5.2</dozer-spring-boot-starter.version>
-		<logstash-logback-encoder.version>7.3</logstash-logback-encoder.version>
+		<logstash-logback-encoder.version>7.4</logstash-logback-encoder.version>
 		<jakarta.jws-api.version>1.1.1</jakarta.jws-api.version>
 
 		<patrodyne-basicjaxb.version>2.1.1</patrodyne-basicjaxb.version>
@@ -115,11 +114,6 @@
 				<groupId>net.logstash.logback</groupId>
 				<artifactId>logstash-logback-encoder</artifactId>
 				<version>${logstash-logback-encoder.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.github.dozermapper</groupId>
-				<artifactId>dozer-spring-boot-starter</artifactId>
-				<version>${dozer-spring-boot-starter.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>no.nav.security</groupId>

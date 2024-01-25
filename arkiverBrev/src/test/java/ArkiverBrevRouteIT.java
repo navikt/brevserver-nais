@@ -26,7 +26,7 @@ import static utils.Utils.createBisysKvittering2;
 import static utils.Utils.createBrevstatus;
 
 
-public class ArkiverBrevRouteIT  extends AbstractTest {
+public class ArkiverBrevRouteIT extends AbstractTest {
 	@Autowired
 	private Queue mottakArkiv;
 	@Autowired
@@ -34,7 +34,7 @@ public class ArkiverBrevRouteIT  extends AbstractTest {
 	@Autowired
 	private JmsTemplate jmsTemplate;
 	@Autowired
-	private Queue svarKo;
+	private Queue mottakSvarKo;
 	@Autowired
 	private BrevstatusService brevstatusService;
 
@@ -120,7 +120,7 @@ public class ArkiverBrevRouteIT  extends AbstractTest {
 			TextMessage msg = session.createTextMessage();
 			msg.setText(message);
 			msg.setJMSCorrelationID("Dette-er-en-correlation-ID");
-			msg.setJMSReplyTo(svarKo);
+			msg.setJMSReplyTo(mottakSvarKo);
 			if (callId != null) {
 				msg.setStringProperty("callId", callId);
 			}
