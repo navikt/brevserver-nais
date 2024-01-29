@@ -11,8 +11,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
 
 import java.sql.Timestamp;
 
@@ -29,9 +27,6 @@ public class Brevtilgang {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = BREVTILGANG_SEQ)
 	@SequenceGenerator(name = BREVTILGANG_SEQ, sequenceName = BREVTILGANG_SEQ, allocationSize = 1)
-//	@GenericGenerator(name = "brevtilgang_seq", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator", parameters = {
-//			@Parameter(name = "sequence_name", value = "BREVTILGANG_SEQ"),
-//			@Parameter(name = "initial_value", value = "1")})
 	@Column(name = "ID", nullable = false)
 	private Long journalpostId;
 
