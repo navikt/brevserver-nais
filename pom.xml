@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.2.1</version>
+		<version>3.2.2</version>
 	</parent>
 
 	<groupId>no.nav.brevserver</groupId>
@@ -28,11 +28,9 @@
 		<!-- Interne NAV-dependencies -->
 		<dok-legacy-tjenestespesifikasjoner.version>29-af3d66d</dok-legacy-tjenestespesifikasjoner.version>
 
-<!--		<oracle.version>19.20.0.0</oracle.version>-->
 		<camel.version>4.1.0</camel.version>
 		<token-support.version>3.2.0</token-support.version>
 		<ibm-mq.version>9.3.3.1</ibm-mq.version>
-<!--		<activemq.version>5.18.2</activemq.version>-->
 		<commons-io.version>2.15.1</commons-io.version>
 		<logstash-logback-encoder.version>7.4</logstash-logback-encoder.version>
 		<jakarta.jws-api.version>1.1.1</jakarta.jws-api.version>
