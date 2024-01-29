@@ -33,7 +33,7 @@
 		<ibm-mq.version>9.3.3.1</ibm-mq.version>
 		<commons-io.version>2.15.1</commons-io.version>
 		<logstash-logback-encoder.version>7.4</logstash-logback-encoder.version>
-		<jakarta.jws-api.version>1.1.1</jakarta.jws-api.version>
+		<jakarta.jws-api.version>3.0.0</jakarta.jws-api.version>
 
 		<patrodyne-basicjaxb.version>2.1.1</patrodyne-basicjaxb.version>
 
@@ -97,7 +97,7 @@
 				<artifactId>nav-journalbehandling-tjenestespesifikasjon</artifactId>
 				<version>${dok-legacy-tjenestespesifikasjoner.version}</version>
 			</dependency>
-			<!-- Kan fjernes når spring-ws-security sine avhengigheter har fått oppdatert bcprov-jdk15on	-->
+			<!-- Kan fjernes når spring-ws-security sine avhengigheter har fått oppdatert bcprov-jdk15on (fortsatt nødvendig etter overgang til SB3) -->
 			<dependency>
 				<groupId>org.bouncycastle</groupId>
 				<artifactId>bcprov-jdk15on</artifactId>

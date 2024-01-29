@@ -3,40 +3,23 @@ package no.nav.brevserver.service.brevserver;
 import no.nav.brevserver.core.cache.LokalCacheConfig;
 import no.nav.brevserver.core.domain.entities.BrevSystemTilgang;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
-import no.nav.brevserver.core.repository.BrevSystemTilgangRepository;
 import no.nav.brevserver.core.vo.BrevStatusVO;
 import no.nav.brevserver.core.vo.FilType;
 import no.nav.brevserver.core.vo.SysTilgangVO;
-import no.nav.brevserver.service.config.AbstractTest;
-import no.nav.brevserver.service.config.ApplicationTestConfig;
 import no.nav.brevserver.service.BrevstatusService;
 import no.nav.brevserver.service.BrevtilgangService;
+import no.nav.brevserver.service.config.AbstractTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
-import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestEntityManager;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.interceptor.SimpleKey;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
-@AutoConfigureDataJpa
-@AutoConfigureTestDatabase
-@AutoConfigureTestEntityManager
-@EnableAutoConfiguration
-@SpringBootTest(classes = {ApplicationTestConfig.class}, webEnvironment = RANDOM_PORT)
-@ActiveProfiles("itest")
-@DirtiesContext
 public class BrevserverServiceBeanTest extends AbstractTest {
 
 	@Autowired
@@ -45,8 +28,6 @@ public class BrevserverServiceBeanTest extends AbstractTest {
 	private BrevtilgangService brevtilgangService;
 	@Autowired
 	private BrevstatusService brevstatusService;
-	@Autowired
-	private BrevSystemTilgangRepository brevSystemTilgangRepository;
 
 	@Test
 	public void shouldLagreTilgangAndReturnTrue() throws Exception {

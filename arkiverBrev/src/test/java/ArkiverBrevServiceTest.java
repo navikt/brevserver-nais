@@ -1,4 +1,3 @@
-import config.ApplicationTestConfig;
 import jakarta.jms.Queue;
 import jakarta.jms.TextMessage;
 import jakarta.xml.bind.JAXBElement;
@@ -12,15 +11,9 @@ import no.nav.brevserver.service.BrevstatusService;
 import org.apache.activemq.artemis.jms.client.ActiveMQMessage;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
-import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestEntityManager;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.util.concurrent.TimeUnit;
 
@@ -34,7 +27,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static utils.Utils.BISYS_SYSTEM_ID;
 import static utils.Utils.BREVREFERANSE;
 import static utils.Utils.FILTYPE_XML;
@@ -45,14 +37,8 @@ import static utils.Utils.createBisysKvittering;
 import static utils.Utils.createBisysKvitteringfeilNiva;
 import static utils.Utils.createPesysKvittering;
 
-@AutoConfigureDataJpa
-@AutoConfigureTestDatabase
-@AutoConfigureTestEntityManager
-@EnableAutoConfiguration
-@SpringBootTest(classes = {ApplicationTestConfig.class}, webEnvironment = RANDOM_PORT)
-@ActiveProfiles("itest")
 @DirtiesContext
-public class ArkiverBrevServiceTest {
+public class ArkiverBrevServiceTest extends AbstractTest {
 
 	@Autowired
 	private Queue mottakArkiv;

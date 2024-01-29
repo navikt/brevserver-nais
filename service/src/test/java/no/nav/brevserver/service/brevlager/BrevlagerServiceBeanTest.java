@@ -5,33 +5,21 @@ import no.nav.brevserver.core.domain.entities.Brevstatus;
 import no.nav.brevserver.core.domain.entities.id.BrevreferanseSystemCompositeId;
 import no.nav.brevserver.core.exception.BrevFunctionalException;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
-import no.nav.brevserver.core.repository.BrevRepository;
 import no.nav.brevserver.core.vo.BrevStatusVO;
 import no.nav.brevserver.core.vo.BrevVO;
 import no.nav.brevserver.core.vo.FilType;
 import no.nav.brevserver.joark.JoarkService;
-import no.nav.brevserver.service.config.AbstractTest;
 import no.nav.brevserver.service.BrevlagerService;
 import no.nav.brevserver.service.BrevstatusService;
 import no.nav.brevserver.service.BrevtilgangService;
-import no.nav.brevserver.service.config.ApplicationTestConfig;
+import no.nav.brevserver.service.config.AbstractTest;
 import no.nav.brevserver.service.converter.BrevstatusTilVoConverter;
 import no.nav.brevserver.service.converter.VoTilBrevstatusConverter;
-import no.nav.brevserver.service.queue.KvitteringService;
 import no.nav.virksomhet.gjennomforing.arkiv.journal.v2.Journalpost;
 import no.nav.virksomhet.gjennomforing.arkiv.journal.v2.Journalstatus;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
-import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestEntityManager;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ActiveProfiles;
 
 import static no.nav.brevserver.core.vo.FilType.PDF;
 import static no.nav.brevserver.core.vo.FilType.RTF;
@@ -44,20 +32,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
-@DirtiesContext
 public class BrevlagerServiceBeanTest extends AbstractTest {
 	private static final byte[] BREVDATA2 = "Hest er best ingen protest".getBytes();
 
-	private static final String RETURKOE = "ReturKoe";
-	private static final String BREVMAL = "NAV-01-02-03";
-	private static final String STATUS = "FERDIG";
-	private static final String FORMAT = FilType.PDF.getJoarkCode();
-	private static final String SKRIVERTYPE = "Blekk";
-	private static final String SKRIVER = "Canon";
-	private static final String ARKIVER = "Ja";
-	private static final String SKUFF = "0";
 	private static final String PENSJON_SYSTEMID = "PE2";
 	private static final String TOKEN = "12345";
 
