@@ -73,16 +73,10 @@
 			<artifactId>flyway-database-oracle</artifactId>
 		</dependency>
 
-		<!-- micrometer -->
 		<dependency>
 			<groupId>io.micrometer</groupId>
 			<artifactId>micrometer-registry-prometheus</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>io.micrometer</groupId>
-			<artifactId>micrometer-core</artifactId>
-		</dependency>
-		<!-- /micrometer -->
 
 		<dependency>
 			<groupId>org.messaginghub</groupId>
