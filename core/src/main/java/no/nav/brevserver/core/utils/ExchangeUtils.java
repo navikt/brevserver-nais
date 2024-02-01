@@ -6,8 +6,8 @@ import no.nav.brevserver.core.vo.MessageVO;
 import org.apache.camel.Exchange;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.jms.JMSException;
-import javax.jms.Queue;
+import jakarta.jms.JMSException;
+import jakarta.jms.Queue;
 import java.util.Map;
 import java.util.regex.Pattern;
 

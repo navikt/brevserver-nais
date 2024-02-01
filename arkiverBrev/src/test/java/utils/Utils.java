@@ -26,7 +26,7 @@ public class Utils {
 	public static final String BLANK = "";
 	public static final String SYSTEM_PASSORD = "Bisys123";
 	public static final String BESTILLER_ID = "b1111";
-	public static final String RETURKOE = "SvarKo";
+	public static final String RETURKOE = "mottakSvarKo";
 	public static final String BREVMAL = "NAV-01-02-03";
 	public static final String STATUS_KLADD = "KLADD";
 	public static final String STATUS_LAGRET = "LAGRET";

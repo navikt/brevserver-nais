@@ -1,23 +1,21 @@
-package no.nav.brevserver.service.brevlager.beans;
+package no.nav.brevserver.service.brevlager;
 
 import no.nav.brevserver.core.exception.BrevTechnicalException;
 import no.nav.brevserver.core.repository.BrevRepository;
 import no.nav.brevserver.core.repository.BrevstatusRepository;
 import no.nav.brevserver.core.vo.BrevStatusVO;
-import no.nav.brevserver.service.AbstractDatabaseTest;
 import no.nav.brevserver.service.BrevlagerService;
+import no.nav.brevserver.service.config.AbstractTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-@ActiveProfiles("itest")
-public class DatabaseExceptionTest extends AbstractDatabaseTest {
+public class ExceptionTest extends AbstractTest {
 
 	@MockBean
 	private BrevRepository brevRepository;

@@ -15,13 +15,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
-@EnableConfigurationProperties({
-		FagarkivProperties.class,
-		MqGatewayProperties.class,
-		BrevserverProperties.class
-})
-@Import({ServiceConfig.class, CoreConfig.class,
-		JmsItestConfig.class, JournalbehandlingConfiguration.class})
+@Import(CoreConfig.class)
 @EnableAutoConfiguration
 @Profile("itest")
 @EnableTransactionManagement

@@ -7,7 +7,7 @@ import no.nav.brevserver.nais.support.LagreDokumentRequestMapper;
 import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Component;
 
-import javax.activation.DataHandler;
+import jakarta.activation.DataHandler;
 import java.io.IOException;
 
 @Component

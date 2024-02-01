@@ -5,5 +5,5 @@
 // Generated on: 2021.08.17 at 10:47:39 PM CEST 
 //
 
-@javax.xml.bind.annotation.XmlSchema(namespace = "http://dokumentbehandling.brevogarkiv.tjenester.nav.no/")
+@jakarta.xml.bind.annotation.XmlSchema(namespace = "http://dokumentbehandling.brevogarkiv.tjenester.nav.no/")
 package no.nav.tjenester.brevogarkiv.dokumentbehandling;

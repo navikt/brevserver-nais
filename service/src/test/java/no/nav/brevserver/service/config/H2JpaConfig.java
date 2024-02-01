@@ -1,4 +1,4 @@
-package no.nav.brevserver.service;
+package no.nav.brevserver.service.config;
 
 import no.nav.brevserver.core.CoreConfig;
 import no.nav.brevserver.core.alias.BrevserverProperties;
@@ -10,18 +10,14 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
-@EnableConfigurationProperties({
-		FagarkivProperties.class,
-		MqGatewayProperties.class,
-		BrevserverProperties.class
-})
-@Import({ServiceConfig.class, CoreConfig.class, JmsItestConfig.class})
+@Import(CoreConfig.class)
 @EnableAutoConfiguration
-@PropertySource("classpath:application-itest.properties")
+@Profile("itest")
 @EnableTransactionManagement
 @ComponentScan(basePackages = {
 		"no.nav.brevserver"

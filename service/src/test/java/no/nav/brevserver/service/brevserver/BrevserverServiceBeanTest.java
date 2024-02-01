@@ -3,34 +3,24 @@ package no.nav.brevserver.service.brevserver;
 import no.nav.brevserver.core.cache.LokalCacheConfig;
 import no.nav.brevserver.core.domain.entities.BrevSystemTilgang;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
-import no.nav.brevserver.core.repository.BrevSystemTilgangRepository;
 import no.nav.brevserver.core.vo.BrevStatusVO;
 import no.nav.brevserver.core.vo.FilType;
 import no.nav.brevserver.core.vo.SysTilgangVO;
-import no.nav.brevserver.service.AbstractDatabaseTest;
 import no.nav.brevserver.service.BrevstatusService;
 import no.nav.brevserver.service.BrevtilgangService;
+import no.nav.brevserver.service.config.AbstractTest;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.interceptor.SimpleKey;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.test.annotation.DirtiesContext;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 
-/**
- * Unit tests for BrevserverServiceBean
- */
-@ExtendWith(SpringExtension.class)
-@ActiveProfiles("itest")
-@Transactional
-public class BrevserverServiceBeanTest extends AbstractDatabaseTest {
+public class BrevserverServiceBeanTest extends AbstractTest {
 
 	@Autowired
 	private CacheManager cacheManager;
@@ -38,8 +28,6 @@ public class BrevserverServiceBeanTest extends AbstractDatabaseTest {
 	private BrevtilgangService brevtilgangService;
 	@Autowired
 	private BrevstatusService brevstatusService;
-	@Autowired
-	private BrevSystemTilgangRepository brevSystemTilgangRepository;
 
 	@Test
 	public void shouldLagreTilgangAndReturnTrue() throws Exception {

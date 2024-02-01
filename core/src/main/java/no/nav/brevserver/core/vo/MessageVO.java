@@ -3,11 +3,6 @@ package no.nav.brevserver.core.vo;
 import no.nav.brevserver.core.constants.Konstanter;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
 
-import javax.jms.BytesMessage;
-import javax.jms.Message;
-import javax.jms.Queue;
-import javax.jms.TextMessage;
-import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 

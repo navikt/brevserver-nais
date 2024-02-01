@@ -1,20 +1,19 @@
 package no.nav.brevserver.core.domain.entities;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Lob;
-import javax.persistence.Table;
 import java.sql.Timestamp;
 
 @Entity
@@ -26,11 +25,11 @@ import java.sql.Timestamp;
 @Setter
 public class BrevlagerHistorikk {
 
+	private static final String BREVLAGER_HISTORIKK_SEQ = "brevlager_historikk_seq";
+
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "brevlagerhistorikk_seq")
-	@GenericGenerator(name = "brevlagerhistorikk_seq", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator", parameters = {
-			@Parameter(name = "sequence_name", value = "BREVLAGER_HISTORIKK_SEQ"),
-			@Parameter(name = "initial_value", value = "1")})
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = BREVLAGER_HISTORIKK_SEQ)
+	@SequenceGenerator(name = BREVLAGER_HISTORIKK_SEQ, sequenceName = BREVLAGER_HISTORIKK_SEQ, allocationSize = 1)
 	@Column(name = "BREVLAGER_HISTORIK_ID", columnDefinition = "NUMBER(19,0)")
 	private Long id;
 

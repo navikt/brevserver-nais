@@ -1,4 +1,4 @@
-package config;
+package no.nav.brevserver.service.config;
 
 import no.nav.brevserver.core.alias.BrevserverProperties;
 import no.nav.brevserver.core.alias.FagarkivProperties;

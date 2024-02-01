@@ -1,4 +1,6 @@
-import config.ApplicationTestConfig;
+import jakarta.jms.Queue;
+import jakarta.jms.TextMessage;
+import jakarta.xml.bind.JAXBElement;
 import no.nav.brevserver.core.constants.Konstanter;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
 import no.nav.brevserver.core.vo.BrevStatusVO;
@@ -6,20 +8,13 @@ import no.nav.brevserver.core.vo.BrevVO;
 import no.nav.brevserver.core.vo.FilType;
 import no.nav.brevserver.service.BrevlagerService;
 import no.nav.brevserver.service.BrevstatusService;
-import org.apache.activemq.command.ActiveMQMessage;
-import org.apache.activemq.command.ActiveMQTextMessage;
+import org.apache.activemq.artemis.jms.client.ActiveMQMessage;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ActiveProfiles;
 
-import javax.jms.Queue;
-import javax.jms.TextMessage;
-import javax.xml.bind.JAXBElement;
 import java.util.concurrent.TimeUnit;
 
 import static no.nav.brevserver.core.constants.Konstanter.BREVSTATUS_FEIL;
@@ -42,11 +37,8 @@ import static utils.Utils.createBisysKvittering;
 import static utils.Utils.createBisysKvitteringfeilNiva;
 import static utils.Utils.createPesysKvittering;
 
-@EnableAutoConfiguration
-@SpringBootTest(classes = {ApplicationTestConfig.class})
-@ActiveProfiles("itest")
 @DirtiesContext
-public class ArkiverBrevServiceTest {
+public class ArkiverBrevServiceTest extends AbstractTest {
 
 	@Autowired
 	private Queue mottakArkiv;
@@ -55,7 +47,7 @@ public class ArkiverBrevServiceTest {
 	@Autowired
 	private JmsTemplate jmsTemplate;
 	@Autowired
-	private Queue svarKo;
+	private Queue mottakSvarKo;
 	@MockBean
 	private BrevstatusService brevstatusServiceMock;
 	@MockBean
@@ -63,7 +55,7 @@ public class ArkiverBrevServiceTest {
 
 	private final String CORRELATION_ID = "corr-id";
 	private final String CALL_ID = "1234-callid-5678";
-	private static final String SVARKOSTRING = "queue:///SvarKo?targetClient=1";
+	private static final String SVARKOSTRING = "queue:///mottakSvarKo?targetClient=1";
 
 	@Test
 	public void shouldSaveAsKladd() throws Exception{
@@ -186,10 +178,10 @@ public class ArkiverBrevServiceTest {
 
 	private void sendStringMessage(Queue queue, final String message, final String callId) {
 		jmsTemplate.send(queue, session -> {
-			TextMessage msg = new ActiveMQTextMessage();
+			TextMessage msg = session.createTextMessage();
 			msg.setText(message);
 			msg.setJMSCorrelationID(CORRELATION_ID);
-			msg.setJMSReplyTo(svarKo);
+			msg.setJMSReplyTo(mottakSvarKo);
 			if (callId != null) {
 				msg.setStringProperty("callId", callId);
 			}
