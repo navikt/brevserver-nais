@@ -97,10 +97,9 @@ spec:
     cpuThresholdPercentage: 50
   resources:
     limits:
-      cpu: 3000m
-      memory: 3072Mi
+      memory: 4096Mi
     requests:
-      memory: 1920Mi
+      memory: 4096Mi
   webproxy: true
   azure:
     application:
