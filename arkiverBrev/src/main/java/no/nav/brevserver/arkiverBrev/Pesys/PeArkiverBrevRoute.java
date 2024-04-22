@@ -26,7 +26,7 @@ import static org.apache.camel.LoggingLevel.INFO;
 @Component
 public class PeArkiverBrevRoute extends RouteBuilder {
 	public static final String PE_ARKIVER_BREV_ROUTE = "direct:peArkiverBrev";
-	private final String ROUTE_OPTIONS = "?transacted=true&concurrentConsumers=1";
+	private final String ROUTE_OPTIONS = "?transacted=true&concurrentConsumers=1&maxMessagesPerTask=100";
 
 
 	private final Queue mottakArkivPe;
