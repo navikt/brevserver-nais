@@ -1,14 +1,13 @@
 package no.nav.brevserver.arkiverBrev.BiSys;
 
 import com.ibm.msg.client.jakarta.jms.DetailedJMSException;
+import jakarta.jms.Queue;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
 import no.nav.brevserver.core.utils.MDC.MdcRemoverProcessor;
 import no.nav.brevserver.core.utils.MDC.MdcSetterProcessor;
 import org.apache.camel.ValidationException;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.stereotype.Component;
-
-import jakarta.jms.Queue;
 
 import static no.nav.brevserver.core.utils.ExchangeUtils.JMS;
 import static no.nav.brevserver.core.utils.ExchangeUtils.JMSReplyTo;
@@ -81,17 +80,15 @@ public class ArkiverBrevRoute extends RouteBuilder {
 				.to(InOnly, "jms:" + deadletter.getQueueName());
 
 		from("jms:" + mottakArkiv.getQueueName() + ROUTE_OPTIONS)
-				.log(INFO, log, ARKIVER_BREV_ROUTE + " starter behandlingen av melding fra: " + mottakArkiv.getQueueName() )
 				.to(ARKIVER_BREV_ROUTE);
 		from("jms:" + mottakOnline.getQueueName() + ROUTE_OPTIONS)
-				.log(INFO, log, ARKIVER_BREV_ROUTE + " starter behandlingen av melding fra: " + mottakOnline.getQueueName() )
 				.to(ARKIVER_BREV_ROUTE);
 		from("jms:" + mottakOnlineLinux.getQueueName() + ROUTE_OPTIONS)
-				.log(INFO, log, ARKIVER_BREV_ROUTE + " starter behandlingen av melding fra: " + mottakOnlineLinux.getQueueName() )
 				.to(ARKIVER_BREV_ROUTE);
 
 		//Hent svar fra exstream
 		from(ARKIVER_BREV_ROUTE)
+				.log(INFO, log, ARKIVER_BREV_ROUTE + " starter behandlingen av melding fra: " + mottakArkiv.getQueueName() )
 				.routeId(ARKIVER_BREV_ROUTE)
 				.setExchangePattern(InOnly)
 				.process(new MdcSetterProcessor())

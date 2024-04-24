@@ -32,7 +32,7 @@ public class Utils {
 	public static final String STATUS_LAGRET = "LAGRET";
 	public static final String FILTYPE_XML = "XML";
 	public static final String FILTYPE_PDF = "PDF";
-	public static final String FORMAT = FilType.PDF.getJoarkCode();
+	public static final String FORMAT = FilType.PDF.getContentType();
 	public static final String SKRIVERTYPE = "Blekk";
 	public static final String SKRIVER = "Canon";
 	public static final String ARKIVER = "Ja";

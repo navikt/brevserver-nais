@@ -1,7 +1,7 @@
 import jakarta.jms.Queue;
 import no.nav.brevserver.core.vo.FilType;
 import org.apache.activemq.artemis.jms.client.ActiveMQMessage;
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -29,12 +29,11 @@ public class ArkiverBrevServiceTest extends AbstractTest {
 	@Autowired
 	private Queue deadletter;
 
-	private final String CORRELATION_ID = "corr-id";
 	private final String CALL_ID = "1234-callid-5678";
 	private static final String SVARKOSTRING = "queue:///mottakSvarKo?targetClient=1";
 
-	@AfterEach
-	public void cleanUp(){
+	@BeforeEach
+	public void cleanUp() {
 		super.cleanupDb();
 	}
 
@@ -73,7 +72,8 @@ public class ArkiverBrevServiceTest extends AbstractTest {
 
 	@Test
 	public void shouldFailBrevFinnesAllerede() {
-		String message = createBisysKvittering(FilType.PDF.getJoarkCode());
+		String message = createBisysKvittering(FilType.PDF.getContentType());
+		sendStringMessage(mottakArkiv, message, CALL_ID);
 		sendStringMessage(mottakArkiv, message, CALL_ID);
 
 		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {

@@ -1,24 +1,17 @@
 import jakarta.jms.Message;
 import jakarta.jms.Queue;
-import jakarta.jms.TextMessage;
-import jakarta.xml.bind.JAXBElement;
-import lombok.SneakyThrows;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
 import no.nav.brevserver.core.vo.BrevStatusVO;
-import no.nav.brevserver.service.BrevstatusService;
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jms.core.JmsTemplate;
 import org.springframework.test.context.transaction.TestTransaction;
 import utils.Utils;
 
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static utils.Utils.BISYS_SYSTEM_ID;
 import static utils.Utils.BREVREFERANSE2;
 import static utils.Utils.CALLID;
@@ -35,17 +28,18 @@ public class ArkiverBrevRouteIT extends AbstractTest {
 	@Autowired
 	protected Queue deadletter;
 
-	private static final String CORRELATION_ID="1890432+12342341";
+	private static final String CORRELATION_ID = "1890432+12342341";
 	//Kan ikke bruke selve køen da vi legger på ?targetclient=1 på kønavnet i servicen.
 	private static final String SVARKOSTRING = "queue:///mottakSvarKo?targetClient=1";
 
-	@AfterEach
-	public void cleanUp(){
+	@BeforeEach
+	public void cleanUp() {
 		super.cleanupDb();
 	}
+
 	@Test
 	//happypath
-	public void shouldHandleMessage() throws Exception{
+	public void shouldHandleMessage() throws Exception {
 		lagreDefaultBrevStatusVo();
 		TestTransaction.flagForCommit();
 		TestTransaction.end();
@@ -67,7 +61,7 @@ public class ArkiverBrevRouteIT extends AbstractTest {
 		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
 			String recieved2 = receive(SVARKOSTRING);
 			assertThat(recieved2.equals(classpathToString("svarXml/happySvarko.xml")));
-			BrevStatusVO endretBrevstatusVo  = brevstatusService.hentBrevStatus(BREVREFERANSE2, BISYS_SYSTEM_ID);
+			BrevStatusVO endretBrevstatusVo = brevstatusService.hentBrevStatus(BREVREFERANSE2, BISYS_SYSTEM_ID);
 			assertThat(endretBrevstatusVo.getStatus().equals(STATUS_FERDIG));
 		});
 	}
