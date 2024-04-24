@@ -63,9 +63,6 @@ public class AbstractTest {
 	protected Queue deadletterPe;
 	@Autowired
 	protected Queue svarKo;
-	
-	//protected Set<Queue> queueSet = Set.of(onlinebrev, dialogueOnline, deadletter, bestillBrevBq, svarKo);
-	//protected Set<CrudRepository> databases = Set.of(brevtilgangRepository, brevSystemTilgangRepository, brevstatusRepository);
 
 	public void cleanupDb(){
 		brevtilgangRepository.deleteAll();

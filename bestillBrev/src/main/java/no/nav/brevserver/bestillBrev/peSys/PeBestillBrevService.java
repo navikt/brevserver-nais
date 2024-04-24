@@ -72,7 +72,7 @@ public class PeBestillBrevService {
 
 			// Bestill fra Dialogue
 		} else {
-			BrevStatusVO tmp = brevstatusService.hentBrevStatus(brevStatusVo.getSystemID(), brevStatusVo.getBrevreferanse());
+			BrevStatusVO tmp = brevstatusService.hentBrevStatus(brevStatusVo.getBrevreferanse(), brevStatusVo.getSystemID());
 			if (tmp != null) {
 				log.warn("Brevet eksisterer fra før " + brevStatusVo.getBrevreferanse());
 				setBodyAndReturnQueueWithMode(
