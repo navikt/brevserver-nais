@@ -6,12 +6,14 @@ import lombok.SneakyThrows;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
 import no.nav.brevserver.core.vo.BrevStatusVO;
 import no.nav.brevserver.service.BrevstatusService;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.test.context.transaction.TestTransaction;
 import utils.Utils;
 
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,21 +29,20 @@ import static utils.Utils.createBrevstatus;
 
 
 public class ArkiverBrevRouteIT extends AbstractTest {
+
 	@Autowired
-	private Queue mottakArkiv;
+	protected Queue mottakArkiv;
 	@Autowired
-	private Queue deadletter;
-	@Autowired
-	private JmsTemplate jmsTemplate;
-	@Autowired
-	private Queue mottakSvarKo;
-	@Autowired
-	private BrevstatusService brevstatusService;
+	protected Queue deadletter;
 
 	private static final String CORRELATION_ID="1890432+12342341";
 	//Kan ikke bruke selve køen da vi legger på ?targetclient=1 på kønavnet i servicen.
 	private static final String SVARKOSTRING = "queue:///mottakSvarKo?targetClient=1";
 
+	@AfterEach
+	public void cleanUp(){
+		super.cleanupDb();
+	}
 	@Test
 	//happypath
 	public void shouldHandleMessage() throws Exception{
@@ -50,8 +51,6 @@ public class ArkiverBrevRouteIT extends AbstractTest {
 		TestTransaction.end();
 		TestTransaction.start();
 
-		assertThat(brevstatusService.hentBrevStatus(Utils.BREVREFERANSE, BISYS_SYSTEM_ID).getStatus() != STATUS_FERDIG);
-
 		String header = Utils.createBisysKvittering();
 		sendStringMessage(mottakArkiv, header + "Dette er en pdf".getBytes(), CALLID);
 		await().atMost(5, TimeUnit.SECONDS).untilAsserted(() -> {
@@ -59,24 +58,18 @@ public class ArkiverBrevRouteIT extends AbstractTest {
 			assertThat(recieved.getJMSCorrelationID().equals(CORRELATION_ID));
 			assertThat(brevstatusService.hentBrevStatus(Utils.BREVREFERANSE, BISYS_SYSTEM_ID).getStatus().equals(STATUS_FERDIG));
 		});
-		TestTransaction.flagForCommit();
-		TestTransaction.end();
-
 	}
 
 	@Test
-	public void shouldCreateNewBrevStatus() throws BrevTechnicalException {
+	public void shouldCreateNewBrevStatus() {
 		String header = createBisysKvittering2();
 		sendStringMessage(mottakArkiv, header + "Dette er en pdf".getBytes(), CALLID);
 		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
 			String recieved2 = receive(SVARKOSTRING);
 			assertThat(recieved2.equals(classpathToString("svarXml/happySvarko.xml")));
+			BrevStatusVO endretBrevstatusVo  = brevstatusService.hentBrevStatus(BREVREFERANSE2, BISYS_SYSTEM_ID);
+			assertThat(endretBrevstatusVo.getStatus().equals(STATUS_FERDIG));
 		});
-		TestTransaction.flagForCommit();
-		TestTransaction.end();
-
-		BrevStatusVO endretBrevstatusVo  = brevstatusService.hentBrevStatus(BREVREFERANSE2, BISYS_SYSTEM_ID);
-		assertThat(endretBrevstatusVo.getStatus().equals(STATUS_FERDIG));
 	}
 
 	@Test
@@ -86,45 +79,11 @@ public class ArkiverBrevRouteIT extends AbstractTest {
 		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
 			String recieved = receive(deadletter);
 			assertThat(recieved.equals(classpathToString("svarXml/deadletterQ.xml")));
-			assertNotNull(recieved);
-			System.out.println(recieved);
 		});
 	}
 
-
-	private void lagreDefaultBrevStatusVo() throws BrevTechnicalException {
+	protected void lagreDefaultBrevStatusVo() throws BrevTechnicalException {
 		BrevStatusVO brevstatus = createBrevstatus(BISYS_SYSTEM_ID, Utils.BREVREFERANSE);
 		brevstatusService.lagreBrevStatus(brevstatus);
-	}
-
-
-	private <T> T receive(String queue) {
-		Object response = jmsTemplate.receiveAndConvert(queue);
-		if (response instanceof JAXBElement) {
-			response = ((JAXBElement) response).getValue();
-		}
-		return (T) response;
-	}
-
-	private <T> T receive(Queue queue) {
-		Object response = jmsTemplate.receiveAndConvert(queue);
-		if (response instanceof JAXBElement) {
-			response = ((JAXBElement) response).getValue();
-		}
-		return (T) response;
-	}
-
-	@SneakyThrows
-	private void sendStringMessage(Queue queue, final String message, final String callId) {
-		jmsTemplate.send(queue, session -> {
-			TextMessage msg = session.createTextMessage();
-			msg.setText(message);
-			msg.setJMSCorrelationID("Dette-er-en-correlation-ID");
-			msg.setJMSReplyTo(mottakSvarKo);
-			if (callId != null) {
-				msg.setStringProperty("callId", callId);
-			}
-			return msg;
-		});
 	}
 }
