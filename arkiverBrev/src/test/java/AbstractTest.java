@@ -7,7 +7,6 @@ import no.nav.brevserver.core.repository.BrevRepository;
 import no.nav.brevserver.core.repository.BrevSystemTilgangRepository;
 import no.nav.brevserver.core.repository.BrevstatusRepository;
 import no.nav.brevserver.core.repository.BrevtilgangRepository;
-import no.nav.brevserver.service.BrevstatusService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -42,8 +41,7 @@ public class AbstractTest {
 	protected JmsTemplate jmsTemplate;
 	@Autowired
 	protected Queue mottakSvarKo;
-	@Autowired
-	protected BrevstatusService brevstatusService;
+
 
 
 	protected final String CORRELATION_ID = "corr-id";
