@@ -77,7 +77,7 @@ public class BestillBrevService {
 			exchange.setProperty(SENDTOMODE, INGEN_TILBAKEMELDING);
 		} else {
 			// Bestill fra Dialogue
-			BrevStatusVO tmp = brevstatusService.hentBrevStatus(brevStatusVo.getSystemID(), brevStatusVo.getBrevreferanse());
+			BrevStatusVO tmp = brevstatusService.hentBrevStatus(brevStatusVo.getBrevreferanse(), brevStatusVo.getSystemID());
 			if (tmp != null) {
 				log.warn("Brevet eksisterer fra før " + brevStatusVo.getBrevreferanse());
 				setBodyAndReturnQueueWithMode(

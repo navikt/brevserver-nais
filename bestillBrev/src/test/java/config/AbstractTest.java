@@ -1,18 +1,25 @@
 package config;
 
+import jakarta.jms.Queue;
+import jakarta.jms.TextMessage;
+import jakarta.xml.bind.JAXBElement;
 import no.nav.brevserver.core.repository.BrevSystemTilgangRepository;
 import no.nav.brevserver.core.repository.BrevstatusRepository;
 import no.nav.brevserver.core.repository.BrevtilgangRepository;
-import org.junit.jupiter.api.extension.ExtendWith;
+import no.nav.brevserver.service.BrevstatusService;
+import no.nav.brevserver.service.BrevtilgangService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestEntityManager;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Set;
 
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
@@ -25,13 +32,71 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 		webEnvironment = RANDOM_PORT)
 @ActiveProfiles("itest")
 public class AbstractTest {
+	protected final String CORRELATION_ID = "abcd-1234-def-5678";
+	protected final String CALL_ID = "12-callID-34";
+	protected final String SVARKOSTRING = "queue:///SvarKo?targetClient=1";
+
+	@Autowired
+	protected JmsTemplate jmsTemplate;
 	@Autowired
 	protected BrevtilgangRepository brevtilgangRepository;
-
 	@Autowired
 	protected BrevSystemTilgangRepository brevSystemTilgangRepository;
-
 	@Autowired
 	protected BrevstatusRepository brevstatusRepository;
+	@Autowired
+	protected BrevstatusService brevstatusService;
+	@Autowired
+	protected BrevtilgangService brevtilgangService;
+
+	@Autowired
+	protected Queue onlinebrev;
+	@Autowired
+	protected Queue dialogueOnline;
+	@Autowired
+	protected Queue deadletter;
+	@Autowired
+	protected Queue onlinebrevPe;
+	@Autowired
+	protected Queue dialogueOnlinePe;
+	@Autowired
+	protected Queue deadletterPe;
+	@Autowired
+	protected Queue svarKo;
+
+	public void cleanupDb(){
+		brevtilgangRepository.deleteAll();
+		brevSystemTilgangRepository.deleteAll();
+		brevstatusRepository.deleteAll();
+	}
+	
+	protected  <T> T receive(Queue queue) {
+		Object response = jmsTemplate.receiveAndConvert(queue);
+		if (response instanceof JAXBElement) {
+			response = ((JAXBElement) response).getValue();
+		}
+		return (T) response;
+	}
+
+	protected <T> T receive(String queue) {
+		Object response = jmsTemplate.receiveAndConvert(queue);
+		if (response instanceof JAXBElement) {
+			response = ((JAXBElement) response).getValue();
+		}
+		return (T) response;
+	}
+
+	protected void sendStringMessage(Queue queue, final String message, final String callId) {
+		jmsTemplate.send(queue, session -> {
+			TextMessage msg = session.createTextMessage();
+			msg.setText(message);
+			msg.setJMSCorrelationID(CORRELATION_ID);
+			msg.setJMSReplyTo(svarKo);
+			if (callId != null) {
+				msg.setStringProperty("callId", callId);
+			}
+			return msg;
+		});
+	}
 
 }

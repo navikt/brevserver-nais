@@ -46,7 +46,6 @@ public class ExchangeUtils {
 			log.debug("JMS-headers: " + getJMSHeaders(exchange));
 		}
 
-
 		try {
 			vo.setReplyQueueName(getReplyTo(exchange));
 		} catch (JMSException e) {

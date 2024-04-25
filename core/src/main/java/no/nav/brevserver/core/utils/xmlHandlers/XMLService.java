@@ -69,9 +69,7 @@ public class XMLService {
 			final SAXParser saxParser = SAX_PARSER_FACTORY.newSAXParser();
 			InputSource source = new InputSource(xmlInput);
 			saxParser.parse(source, xmlHandler);
-		} catch (SAXException | ParserConfigurationException e) {
-			throw new BrevTechnicalException(BrevTechnicalException.FEIL_I_XML, e);
-		} catch (IOException e) {
+		} catch (SAXException | ParserConfigurationException | IOException e) {
 			throw new BrevTechnicalException(BrevTechnicalException.FEIL_I_XML, e);
 		}
 
