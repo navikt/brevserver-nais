@@ -52,6 +52,14 @@ spec:
       value: {{ DEADLETTER_QUEUENAME }}
     - name: DEADLETTER_PE_QUEUENAME
       value: {{ DEADLETTER_PE_QUEUENAME }}
+    - name: MOTTAK_ARKIV_BQ
+      value: {{ MOTTAK_ARKIV_BQ }}
+    - name: MOTTAK_ARKIV_PE_BQ
+      value: {{ MOTTAK_ARKIV_PE_BQ }}
+    - name: BESTILL_BREV_BQ
+      value: {{ BESTILL_BREV_BQ }}
+    - name: BESTILL_BREV_PE_BQ
+      value: {{ BESTILL_BREV_PE_BQ }}
     - name: FAGARKIV_ENDPOINTS_JOURNAL
       value: {{ FAGARKIV_ENDPOINTS_JOURNAL }}
     - name: FAGARKIV_ENDPOINTS_JOURNALBEHANDLING

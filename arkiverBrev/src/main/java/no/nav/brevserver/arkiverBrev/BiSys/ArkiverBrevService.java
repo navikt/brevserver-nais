@@ -5,7 +5,6 @@ import no.nav.brevserver.core.constants.Konstanter;
 import no.nav.brevserver.core.constants.SystemType;
 import no.nav.brevserver.core.exception.BrevException;
 import no.nav.brevserver.core.exception.BrevFunctionalException;
-import no.nav.brevserver.core.exception.BrevTechnicalException;
 import no.nav.brevserver.core.utils.ExchangeUtils;
 import no.nav.brevserver.core.utils.xmlHandlers.DialogueXMLParser;
 import no.nav.brevserver.core.utils.xmlHandlers.XMLService;
@@ -78,7 +77,7 @@ public class ArkiverBrevService {
 
 		// Hvis feilnivå er 0x så endre til x
 		if (kvittering.getFeilniva() != null && kvittering.getFeilniva().length() > 1
-			&& kvittering.getFeilniva().charAt(0) == '0') {
+				&& kvittering.getFeilniva().charAt(0) == '0') {
 			kvittering.setFeilniva(kvittering.getFeilniva().substring(1));
 		}
 
@@ -89,7 +88,7 @@ public class ArkiverBrevService {
 
 			// Ved feilmelding fra dialogue så gi feilmelding
 		} else if (kvittering.getFeilniva() == null ||
-				   kvittering.getFeilniva().equals(Konstanter.BREVPAKKE_FEILNIVA_FEIL)) {
+				kvittering.getFeilniva().equals(Konstanter.BREVPAKKE_FEILNIVA_FEIL)) {
 			brevStatusVo.setStatus(Konstanter.BREVSTATUS_FEIL);
 
 			if (brevStatusVo.getBrevreferanse() != null && brevStatusVo.getSystemID() != null) {
@@ -116,20 +115,20 @@ public class ArkiverBrevService {
 	}
 
 
-	private KvitteringVO generateKvittering(MessageVO messageVo) throws BrevTechnicalException {
+	private KvitteringVO generateKvittering(MessageVO messageVo) throws BrevFunctionalException {
 		KvitteringVO kvitteringVo;
 
 		try {
 			kvitteringVo = DialogueXMLParser.lagKvitteringVOFraDialogueMelding(messageVo.getByteBody());
 		} catch (Exception e) {
-			throw new BrevTechnicalException("Ugyldig brev-xml: \n" + e.getMessage());
+			throw new BrevFunctionalException("Ugyldig brev-xml: \n" + e.getMessage());
 		}
 
 		if (kvitteringVo.getSystemID().startsWith(SystemType.PE.toString())) {
 			String errorMessage = "Brev med feil systemID mottatt: '" + kvitteringVo.getSystemID()
-								  + "', forventet ikke pensjonsbrev";
+					+ "', forventet ikke pensjonsbrev";
 			log.error(errorMessage);
-			throw new BrevTechnicalException(errorMessage);
+			throw new BrevFunctionalException(errorMessage);
 		}
 
 		return kvitteringVo;

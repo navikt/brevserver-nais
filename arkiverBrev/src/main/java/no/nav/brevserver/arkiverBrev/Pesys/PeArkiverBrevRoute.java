@@ -2,6 +2,7 @@ package no.nav.brevserver.arkiverBrev.Pesys;
 
 import com.ibm.msg.client.jakarta.jms.DetailedInvalidDestinationException;
 import com.ibm.msg.client.jakarta.jms.DetailedJMSException;
+import no.nav.brevserver.core.exception.BrevFunctionalException;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
 import no.nav.brevserver.core.utils.MDC.MdcRemoverProcessor;
 import no.nav.brevserver.core.utils.MDC.MdcSetterProcessor;
@@ -22,6 +23,7 @@ import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.GI_TILBAKEME
 import static no.nav.brevserver.core.utils.ExchangeUtils.setDefaultReturnQueue;
 import static org.apache.camel.LoggingLevel.ERROR;
 import static org.apache.camel.LoggingLevel.INFO;
+import static org.apache.camel.LoggingLevel.WARN;
 
 @Component
 public class PeArkiverBrevRoute extends RouteBuilder {
@@ -35,6 +37,7 @@ public class PeArkiverBrevRoute extends RouteBuilder {
 	private final Queue mottakOnlinePeLinux;
 	private final Queue deadletterPe;
 	private final Queue brevReplyPe;
+	private final Queue mottakArkivPeBq;
 	private final PeArkiverBrevService peArkiverBrevService;
 
 	public PeArkiverBrevRoute(Queue mottakArkivPe,
@@ -43,13 +46,14 @@ public class PeArkiverBrevRoute extends RouteBuilder {
 							  Queue mottakOnlinePeLinux,
 							  Queue deadletterPe,
 							  Queue brevReplyPe,
-							  PeArkiverBrevService peArkiverBrevService) {
+							  Queue mottakArkivPeBq, PeArkiverBrevService peArkiverBrevService) {
 		this.mottakArkivPe = mottakArkivPe;
 		this.mottakOnlinePe = mottakOnlinePe;
 		this.mottakArkivPeLinux = mottakArkivPeLinux;
 		this.mottakOnlinePeLinux = mottakOnlinePeLinux;
 		this.deadletterPe = deadletterPe;
 		this.brevReplyPe = brevReplyPe;
+		this.mottakArkivPeBq = mottakArkivPeBq;
 		this.peArkiverBrevService = peArkiverBrevService;
 	}
 
@@ -64,36 +68,19 @@ public class PeArkiverBrevRoute extends RouteBuilder {
 				.logStackTrace(true)
 				.loggingLevel(ERROR));
 
-		onException(DetailedInvalidDestinationException.class)
+		onException(BrevTechnicalException.class, DetailedInvalidDestinationException.class, DetailedJMSException.class)
 				.handled(true)
 				.useOriginalMessage()
 				.logExhaustedMessageBody(false)
 				.log(LoggingLevel.WARN, log, "${exception}; ")
-				.to(JMS + deadletterPe.getQueueName());
+				.to(JMS + mottakArkivPeBq.getQueueName());
 
 
-		onException(ValidationException.class)
+		onException(ValidationException.class, BrevFunctionalException.class)
 				.handled(true)
 				.useOriginalMessage()
 				.logExhaustedMessageBody(false)
-				.log(LoggingLevel.WARN, log, "${exception}; ")
-				.to(JMS + deadletterPe.getQueueName());
-
-		onException(BrevTechnicalException.class)
-				.handled(true)
-				.useOriginalMessage()
-				.logExhaustedMessageBody(false)
-				.log(ERROR, log, "${exception}; ")
-				.to(JMS + deadletterPe.getQueueName());
-
-
-		onException(DetailedJMSException.class)
-				.log(LoggingLevel.WARN, "DetailedJMSException oppstått i PeArkiverBrevRoute ${exception}")
-				.useOriginalMessage()
-				.logExhaustedMessageBody(true)
-				.logExhaustedMessageHistory(true)
-				.logStackTrace(true)
-				.handled(true)
+				.log(WARN, log, "${exception}; ")
 				.to(JMS + deadletterPe.getQueueName());
 
 		from("jms:" + mottakArkivPe.getQueueName() + ROUTE_OPTIONS)

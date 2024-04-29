@@ -79,6 +79,18 @@ public class JmsItestConfig {
 		return new ActiveMQQueue("mottakDLQ");
 	}
 
+	@Bean
+	public Queue mottakArkivBq(){return new ActiveMQQueue("mottakArkivBq");}
+
+	@Bean
+	public Queue mottakArkivPeBq(){return new ActiveMQQueue("mottakArkivPeBq");}
+
+	@Bean
+	public Queue bestillBrevBq(){return new ActiveMQQueue("bestillBrevBq");}
+
+	@Bean
+	public Queue bestillBrevPeBq(){return new ActiveMQQueue("bestillBrevPeBq");}
+
 	@Bean(initMethod = "start", destroyMethod = "stop")
 	public EmbeddedActiveMQ broker() {
 		EmbeddedActiveMQ service = new EmbeddedActiveMQ();

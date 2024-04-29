@@ -49,7 +49,7 @@ public class PeArkiverBrevService {
 		}
 
 		// Sjekk om brevet finnes, hent status
-		BrevStatusVO brevStatusVo = brevstatusService.hentBrevStatus(kvittering.getSystemID(), kvittering.getBrevreferanse());
+		BrevStatusVO brevStatusVo = brevstatusService.hentBrevStatus(kvittering.getBrevreferanse(), kvittering.getSystemID());
 
 		// Hvis ingen status så opprett en basert på det man vet
 		if (brevStatusVo == null) {
@@ -113,20 +113,20 @@ public class PeArkiverBrevService {
 	}
 
 
-	private KvitteringVO generateKvittering(MessageVO messageVo) throws BrevTechnicalException {
+	private KvitteringVO generateKvittering(MessageVO messageVo) throws BrevFunctionalException {
 		KvitteringVO kvitteringVo;
 
 		try {
 			kvitteringVo = DialogueXMLParser.lagKvitteringVOFraDialogueMelding(messageVo.getByteBody());
 		} catch (Exception e) {
-			throw new BrevTechnicalException("Ugyldig brev-xml: \n" + e.getMessage());
+			throw new BrevFunctionalException("Ugyldig brev-xml: \n" + e.getMessage());
 		}
 
 		if (!kvitteringVo.getSystemID().startsWith(SystemType.PE.toString())) {
 			String errorMessage = "Brev med feil systemID mottatt: '" + kvitteringVo.getSystemID()
 					+ "', forventet bidragsbrev!";
 			log.error(errorMessage);
-			throw new BrevTechnicalException(errorMessage);
+			throw new BrevFunctionalException(errorMessage);
 		}
 
 		return kvitteringVo;

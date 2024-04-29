@@ -1,6 +1,7 @@
 package no.nav.brevserver.bestillBrev.peSys;
 
 import com.ibm.msg.client.jakarta.jms.DetailedJMSException;
+import no.nav.brevserver.core.exception.BrevFunctionalException;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
 import no.nav.brevserver.core.utils.MDC.MdcRemoverProcessor;
 import no.nav.brevserver.core.utils.MDC.MdcSetterProcessor;
@@ -28,23 +29,24 @@ import static org.apache.camel.LoggingLevel.INFO;
 public class PeBestillBrevRoute extends RouteBuilder {
 	public static final String PE_BESTILLBREV_ROUTE = "peBestill_brev";
 	private final String ROUTE_OPTIONS = "?transacted=true&concurrentConsumers=1";
-	public static final String BESTILL_BREV_ROUTE_PE = "direct:bestillBrevPe";
-
 	private final Queue onlinebrevPe;
 	private final Queue dialogueOnlinePe;
 	private final Queue deadletterPe;
 	private final Queue brevReplyPe;
+	private final Queue bestillBrevPeBq;
 	private final PeBestillBrevService peBestillBrevService;
 
 	public PeBestillBrevRoute(Queue onlinebrevPe,
 							  Queue deadletterPe,
 							  Queue dialogueOnlinePe,
 							  Queue brevReplyPe,
+							  Queue bestillBrevPeBq,
 							  PeBestillBrevService peBestillBrevService) {
 		this.onlinebrevPe = onlinebrevPe;
 		this.deadletterPe = deadletterPe;
 		this.dialogueOnlinePe = dialogueOnlinePe;
 		this.brevReplyPe = brevReplyPe;
+		this.bestillBrevPeBq = bestillBrevPeBq;
 		this.peBestillBrevService = peBestillBrevService;
 	}
 
@@ -59,37 +61,24 @@ public class PeBestillBrevRoute extends RouteBuilder {
 				.logStackTrace(true)
 				.loggingLevel(ERROR));
 
-		onException(ValidationException.class)
+		onException(ValidationException.class, BrevFunctionalException.class)
 				.handled(true)
 				.useOriginalMessage()
 				.logExhaustedMessageBody(false)
-				.log(LoggingLevel.WARN, log, "${exception}; ")
+				.log(LoggingLevel.WARN, log, "Funksjonell feil oppstått i PeBestillBrevRoute: ${exception}; ")
 				.to("jms:" + deadletterPe.getQueueName());
 
-
-		onException(BrevTechnicalException.class)
-				.handled(true)
-				.useOriginalMessage()
-				.logExhaustedMessageBody(false)
-				.log(ERROR, log, "${exception}; ")
-				.to("jms:" + deadletterPe.getQueueName());
-
-
-		onException(DetailedJMSException.class)
-				.log(LoggingLevel.WARN, "DetailedJMSException oppstått i PeBestillBrevRoute")
+		onException(DetailedJMSException.class, BrevTechnicalException.class)
 				.useOriginalMessage()
 				.logExhaustedMessageBody(false)
 				.logExhaustedMessageHistory(false)
 				.logStackTrace(true)
 				.handled(true)
-				.to("jms:" + deadletterPe.getQueueName());
-
-
-		from("jms:" + onlinebrevPe.getQueueName() + ROUTE_OPTIONS)
-				.to(BESTILL_BREV_ROUTE_PE);
+				.log(LoggingLevel.WARN, log, "Teknisk feil oppstått i PeBestillBrevRoute: ${exception}; ")
+				.to("jms:" + bestillBrevPeBq.getQueueName());
 
 		//Brevbestilling fra Pesys
-		from(BESTILL_BREV_ROUTE_PE)
+		from("jms:" + onlinebrevPe.getQueueName() + ROUTE_OPTIONS)
 				.routeId(PE_BESTILLBREV_ROUTE)
 				.setExchangePattern(ExchangePattern.InOnly)
 				.process(new MdcSetterProcessor())

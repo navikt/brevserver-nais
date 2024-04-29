@@ -2,6 +2,7 @@ package no.nav.brevserver.arkiverBrev.BiSys;
 
 import com.ibm.msg.client.jakarta.jms.DetailedJMSException;
 import jakarta.jms.Queue;
+import no.nav.brevserver.core.exception.BrevFunctionalException;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
 import no.nav.brevserver.core.utils.MDC.MdcRemoverProcessor;
 import no.nav.brevserver.core.utils.MDC.MdcSetterProcessor;
@@ -32,16 +33,19 @@ public class ArkiverBrevRoute extends RouteBuilder {
 	private final Queue mottakOnline;
 	private final Queue mottakOnlineLinux;
 	private final Queue deadletter;
+	private final Queue mottakArkivBq;
 	private final ArkiverBrevService arkiverBrevService;
 
 	public ArkiverBrevRoute(Queue mottakArkiv,
 							Queue mottakOnline,
-							Queue mottakOnlineLinux, Queue deadletter,
-							ArkiverBrevService arkiverBrevService) {
+							Queue mottakOnlineLinux,
+							Queue deadletter,
+							Queue mottakArkivBq, ArkiverBrevService arkiverBrevService) {
 		this.mottakArkiv = mottakArkiv;
 		this.mottakOnline = mottakOnline;
 		this.mottakOnlineLinux = mottakOnlineLinux;
 		this.deadletter = deadletter;
+		this.mottakArkivBq = mottakArkivBq;
 		this.arkiverBrevService = arkiverBrevService;
 	}
 
@@ -56,28 +60,21 @@ public class ArkiverBrevRoute extends RouteBuilder {
 				.logStackTrace(true)
 				.loggingLevel(ERROR));
 
-		onException(ValidationException.class)
+		onException(BrevFunctionalException.class, ValidationException.class)
 				.handled(true)
 				.useOriginalMessage()
 				.logExhaustedMessageBody(false)
 				.log(WARN, log, "${exception}; ")
 				.to(InOnly, "jms:" + deadletter.getQueueName());
 
-		onException(BrevTechnicalException.class)
-				.handled(true)
-				.useOriginalMessage()
-				.logExhaustedMessageBody(false)
-				.log(WARN, log, "${exception}; ")
-				.to(InOnly, "jms:" + deadletter.getQueueName());
-
-		onException(DetailedJMSException.class)
-				.log(WARN, "DetailedJMSException oppstått i ArkiverBrevRoute. ${exception};" )
+		onException(BrevTechnicalException.class, DetailedJMSException.class)
 				.useOriginalMessage()
 				.logExhaustedMessageBody(true)
 				.logExhaustedMessageHistory(true)
 				.logStackTrace(true)
 				.handled(true)
-				.to(InOnly, "jms:" + deadletter.getQueueName());
+				.log(WARN, log, "${exception}; ")
+				.to(InOnly, "jms:" + mottakArkivBq.getQueueName());
 
 		from("jms:" + mottakArkiv.getQueueName() + ROUTE_OPTIONS)
 				.to(ARKIVER_BREV_ROUTE);
