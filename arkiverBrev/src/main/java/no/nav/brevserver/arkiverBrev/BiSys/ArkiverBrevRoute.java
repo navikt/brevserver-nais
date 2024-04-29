@@ -40,7 +40,8 @@ public class ArkiverBrevRoute extends RouteBuilder {
 							Queue mottakOnline,
 							Queue mottakOnlineLinux,
 							Queue deadletter,
-							Queue mottakArkivBq, ArkiverBrevService arkiverBrevService) {
+							Queue mottakArkivBq,
+							ArkiverBrevService arkiverBrevService) {
 		this.mottakArkiv = mottakArkiv;
 		this.mottakOnline = mottakOnline;
 		this.mottakOnlineLinux = mottakOnlineLinux;
