@@ -161,17 +161,17 @@ public class JmsConfig {
 	}
 
 	@Bean
-	public Queue mottakArkivBq(@Value("${mottakArkivBq.queuename}") String queuename) throws JMSException {
+	public Queue mottakArkivBq(@Value("${mottak_arkiv_bq.queuename}") String queuename) throws JMSException {
 		return new MQQueue(queuename);
 	}
 
 	@Bean
-	public Queue mottakArkivPeBq(@Value("${mottakArkivPeBq.queuename}") String queuename) throws JMSException {
+	public Queue mottakArkivPeBq(@Value("${mottak_arkiv_pe_bq.queuename}") String queuename) throws JMSException {
 		return new MQQueue(queuename);
 	}
 
 	@Bean
-	public Queue BestillBrevBq(@Value("${bestillBrevBq.queuename}") String queuename) throws JMSException {
+	public Queue BestillBrevBq(@Value("${bestill_brev_bq.queuename}") String queuename) throws JMSException {
 		return new MQQueue(queuename);
 	}
 
