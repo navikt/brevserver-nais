@@ -176,7 +176,7 @@ public class JmsConfig {
 	}
 
 	@Bean
-	public Queue BestillBrevPeBq(@Value("${bestillBrevPeBq.queuename}") String queuename) throws JMSException {
+	public Queue BestillBrevPeBq(@Value("${bestill_brev_pe_bq.queuename}") String queuename) throws JMSException {
 		return new MQQueue(queuename);
 	}
 
