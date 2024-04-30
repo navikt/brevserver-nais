@@ -28,7 +28,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static utils.Utils.BREVREFERANSE;
 import static utils.Utils.CALLID;
-import static utils.Utils.CreatePesysKvitteringFeilNiva;
+import static utils.Utils.createPesysKvitteringFeilNiva;
 import static utils.Utils.FORMAT;
 import static utils.Utils.PDF_CONTENTTYPE;
 import static utils.Utils.PENSJON_SYSTEM_ID;
@@ -63,7 +63,7 @@ public class ArkiverBrevRoutePeIT extends AbstractTest {
 
 	@Test
 	//happypath
-	public void shouldArkivereNewBrev() {
+	public void shouldArkivereBrev() {
 		String header = Utils.createPesysKvittering();
 		sendStringMessage(mottakArkivPe, header + "Dette er en pdf".getBytes(), CALLID);
 		await().atMost(5, TimeUnit.SECONDS).untilAsserted(() -> {
@@ -119,7 +119,7 @@ public class ArkiverBrevRoutePeIT extends AbstractTest {
 
 	@Test
 	public void shouldHandleFeilKvittering() {
-		String header = CreatePesysKvitteringFeilNiva();
+		String header = createPesysKvitteringFeilNiva();
 		sendStringMessage(mottakArkivPe, header, CALL_ID);
 
 		await().atMost(5, TimeUnit.SECONDS).untilAsserted(() -> {

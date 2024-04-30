@@ -53,7 +53,7 @@ public class ArkiverBrevRouteIT extends AbstractTest {
 
 	@Test
 	//happypath
-	public void shouldArkiverenewBrev() {
+	public void shouldArkivereBrev() {
 		String header = Utils.createBisysKvittering();
 		sendStringMessage(mottakArkiv, header + "Dette er en pdf".getBytes(), CALLID);
 		await().atMost(5, TimeUnit.SECONDS).untilAsserted(() -> {

@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static no.nav.brevserver.bestillBrev.Utils.BISYS_SYSTEM_ID;
-import static no.nav.brevserver.bestillBrev.Utils.createInput;
+import static no.nav.brevserver.bestillBrev.Utils.createInputFromFagsystem;
 import static no.nav.brevserver.core.constants.Konstanter.BREVSTATUS_BREVPAKKE;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -64,7 +64,7 @@ public class BestillBrevRouteIT extends AbstractTest {
 
 	@Test
 	public void shouldHandleMessage() {
-		String header = createInput(BISYS_SYSTEM_ID);
+		String header = createInputFromFagsystem(BISYS_SYSTEM_ID);
 		sendStringMessage(onlinebrev, header, CORRELATION_ID);
 
 		await().atMost(10, SECONDS).untilAsserted(() -> {
@@ -75,7 +75,7 @@ public class BestillBrevRouteIT extends AbstractTest {
 
 	@Test
 	public void shouldSaveTilgangWhenFromBrevlager() {
-		String header = createInput(BISYS_SYSTEM_ID, "frabrevlager");
+		String header = createInputFromFagsystem(BISYS_SYSTEM_ID, "frabrevlager");
 		sendStringMessage(onlinebrev, header, CALL_ID);
 
 		await().atMost(10, SECONDS).untilAsserted(() -> {
@@ -86,7 +86,7 @@ public class BestillBrevRouteIT extends AbstractTest {
 	@ParameterizedTest
 	@ValueSource(strings = {"", "<rtv-brev>badXML<rtv-brev>", "PE01"})
 	public void shouldSendMessageToDeadletterWhenBadInput(String input) {
-		String header = createInput(input);
+		String header = createInputFromFagsystem(input);
 		sendStringMessage(onlinebrev, header, CALL_ID);
 
 		await().atMost(10, SECONDS).untilAsserted(() -> {
@@ -107,7 +107,7 @@ public class BestillBrevRouteIT extends AbstractTest {
 
 	@Test
 	public void brevFinnesAllerede() {
-		String header = createInput(BISYS_SYSTEM_ID);
+		String header = createInputFromFagsystem(BISYS_SYSTEM_ID);
 		sendStringMessage(onlinebrev, header, CALL_ID);
 		sendStringMessage(onlinebrev, header, CALL_ID);
 

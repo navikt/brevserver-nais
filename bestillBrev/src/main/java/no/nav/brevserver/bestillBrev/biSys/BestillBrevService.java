@@ -113,7 +113,7 @@ public class BestillBrevService {
 		try {
 			brevStatusVo = XMLService.marshalBrevStatus(reader);
 		} catch (Exception e) {
-			throw new BrevFunctionalException("Ugyldig XML mottat, feilmelding: " + e.getMessage());
+			throw new BrevFunctionalException("Ugyldig XML mottatt, feilmelding: " + e.getMessage());
 		}
 
 		messageVO.setTilgangsXML(brevStatusVo != null && Konstanter.BREVMODUS_FRALAGER.equals(brevStatusVo.getModus()));

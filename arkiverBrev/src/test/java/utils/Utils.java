@@ -82,7 +82,7 @@ public class Utils {
 		return StringUtils.rightPad(generateKvitteringHeader(PDF_CONTENTTYPE, BISYS_SYSTEM_ID, BREVREFERANSE, BREVPAKKE_FEILNIVA_FEIL, FEIL_UKJENT).toString(), Konstanter.MELDING_HEADER_LENGTH, ' ');
 	}
 
-	public static String CreatePesysKvitteringFeilNiva() {
+	public static String createPesysKvitteringFeilNiva() {
 		return StringUtils.rightPad(generateKvitteringHeader(PDF_CONTENTTYPE, PENSJON_SYSTEM_ID, BREVREFERANSE, BREVPAKKE_FEILNIVA_FEIL, FEIL_UKJENT).toString(), Konstanter.MELDING_HEADER_LENGTH, ' ');
 	}
 
