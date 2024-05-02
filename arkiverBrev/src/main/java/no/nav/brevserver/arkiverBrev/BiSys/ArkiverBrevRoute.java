@@ -80,15 +80,17 @@ public class ArkiverBrevRoute extends RouteBuilder {
 				.to(InOnly, "jms:" + deadletter.getQueueName());
 
 		from("jms:" + mottakArkiv.getQueueName() + ROUTE_OPTIONS)
+				.log(INFO, log, ARKIVER_BREV_ROUTE + " starter behandlingen av melding fra: " + mottakArkiv.getQueueName())
 				.to(ARKIVER_BREV_ROUTE);
 		from("jms:" + mottakOnline.getQueueName() + ROUTE_OPTIONS)
+				.log(INFO, log, ARKIVER_BREV_ROUTE + " starter behandlingen av melding fra: " + mottakOnline.getQueueName())
 				.to(ARKIVER_BREV_ROUTE);
 		from("jms:" + mottakOnlineLinux.getQueueName() + ROUTE_OPTIONS)
+				.log(INFO, log, ARKIVER_BREV_ROUTE + " starter behandlingen av melding fra: " + mottakOnlineLinux.getQueueName())
 				.to(ARKIVER_BREV_ROUTE);
 
 		//Hent svar fra exstream
 		from(ARKIVER_BREV_ROUTE)
-				.log(INFO, log, ARKIVER_BREV_ROUTE + " starter behandlingen av melding fra: " + mottakArkiv.getQueueName() )
 				.routeId(ARKIVER_BREV_ROUTE)
 				.setExchangePattern(InOnly)
 				.process(new MdcSetterProcessor())
