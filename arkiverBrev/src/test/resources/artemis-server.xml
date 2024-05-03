@@ -19,11 +19,6 @@
 					<queue name="mottakarkiv"/>
 				</anycast>
 			</address>
-			<address name="mottakarkivPe">
-				<anycast>
-					<queue name="mottakarkivPe"/>
-				</anycast>
-			</address>
 			<address name="mottakarkivPeLinux">
 				<anycast>
 					<queue name="mottakarkivPeLinux"/>

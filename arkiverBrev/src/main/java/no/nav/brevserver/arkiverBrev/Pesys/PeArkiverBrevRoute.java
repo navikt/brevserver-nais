@@ -2,6 +2,7 @@ package no.nav.brevserver.arkiverBrev.Pesys;
 
 import com.ibm.msg.client.jakarta.jms.DetailedInvalidDestinationException;
 import com.ibm.msg.client.jakarta.jms.DetailedJMSException;
+import jakarta.jms.Queue;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
 import no.nav.brevserver.core.utils.MDC.MdcRemoverProcessor;
 import no.nav.brevserver.core.utils.MDC.MdcSetterProcessor;
@@ -10,8 +11,6 @@ import org.apache.camel.LoggingLevel;
 import org.apache.camel.ValidationException;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.stereotype.Component;
-
-import jakarta.jms.Queue;
 
 import static no.nav.brevserver.core.utils.ExchangeUtils.JMS;
 import static no.nav.brevserver.core.utils.ExchangeUtils.JMS_OVERRIDDEN;
@@ -29,7 +28,6 @@ public class PeArkiverBrevRoute extends RouteBuilder {
 	private final String ROUTE_OPTIONS = "?transacted=true&concurrentConsumers=1&maxMessagesPerTask=100";
 
 
-	private final Queue mottakArkivPe;
 	private final Queue mottakOnlinePe;
 	private final Queue mottakArkivPeLinux;
 	private final Queue mottakOnlinePeLinux;
@@ -37,14 +35,12 @@ public class PeArkiverBrevRoute extends RouteBuilder {
 	private final Queue brevReplyPe;
 	private final PeArkiverBrevService peArkiverBrevService;
 
-	public PeArkiverBrevRoute(Queue mottakArkivPe,
-							  Queue mottakOnlinePe,
+	public PeArkiverBrevRoute(Queue mottakOnlinePe,
 							  Queue mottakArkivPeLinux,
 							  Queue mottakOnlinePeLinux,
 							  Queue deadletterPe,
 							  Queue brevReplyPe,
 							  PeArkiverBrevService peArkiverBrevService) {
-		this.mottakArkivPe = mottakArkivPe;
 		this.mottakOnlinePe = mottakOnlinePe;
 		this.mottakArkivPeLinux = mottakArkivPeLinux;
 		this.mottakOnlinePeLinux = mottakOnlinePeLinux;
@@ -96,13 +92,13 @@ public class PeArkiverBrevRoute extends RouteBuilder {
 				.handled(true)
 				.to(JMS + deadletterPe.getQueueName());
 
-		from("jms:" + mottakArkivPe.getQueueName() + ROUTE_OPTIONS)
-				.to(PE_ARKIVER_BREV_ROUTE);
 		from("jms:" + mottakOnlinePe.getQueueName() + ROUTE_OPTIONS)
 				.to(PE_ARKIVER_BREV_ROUTE);
 		from("jms:" + mottakArkivPeLinux.getQueueName() + ROUTE_OPTIONS)
+				.log(INFO, log, PE_ARKIVER_BREV_ROUTE + " starter behandlingen av melding fra: " + mottakArkivPeLinux.getQueueName())
 				.to(PE_ARKIVER_BREV_ROUTE);
 		from("jms:" + mottakOnlinePeLinux.getQueueName() + ROUTE_OPTIONS)
+				.log(INFO, log, PE_ARKIVER_BREV_ROUTE + " starter behandlingen av melding fra: " + mottakOnlinePeLinux.getQueueName())
 				.to(PE_ARKIVER_BREV_ROUTE);
 
 		//Hent svar fra exstream
@@ -110,7 +106,6 @@ public class PeArkiverBrevRoute extends RouteBuilder {
 				.routeId(PE_ARKIVER_BREV_ROUTE)
 				.setExchangePattern(ExchangePattern.InOnly)
 				.process(new MdcSetterProcessor())
-				.log(LoggingLevel.INFO, log, PE_ARKIVER_BREV_ROUTE + " starter behandlingen av melding fra peSys")
 				.process(exchange -> {
 					setDefaultReturnQueue(exchange, brevReplyPe.getQueueName());
 				})

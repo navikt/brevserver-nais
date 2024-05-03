@@ -19,11 +19,6 @@ public class JmsItestConfig {
 	}
 
 	@Bean
-	public Queue mottakArkivPe(@Value("${mottak_arkiv_pe.queuename}") String mottakArkivPeQueueName) {
-		return new ActiveMQQueue(mottakArkivPeQueueName);
-	}
-
-	@Bean
 	public Queue deadletter() {
 		return new ActiveMQQueue("mottakDLQ");
 	}

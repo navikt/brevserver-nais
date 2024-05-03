@@ -112,13 +112,6 @@ public class JmsConfig {
 	@Bean
 	// default inputkø for brevserver
 	// ferdigproduserte brev fra system y kommer inn her
-	public Queue mottakArkivPe(@Value("${mottak_arkiv_pe.queuename}") String mottakArkivPeQueueName) throws JMSException {
-		return new MQQueue(mottakArkivPeQueueName);
-	}
-
-	@Bean
-	// default inputkø for brevserver
-	// ferdigproduserte brev fra system y kommer inn her
 	public Queue mottakArkivPeLinux(@Value("${mottak_arkiv_pe_linux.queuename}") String mottakArkivPeQueueName) throws JMSException {
 		return new MQQueue(mottakArkivPeQueueName);
 	}
