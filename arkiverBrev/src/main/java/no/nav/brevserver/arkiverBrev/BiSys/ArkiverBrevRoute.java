@@ -29,17 +29,15 @@ public class ArkiverBrevRoute extends RouteBuilder {
 	private final String ROUTE_OPTIONS = "?transacted=true&concurrentConsumers=1";
 
 	private final Queue mottakArkiv;
-	private final Queue mottakOnline;
 	private final Queue mottakOnlineLinux;
 	private final Queue deadletter;
 	private final ArkiverBrevService arkiverBrevService;
 
 	public ArkiverBrevRoute(Queue mottakArkiv,
-							Queue mottakOnline,
-							Queue mottakOnlineLinux, Queue deadletter,
+							Queue mottakOnlineLinux,
+							Queue deadletter,
 							ArkiverBrevService arkiverBrevService) {
 		this.mottakArkiv = mottakArkiv;
-		this.mottakOnline = mottakOnline;
 		this.mottakOnlineLinux = mottakOnlineLinux;
 		this.deadletter = deadletter;
 		this.arkiverBrevService = arkiverBrevService;
@@ -80,15 +78,14 @@ public class ArkiverBrevRoute extends RouteBuilder {
 				.to(InOnly, "jms:" + deadletter.getQueueName());
 
 		from("jms:" + mottakArkiv.getQueueName() + ROUTE_OPTIONS)
-				.to(ARKIVER_BREV_ROUTE);
-		from("jms:" + mottakOnline.getQueueName() + ROUTE_OPTIONS)
+				.log(INFO, log, ARKIVER_BREV_ROUTE + " starter behandlingen av melding fra: " + mottakArkiv.getQueueName())
 				.to(ARKIVER_BREV_ROUTE);
 		from("jms:" + mottakOnlineLinux.getQueueName() + ROUTE_OPTIONS)
+				.log(INFO, log, ARKIVER_BREV_ROUTE + " starter behandlingen av melding fra: " + mottakOnlineLinux.getQueueName())
 				.to(ARKIVER_BREV_ROUTE);
 
 		//Hent svar fra exstream
 		from(ARKIVER_BREV_ROUTE)
-				.log(INFO, log, ARKIVER_BREV_ROUTE + " starter behandlingen av melding fra: " + mottakArkiv.getQueueName() )
 				.routeId(ARKIVER_BREV_ROUTE)
 				.setExchangePattern(InOnly)
 				.process(new MdcSetterProcessor())
