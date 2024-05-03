@@ -1,3 +1,5 @@
+import jakarta.jms.ConnectionFactory;
+import jakarta.jms.Queue;
 import org.apache.activemq.artemis.core.server.embedded.EmbeddedActiveMQ;
 import org.apache.activemq.artemis.jms.client.ActiveMQConnectionFactory;
 import org.apache.activemq.artemis.jms.client.ActiveMQQueue;
@@ -6,9 +8,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-
-import jakarta.jms.ConnectionFactory;
-import jakarta.jms.Queue;
 
 @Configuration
 @Profile("itest")
@@ -20,7 +19,7 @@ public class JmsItestConfig {
 	}
 
 	@Bean
-	public Queue mottakOnline(@Value("${mottak_arkiv_pe.queuename}") String mottakArkivPeQueueName) {
+	public Queue mottakArkivPe(@Value("${mottak_arkiv_pe.queuename}") String mottakArkivPeQueueName) {
 		return new ActiveMQQueue(mottakArkivPeQueueName);
 	}
 

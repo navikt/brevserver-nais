@@ -22,11 +22,6 @@ public class JmsItestConfig {
 	}
 
 	@Bean
-	public Queue mottakOnline(@Value("${mottak_online.queuename}") String mottakOnlineQueueName) {
-		return new ActiveMQQueue(mottakOnlineQueueName);
-	}
-
-	@Bean
 	public Queue mottakOnlineLinux(@Value("${mottak_online_linux.queuename}") String mottakOnlineQueueName) {
 		return new ActiveMQQueue(mottakOnlineQueueName);
 	}

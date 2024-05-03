@@ -3,6 +3,9 @@ package no.nav.brevserver.core.config.jms;
 import com.ibm.mq.jakarta.jms.MQConnectionFactory;
 import com.ibm.mq.jakarta.jms.MQQueue;
 import com.ibm.msg.client.jakarta.jms.JmsConstants;
+import jakarta.jms.ConnectionFactory;
+import jakarta.jms.JMSException;
+import jakarta.jms.Queue;
 import no.nav.brevserver.core.alias.FagarkivProperties;
 import no.nav.brevserver.core.alias.MqGatewayProperties;
 import org.messaginghub.pooled.jms.JmsPoolConnectionFactory;
@@ -11,10 +14,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.jms.connection.UserCredentialsConnectionFactoryAdapter;
-
-import jakarta.jms.ConnectionFactory;
-import jakarta.jms.JMSException;
-import jakarta.jms.Queue;
 
 import javax.net.ssl.SSLSocketFactory;
 
@@ -87,13 +86,6 @@ public class JmsConfig {
 	// returkø fra exstream til brevserver
 	public Queue mottakOnlineLinux(@Value("${mottak_online_linux.queuename}") String brevserverMottakOnlineLinux) throws JMSException {
 		return new MQQueue(brevserverMottakOnlineLinux);
-	}
-
-	@Bean
-	//exstream -> brevserver
-	// returkø fra exstream til brevserver
-	public Queue mottakOnline(@Value("${mottak_online.queuename}") String brevserverMottakOnline) throws JMSException {
-		return new MQQueue(brevserverMottakOnline);
 	}
 
 	@Bean
