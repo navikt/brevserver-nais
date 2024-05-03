@@ -115,12 +115,6 @@ public class JmsConfig {
 	public Queue mottakArkivPeLinux(@Value("${mottak_arkiv_pe_linux.queuename}") String mottakArkivPeQueueName) throws JMSException {
 		return new MQQueue(mottakArkivPeQueueName);
 	}
-	@Bean
-	// exstream -> brevserver
-	// returkø fra exstream til brevserver
-	public Queue mottakOnlinePe(@Value("${mottak_online_pe.queuename}") String brevserverMottakOnlinePe) throws JMSException {
-		return new MQQueue(brevserverMottakOnlinePe);
-	}
 
 	@Bean
 	// exstream -> brevserver
