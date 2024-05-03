@@ -1,14 +1,10 @@
 package no.nav.brevserver.arkiverBrev.Pesys;
 
-import com.ibm.msg.client.jakarta.jms.DetailedInvalidDestinationException;
-import com.ibm.msg.client.jakarta.jms.DetailedJMSException;
-import no.nav.brevserver.core.exception.BrevFunctionalException;
 import jakarta.jms.Queue;
-import no.nav.brevserver.core.exception.BrevTechnicalException;
+import no.nav.brevserver.core.exception.BrevFunctionalException;
 import no.nav.brevserver.core.utils.MDC.MdcRemoverProcessor;
 import no.nav.brevserver.core.utils.MDC.MdcSetterProcessor;
 import org.apache.camel.ExchangePattern;
-import org.apache.camel.LoggingLevel;
 import org.apache.camel.ValidationException;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.stereotype.Component;
@@ -34,19 +30,17 @@ public class PeArkiverBrevRoute extends RouteBuilder {
 	private final Queue mottakOnlinePeLinux;
 	private final Queue deadletterPe;
 	private final Queue brevReplyPe;
-	private final Queue mottakArkivPeBq;
 	private final PeArkiverBrevService peArkiverBrevService;
 
 	public PeArkiverBrevRoute(Queue mottakArkivPeLinux,
 							  Queue mottakOnlinePeLinux,
 							  Queue deadletterPe,
 							  Queue brevReplyPe,
-							  Queue mottakArkivPeBq, PeArkiverBrevService peArkiverBrevService) {
+							  PeArkiverBrevService peArkiverBrevService) {
 		this.mottakArkivPeLinux = mottakArkivPeLinux;
 		this.mottakOnlinePeLinux = mottakOnlinePeLinux;
 		this.deadletterPe = deadletterPe;
 		this.brevReplyPe = brevReplyPe;
-		this.mottakArkivPeBq = mottakArkivPeBq;
 		this.peArkiverBrevService = peArkiverBrevService;
 	}
 
@@ -60,14 +54,6 @@ public class PeArkiverBrevRoute extends RouteBuilder {
 				.logExhaustedMessageHistory(false)
 				.logStackTrace(true)
 				.loggingLevel(ERROR));
-
-		onException(BrevTechnicalException.class, DetailedInvalidDestinationException.class, DetailedJMSException.class)
-				.handled(true)
-				.useOriginalMessage()
-				.logExhaustedMessageBody(false)
-				.log(LoggingLevel.WARN, log, "${exception}; ")
-				.to(JMS + mottakArkivPeBq.getQueueName());
-
 
 		onException(ValidationException.class, BrevFunctionalException.class)
 				.handled(true)

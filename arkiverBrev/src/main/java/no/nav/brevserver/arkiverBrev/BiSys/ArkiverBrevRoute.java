@@ -1,9 +1,7 @@
 package no.nav.brevserver.arkiverBrev.BiSys;
 
-import com.ibm.msg.client.jakarta.jms.DetailedJMSException;
 import jakarta.jms.Queue;
 import no.nav.brevserver.core.exception.BrevFunctionalException;
-import no.nav.brevserver.core.exception.BrevTechnicalException;
 import no.nav.brevserver.core.utils.MDC.MdcRemoverProcessor;
 import no.nav.brevserver.core.utils.MDC.MdcSetterProcessor;
 import org.apache.camel.ValidationException;
@@ -32,18 +30,15 @@ public class ArkiverBrevRoute extends RouteBuilder {
 	private final Queue mottakArkiv;
 	private final Queue mottakOnlineLinux;
 	private final Queue deadletter;
-	private final Queue mottakArkivBq;
 	private final ArkiverBrevService arkiverBrevService;
 
 	public ArkiverBrevRoute(Queue mottakArkiv,
 							Queue mottakOnlineLinux,
 							Queue deadletter,
-							Queue mottakArkivBq,
 							ArkiverBrevService arkiverBrevService) {
 		this.mottakArkiv = mottakArkiv;
 		this.mottakOnlineLinux = mottakOnlineLinux;
 		this.deadletter = deadletter;
-		this.mottakArkivBq = mottakArkivBq;
 		this.arkiverBrevService = arkiverBrevService;
 	}
 
@@ -64,15 +59,6 @@ public class ArkiverBrevRoute extends RouteBuilder {
 				.logExhaustedMessageBody(false)
 				.log(WARN, log, "${exception}; ")
 				.to(InOnly, "jms:" + deadletter.getQueueName());
-
-		onException(BrevTechnicalException.class, DetailedJMSException.class)
-				.useOriginalMessage()
-				.logExhaustedMessageBody(true)
-				.logExhaustedMessageHistory(true)
-				.logStackTrace(true)
-				.handled(true)
-				.log(WARN, log, "${exception}; ")
-				.to(InOnly, "jms:" + mottakArkivBq.getQueueName());
 
 		from("jms:" + mottakArkiv.getQueueName() + ROUTE_OPTIONS)
 				.log(INFO, log, ARKIVER_BREV_ROUTE + " starter behandlingen av melding fra: " + mottakArkiv.getQueueName())

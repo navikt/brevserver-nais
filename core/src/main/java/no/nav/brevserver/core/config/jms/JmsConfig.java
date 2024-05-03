@@ -138,25 +138,4 @@ public class JmsConfig {
 	public Queue deadletterPe(@Value("${deadletter_pe.queuename}") String deadletterPe) throws JMSException {
 		return new MQQueue(deadletterPe);
 	}
-
-	@Bean
-	public Queue mottakArkivBq(@Value("${mottak_arkiv_bq.queuename}") String queuename) throws JMSException {
-		return new MQQueue(queuename);
-	}
-
-	@Bean
-	public Queue mottakArkivPeBq(@Value("${mottak_arkiv_pe_bq.queuename}") String queuename) throws JMSException {
-		return new MQQueue(queuename);
-	}
-
-	@Bean
-	public Queue bestillBrevBq(@Value("${bestill_brev_bq.queuename}") String queuename) throws JMSException {
-		return new MQQueue(queuename);
-	}
-
-	@Bean
-	public Queue bestillBrevPeBq(@Value("${bestill_brev_pe_bq.queuename}") String queuename) throws JMSException {
-		return new MQQueue(queuename);
-	}
-
 }

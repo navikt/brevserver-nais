@@ -1,19 +1,14 @@
 package no.nav.brevserver.bestillBrev.biSys;
 
-import com.ibm.msg.client.jakarta.jms.DetailedJMSException;
+import jakarta.jms.Queue;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.brevserver.core.exception.BrevFunctionalException;
-import no.nav.brevserver.core.exception.BrevTechnicalException;
 import no.nav.brevserver.core.utils.MDC.MdcRemoverProcessor;
 import no.nav.brevserver.core.utils.MDC.MdcSetterProcessor;
 import org.apache.camel.ExchangePattern;
-import org.apache.camel.LoggingLevel;
 import org.apache.camel.ValidationException;
-import org.apache.camel.builder.DefaultErrorHandlerBuilder;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.stereotype.Component;
-
-import jakarta.jms.Queue;
 
 import static no.nav.brevserver.core.utils.ExchangeUtils.JMS;
 import static no.nav.brevserver.core.utils.ExchangeUtils.JMS_OVERRIDDEN;
@@ -37,18 +32,15 @@ public class BestillBrevRoute extends RouteBuilder {
 	private final Queue onlinebrev;
 	private final Queue dialogueOnline;
 	private final Queue deadletter;
-	private final Queue bestillBrevBq;
 	private final BestillBrevService bestillBrevService;
 
 	public BestillBrevRoute(Queue onlinebrev, // input-kø for brevserver
 							Queue deadletter,
 							Queue dialogueOnline, // input-kø for exstrem hvor brevserver sender bestillingen
-							Queue bestillBrevBq,
 							BestillBrevService arkiverBrevService) {
 		this.onlinebrev = onlinebrev;
 		this.deadletter = deadletter;
 		this.dialogueOnline = dialogueOnline;
-		this.bestillBrevBq = bestillBrevBq;
 		this.bestillBrevService = arkiverBrevService;
 	}
 
@@ -72,14 +64,6 @@ public class BestillBrevRoute extends RouteBuilder {
 				.handled(true)
 				.log(ERROR, log, "${exception}; ")
 				.to("jms:" + deadletter.getQueueName());
-
-
-		onException(BrevTechnicalException.class, DetailedJMSException.class)
-				.handled(true)
-				.useOriginalMessage()
-				.logExhaustedMessageBody(false)
-				.log(ERROR, log, "${exception}; ")
-				.to("jms:" + bestillBrevBq.getQueueName());
 
 		//Brevbestilling fra Bisys
 		from("jms:" + onlinebrev.getQueueName() + ROUTE_OPTIONS)

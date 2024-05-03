@@ -28,7 +28,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static utils.Utils.BREVREFERANSE;
 import static utils.Utils.CALLID;
-import static utils.Utils.createPesysKvitteringFeilNiva;
 import static utils.Utils.FORMAT;
 import static utils.Utils.PDF_CONTENTTYPE;
 import static utils.Utils.PENSJON_SYSTEM_ID;
@@ -37,17 +36,18 @@ import static utils.Utils.STATUS_LAGRET;
 import static utils.Utils.classpathToString;
 import static utils.Utils.createBisysKvittering;
 import static utils.Utils.createPesysKvittering;
+import static utils.Utils.createPesysKvitteringFeilNiva;
 
 
 public class ArkiverBrevRoutePeIT extends AbstractTest {
 	@Autowired
 	protected BrevstatusService brevstatusService;
 	@Autowired
-	protected Queue mottakArkivPe;
+	protected Queue mottakArkivPeLinux;
 	@Autowired
 	protected Queue deadletter;
 	@Autowired
-	private Queue mottakArkivPeBq;
+	private Queue mottakArkivPeLinuxBq;
 	@Autowired
 	private JoarkService joarkServiceMock;
 
@@ -65,7 +65,7 @@ public class ArkiverBrevRoutePeIT extends AbstractTest {
 	//happypath
 	public void shouldArkivereBrev() {
 		String header = Utils.createPesysKvittering();
-		sendStringMessage(mottakArkivPe, header + "Dette er en pdf".getBytes(), CALLID);
+		sendStringMessage(mottakArkivPeLinux, header + "Dette er en pdf".getBytes(), CALLID);
 		await().atMost(5, TimeUnit.SECONDS).untilAsserted(() -> {
 			Message received = jmsTemplate.receive(SVARKOSTRING);
 			assertEquals(Objects.requireNonNull(received).getJMSCorrelationID(), CORRELATION_ID);
@@ -77,7 +77,7 @@ public class ArkiverBrevRoutePeIT extends AbstractTest {
 	@Test
 	public void shouldSendToFeilko() {
 		String header = Utils.createBadXmlKvitteringHeader(PENSJON_SYSTEM_ID);
-		sendStringMessage(mottakArkivPe, header, CALLID);
+		sendStringMessage(mottakArkivPeLinux, header, CALLID);
 		await().atMost(5, TimeUnit.SECONDS).untilAsserted(() -> {
 			String received = receive(deadletter);
 			assertEquals(received, classpathToString("svarXml/deadletterPe.xml"));
@@ -88,9 +88,9 @@ public class ArkiverBrevRoutePeIT extends AbstractTest {
 	public void shouldSendMessageToBqWhenBrevTechnicalException() throws BrevException {
 		doThrow(BrevTechnicalException.class).when(joarkServiceMock).lagreDokument(any(), any(), any());
 		String message = createPesysKvittering();
-		sendStringMessage(mottakArkivPe, message, CALLID);
+		sendStringMessage(mottakArkivPeLinux, message, CALLID);
 		await().atMost(5, TimeUnit.SECONDS).untilAsserted(() -> {
-			String received = receive(mottakArkivPeBq);
+			String received = receive(mottakArkivPeLinuxBq);
 			assertEquals(received, message);
 		});
 	}
@@ -98,7 +98,7 @@ public class ArkiverBrevRoutePeIT extends AbstractTest {
 	@Test
 	public void shouldSaveAsKladd() {
 		String header = createPesysKvittering(RTF.getContentType());
-		sendStringMessage(mottakArkivPe, header, CALL_ID);
+		sendStringMessage(mottakArkivPeLinux, header, CALL_ID);
 
 		await().atMost(5, TimeUnit.SECONDS).untilAsserted(() -> {
 			String received = receive(SVARKOSTRING);
@@ -109,7 +109,7 @@ public class ArkiverBrevRoutePeIT extends AbstractTest {
 	@Test
 	public void shouldSaveAsFerdig() {
 		String header = createPesysKvittering(PDF.getContentType());
-		sendStringMessage(mottakArkivPe, header, CALL_ID);
+		sendStringMessage(mottakArkivPeLinux, header, CALL_ID);
 
 		await().atMost(5, TimeUnit.SECONDS).untilAsserted(() -> {
 			String received = receive(SVARKOSTRING);
@@ -120,7 +120,7 @@ public class ArkiverBrevRoutePeIT extends AbstractTest {
 	@Test
 	public void shouldHandleFeilKvittering() {
 		String header = createPesysKvitteringFeilNiva();
-		sendStringMessage(mottakArkivPe, header, CALL_ID);
+		sendStringMessage(mottakArkivPeLinux, header, CALL_ID);
 
 		await().atMost(5, TimeUnit.SECONDS).untilAsserted(() -> {
 			String received = receive(SVARKOSTRING);
@@ -131,8 +131,8 @@ public class ArkiverBrevRoutePeIT extends AbstractTest {
 	@Test
 	public void shouldFailBrevFinnesAllerede() throws BrevTechnicalException {
 		String message = createPesysKvittering();
-		sendStringMessage(mottakArkivPe, message, CALL_ID);
-		sendStringMessage(mottakArkivPe, message, CALL_ID);
+		sendStringMessage(mottakArkivPeLinux, message, CALL_ID);
+		sendStringMessage(mottakArkivPeLinux, message, CALL_ID);
 
 		await().atMost(5, TimeUnit.SECONDS).untilAsserted(() -> {
 			String received = receive(SVARKOSTRING);
@@ -143,7 +143,7 @@ public class ArkiverBrevRoutePeIT extends AbstractTest {
 	@Test
 	public void shouldFailOnBisysKvittering() {
 		String message = createBisysKvittering();
-		sendStringMessage(mottakArkivPe, message, CALL_ID);
+		sendStringMessage(mottakArkivPeLinux, message, CALL_ID);
 
 		await().atMost(5, TimeUnit.SECONDS).untilAsserted(() -> {
 			String received = receive(deadletter);
@@ -153,7 +153,7 @@ public class ArkiverBrevRoutePeIT extends AbstractTest {
 
 	@Test
 	public void shouldFailOnNullKvittering() {
-		sendStringMessage(mottakArkivPe, null, CALL_ID);
+		sendStringMessage(mottakArkivPeLinux, null, CALL_ID);
 
 		await().atMost(5, TimeUnit.SECONDS).untilAsserted(() -> {
 			ActiveMQMessage received = receive(deadletter);
