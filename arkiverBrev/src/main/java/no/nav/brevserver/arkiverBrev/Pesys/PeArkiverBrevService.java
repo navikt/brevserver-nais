@@ -43,10 +43,6 @@ public class PeArkiverBrevService {
 		KvitteringVO kvittering = generateKvittering(messageVo);
 		log.info("Mottat kvittering for brevreferanse: " + kvittering.getBrevreferanse());
 
-		if (kvittering == null) {
-			throw new BrevFunctionalException("Kvittering er null");
-		}
-
 		// Sjekk om brevet finnes, hent status
 		BrevStatusVO brevStatusVo = brevstatusService.hentBrevStatus(kvittering.getBrevreferanse(), kvittering.getSystemID());
 

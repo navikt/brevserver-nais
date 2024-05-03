@@ -23,7 +23,7 @@ import static org.apache.camel.LoggingLevel.WARN;
 @Component
 public class PeArkiverBrevRoute extends RouteBuilder {
 	public static final String PE_ARKIVER_BREV_ROUTE = "direct:peArkiverBrev";
-	private final String ROUTE_OPTIONS = "?transacted=true&concurrentConsumers=1&maxMessagesPerTask=100";
+	private static final String ROUTE_OPTIONS = "?transacted=true&concurrentConsumers=1&maxMessagesPerTask=100";
 
 
 	private final Queue mottakArkivPeLinux;
@@ -74,9 +74,7 @@ public class PeArkiverBrevRoute extends RouteBuilder {
 				.routeId(PE_ARKIVER_BREV_ROUTE)
 				.setExchangePattern(ExchangePattern.InOnly)
 				.process(new MdcSetterProcessor())
-				.process(exchange -> {
-					setDefaultReturnQueue(exchange, brevReplyPe.getQueueName());
-				})
+				.process(exchange -> setDefaultReturnQueue(exchange, brevReplyPe.getQueueName()))
 				.bean(peArkiverBrevService)
 				.choice()
 					.when(exchangeProperty(SENDTOMODE).isEqualTo(GI_TILBAKEMELDING))

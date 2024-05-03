@@ -129,7 +129,7 @@ public class ArkiverBrevRoutePeIT extends AbstractTest {
 	}
 
 	@Test
-	public void shouldFailBrevFinnesAllerede() throws BrevTechnicalException {
+	public void shouldFailBrevFinnesAllerede() {
 		String message = createPesysKvittering();
 		sendStringMessage(mottakArkivPeLinux, message, CALL_ID);
 		sendStringMessage(mottakArkivPeLinux, message, CALL_ID);
@@ -162,14 +162,14 @@ public class ArkiverBrevRoutePeIT extends AbstractTest {
 	}
 
 	private String createReplyToKvittering(String status, String fagsystem, String format, String feilkode) {
-		StringBuilder builder = new StringBuilder("<?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>\n");
-		builder.append("<rtv-brevkvitt>\n");
-		builder.append("<brevref>").append(BREVREFERANSE).append("</brevref>\n");
-		builder.append("<sysid>").append(fagsystem).append("</sysid>\n");
-		builder.append("<type>").append(format).append("</type>\n");
-		builder.append("<status>").append(status).append("</status>\n");
-		builder.append("<feilkode>").append(feilkode).append("</feilkode>\n");
-		builder.append("</rtv-brevkvitt>");
-		return builder.toString();
+		return """
+				<?xml version="1.0" encoding="ISO-8859-1" ?>
+				<rtv-brevkvitt>
+				<brevref>%s</brevref>
+				<sysid>%s</sysid>
+				<type>%s</type>
+				<status>%s</status>
+				<feilkode>%s</feilkode>
+				</rtv-brevkvitt>""".formatted(BREVREFERANSE, fagsystem, format, status, feilkode);
 	}
 }

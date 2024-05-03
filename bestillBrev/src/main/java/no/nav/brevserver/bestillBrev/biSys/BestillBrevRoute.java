@@ -27,7 +27,7 @@ import static org.apache.camel.LoggingLevel.INFO;
 public class BestillBrevRoute extends RouteBuilder {
 
 	public static final String BESTILLBREV = "bestill_brev";
-	private final String ROUTE_OPTIONS = "?transacted=true&concurrentConsumers=1";
+	private static final String ROUTE_OPTIONS = "?transacted=true&concurrentConsumers=1";
 
 	private final Queue onlinebrev;
 	private final Queue dialogueOnline;
@@ -72,14 +72,10 @@ public class BestillBrevRoute extends RouteBuilder {
 				.process(new MdcSetterProcessor())
 				.log(INFO, log, BESTILLBREV + " starter behandlingen av ny brevbestilling fra Bisys")
 				.bean(bestillBrevService)
-				.process(exchange -> {
-					setDefaultReturnQueue(exchange, deadletter.getQueueName());
-				})
+				.process(exchange -> setDefaultReturnQueue(exchange, deadletter.getQueueName()))
 				.choice()
 					.when(exchangeProperty(SENDTOMODE).isEqualTo(OPPRETT_BREV))
-						.process(exchange -> {
-							setDestination(exchange, dialogueOnline.getQueueName());
-						})
+						.process(exchange -> setDestination(exchange, dialogueOnline.getQueueName()))
 						.to(JMS_OVERRIDDEN)
 						.log(INFO, log, "Brev sendt til opprettelse i Exstream: " + dialogueOnline.getQueueName())
 					.when(exchangeProperty(SENDTOMODE).isEqualTo(GI_FEILMELDING ))
