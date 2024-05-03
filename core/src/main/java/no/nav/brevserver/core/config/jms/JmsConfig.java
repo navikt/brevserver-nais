@@ -3,6 +3,9 @@ package no.nav.brevserver.core.config.jms;
 import com.ibm.mq.jakarta.jms.MQConnectionFactory;
 import com.ibm.mq.jakarta.jms.MQQueue;
 import com.ibm.msg.client.jakarta.jms.JmsConstants;
+import jakarta.jms.ConnectionFactory;
+import jakarta.jms.JMSException;
+import jakarta.jms.Queue;
 import no.nav.brevserver.core.alias.FagarkivProperties;
 import no.nav.brevserver.core.alias.MqGatewayProperties;
 import org.messaginghub.pooled.jms.JmsPoolConnectionFactory;
@@ -11,10 +14,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.jms.connection.UserCredentialsConnectionFactoryAdapter;
-
-import jakarta.jms.ConnectionFactory;
-import jakarta.jms.JMSException;
-import jakarta.jms.Queue;
 
 import javax.net.ssl.SSLSocketFactory;
 
@@ -90,13 +89,6 @@ public class JmsConfig {
 	}
 
 	@Bean
-	//exstream -> brevserver
-	// returkø fra exstream til brevserver
-	public Queue mottakOnline(@Value("${mottak_online.queuename}") String brevserverMottakOnline) throws JMSException {
-		return new MQQueue(brevserverMottakOnline);
-	}
-
-	@Bean
 	//brevserver->exstream
 	//brevbestillingskøen fra brevserver til exstream
 	public Queue dialogueOnline(@Value("${dialogue_online.queuename}") String dialogueOnline) throws JMSException {
@@ -120,21 +112,8 @@ public class JmsConfig {
 	@Bean
 	// default inputkø for brevserver
 	// ferdigproduserte brev fra system y kommer inn her
-	public Queue mottakArkivPe(@Value("${mottak_arkiv_pe.queuename}") String mottakArkivPeQueueName) throws JMSException {
-		return new MQQueue(mottakArkivPeQueueName);
-	}
-
-	@Bean
-	// default inputkø for brevserver
-	// ferdigproduserte brev fra system y kommer inn her
 	public Queue mottakArkivPeLinux(@Value("${mottak_arkiv_pe_linux.queuename}") String mottakArkivPeQueueName) throws JMSException {
 		return new MQQueue(mottakArkivPeQueueName);
-	}
-	@Bean
-	// exstream -> brevserver
-	// returkø fra exstream til brevserver
-	public Queue mottakOnlinePe(@Value("${mottak_online_pe.queuename}") String brevserverMottakOnlinePe) throws JMSException {
-		return new MQQueue(brevserverMottakOnlinePe);
 	}
 
 	@Bean
