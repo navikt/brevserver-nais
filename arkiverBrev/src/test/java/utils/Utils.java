@@ -20,6 +20,7 @@ public class Utils {
 	public static final String BISYS_SYSTEM_ID = "BI12";
 	public static final String PENSJON_SYSTEM_ID = "PE01";
 	public static final String BREVREFERANSE = "10000000000";
+	public static final long BREVREFERANSE_L = Long.parseLong(BREVREFERANSE);
 	public static final String BREVREFERANSE2 = "10000000006";
 	public static final String BRUKERID = "b111111";
 	public static final byte[] BREVDATA = "".getBytes();
@@ -64,6 +65,10 @@ public class Utils {
 		return StringUtils.rightPad(generateKvitteringHeader(PDF_CONTENTTYPE, PENSJON_SYSTEM_ID, BREVREFERANSE).toString(), Konstanter.MELDING_HEADER_LENGTH, ' ');
 	}
 
+	public static String createPesysKvittering(String format){
+		return StringUtils.rightPad(generateKvitteringHeader(format, PENSJON_SYSTEM_ID, BREVREFERANSE).toString(), Konstanter.MELDING_HEADER_LENGTH, ' ');
+	}
+
 	//Brevserver forventer en kvitteringsheader på nøyaktig 350 chars. Pad til 350
 	public static String createBisysKvittering() {
 		return StringUtils.rightPad(generateKvitteringHeader(FORMAT, BISYS_SYSTEM_ID, BREVREFERANSE).toString(), Konstanter.MELDING_HEADER_LENGTH, ' ');
@@ -77,12 +82,12 @@ public class Utils {
 		return StringUtils.rightPad(generateKvitteringHeader(PDF_CONTENTTYPE, BISYS_SYSTEM_ID, BREVREFERANSE, BREVPAKKE_FEILNIVA_FEIL, FEIL_UKJENT).toString(), Konstanter.MELDING_HEADER_LENGTH, ' ');
 	}
 
-	public static String createBadXmlKvitteringHeader(){
-		return generateKvitteringHeader(FORMAT, BISYS_SYSTEM_ID, BREVREFERANSE).toString();
+	public static String createPesysKvitteringFeilNiva() {
+		return StringUtils.rightPad(generateKvitteringHeader(PDF_CONTENTTYPE, PENSJON_SYSTEM_ID, BREVREFERANSE, BREVPAKKE_FEILNIVA_FEIL, FEIL_UKJENT).toString(), Konstanter.MELDING_HEADER_LENGTH, ' ');
 	}
 
-	public static String createBisysKvittering2(){
-		return StringUtils.rightPad(generateKvitteringHeader(FORMAT, BISYS_SYSTEM_ID, BREVREFERANSE2).toString(), Konstanter.MELDING_HEADER_LENGTH, ' ');
+	public static String createBadXmlKvitteringHeader(String system){
+		return generateKvitteringHeader(FORMAT, system, BREVREFERANSE).toString();
 	}
 
 	public static  StringBuilder generateKvitteringHeader(String contentType, String fagsystem, String brevref){

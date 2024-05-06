@@ -1,7 +1,7 @@
 package no.nav.brevserver.bestillBrev.peSys;
 
-import com.ibm.msg.client.jakarta.jms.DetailedJMSException;
-import no.nav.brevserver.core.exception.BrevTechnicalException;
+import jakarta.jms.Queue;
+import no.nav.brevserver.core.exception.BrevFunctionalException;
 import no.nav.brevserver.core.utils.MDC.MdcRemoverProcessor;
 import no.nav.brevserver.core.utils.MDC.MdcSetterProcessor;
 import org.apache.camel.ExchangePattern;
@@ -9,8 +9,6 @@ import org.apache.camel.LoggingLevel;
 import org.apache.camel.ValidationException;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.stereotype.Component;
-
-import jakarta.jms.Queue;
 
 import static no.nav.brevserver.core.utils.ExchangeUtils.JMS;
 import static no.nav.brevserver.core.utils.ExchangeUtils.JMS_OVERRIDDEN;
@@ -27,9 +25,7 @@ import static org.apache.camel.LoggingLevel.INFO;
 @Component
 public class PeBestillBrevRoute extends RouteBuilder {
 	public static final String PE_BESTILLBREV_ROUTE = "peBestill_brev";
-	private final String ROUTE_OPTIONS = "?transacted=true&concurrentConsumers=1";
-	public static final String BESTILL_BREV_ROUTE_PE = "direct:bestillBrevPe";
-
+	private static final String ROUTE_OPTIONS = "?transacted=true&concurrentConsumers=1";
 	private final Queue onlinebrevPe;
 	private final Queue dialogueOnlinePe;
 	private final Queue deadletterPe;
@@ -59,50 +55,24 @@ public class PeBestillBrevRoute extends RouteBuilder {
 				.logStackTrace(true)
 				.loggingLevel(ERROR));
 
-		onException(ValidationException.class)
+		onException(ValidationException.class, BrevFunctionalException.class)
 				.handled(true)
 				.useOriginalMessage()
 				.logExhaustedMessageBody(false)
-				.log(LoggingLevel.WARN, log, "${exception}; ")
+				.log(LoggingLevel.WARN, log, "Funksjonell feil oppstått i PeBestillBrevRoute: ${exception}; ")
 				.to("jms:" + deadletterPe.getQueueName());
-
-
-		onException(BrevTechnicalException.class)
-				.handled(true)
-				.useOriginalMessage()
-				.logExhaustedMessageBody(false)
-				.log(ERROR, log, "${exception}; ")
-				.to("jms:" + deadletterPe.getQueueName());
-
-
-		onException(DetailedJMSException.class)
-				.log(LoggingLevel.WARN, "DetailedJMSException oppstått i PeBestillBrevRoute")
-				.useOriginalMessage()
-				.logExhaustedMessageBody(false)
-				.logExhaustedMessageHistory(false)
-				.logStackTrace(true)
-				.handled(true)
-				.to("jms:" + deadletterPe.getQueueName());
-
-
-		from("jms:" + onlinebrevPe.getQueueName() + ROUTE_OPTIONS)
-				.to(BESTILL_BREV_ROUTE_PE);
 
 		//Brevbestilling fra Pesys
-		from(BESTILL_BREV_ROUTE_PE)
+		from("jms:" + onlinebrevPe.getQueueName() + ROUTE_OPTIONS)
 				.routeId(PE_BESTILLBREV_ROUTE)
 				.setExchangePattern(ExchangePattern.InOnly)
 				.process(new MdcSetterProcessor())
 				.log(LoggingLevel.INFO, log, PE_BESTILLBREV_ROUTE + " starter behandlingen av ny brevbestilling fra PeSys")
-				.process(exchange -> {
-					setDefaultReturnQueue(exchange, brevReplyPe.getQueueName());
-				})
+				.process(exchange -> setDefaultReturnQueue(exchange, brevReplyPe.getQueueName()))
 				.bean(peBestillBrevService)
 				.choice()
 					.when(exchangeProperty(SENDTOMODE).isEqualTo(OPPRETT_BREV))
-						.process(exchange -> {
-							setDestination(exchange, dialogueOnlinePe.getQueueName());
-						})
+						.process(exchange -> setDestination(exchange, dialogueOnlinePe.getQueueName()))
 						.to(JMS_OVERRIDDEN)
 						.log(INFO, log, "Brev sendt til opprettelse i Exstream: " + dialogueOnlinePe.getQueueName())
 					.when(exchangeProperty(SENDTOMODE).isEqualTo(GI_FEILMELDING ))
@@ -117,6 +87,5 @@ public class PeBestillBrevRoute extends RouteBuilder {
 				.end()
 				.process(new MdcRemoverProcessor());
 		//@formatter:on
-
 	}
 }

@@ -10,7 +10,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.util.concurrent.TimeUnit;
 
 import static no.nav.brevserver.bestillBrev.Utils.PENSJON_SYSTEM_ID;
-import static no.nav.brevserver.bestillBrev.Utils.createInput;
+import static no.nav.brevserver.bestillBrev.Utils.createInputFromFagsystem;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -22,7 +22,7 @@ public class PeBestillBrevServiceTest extends AbstractTest {
 
 	@Test
 	public void shouldHandleMessage()  {
-		String header = createInput(PENSJON_SYSTEM_ID);
+		String header = createInputFromFagsystem(PENSJON_SYSTEM_ID);
 		sendStringMessage(onlinebrevPe, header, CORRELATION_ID);
 
 		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
@@ -44,7 +44,7 @@ public class PeBestillBrevServiceTest extends AbstractTest {
 	@ParameterizedTest
 	@ValueSource(strings = {"","<rtv-brev>badXML<rtv-brev>", "BI12"})
 	public void shouldSendMessageToDeadletterWhenBadInput(String input)  {
-		String header = createInput(input);
+		String header = createInputFromFagsystem(input);
 		sendStringMessage(onlinebrevPe, header, CALL_ID);
 
 		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
@@ -55,7 +55,7 @@ public class PeBestillBrevServiceTest extends AbstractTest {
 
 	@Test
 	public void brevFinnesAllerede()  {
-		String header = createInput(PENSJON_SYSTEM_ID);
+		String header = createInputFromFagsystem(PENSJON_SYSTEM_ID);
 		sendStringMessage(onlinebrevPe, header, CALL_ID);
 		sendStringMessage(onlinebrevPe, header, CALL_ID);
 

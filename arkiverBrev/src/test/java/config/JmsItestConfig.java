@@ -34,6 +34,11 @@ public class JmsItestConfig {
 	}
 
 	@Bean
+	public Queue mottakArkivPeLinuxBq() {
+		return new ActiveMQQueue("mottakArkivPeLinuxBq");
+	}
+
+	@Bean
 	// exstream -> brevserver
 	// returkø fra exstream til brevserver
 	public Queue mottakOnlinePeLinux(@Value("${mottak_online_pe_linux.queuename}") String brevserverMottakOnlinePe) {
@@ -58,6 +63,21 @@ public class JmsItestConfig {
 	@Bean
 	public Queue deadletterPe() {
 		return new ActiveMQQueue("mottakDLQ");
+	}
+
+	@Bean
+	public Queue mottakArkivBq() {
+		return new ActiveMQQueue("mottakArkivBq");
+	}
+
+	@Bean
+	public Queue bestillBrevBq() {
+		return new ActiveMQQueue("bestillBrevBq");
+	}
+
+	@Bean
+	public Queue bestillBrevPeBq() {
+		return new ActiveMQQueue("bestillBrevPeBq");
 	}
 
 	@Bean(initMethod = "start", destroyMethod = "stop")

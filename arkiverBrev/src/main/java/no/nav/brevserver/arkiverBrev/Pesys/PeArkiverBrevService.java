@@ -5,7 +5,6 @@ import no.nav.brevserver.core.constants.Konstanter;
 import no.nav.brevserver.core.constants.SystemType;
 import no.nav.brevserver.core.exception.BrevException;
 import no.nav.brevserver.core.exception.BrevFunctionalException;
-import no.nav.brevserver.core.exception.BrevTechnicalException;
 import no.nav.brevserver.core.utils.ExchangeUtils;
 import no.nav.brevserver.core.utils.xmlHandlers.DialogueXMLParser;
 import no.nav.brevserver.core.utils.xmlHandlers.XMLService;
@@ -44,12 +43,8 @@ public class PeArkiverBrevService {
 		KvitteringVO kvittering = generateKvittering(messageVo);
 		log.info("Mottat kvittering for brevreferanse: " + kvittering.getBrevreferanse());
 
-		if (kvittering == null) {
-			throw new BrevFunctionalException("Kvittering er null");
-		}
-
 		// Sjekk om brevet finnes, hent status
-		BrevStatusVO brevStatusVo = brevstatusService.hentBrevStatus(kvittering.getSystemID(), kvittering.getBrevreferanse());
+		BrevStatusVO brevStatusVo = brevstatusService.hentBrevStatus(kvittering.getBrevreferanse(), kvittering.getSystemID());
 
 		// Hvis ingen status så opprett en basert på det man vet
 		if (brevStatusVo == null) {
@@ -113,20 +108,20 @@ public class PeArkiverBrevService {
 	}
 
 
-	private KvitteringVO generateKvittering(MessageVO messageVo) throws BrevTechnicalException {
+	private KvitteringVO generateKvittering(MessageVO messageVo) throws BrevFunctionalException {
 		KvitteringVO kvitteringVo;
 
 		try {
 			kvitteringVo = DialogueXMLParser.lagKvitteringVOFraDialogueMelding(messageVo.getByteBody());
 		} catch (Exception e) {
-			throw new BrevTechnicalException("Ugyldig brev-xml: \n" + e.getMessage());
+			throw new BrevFunctionalException("Ugyldig brev-xml: \n" + e.getMessage());
 		}
 
 		if (!kvitteringVo.getSystemID().startsWith(SystemType.PE.toString())) {
 			String errorMessage = "Brev med feil systemID mottatt: '" + kvitteringVo.getSystemID()
 					+ "', forventet bidragsbrev!";
 			log.error(errorMessage);
-			throw new BrevTechnicalException(errorMessage);
+			throw new BrevFunctionalException(errorMessage);
 		}
 
 		return kvitteringVo;

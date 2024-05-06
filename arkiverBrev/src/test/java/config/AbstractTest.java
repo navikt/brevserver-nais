@@ -1,4 +1,5 @@
-import config.ApplicationTestConfig;
+package config;
+
 import jakarta.jms.Queue;
 import jakarta.jms.TextMessage;
 import jakarta.xml.bind.JAXBElement;
@@ -41,8 +42,6 @@ public class AbstractTest {
 	protected JmsTemplate jmsTemplate;
 	@Autowired
 	protected Queue mottakSvarKo;
-
-
 
 	protected final String CORRELATION_ID = "corr-id";
 

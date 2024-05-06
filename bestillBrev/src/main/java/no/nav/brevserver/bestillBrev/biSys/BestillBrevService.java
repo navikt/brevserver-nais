@@ -6,7 +6,6 @@ import no.nav.brevserver.core.constants.Konstanter;
 import no.nav.brevserver.core.constants.SystemType;
 import no.nav.brevserver.core.exception.BrevException;
 import no.nav.brevserver.core.exception.BrevFunctionalException;
-import no.nav.brevserver.core.exception.BrevTechnicalException;
 import no.nav.brevserver.core.metrics.Metrics;
 import no.nav.brevserver.core.utils.ExchangeUtils;
 import no.nav.brevserver.core.utils.xmlHandlers.XMLService;
@@ -72,7 +71,7 @@ public class BestillBrevService {
 				log.info("Tilgang gitt for systemID '" + brevStatusVo.getSystemID() + "' med brevref: " + brevStatusVo.getBrevreferanse());
 			} else {
 				log.warn("Kunne ikke gi tilgang '" + brevStatusVo.getCensoredToken()
-						 + "' for systemID '" + brevStatusVo.getSystemID() + "'  med brevref: " + brevStatusVo.getBrevreferanse());
+						+ "' for systemID '" + brevStatusVo.getSystemID() + "'  med brevref: " + brevStatusVo.getBrevreferanse());
 			}
 			exchange.setProperty(SENDTOMODE, INGEN_TILBAKEMELDING);
 		} else {
@@ -104,18 +103,17 @@ public class BestillBrevService {
 		}
 	}
 
-	private BrevStatusVO generateBrevStatusVo(MessageVO messageVO) throws BrevTechnicalException {
+	private BrevStatusVO generateBrevStatusVo(MessageVO messageVO) throws BrevFunctionalException {
 		if (messageVO == null || messageVO.getStringBody() == null) {
-			throw new BrevTechnicalException("Ugyldig XML: InputMessage er null");
+			throw new BrevFunctionalException("Ugyldig XML: InputMessage er null");
 		}
 		StringReader reader = new StringReader(messageVO.getStringBody());
 		BrevStatusVO brevStatusVo;
 
 		try {
 			brevStatusVo = XMLService.marshalBrevStatus(reader);
-		} catch (BrevTechnicalException e) {
-			log.warn("Ugyldig XML mottatt!");
-			throw e;
+		} catch (Exception e) {
+			throw new BrevFunctionalException("Ugyldig XML mottatt, feilmelding: " + e.getMessage());
 		}
 
 		messageVO.setTilgangsXML(brevStatusVo != null && Konstanter.BREVMODUS_FRALAGER.equals(brevStatusVo.getModus()));
@@ -124,8 +122,8 @@ public class BestillBrevService {
 
 		if (brevStatusVo.getSystemID().startsWith(SystemType.PE.toString())) {
 			String errorMessage = "Brev med feil systemID mottatt: '" + brevStatusVo.getSystemID()
-								  + "', forventet ikke pensjonsbrev";
-			throw new BrevTechnicalException(BrevTechnicalException.FEIL_I_XML, errorMessage, null);
+					+ "', forventet ikke pensjonsbrev";
+			throw new BrevFunctionalException(errorMessage, null);
 		}
 
 		try {
@@ -133,8 +131,9 @@ public class BestillBrevService {
 			notEmpty("Systemid", brevStatusVo.getSystemID(), false);
 			notEmpty("Returkø", brevStatusVo.getReturKoe(), false);
 		} catch (BrevException e) {
-			log.warn("Ugyldig XML mottatt for brevreferanse " + messageVO.getBrevreferanse(), e);
-			throw new BrevTechnicalException(BrevTechnicalException.FEIL_I_XML, e);
+			String errorMsg = "Ugyldig XML mottatt for brevreferanse " + messageVO.getBrevreferanse();
+			log.warn(errorMsg, e);
+			throw new BrevFunctionalException(errorMsg, e);
 		}
 		return brevStatusVo;
 	}

@@ -102,14 +102,14 @@ public class Utils {
 		return IOUtils.toString(inputStream, UTF_8);
 	}
 
-	public static String createInput(String fagsystem){
+	public static String createInputFromFagsystem(String fagsystem){
 		StringBuilder builder = new StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
 		builder.append("<rtv-brev direkteutskrift=\"NEI\" format=\"ENSIDIG\" malpakke=\"BI01.BI01X01\" sysid=\"").append(fagsystem).append("\" passord=\"Bisys123\" saksbehandler=\"B100946\">");
 		addText(builder);
 		return builder.toString();
 	}
 
-	public static String createInput(String fagsystem, String modus){
+	public static String createInputFromFagsystem(String fagsystem, String modus){
 		StringBuilder builder = new StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
 		builder.append("<rtv-brev direkteutskrift=\"NEI\" klientToken=\"token\" modus=\"").append(modus).append("\" malpakke=\"BI01.BI01X01\" sysid=\"").append(fagsystem).append("\" passord=\"Bisys123\" saksbehandler=\"B100946\">");
 		addText(builder);

@@ -138,6 +138,4 @@ public class JmsConfig {
 	public Queue deadletterPe(@Value("${deadletter_pe.queuename}") String deadletterPe) throws JMSException {
 		return new MQQueue(deadletterPe);
 	}
-
-
 }

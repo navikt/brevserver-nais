@@ -1,13 +1,10 @@
 package no.nav.brevserver.arkiverBrev.Pesys;
 
-import com.ibm.msg.client.jakarta.jms.DetailedInvalidDestinationException;
-import com.ibm.msg.client.jakarta.jms.DetailedJMSException;
 import jakarta.jms.Queue;
-import no.nav.brevserver.core.exception.BrevTechnicalException;
+import no.nav.brevserver.core.exception.BrevFunctionalException;
 import no.nav.brevserver.core.utils.MDC.MdcRemoverProcessor;
 import no.nav.brevserver.core.utils.MDC.MdcSetterProcessor;
 import org.apache.camel.ExchangePattern;
-import org.apache.camel.LoggingLevel;
 import org.apache.camel.ValidationException;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.stereotype.Component;
@@ -21,11 +18,12 @@ import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.GI_TILBAKEME
 import static no.nav.brevserver.core.utils.ExchangeUtils.setDefaultReturnQueue;
 import static org.apache.camel.LoggingLevel.ERROR;
 import static org.apache.camel.LoggingLevel.INFO;
+import static org.apache.camel.LoggingLevel.WARN;
 
 @Component
 public class PeArkiverBrevRoute extends RouteBuilder {
 	public static final String PE_ARKIVER_BREV_ROUTE = "direct:peArkiverBrev";
-	private final String ROUTE_OPTIONS = "?transacted=true&concurrentConsumers=1&maxMessagesPerTask=100";
+	private static final String ROUTE_OPTIONS = "?transacted=true&concurrentConsumers=1&maxMessagesPerTask=100";
 
 
 	private final Queue mottakArkivPeLinux;
@@ -57,36 +55,11 @@ public class PeArkiverBrevRoute extends RouteBuilder {
 				.logStackTrace(true)
 				.loggingLevel(ERROR));
 
-		onException(DetailedInvalidDestinationException.class)
+		onException(ValidationException.class, BrevFunctionalException.class)
 				.handled(true)
 				.useOriginalMessage()
 				.logExhaustedMessageBody(false)
-				.log(LoggingLevel.WARN, log, "${exception}; ")
-				.to(JMS + deadletterPe.getQueueName());
-
-
-		onException(ValidationException.class)
-				.handled(true)
-				.useOriginalMessage()
-				.logExhaustedMessageBody(false)
-				.log(LoggingLevel.WARN, log, "${exception}; ")
-				.to(JMS + deadletterPe.getQueueName());
-
-		onException(BrevTechnicalException.class)
-				.handled(true)
-				.useOriginalMessage()
-				.logExhaustedMessageBody(false)
-				.log(ERROR, log, "${exception}; ")
-				.to(JMS + deadletterPe.getQueueName());
-
-
-		onException(DetailedJMSException.class)
-				.log(LoggingLevel.WARN, "DetailedJMSException oppstått i PeArkiverBrevRoute ${exception}")
-				.useOriginalMessage()
-				.logExhaustedMessageBody(true)
-				.logExhaustedMessageHistory(true)
-				.logStackTrace(true)
-				.handled(true)
+				.log(WARN, log, "${exception}; ")
 				.to(JMS + deadletterPe.getQueueName());
 
 		from("jms:" + mottakArkivPeLinux.getQueueName() + ROUTE_OPTIONS)
@@ -101,9 +74,7 @@ public class PeArkiverBrevRoute extends RouteBuilder {
 				.routeId(PE_ARKIVER_BREV_ROUTE)
 				.setExchangePattern(ExchangePattern.InOnly)
 				.process(new MdcSetterProcessor())
-				.process(exchange -> {
-					setDefaultReturnQueue(exchange, brevReplyPe.getQueueName());
-				})
+				.process(exchange -> setDefaultReturnQueue(exchange, brevReplyPe.getQueueName()))
 				.bean(peArkiverBrevService)
 				.choice()
 					.when(exchangeProperty(SENDTOMODE).isEqualTo(GI_TILBAKEMELDING))

@@ -1,8 +1,7 @@
 package no.nav.brevserver.arkiverBrev.BiSys;
 
-import com.ibm.msg.client.jakarta.jms.DetailedJMSException;
 import jakarta.jms.Queue;
-import no.nav.brevserver.core.exception.BrevTechnicalException;
+import no.nav.brevserver.core.exception.BrevFunctionalException;
 import no.nav.brevserver.core.utils.MDC.MdcRemoverProcessor;
 import no.nav.brevserver.core.utils.MDC.MdcSetterProcessor;
 import org.apache.camel.ValidationException;
@@ -26,7 +25,7 @@ import static org.apache.camel.LoggingLevel.WARN;
 @Component
 public class ArkiverBrevRoute extends RouteBuilder {
 	public static final String ARKIVER_BREV_ROUTE = "direct:arkiverBrev";
-	private final String ROUTE_OPTIONS = "?transacted=true&concurrentConsumers=1";
+	private static final String ROUTE_OPTIONS = "?transacted=true&concurrentConsumers=1";
 
 	private final Queue mottakArkiv;
 	private final Queue mottakOnlineLinux;
@@ -54,27 +53,11 @@ public class ArkiverBrevRoute extends RouteBuilder {
 				.logStackTrace(true)
 				.loggingLevel(ERROR));
 
-		onException(ValidationException.class)
+		onException(BrevFunctionalException.class, ValidationException.class)
 				.handled(true)
 				.useOriginalMessage()
 				.logExhaustedMessageBody(false)
 				.log(WARN, log, "${exception}; ")
-				.to(InOnly, "jms:" + deadletter.getQueueName());
-
-		onException(BrevTechnicalException.class)
-				.handled(true)
-				.useOriginalMessage()
-				.logExhaustedMessageBody(false)
-				.log(WARN, log, "${exception}; ")
-				.to(InOnly, "jms:" + deadletter.getQueueName());
-
-		onException(DetailedJMSException.class)
-				.log(WARN, "DetailedJMSException oppstått i ArkiverBrevRoute. ${exception};" )
-				.useOriginalMessage()
-				.logExhaustedMessageBody(true)
-				.logExhaustedMessageHistory(true)
-				.logStackTrace(true)
-				.handled(true)
 				.to(InOnly, "jms:" + deadletter.getQueueName());
 
 		from("jms:" + mottakArkiv.getQueueName() + ROUTE_OPTIONS)
@@ -89,9 +72,7 @@ public class ArkiverBrevRoute extends RouteBuilder {
 				.routeId(ARKIVER_BREV_ROUTE)
 				.setExchangePattern(InOnly)
 				.process(new MdcSetterProcessor())
-				.process(exchange -> {
-					setDefaultReturnQueue(exchange, deadletter.getQueueName());
-				})
+				.process(exchange -> setDefaultReturnQueue(exchange, deadletter.getQueueName()))
 				.bean(arkiverBrevService)
 				.removeHeader(JMSReplyTo)
 				.choice()

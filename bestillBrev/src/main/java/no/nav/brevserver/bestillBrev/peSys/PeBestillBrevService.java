@@ -101,9 +101,9 @@ public class PeBestillBrevService {
 		}
 	}
 
-	private BrevStatusVO generateBrevStatusVo(MessageVO messageVO) throws BrevTechnicalException {
+	private BrevStatusVO generateBrevStatusVo(MessageVO messageVO) throws BrevFunctionalException {
 		if (messageVO == null || messageVO.getStringBody() == null) {
-			throw new BrevTechnicalException("Ugyldig XML: InputMessage er null");
+			throw new BrevFunctionalException("Ugyldig XML: InputMessage er null");
 		}
 		StringReader reader = new StringReader(messageVO.getStringBody());
 		BrevStatusVO brevStatusVo;
@@ -111,8 +111,8 @@ public class PeBestillBrevService {
 		try {
 			brevStatusVo = XMLService.marshalBrevStatus(reader);
 		} catch (BrevTechnicalException e) {
-			log.warn("Ugyldig XML mottatt");
-			throw e;
+			log.warn(e.getMessage());
+			throw new BrevFunctionalException(e.getMessage());
 		}
 		messageVO.setTilgangsXML(Konstanter.BREVMODUS_FRALAGER.equals(brevStatusVo.getModus()));
 		brevStatusVo.setReturKoe(messageVO.getReplyQueueName());
@@ -121,7 +121,7 @@ public class PeBestillBrevService {
 		if (!brevStatusVo.getSystemID().startsWith(SystemType.PE.toString())) {
 			String errorMessage = "Brev med feil systemID mottatt: '" + brevStatusVo.getSystemID()
 					+ "', forventer pensjonsbrev";
-			throw new BrevTechnicalException(BrevTechnicalException.FEIL_I_XML, errorMessage, null);
+			throw new BrevFunctionalException(errorMessage, null);
 		}
 
 		try {
@@ -129,8 +129,9 @@ public class PeBestillBrevService {
 			notEmpty("Systemid", brevStatusVo.getSystemID(), false);
 			notEmpty("Returkø", brevStatusVo.getReturKoe(), false);
 		} catch (BrevException e) {
-			log.error("Ugyldig XML mottatt for brevreferanse " + messageVO.getBrevreferanse(), e);
-			throw new BrevTechnicalException(BrevTechnicalException.FEIL_I_XML, e);
+			String errorMsg ="Ugyldig XML mottatt for brevreferanse " + messageVO.getBrevreferanse();
+			log.error(errorMsg, e);
+			throw new BrevFunctionalException(errorMsg);
 		}
 		return brevStatusVo;
 	}

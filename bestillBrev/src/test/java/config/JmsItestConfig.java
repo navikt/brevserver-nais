@@ -1,5 +1,7 @@
 package config;
 
+import jakarta.jms.ConnectionFactory;
+import jakarta.jms.Queue;
 import no.nav.brevserver.core.config.jms.JmsConfig;
 import org.apache.activemq.artemis.core.server.embedded.EmbeddedActiveMQ;
 import org.apache.activemq.artemis.jms.client.ActiveMQConnectionFactory;
@@ -10,9 +12,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
-
-import jakarta.jms.ConnectionFactory;
-import jakarta.jms.Queue;
 
 
 @Configuration
@@ -62,6 +61,26 @@ public class JmsItestConfig {
 	@Bean
 	public Queue svarKo() {
 		return new ActiveMQQueue("SvarKo");
+	}
+
+	@Bean
+	public Queue mottakArkivBq() {
+		return new ActiveMQQueue("mottakArkivBq");
+	}
+
+	@Bean
+	public Queue mottakArkivPeBq() {
+		return new ActiveMQQueue("mottakArkivPeBq");
+	}
+
+	@Bean
+	public Queue bestillBrevBq() {
+		return new ActiveMQQueue("bestillBrevBq");
+	}
+
+	@Bean
+	public Queue bestillBrevPeBq() {
+		return new ActiveMQQueue("bestillBrevPeBq");
 	}
 
 	@Bean(initMethod = "start", destroyMethod = "stop")
