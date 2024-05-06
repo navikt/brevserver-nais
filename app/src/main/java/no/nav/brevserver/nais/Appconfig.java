@@ -10,8 +10,10 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.jms.annotation.EnableJms;
+import org.springframework.retry.annotation.EnableRetry;
 
 @EnableJms
+@EnableRetry
 @EnableConfigurationProperties({
 		MqGatewayProperties.class,
 		BrevserverProperties.class,
