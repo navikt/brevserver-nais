@@ -17,4 +17,3 @@ jobs:
     secrets: inherit
     with:
       java-version: '21'
-      should-byosbom: true
