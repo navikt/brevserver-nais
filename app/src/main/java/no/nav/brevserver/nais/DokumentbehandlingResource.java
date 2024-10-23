@@ -1,5 +1,8 @@
 package no.nav.brevserver.nais;
 
+import jakarta.activation.DataHandler;
+import jakarta.mail.util.ByteArrayDataSource;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.brevserver.core.exception.BrevException;
 import no.nav.brevserver.core.exception.BrevFinnesAlleredeException;
@@ -20,9 +23,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
-import jakarta.activation.DataHandler;
-import jakarta.mail.util.ByteArrayDataSource;
-import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
@@ -31,6 +31,7 @@ import static no.nav.brevserver.core.constants.MDCConstants.BREVREFERANSE_KEY;
 import static no.nav.brevserver.core.constants.MDCConstants.NAV_CALL_ID;
 import static no.nav.brevserver.core.constants.MDCConstants.SYSTEMID_KEY;
 import static no.nav.brevserver.core.constants.MDCConstants.X_CORRELATION_ID;
+import static no.nav.brevserver.core.utils.SanitizeLoggingUtil.sanitizeInputString;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @RequestMapping("rest")
@@ -52,7 +53,7 @@ public class DokumentbehandlingResource {
 			MDC.put(SYSTEMID_KEY, lagreDokumentRequest.getSystemId());
 			MDC.put(BREVREFERANSE_KEY, lagreDokumentRequest.getBrevreferanse());
 
-			log.info("Brevserver har mottat kall for å lagre dokument " + lagreDokumentRequest.getBrevreferanse() + " fra: " + lagreDokumentRequest.getSystemId());
+			log.info("Brevserver har mottat kall for å lagre dokument {} fra: {} ", sanitizeInputString(lagreDokumentRequest.getBrevreferanse()), sanitizeInputString(lagreDokumentRequest.getSystemId()));
 			dokumentbehandlingProvider.lagreDokument(lagreDokumentRequest);
 		} catch (RuntimeException e) {
 			log.error("lagreDokument message={}", e.getMessage(), e);
@@ -69,7 +70,7 @@ public class DokumentbehandlingResource {
 			MDC.put(SYSTEMID_KEY, avbrytDokumentRequest.getSystemId());
 			MDC.put(BREVREFERANSE_KEY, avbrytDokumentRequest.getBrevreferanse());
 
-			log.info("Brevserver har mottatt kall for å avbryte dokument " + avbrytDokumentRequest.getBrevreferanse() + " fra " + avbrytDokumentRequest.getSystemId());
+			log.info("Brevserver har mottatt kall for å avbryte dokument {} fra {}", sanitizeInputString(avbrytDokumentRequest.getBrevreferanse()), sanitizeInputString(avbrytDokumentRequest.getSystemId()));
 			dokumentbehandlingProvider.avbrytDokument(avbrytDokumentRequest);
 		} catch (RuntimeException e) {
 			log.error("avbrytDokument message={}", e.getMessage(), e);
@@ -86,7 +87,7 @@ public class DokumentbehandlingResource {
 			MDC.put(SYSTEMID_KEY, ferdigstillDokumentRequest.getSystemId());
 			MDC.put(BREVREFERANSE_KEY, ferdigstillDokumentRequest.getBrevreferanse());
 
-			log.info("Brevserver har mottatt kall for å ferdigstille dokument: " + ferdigstillDokumentRequest.getBrevreferanse() + " fra: " + ferdigstillDokumentRequest.getSystemId());
+			log.info("Brevserver har mottatt kall for å ferdigstille dokument:{} fra:{} ", sanitizeInputString(ferdigstillDokumentRequest.getBrevreferanse()), sanitizeInputString(ferdigstillDokumentRequest.getSystemId()));
 			ferdigstillDokumentRequest.setRedDokument(createDataHandlerForFile(redDokument.getInputStream(), redMimetype));
 			ferdigstillDokumentRequest.setPdfDokument(createDataHandlerForFile(pdfDokument.getInputStream(), pdfMimetype));
 			dokumentbehandlingProvider.ferdigstillDokument(ferdigstillDokumentRequest);

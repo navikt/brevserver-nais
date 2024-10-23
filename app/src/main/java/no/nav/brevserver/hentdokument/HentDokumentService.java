@@ -9,6 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
+import static no.nav.brevserver.core.utils.SanitizeLoggingUtil.sanitizeInputString;
+
 @Slf4j
 @Service
 @Transactional(readOnly = true)
@@ -21,11 +23,11 @@ public class HentDokumentService {
 	}
 
 	public Bilag hentDokumentFraBrevlager(String brevreferanse, String systemId) {
-		log.info("Skal hente dokument fra Brevlager med brevreferanse={} og systemId={}", brevreferanse, systemId);
+		log.info("Skal hente dokument fra Brevlager med brevreferanse={} og systemId={}", sanitizeInputString(brevreferanse), sanitizeInputString(systemId));
 
 		Bilag dokument = getBrev(brevreferanse, systemId);
 
-		log.info("Har hentet dokument fra Brevlager med brevreferanse={} og systemId={}", brevreferanse, systemId);
+		log.info("Har hentet dokument fra Brevlager med brevreferanse={} og systemId={}", sanitizeInputString(brevreferanse), sanitizeInputString(systemId));
 
 		return dokument;
 	}

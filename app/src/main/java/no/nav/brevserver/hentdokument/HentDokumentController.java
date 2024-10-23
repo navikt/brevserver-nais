@@ -1,5 +1,8 @@
 package no.nav.brevserver.hentdokument;
 
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.security.token.support.core.api.Protected;
 import org.springframework.http.HttpStatus;
@@ -11,11 +14,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import jakarta.validation.ConstraintViolationException;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-
 import static java.lang.String.format;
+import static no.nav.brevserver.core.utils.SanitizeLoggingUtil.sanitizeInputString;
 import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -48,27 +48,27 @@ public class HentDokumentController {
 		// Endepunktet er tilpasset OEBS og henting av bilag til det skulle bli behov for noe mer
 		var systemId = OEBS_SYSTEMID;
 
-		log.info("hentdokument henter dokument med brevreferanse={} og systemId={}", brevreferanse, systemId);
+		log.info("hentdokument henter dokument med brevreferanse={} og systemId={}", sanitizeInputString(brevreferanse), sanitizeInputString(systemId));
 
 		Bilag bilag = hentDokumentService.hentDokumentFraBrevlager(brevreferanse, systemId);
 
 		if (bilag == null) {
-			log.info("hentdokument fant ikke dokument med brevreferanse={} og systemId={} i databasen", brevreferanse, systemId);
+			log.info("hentdokument fant ikke dokument med brevreferanse={} og systemId={} i databasen", sanitizeInputString(brevreferanse), sanitizeInputString(systemId));
 			return ResponseEntity.notFound().build();
 		}
 
 		var contentType = bilag.contentType();
 		if (!APPLICATION_PDF_VALUE.equals(contentType)) {
-			log.info("dokument med brevreferanse={} har contentType={}, som ikke kan vises frem i nettleseren", brevreferanse, contentType);
+			log.info("dokument med brevreferanse={} har contentType={}, som ikke kan vises frem i nettleseren", sanitizeInputString(brevreferanse), contentType);
 
 			return ResponseEntity.notFound().build();
 		}
 
-		log.info("hentdokument hentet dokument med brevreferanse={} og systemId={}", brevreferanse, systemId);
+		log.info("hentdokument hentet dokument med brevreferanse={} og systemId={}", sanitizeInputString(brevreferanse), sanitizeInputString(systemId));
 
 		return ResponseEntity.ok()
 				.contentType(valueOf(contentType))
-				.header(CONTENT_DISPOSITION, format("inline; filename=%s_%s%s", systemId, brevreferanse, mapExtension(contentType)))
+				.header(CONTENT_DISPOSITION, format("inline; filename=%s_%s%s", sanitizeInputString(systemId), sanitizeInputString(brevreferanse), mapExtension(contentType)))
 				.body(bilag.brevdata());
 	}
 

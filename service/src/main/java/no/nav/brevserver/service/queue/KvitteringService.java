@@ -1,5 +1,7 @@
 package no.nav.brevserver.service.queue;
 
+import jakarta.jms.JMSException;
+import jakarta.jms.Queue;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.brevserver.core.constants.SystemType;
 import no.nav.brevserver.core.utils.xmlHandlers.XMLService;
@@ -12,11 +14,9 @@ import org.apache.camel.ProducerTemplate;
 import org.apache.camel.builder.ExchangeBuilder;
 import org.springframework.stereotype.Component;
 
-import jakarta.jms.JMSException;
-import jakarta.jms.Queue;
-
 import static no.nav.brevserver.core.utils.ExchangeUtils.buildReturnQueue;
 import static no.nav.brevserver.core.utils.ExchangeUtils.setDestination;
+import static no.nav.brevserver.core.utils.SanitizeLoggingUtil.sanitizeInputString;
 import static no.nav.brevserver.service.queue.KvitteringRoute.DIRECT_SENDKVITTERINGROUTE;
 import static org.apache.logging.log4j.util.Strings.isEmpty;
 
@@ -37,7 +37,7 @@ public class KvitteringService {
 	}
 
 	public void sendKvittering(BrevVO brev, BrevStatusVO brevstatus, SystemType systemType, String returKoe) {
-		log.info("Sender kvittering for brevref: " + brev.getBrevreferanse() + ", brevStatus: " + brev.getLagerStatus());
+		log.info("Sender kvittering for brevref: {}, brevStatus: {}", sanitizeInputString(brev.getBrevreferanse()), sanitizeInputString(brev.getLagerStatus()));
 
 		KvitteringVO kvittering = createKvittering(brevstatus, brev);
 		String xmlKvittering = XMLService.unmarshal(kvittering, brevstatus);
@@ -94,7 +94,7 @@ public class KvitteringService {
 
 			producerTemplate.send(DIRECT_SENDKVITTERINGROUTE, kvitteringExchange);
 		} catch (Exception e) {
-			log.error("Klarte ikke sende melding: " + e.getMessage() + " \n" + e.getStackTrace());
+			log.error("Klarte ikke sende melding: {} \n {}", e.getMessage(), e.getStackTrace());
 		}
 	}
 
