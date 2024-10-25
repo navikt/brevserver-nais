@@ -29,6 +29,7 @@ import static org.springframework.http.MediaType.valueOf;
 @RequestMapping("rest")
 public class HentDokumentController {
 
+	// Endepunktet er tilpasset OEBS og henting av bilag til det skulle bli behov for noe mer
 	public static final String OEBS_SYSTEMID = "FS10";
 	private static final String HENTDOKUMENT_FUNKSJONELL_FEILMELDING = "hentdokument feilet funksjonelt med feilmelding: {}";
 
@@ -45,30 +46,27 @@ public class HentDokumentController {
 			@Pattern(regexp = "^\\d{1,32}$", message = "brevreferanse må være numerisk og må ha 32 eller færre siffer.")
 			String brevreferanse
 	) {
-		// Endepunktet er tilpasset OEBS og henting av bilag til det skulle bli behov for noe mer
-		var systemId = OEBS_SYSTEMID;
+		log.info("hentdokument henter dokument med brevreferanse={} og systemId={}", brevreferanse, OEBS_SYSTEMID);
 
-		log.info("hentdokument henter dokument med brevreferanse={} og systemId={}", sanitizeUnsafeChar(brevreferanse), sanitizeUnsafeChar(systemId));
-
-		Bilag bilag = hentDokumentService.hentDokumentFraBrevlager(brevreferanse, systemId);
+		Bilag bilag = hentDokumentService.hentDokumentFraBrevlager(brevreferanse, OEBS_SYSTEMID);
 
 		if (bilag == null) {
-			log.info("hentdokument fant ikke dokument med brevreferanse={} og systemId={} i databasen", sanitizeUnsafeChar(brevreferanse), sanitizeUnsafeChar(systemId));
+			log.info("hentdokument fant ikke dokument med brevreferanse={} og systemId={} i databasen", brevreferanse, OEBS_SYSTEMID);
 			return ResponseEntity.notFound().build();
 		}
 
 		var contentType = bilag.contentType();
 		if (!APPLICATION_PDF_VALUE.equals(contentType)) {
-			log.info("dokument med brevreferanse={} har contentType={}, som ikke kan vises frem i nettleseren", sanitizeUnsafeChar(brevreferanse), contentType);
+			log.info("dokument med brevreferanse={} har contentType={}, som ikke kan vises frem i nettleseren", brevreferanse, contentType);
 
 			return ResponseEntity.notFound().build();
 		}
 
-		log.info("hentdokument hentet dokument med brevreferanse={} og systemId={}", sanitizeUnsafeChar(brevreferanse), sanitizeUnsafeChar(systemId));
+		log.info("hentdokument hentet dokument med brevreferanse={} og systemId={}", brevreferanse, OEBS_SYSTEMID);
 
 		return ResponseEntity.ok()
 				.contentType(valueOf(contentType))
-				.header(CONTENT_DISPOSITION, format("inline; filename=%s_%s%s", sanitizeUnsafeChar(systemId), sanitizeUnsafeChar(brevreferanse), mapExtension(contentType)))
+				.header(CONTENT_DISPOSITION, format("inline; filename=%s_%s%s", OEBS_SYSTEMID, brevreferanse, mapExtension(contentType)))
 				.body(bilag.brevdata());
 	}
 

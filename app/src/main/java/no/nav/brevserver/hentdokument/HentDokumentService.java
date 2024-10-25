@@ -32,7 +32,7 @@ public class HentDokumentService {
 		return dokument;
 	}
 
-	public Bilag getBrev(String brevReferanse, String systemId) {
+	private Bilag getBrev(String brevReferanse, String systemId) {
 		var id = BrevreferanseSystemCompositeId.builder().systemId(systemId).brevreferanse(brevReferanse).build();
 		Optional<Brev> brev = brevRepository.findById(id);
 
