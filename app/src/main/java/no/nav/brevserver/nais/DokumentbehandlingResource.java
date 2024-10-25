@@ -31,7 +31,7 @@ import static no.nav.brevserver.core.constants.MDCConstants.BREVREFERANSE_KEY;
 import static no.nav.brevserver.core.constants.MDCConstants.NAV_CALL_ID;
 import static no.nav.brevserver.core.constants.MDCConstants.SYSTEMID_KEY;
 import static no.nav.brevserver.core.constants.MDCConstants.X_CORRELATION_ID;
-import static no.nav.brevserver.core.utils.SanitizeLoggingUtil.sanitizeInputString;
+import static no.nav.brevserver.core.utils.SafeLoggingUtil.sanitizeUnsafeChar;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @RequestMapping("rest")
@@ -53,7 +53,7 @@ public class DokumentbehandlingResource {
 			MDC.put(SYSTEMID_KEY, lagreDokumentRequest.getSystemId());
 			MDC.put(BREVREFERANSE_KEY, lagreDokumentRequest.getBrevreferanse());
 
-			log.info("Brevserver har mottat kall for å lagre dokument {} fra: {} ", sanitizeInputString(lagreDokumentRequest.getBrevreferanse()), sanitizeInputString(lagreDokumentRequest.getSystemId()));
+			log.info("Brevserver har mottat kall for å lagre dokument {} fra: {} ", sanitizeUnsafeChar(lagreDokumentRequest.getBrevreferanse()), sanitizeUnsafeChar(lagreDokumentRequest.getSystemId()));
 			dokumentbehandlingProvider.lagreDokument(lagreDokumentRequest);
 		} catch (RuntimeException e) {
 			log.error("lagreDokument message={}", e.getMessage(), e);
@@ -70,7 +70,7 @@ public class DokumentbehandlingResource {
 			MDC.put(SYSTEMID_KEY, avbrytDokumentRequest.getSystemId());
 			MDC.put(BREVREFERANSE_KEY, avbrytDokumentRequest.getBrevreferanse());
 
-			log.info("Brevserver har mottatt kall for å avbryte dokument {} fra {}", sanitizeInputString(avbrytDokumentRequest.getBrevreferanse()), sanitizeInputString(avbrytDokumentRequest.getSystemId()));
+			log.info("Brevserver har mottatt kall for å avbryte dokument {} fra {}", sanitizeUnsafeChar(avbrytDokumentRequest.getBrevreferanse()), sanitizeUnsafeChar(avbrytDokumentRequest.getSystemId()));
 			dokumentbehandlingProvider.avbrytDokument(avbrytDokumentRequest);
 		} catch (RuntimeException e) {
 			log.error("avbrytDokument message={}", e.getMessage(), e);
@@ -87,7 +87,7 @@ public class DokumentbehandlingResource {
 			MDC.put(SYSTEMID_KEY, ferdigstillDokumentRequest.getSystemId());
 			MDC.put(BREVREFERANSE_KEY, ferdigstillDokumentRequest.getBrevreferanse());
 
-			log.info("Brevserver har mottatt kall for å ferdigstille dokument:{} fra:{} ", sanitizeInputString(ferdigstillDokumentRequest.getBrevreferanse()), sanitizeInputString(ferdigstillDokumentRequest.getSystemId()));
+			log.info("Brevserver har mottatt kall for å ferdigstille dokument:{} fra:{} ", sanitizeUnsafeChar(ferdigstillDokumentRequest.getBrevreferanse()), sanitizeUnsafeChar(ferdigstillDokumentRequest.getSystemId()));
 			ferdigstillDokumentRequest.setRedDokument(createDataHandlerForFile(redDokument.getInputStream(), redMimetype));
 			ferdigstillDokumentRequest.setPdfDokument(createDataHandlerForFile(pdfDokument.getInputStream(), pdfMimetype));
 			dokumentbehandlingProvider.ferdigstillDokument(ferdigstillDokumentRequest);

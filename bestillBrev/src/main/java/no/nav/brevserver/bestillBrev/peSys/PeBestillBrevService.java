@@ -28,7 +28,7 @@ import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.OPPRETT_BREV
 import static no.nav.brevserver.core.utils.ExchangeUtils.notEmpty;
 import static no.nav.brevserver.core.utils.ExchangeUtils.setBodyAndMode;
 import static no.nav.brevserver.core.utils.ExchangeUtils.setBodyAndReturnQueueWithMode;
-import static no.nav.brevserver.core.utils.SanitizeLoggingUtil.sanitizeInputString;
+import static no.nav.brevserver.core.utils.SafeLoggingUtil.sanitizeUnsafeChar;
 
 @Slf4j
 @Component
@@ -64,10 +64,10 @@ public class PeBestillBrevService {
 			boolean ok = brevtilgangService.lagreTilgang(brevStatusVo.getSystemID(), brevStatusVo.getBrevreferanse(),
 					brevStatusVo.getToken());
 			if (ok) {
-				log.info("Tilgang gitt for systemID '{}' med brevref:", sanitizeInputString(brevStatusVo.getSystemID()), sanitizeInputString(brevStatusVo.getBrevreferanse()));
+				log.info("Tilgang gitt for systemID '{}' med brevref:", sanitizeUnsafeChar(brevStatusVo.getSystemID()), sanitizeUnsafeChar(brevStatusVo.getBrevreferanse()));
 			} else {
 				log.warn("Kunne ikke gi tilgang '{}' for systemID '{}'", brevStatusVo.getCensoredToken(),
-						sanitizeInputString(brevStatusVo.getSystemID()), sanitizeInputString(brevStatusVo.getBrevreferanse()));
+						sanitizeUnsafeChar(brevStatusVo.getSystemID()), sanitizeUnsafeChar(brevStatusVo.getBrevreferanse()));
 			}
 			exchange.setProperty(SENDTOMODE, INGEN_TILBAKEMELDING);
 
@@ -75,7 +75,7 @@ public class PeBestillBrevService {
 		} else {
 			BrevStatusVO tmp = brevstatusService.hentBrevStatus(brevStatusVo.getBrevreferanse(), brevStatusVo.getSystemID());
 			if (tmp != null) {
-				log.warn("Brevet eksisterer fra før {}", sanitizeInputString(brevStatusVo.getBrevreferanse()));
+				log.warn("Brevet eksisterer fra før {}", sanitizeUnsafeChar(brevStatusVo.getBrevreferanse()));
 				setBodyAndReturnQueueWithMode(
 						exchange,
 						lagFeilmelding(Konstanter.FEIL_BREV_EKSISTERER, brevStatusVo),
@@ -89,7 +89,7 @@ public class PeBestillBrevService {
 				brevStatusVo.setReturKoe(messageVo.getReplyQueueName());
 			}
 			brevstatusService.lagreBrevStatus(brevStatusVo);
-			log.info("Brev med brevref: {} er arkivert i Brevlageret", sanitizeInputString(brevStatusVo.getBrevreferanse()));
+			log.info("Brev med brevref: {} er arkivert i Brevlageret", sanitizeUnsafeChar(brevStatusVo.getBrevreferanse()));
 
 			if(brevserverProperties.isLoggXML()){
 				log.info("Pensjons-XML til Exstream:\n" + messageVo.getStringBody());

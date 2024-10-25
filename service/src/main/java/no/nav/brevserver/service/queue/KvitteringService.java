@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 
 import static no.nav.brevserver.core.utils.ExchangeUtils.buildReturnQueue;
 import static no.nav.brevserver.core.utils.ExchangeUtils.setDestination;
-import static no.nav.brevserver.core.utils.SanitizeLoggingUtil.sanitizeInputString;
+import static no.nav.brevserver.core.utils.SafeLoggingUtil.sanitizeUnsafeChar;
 import static no.nav.brevserver.service.queue.KvitteringRoute.DIRECT_SENDKVITTERINGROUTE;
 import static org.apache.logging.log4j.util.Strings.isEmpty;
 
@@ -37,7 +37,7 @@ public class KvitteringService {
 	}
 
 	public void sendKvittering(BrevVO brev, BrevStatusVO brevstatus, SystemType systemType, String returKoe) {
-		log.info("Sender kvittering for brevref: {}, brevStatus: {}", sanitizeInputString(brev.getBrevreferanse()), sanitizeInputString(brev.getLagerStatus()));
+		log.info("Sender kvittering for brevref: {}, brevStatus: {}", sanitizeUnsafeChar(brev.getBrevreferanse()), sanitizeUnsafeChar(brev.getLagerStatus()));
 
 		KvitteringVO kvittering = createKvittering(brevstatus, brev);
 		String xmlKvittering = XMLService.unmarshal(kvittering, brevstatus);

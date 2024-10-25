@@ -36,7 +36,7 @@ import static no.nav.brevserver.core.constants.Konstanter.SKRIVERTYPE_INGEN;
 import static no.nav.brevserver.core.constants.SystemType.BI;
 import static no.nav.brevserver.core.constants.SystemType.PE;
 import static no.nav.brevserver.core.exception.BrevTechnicalException.DATABASE_IKKE_TILGJENGELIG;
-import static no.nav.brevserver.core.utils.SanitizeLoggingUtil.sanitizeInputString;
+import static no.nav.brevserver.core.utils.SafeLoggingUtil.sanitizeUnsafeChar;
 import static no.nav.brevserver.core.vo.FilType.DOCX;
 import static no.nav.brevserver.core.vo.FilType.PDF;
 import static no.nav.brevserver.core.vo.FilType.RTF;
@@ -114,7 +114,7 @@ public class DefaultBrevlagerService implements BrevlagerService {
 	@Override
 	public void ferdigstillBrev(BrevStatusVO brevStatus, BrevVO redBrev, BrevVO pdfBrev) throws BrevException {
 		try {
-			log.info("prøver å ferdigstille brev {} fra {} mal:{}", sanitizeInputString(brevStatus.getBrevreferanse()), sanitizeInputString(brevStatus.getSystemID()), brevStatus.getBrevmal());
+			log.info("prøver å ferdigstille brev {} fra {} mal:{}", sanitizeUnsafeChar(brevStatus.getBrevreferanse()), sanitizeUnsafeChar(brevStatus.getSystemID()), brevStatus.getBrevmal());
 
 			verifyChangeRequest(brevStatus);
 			brevStatus.setStatus(BREVSTATUS_FERDIG);
@@ -130,7 +130,7 @@ public class DefaultBrevlagerService implements BrevlagerService {
 
 			brevstatusService.lagreBrevStatus(brevStatus);
 
-			log.info("Ferdigstilte brev {} fra {} mal:{}", sanitizeInputString(brevStatus.getBrevreferanse()), sanitizeInputString(brevStatus.getSystemID()), brevStatus.getBrevmal());
+			log.info("Ferdigstilte brev {} fra {} mal:{}", sanitizeUnsafeChar(brevStatus.getBrevreferanse()), sanitizeUnsafeChar(brevStatus.getSystemID()), brevStatus.getBrevmal());
 			SystemType systemType = brevStatus.getSystemID().startsWith("PE") ? PE : BI;
 			kvitteringService.sendKvittering(pdfBrev, brevStatus, systemType, brevStatus.getReturKoe());
 		} catch (RuntimeException e) {
@@ -141,7 +141,7 @@ public class DefaultBrevlagerService implements BrevlagerService {
 	@Override
 	public BrevVO hentDokumentFromBrevlagerOrJoark(BrevStatusVO brevStatus) throws BrevTechnicalException {
 		checkRequiredFields(brevStatus.getSystemID(), brevStatus.getBrevreferanse(), brevStatus.getToken());
-		log.info("hentDokumentFromBrevlagerOrJoark:{} fra {} mal:{}", sanitizeInputString(brevStatus.getBrevreferanse()), sanitizeInputString(brevStatus.getSystemID()), brevStatus.getBrevmal());
+		log.info("hentDokumentFromBrevlagerOrJoark:{} fra {} mal:{}", sanitizeUnsafeChar(brevStatus.getBrevreferanse()), sanitizeUnsafeChar(brevStatus.getSystemID()), brevStatus.getBrevmal());
 
 		BrevVO result = null;
 		if (sjekkSystemTokenTilgang(brevStatus.getSystemID(), brevStatus.getBrevreferanse(), brevStatus.getToken())) {
@@ -150,16 +150,16 @@ public class DefaultBrevlagerService implements BrevlagerService {
 			} else {
 				result = getBrev(brevStatus.getSystemID(), brevStatus.getBrevreferanse());
 			}
-			log.info("hentDokumentFromBrevlagerOrJoark har hentet {} fra {}", sanitizeInputString(brevStatus.getBrevreferanse()), sanitizeInputString(brevStatus.getSystemID()));
+			log.info("hentDokumentFromBrevlagerOrJoark har hentet {} fra {}", sanitizeUnsafeChar(brevStatus.getBrevreferanse()), sanitizeUnsafeChar(brevStatus.getSystemID()));
 		} else {
-			log.warn("hentDokumentFromBrevlagerOrJoark: Bruker har ikke tilgang til brev med brevreferanse={} fra={}", sanitizeInputString(brevStatus.getBrevreferanse()), brevStatus.getSystemID());
+			log.warn("hentDokumentFromBrevlagerOrJoark: Bruker har ikke tilgang til brev med brevreferanse={} fra={}", sanitizeUnsafeChar(brevStatus.getBrevreferanse()), brevStatus.getSystemID());
 		}
 
 		return result;
 	}
 
 	private void brevferdigstillBrevlagerDokument(BrevStatusVO brevStatus, BrevVO redBrevVo, BrevVO pdfBrevVo) throws BrevTechnicalException {
-		log.info("Prøver å ferdigstille brevlagerdokument {} fra {} mal:{}", sanitizeInputString(brevStatus.getBrevreferanse()), sanitizeInputString(brevStatus.getSystemID()), brevStatus.getBrevmal());
+		log.info("Prøver å ferdigstille brevlagerdokument {} fra {} mal:{}", sanitizeUnsafeChar(brevStatus.getBrevreferanse()), sanitizeUnsafeChar(brevStatus.getSystemID()), brevStatus.getBrevmal());
 
 		translateContentTypeDocxToDb2(redBrevVo);
 		Brev redBrev = voTilBrevConverter.convert(redBrevVo);
@@ -168,7 +168,7 @@ public class DefaultBrevlagerService implements BrevlagerService {
 		defaultBrevlagerHistorikkService.insertHistorikk(redBrev);
 		brevRepository.save(pdfBrev);
 
-		log.info("brevlagerdokument {} fra {} har blitt ferdigstilt", sanitizeInputString(brevStatus.getBrevreferanse()), sanitizeInputString(brevStatus.getSystemID()));
+		log.info("brevlagerdokument {} fra {} har blitt ferdigstilt", sanitizeUnsafeChar(brevStatus.getBrevreferanse()), sanitizeUnsafeChar(brevStatus.getSystemID()));
 	}
 
 	@Override
@@ -196,12 +196,12 @@ public class DefaultBrevlagerService implements BrevlagerService {
 			kvitteringService.sendKvitteringBi(xmlKvittering, brevStatus.getReturKoe());
 		}
 
-		log.info("Brevet ble avbrutt. Brevref:{}", sanitizeInputString(brevStatus.getBrevreferanse()));
+		log.info("Brevet ble avbrutt. Brevref:{}", sanitizeUnsafeChar(brevStatus.getBrevreferanse()));
 	}
 
 	@Override
 	public void lagreDokument(BrevVO brev, BrevStatusVO brevStatusVO, SystemType systemType) throws BrevException {
-		log.info("Lagrer dokument {} fra {} mal:{}", sanitizeInputString(brevStatusVO.getBrevreferanse()), sanitizeInputString(brevStatusVO.getSystemID()), sanitizeInputString(brevStatusVO.getBrevmal()));
+		log.info("Lagrer dokument {} fra {} mal:{}", sanitizeUnsafeChar(brevStatusVO.getBrevreferanse()), sanitizeUnsafeChar(brevStatusVO.getSystemID()), sanitizeUnsafeChar(brevStatusVO.getBrevmal()));
 		if (brev == null || brevStatusVO == null) {
 			throw new IllegalArgumentException("Brevstatus er null!");
 		}
@@ -261,7 +261,7 @@ public class DefaultBrevlagerService implements BrevlagerService {
 
 		if (LAGER_STATUS_A.equals(result.getLagerStatus()) && result.getContentType().equals(RTF.getContentType())) {
 			log.warn("Forsøkt hentet avbrutt brev med journalpostId={} med contentType=RTF. " +
-					"Returnerer i stedet pdf med forklaring på hvorfor RTF til PDF konvertering ikke fungerer lenger", sanitizeInputString(result.getBrevreferanse()));
+					"Returnerer i stedet pdf med forklaring på hvorfor RTF til PDF konvertering ikke fungerer lenger", sanitizeUnsafeChar(result.getBrevreferanse()));
 			return statiskPdfMedForklaring(journalpostId);
 		}
 		return result;
