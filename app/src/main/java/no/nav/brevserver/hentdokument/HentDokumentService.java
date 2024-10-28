@@ -9,8 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-import static no.nav.brevserver.core.utils.SafeLoggingUtil.sanitizeUnsafeChar;
-
 @Slf4j
 @Service
 @Transactional(readOnly = true)
@@ -23,12 +21,11 @@ public class HentDokumentService {
 	}
 
 	public Bilag hentDokumentFraBrevlager(String brevreferanse, String systemId) {
-		log.info("Skal hente dokument fra Brevlager med brevreferanse={} og systemId={}", sanitizeUnsafeChar(brevreferanse), sanitizeUnsafeChar(systemId));
+		log.info("Skal hente dokument fra Brevlager med brevreferanse={} og systemId={}", brevreferanse, systemId);
 
 		Bilag dokument = getBrev(brevreferanse, systemId);
 
-		log.info("Har hentet dokument fra Brevlager med brevreferanse={} og systemId={}", sanitizeUnsafeChar(brevreferanse), sanitizeUnsafeChar(systemId));
-
+		log.info("Har hentet dokument fra Brevlager med brevreferanse={} og systemId={}", brevreferanse, systemId);
 		return dokument;
 	}
 
@@ -38,5 +35,4 @@ public class HentDokumentService {
 
 		return brev.map(Bilag::from).orElse(null);
 	}
-
 }
