@@ -158,7 +158,7 @@ public class ExchangeUtils {
 			//set queue-string
 			queuename = setQueueString(queuename);
 		}
-		log.debug("original returkø: " + oldQname + " ny returkø: " + queuename);
+		log.debug("original returkø:{} ny returkø:{} ", oldQname, queuename);
 		return queuename;
 	}
 	/*

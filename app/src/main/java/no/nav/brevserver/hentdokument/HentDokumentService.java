@@ -26,15 +26,13 @@ public class HentDokumentService {
 		Bilag dokument = getBrev(brevreferanse, systemId);
 
 		log.info("Har hentet dokument fra Brevlager med brevreferanse={} og systemId={}", brevreferanse, systemId);
-
 		return dokument;
 	}
 
-	public Bilag getBrev(String brevReferanse, String systemId) {
+	private Bilag getBrev(String brevReferanse, String systemId) {
 		var id = BrevreferanseSystemCompositeId.builder().systemId(systemId).brevreferanse(brevReferanse).build();
 		Optional<Brev> brev = brevRepository.findById(id);
 
 		return brev.map(Bilag::from).orElse(null);
 	}
-
 }
