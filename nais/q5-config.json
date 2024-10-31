@@ -1,5 +1,6 @@
 {
   "APP_NAME": "brevserver-nais-q5",
+  "ENVIRONMENT": "q5",
   "MIN_REPLICAS": 1,
   "MAX_REPLICAS": 2,
   "INGRESSES": [

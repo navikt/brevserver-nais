@@ -60,6 +60,8 @@ spec:
       value: {{ NO_NAV_SECURITY_JWT_ISSUER_RESTSTS_DISCOVERYURL }}
     - name: NO_NAV_SECURITY_JWT_ISSUER_RESTSTS_ACCEPTED_AUDIENCE
       value: {{ NO_NAV_SECURITY_JWT_ISSUER_RESTSTS_ACCEPTED_AUDIENCE }}
+    - name: OTEL_RESOURCE_ATTRIBUTES
+      value: "deployment.environment.name={{ ENVIRONMENT }}"
   image: {{ image }}
   ingresses:
     {{#each INGRESSES}}
@@ -114,3 +116,9 @@ spec:
         mountPath: /var/run/secrets/nais.io/brevserverDS
       - kvPath: {{ BREVSERVERCERT }}
         mountPath: /var/run/secrets/nais.io/certificate
+  observability:
+    autoInstrumentation:
+      enabled: true
+      runtime: java
+      destinations:
+        - id: "elastic-apm"

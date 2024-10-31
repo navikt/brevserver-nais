@@ -1,5 +1,6 @@
 {
   "APP_NAME": "brevserver-nais",
+  "ENVIRONMENT": "p",
   "MIN_REPLICAS": 2,
   "MAX_REPLICAS": 4,
   "INGRESSES": [
