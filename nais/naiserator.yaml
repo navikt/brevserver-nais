@@ -52,8 +52,6 @@ spec:
       value: {{ FAGARKIV_ENDPOINTS_JOURNALBEHANDLING }}
     - name: SECURITY_TOKEN_SERVICE_TOKEN_URL
       value: {{ SECURITY_TOKEN_SERVICE_TOKEN_URL }}
-    - name: APPD_NAME
-      value: {{ APPD_NAME }}
     - name: BREVSERVERPROPERTIES_LOGGXML
       value: "{{ BREVSERVERPROPERTIES_LOGGXML }}"
     - name: BREVSERVERPROPERTIES_DATABASE_POOLSIZE
@@ -114,7 +112,5 @@ spec:
         mountPath: /var/run/secrets/nais.io/vault
       - kvPath: {{ BREVSERVER_DS }}
         mountPath: /var/run/secrets/nais.io/brevserverDS
-      - kvPath: {{ APPDYNAMICS }}
-        mountPath: "/var/run/secrets/nais.io/appdynamics"
       - kvPath: {{ BREVSERVERCERT }}
         mountPath: /var/run/secrets/nais.io/certificate

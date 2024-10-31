@@ -32,8 +32,6 @@
   "SRVBREVSERVER": "/serviceuser/data/prod/srvbrevserver",
   "BREVSERVER_DS": "/oracle/data/prod/creds/brevserver-user",
   "BREVSERVERCERT": "/kv/prod/fss/brevserver-nais/certificate",
-  "APPDYNAMICS": "/apikey/appdynamics/prod",
-  "APPD_NAME": "brevserver-nais",
   "BREVSERVERPROPERTIES_LOGGXML": "false",
   "BREVSERVERPROPERTIES_DATABASE_POOLSIZE": "60",
   "NO_NAV_SECURITY_JWT_ISSUER_RESTSTS_ACCEPTED_AUDIENCE": "srvdokprodbatch",
