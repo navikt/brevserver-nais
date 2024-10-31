@@ -18,16 +18,6 @@ then
     export  SPRING_DATASOURCE_PASSWORD=$(cat /var/run/secrets/nais.io/brevserverDS/password)
 fi
 
-echo "Exporting appdynamics environment variables"
-if test -f /var/run/secrets/nais.io/appdynamics/appdynamics.env;
-then
-    export $(cat /var/run/secrets/nais.io/appdynamics/appdynamics.env)
-    export APPDYNAMICS_AGENT_BASE_DIR=/tmp/appdynamics
-    echo "Appdynamics environment variables exported"
-else
-    echo "No such file or directory found at /var/run/secrets/nais.io/appdynamics/appdynamics.env"
-fi
-
 if test -f /var/run/secrets/nais.io/certificate/keystore
 then
     echo "Setting BREVSERVERCERT_KEYSTORE"

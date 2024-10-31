@@ -52,8 +52,6 @@ spec:
       value: {{ FAGARKIV_ENDPOINTS_JOURNALBEHANDLING }}
     - name: SECURITY_TOKEN_SERVICE_TOKEN_URL
       value: {{ SECURITY_TOKEN_SERVICE_TOKEN_URL }}
-    - name: APPD_NAME
-      value: {{ APPD_NAME }}
     - name: BREVSERVERPROPERTIES_LOGGXML
       value: "{{ BREVSERVERPROPERTIES_LOGGXML }}"
     - name: BREVSERVERPROPERTIES_DATABASE_POOLSIZE
@@ -62,6 +60,8 @@ spec:
       value: {{ NO_NAV_SECURITY_JWT_ISSUER_RESTSTS_DISCOVERYURL }}
     - name: NO_NAV_SECURITY_JWT_ISSUER_RESTSTS_ACCEPTED_AUDIENCE
       value: {{ NO_NAV_SECURITY_JWT_ISSUER_RESTSTS_ACCEPTED_AUDIENCE }}
+    - name: OTEL_RESOURCE_ATTRIBUTES
+      value: "deployment.environment.name={{ ENVIRONMENT }}"
   image: {{ image }}
   ingresses:
     {{#each INGRESSES}}
@@ -114,7 +114,11 @@ spec:
         mountPath: /var/run/secrets/nais.io/vault
       - kvPath: {{ BREVSERVER_DS }}
         mountPath: /var/run/secrets/nais.io/brevserverDS
-      - kvPath: {{ APPDYNAMICS }}
-        mountPath: "/var/run/secrets/nais.io/appdynamics"
       - kvPath: {{ BREVSERVERCERT }}
         mountPath: /var/run/secrets/nais.io/certificate
+  observability:
+    autoInstrumentation:
+      enabled: true
+      runtime: java
+      destinations:
+        - id: "elastic-apm"

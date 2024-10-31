@@ -1,6 +1,6 @@
 {
   "APP_NAME": "brevserver-nais",
-  "APPD_NAME": "brevserver-nais",
+  "ENVIRONMENT": "q2",
   "MIN_REPLICAS": 1,
   "MAX_REPLICAS": 2,
   "INGRESSES": [
@@ -33,7 +33,6 @@
   "SRVBREVSERVER": "/serviceuser/data/dev/srvbrevserver",
   "BREVSERVER_DS": "/oracle/data/dev/creds/brevserver_q2-user",
   "BREVSERVERCERT": "/kv/preprod/fss/brevserver-nais/certificate",
-  "APPDYNAMICS": "/apikey/appdynamics/dev",
   "BREVSERVERPROPERTIES_LOGGXML": "true",
   "BREVSERVERPROPERTIES_DATABASE_POOLSIZE": "10",
   "NO_NAV_SECURITY_JWT_ISSUER_RESTSTS_ACCEPTED_AUDIENCE": "srvdokprodbatch",
