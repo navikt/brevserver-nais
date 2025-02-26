@@ -23,7 +23,6 @@
   "BREV_REPLY_PE_QUEUENAME": "QA.Q1_PEN.BREVSERVER_ONLINEBREV_PE01_REPLY",
   "DEADLETTER_QUEUENAME": "QA.Q475.BREVSERVER_DLQ",
   "DEADLETTER_PE_QUEUENAME": "QA.Q475.BREVSERVER_DLQ_PE",
-  "BREVSERVER_VAULT": "/kv/preprod/fss/brevserver-nais-q1/q1",
   "FAGARKIV_ENDPOINTS_JOURNAL": "https://wasapp-q1.adeo.no/joark/Journal",
   "FAGARKIV_ENDPOINTS_JOURNALBEHANDLING": "https://wasapp-q1.adeo.no/joark/Journalbehandling",
   "SECURITY_TOKEN_SERVICE_TOKEN_URL": "https://security-token-service.nais.preprod.local/rest/v1/sts",
