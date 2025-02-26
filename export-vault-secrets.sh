@@ -33,17 +33,3 @@ then
     export  DATABASE_ONSHOSTS=$(cat /var/run/secrets/nais.io/db_config/ons_host)
     echo "Setting DATABASE_ONSHOSTS=$DATABASE_ONSHOSTS"
 fi
-
-if test -f /var/run/secrets/nais.io/certificate/keystore
-then
-    echo "Setting BREVSERVERCERT_KEYSTORE"
-    CERT_PATH='/var/run/secrets/nais.io/certificate/keystore-extracted'
-    openssl base64 -d -A -in /var/run/secrets/nais.io/certificate/keystore -out $CERT_PATH
-    export BREVSERVERCERT_KEYSTORE=$CERT_PATH
-fi
-
-if test -f /var/run/secrets/nais.io/certificate/keystorepassword
-then
-    echo "Setting BREVSERVERCERT_PASSWORD"
-    export BREVSERVERCERT_PASSWORD=$(cat /var/run/secrets/nais.io/certificate/keystorepassword)
-fi

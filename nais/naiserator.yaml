@@ -18,12 +18,8 @@ spec:
       value: "{{ MQGATEWAY01_PORT }}"
     - name: MQGATEWAY01_NAME
       value: {{ MQGATEWAY01_NAME }}
-    - name: MQGATEWAY01_CHANNEL_NAME
-      value: {{ MQGATEWAY01_CHANNEL_NAME }}
     - name: MQGATEWAY01_CHANNEL_SECURENAME
       value: {{ MQGATEWAY01_CHANNEL_SECURENAME }}
-    - name: MQGATEWAY01_CHANNEL_ENABLETLS
-      value: "{{ MQGATEWAY01_CHANNEL_ENABLETLS }}"
     - name: MOTTAK_ARKIV_QUEUENAME
       value: {{ MOTTAK_ARKIV_QUEUENAME }}
     - name: DIALOGUE_ONLINE_QUEUENAME
@@ -116,8 +112,6 @@ spec:
         mountPath: /var/run/secrets/nais.io/db_creds
       - kvPath: {{ BREVSERVER_DS_CONFIG }}
         mountPath: /var/run/secrets/nais.io/db_config
-      - kvPath: {{ BREVSERVERCERT }}
-        mountPath: /var/run/secrets/nais.io/certificate
   observability:
     autoInstrumentation:
       enabled: true
