@@ -8,15 +8,12 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
 
-import static java.lang.System.setProperty;
-
 @SpringBootApplication
 @Import({DokumentbehandlingResource.class, Appconfig.class, WebServiceConfig.class})
 @EnableJwtTokenValidation
 public class BrevserverApplication {
 
 	public static void main(String[] args) {
-		setProperty("javax.net.ssl.keyStorePassword", System.getenv("BREVSERVERCERT_PASSWORD"));
 		SpringApplication.run(BrevserverApplication.class, args);
 	}
 }
