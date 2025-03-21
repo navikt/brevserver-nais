@@ -85,7 +85,8 @@ spec:
     limits:
       memory: 4096Mi
     requests:
-      memory: 4096Mi
+      cpu: 50m
+      memory: 2048Mi
   webproxy: true
   azure:
     application:

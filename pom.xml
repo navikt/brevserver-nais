@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.3.0</version>
+		<version>3.4.3</version>
 	</parent>
 
 	<groupId>no.nav.brevserver</groupId>
@@ -24,15 +24,12 @@
 
 	<properties>
 		<java.version>21</java.version>
-
-		<!-- Interne NAV-dependencies -->
 		<dok-legacy-tjenestespesifikasjoner.version>29-af3d66d</dok-legacy-tjenestespesifikasjoner.version>
-
-		<camel.version>4.6.0</camel.version>
-		<token-support.version>4.1.7</token-support.version>
-		<ibm-mq.version>9.3.5.1</ibm-mq.version>
-		<commons-io.version>2.16.1</commons-io.version>
-		<logstash-logback-encoder.version>7.4</logstash-logback-encoder.version>
+		<camel.version>4.10.2</camel.version>
+		<token-support.version>5.0.19</token-support.version>
+		<ibm-mq.version>9.4.2.0</ibm-mq.version>
+		<commons-io.version>2.18.0</commons-io.version>
+		<logstash-logback-encoder.version>8.0</logstash-logback-encoder.version>
 		<jakarta.jws-api.version>3.0.0</jakarta.jws-api.version>
 
 		<patrodyne-basicjaxb.version>2.2.1</patrodyne-basicjaxb.version>
@@ -42,7 +39,7 @@
 		 <h2.version>1.4.199</h2.version>
 
 		<!-- Plugins -->
-		<maven-toolchains-plugin.version>3.1.0</maven-toolchains-plugin.version>
+		<maven-toolchains-plugin.version>3.2.0</maven-toolchains-plugin.version>
 	</properties>
 
 	<dependencyManagement>
