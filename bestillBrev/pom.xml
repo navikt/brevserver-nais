@@ -27,17 +27,6 @@
 
 		<!-- test-->
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>com.vaadin.external.google</groupId>
-					<artifactId>android-json</artifactId>
-				</exclusion>
-			</exclusions>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.apache.activemq</groupId>
 			<artifactId>artemis-jakarta-server</artifactId>
 			<scope>test</scope>
