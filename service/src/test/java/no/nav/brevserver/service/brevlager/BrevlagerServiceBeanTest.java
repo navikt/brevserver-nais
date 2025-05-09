@@ -19,7 +19,7 @@ import no.nav.virksomhet.gjennomforing.arkiv.journal.v2.Journalpost;
 import no.nav.virksomhet.gjennomforing.arkiv.journal.v2.Journalstatus;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import static no.nav.brevserver.core.vo.FilType.PDF;
 import static no.nav.brevserver.core.vo.FilType.RTF;
@@ -39,15 +39,15 @@ public class BrevlagerServiceBeanTest extends AbstractTest {
 	private static final String PENSJON_SYSTEMID = "PE2";
 	private static final String TOKEN = "12345";
 
-	@MockBean
+	@MockitoBean
 	private VoTilBrevstatusConverter voTilBrevstatusConverter;
-	@MockBean
+	@MockitoBean
 	private BrevstatusService brevstatusServiceMock;
-	@MockBean
+	@MockitoBean
 	private BrevstatusTilVoConverter brevstatusTilVoConverter;
-	@MockBean
+	@MockitoBean
 	private BrevtilgangService brevtilgangServiceMock;
-	@MockBean
+	@MockitoBean
 	private JoarkService joarkServiceMock;
 	@Autowired
 	private BrevlagerService brevlagerService;
@@ -103,7 +103,7 @@ public class BrevlagerServiceBeanTest extends AbstractTest {
 	@Test
 	public void shouldThrowExceptionIfBrevStatusIsFerdig() throws BrevTechnicalException {
 		var brev = defaultBrev().lagerStatus(Konstanter.BREVLAGER_STATUS_FERDIG).build();
-		var status =  new BrevStatusVO();
+		var status = new BrevStatusVO();
 
 		brevlagerService.lagreBrev(brev, status);
 

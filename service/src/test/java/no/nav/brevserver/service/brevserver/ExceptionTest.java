@@ -14,7 +14,7 @@ import no.nav.brevserver.service.BrevtilgangService;
 import no.nav.brevserver.service.config.AbstractTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.nullValue;
@@ -29,11 +29,11 @@ public class ExceptionTest extends AbstractTest {
 	private BrevtilgangService brevtilgangService;
 	@Autowired
 	private BrevstatusService brevstatusService;
-	@MockBean
+	@MockitoBean
 	private BrevSystemTilgangRepository brevSystemTilgangRepository;
-	@MockBean
+	@MockitoBean
 	private BrevstatusRepository brevstatusRepository;
-	@MockBean
+	@MockitoBean
 	private BrevtilgangRepository brevtilgangRepository;
 
 	@Test

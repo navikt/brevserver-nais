@@ -31,12 +31,7 @@
 		<commons-io.version>2.18.0</commons-io.version>
 		<logstash-logback-encoder.version>8.0</logstash-logback-encoder.version>
 		<jakarta.jws-api.version>3.0.0</jakarta.jws-api.version>
-
 		<patrodyne-basicjaxb.version>2.2.1</patrodyne-basicjaxb.version>
-
-		<!-- test -->
-		<!-- Overstyrer Spring Boot sin versjon som gir flyway-feil - versjon 1.4.200 fungerer heller ikke for testene -->
-		 <h2.version>1.4.199</h2.version>
 
 		<!-- Plugins -->
 		<maven-toolchains-plugin.version>3.2.0</maven-toolchains-plugin.version>
@@ -142,6 +137,12 @@
 				<artifactId>token-validation-spring-test</artifactId>
 				<version>${token-support.version}</version>
 				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>no.nav.brevserver</groupId>
+				<artifactId>core</artifactId>
+				<version>${project.version}</version>
+				<type>test-jar</type>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
