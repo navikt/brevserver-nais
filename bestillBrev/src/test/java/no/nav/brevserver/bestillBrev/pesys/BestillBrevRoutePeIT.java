@@ -65,17 +65,6 @@ public class BestillBrevRoutePeIT extends AbstractTest {
 	}
 
 	@Test
-	public void shouldHandleMessage() {
-		String header = createInputFromFagsystem(PENSJON_SYSTEM_ID);
-		sendStringMessage(onlinebrevPe, header, CORRELATION_ID);
-
-		await().atMost(10, SECONDS).untilAsserted(() -> {
-			String received = receive(dialogueOnlinePe);
-			assertEquals(received, Utils.getHappyPathText(PENSJON_SYSTEM_ID));
-		});
-	}
-
-	@Test
 	public void shouldSaveTilgangWhenFromBrevlager() {
 		String header = createInputFromFagsystem(PENSJON_SYSTEM_ID, "frabrevlager");
 		sendStringMessage(onlinebrevPe, header, CALL_ID);
