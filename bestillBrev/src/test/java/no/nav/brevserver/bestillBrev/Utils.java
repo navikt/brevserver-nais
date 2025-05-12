@@ -38,7 +38,7 @@ public class Utils {
 	public static final String STATUS_FERDIG = "FERDIG";
 	public static final String PDF_CONTENTTYPE = FilType.PDF.getContentType();
 
-	public static BrevStatusVO createBrevstatus(String systemId, String brevref){
+	public static BrevStatusVO createBrevstatus(String systemId, String brevref) {
 		BrevStatusVO brevstatus = new BrevStatusVO();
 		brevstatus.setSystemID(systemId);
 		brevstatus.setBrevreferanse(brevref);
@@ -55,11 +55,11 @@ public class Utils {
 		return brevstatus;
 	}
 
-	public static String createPesysKvittering(){
+	public static String createPesysKvittering() {
 		return StringUtils.rightPad(generateKvitteringHeader(FORMAT, PENSJON_SYSTEM_ID, BREVREFERANSE).toString(), Konstanter.MELDING_HEADER_LENGTH, ' ');
 	}
 
-	public static String createPesysKvittering(String format){
+	public static String createPesysKvittering(String format) {
 		return StringUtils.rightPad(generateKvitteringHeader(format, PENSJON_SYSTEM_ID, BREVREFERANSE).toString(), Konstanter.MELDING_HEADER_LENGTH, ' ');
 	}
 
@@ -72,20 +72,20 @@ public class Utils {
 		return StringUtils.rightPad(generateKvitteringHeader(format, BISYS_SYSTEM_ID, BREVREFERANSE).toString(), Konstanter.MELDING_HEADER_LENGTH, ' ');
 	}
 
-	public static String createBadXmlKvitteringHeader(){
+	public static String createBadXmlKvitteringHeader() {
 		return generateKvitteringHeader(FORMAT, BISYS_SYSTEM_ID, BREVREFERANSE).toString();
 	}
 
-	public static String createBisysKvittering2(){
+	public static String createBisysKvittering2() {
 		return StringUtils.rightPad(generateKvitteringHeader(FORMAT, BISYS_SYSTEM_ID, BREVREFERANSE2).toString(), Konstanter.MELDING_HEADER_LENGTH, ' ');
 	}
 
-	public static  StringBuilder generateKvitteringHeader(String contentType, String fagsystem, String brevref){
+	public static StringBuilder generateKvitteringHeader(String contentType, String fagsystem, String brevref) {
 		return generateKvitteringHeader(contentType, fagsystem, brevref, "0", "0");
 
 	}
 
-	public static  StringBuilder generateKvitteringHeader(String contentType, String fagsystem, String brevref, String feilniva, String feilkode){
+	public static StringBuilder generateKvitteringHeader(String contentType, String fagsystem, String brevref, String feilniva, String feilkode) {
 		StringBuilder builder = new StringBuilder("<?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>");
 		builder.append("<rtv-brevkvitt>");
 		builder.append("<brevref>").append(brevref).append("</brevref>");
@@ -97,26 +97,26 @@ public class Utils {
 		return builder;
 	}
 
-	public static  String classpathToString(String classpathResource) throws IOException {
+	public static String classpathToString(String classpathResource) throws IOException {
 		InputStream inputStream = new ClassPathResource(classpathResource).getInputStream();
 		return IOUtils.toString(inputStream, UTF_8);
 	}
 
-	public static String createInputFromFagsystem(String fagsystem){
+	public static String createInputFromFagsystem(String fagsystem) {
 		StringBuilder builder = new StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
 		builder.append("<rtv-brev direkteutskrift=\"NEI\" format=\"ENSIDIG\" malpakke=\"BI01.BI01X01\" sysid=\"").append(fagsystem).append("\" passord=\"Bisys123\" saksbehandler=\"B100946\">");
 		addText(builder);
 		return builder.toString();
 	}
 
-	public static String createInputFromFagsystem(String fagsystem, String modus){
+	public static String createInputFromFagsystem(String fagsystem, String modus) {
 		StringBuilder builder = new StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
 		builder.append("<rtv-brev direkteutskrift=\"NEI\" klientToken=\"token\" modus=\"").append(modus).append("\" malpakke=\"BI01.BI01X01\" sysid=\"").append(fagsystem).append("\" passord=\"Bisys123\" saksbehandler=\"B100946\">");
 		addText(builder);
 		return builder.toString();
 	}
 
-	public static StringBuilder addText(StringBuilder builder){
+	public static StringBuilder addText(StringBuilder builder) {
 		builder.append("<brev brevref=\"").append(BREVREFERANSE).append("\" spraak=\"NB\" tknr=\"0814\">");
 		builder.append("<brevMottaker>");
 		builder.append("<navn>").append("Donald").append("</navn>");
@@ -149,28 +149,30 @@ public class Utils {
 
 	//Det er noe tull med line separators om det går i en egen fil..
 
-	public static String getHappyPathText(String fagsystem){
+	public static String getHappyPathText(String fagsystem) {
 		return "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
-				"<rtv-brev direkteutskrift=\"NEI\" format=\"ENSIDIG\" malpakke=\"BI01.BI01X01\" sysid=\""+fagsystem+"\" passord=\"Bisys123\" saksbehandler=\"B100946\"><brev brevref=\"10000000000\" spraak=\"NB\" tknr=\"0814\"><brevMottaker><navn>Donald</navn><adr1>Andeby 1</adr1><adr2>Borte</adr2><adr3>vekk</adr3><adr4/><bidrRolle>01</bidrRolle><fnr>11111111111</fnr><fDato>010134</fDato><postnr>1234</postnr><landKd/><spraak>NB</spraak></brevMottaker></brev></rtv-brev>";
+			   "<rtv-brev direkteutskrift=\"NEI\" format=\"ENSIDIG\" malpakke=\"BI01.BI01X01\" sysid=\"" + fagsystem + "\" passord=\"Bisys123\" saksbehandler=\"B100946\"><brev brevref=\"10000000000\" spraak=\"NB\" tknr=\"0814\"><brevMottaker><navn>Donald</navn><adr1>Andeby 1</adr1><adr2>Borte</adr2><adr3>vekk</adr3><adr4/><bidrRolle>01</bidrRolle><fnr>11111111111</fnr><fDato>010134</fDato><postnr>1234</postnr><landKd/><spraak>NB</spraak></brevMottaker></brev></rtv-brev>";
 	}
-	public static String getBrevFinnesAlleredeString(String fagsystem){
+
+	public static String getBrevFinnesAlleredeString(String fagsystem) {
 		return "<?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>\n" +
-				"<rtv-brevkvitt>\n" +
-				"<brevref>10000000000</brevref>\n" +
-				"<sysid>"+fagsystem+"</sysid>\n" +
-				"<type>null</type>\n" +
-				"<status>FEIL</status>\n" +
-				"<feilkode>90000003 Brevet eksisterer allerede</feilkode>\n" +
-				"</rtv-brevkvitt>";
+			   "<rtv-brevkvitt>\n" +
+			   "<brevref>10000000000</brevref>\n" +
+			   "<sysid>" + fagsystem + "</sysid>\n" +
+			   "<type>null</type>\n" +
+			   "<status>FEIL</status>\n" +
+			   "<feilkode>90000003 Brevet eksisterer allerede</feilkode>\n" +
+			   "</rtv-brevkvitt>";
 	}
-	public static String getBadPasswordString(){
+
+	public static String getBadPasswordString() {
 		return "<?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>\n" +
-				"<rtv-brevkvitt>\n" +
-				"<brevref>10000000000</brevref>\n" +
-				"<sysid>BI12</sysid>\n" +
-				"<type>null</type>\n" +
-				"<status>FEIL</status>\n" +
-				"<feilkode>90000000 Ikke tilgang</feilkode>\n" +
-				"</rtv-brevkvitt>";
+			   "<rtv-brevkvitt>\n" +
+			   "<brevref>10000000000</brevref>\n" +
+			   "<sysid>BI12</sysid>\n" +
+			   "<type>null</type>\n" +
+			   "<status>FEIL</status>\n" +
+			   "<feilkode>90000000 Ikke tilgang</feilkode>\n" +
+			   "</rtv-brevkvitt>";
 	}
 }
