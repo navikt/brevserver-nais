@@ -112,6 +112,9 @@ spec:
       - kvPath: {{ BREVSERVER_DS_CONFIG }}
         mountPath: /var/run/secrets/nais.io/db_config
   observability:
+    logging:
+      destinations:
+        - id: elastic
     autoInstrumentation:
       enabled: true
       runtime: java
