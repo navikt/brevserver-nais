@@ -57,7 +57,7 @@ public class DefaultBrevtilgangService implements BrevtilgangService {
 	public boolean sjekkSystemTilgang(String systemId, String passord) throws BrevTechnicalException {
 		try {
 			List<BrevSystemTilgang> systemTilgangList = brevSystemTilgangRepository.findBySysId(systemId);
-			if (systemTilgangList.size() > 0) {
+			if (!systemTilgangList.isEmpty()) {
 				return passord.equals(systemTilgangList.get(0).getPwd());
 			}
 			return false;
@@ -95,7 +95,7 @@ public class DefaultBrevtilgangService implements BrevtilgangService {
 	public SysTilgangVO hentTilgangUtenCache(String systemId) throws BrevTechnicalException {
 		try {
 			List<BrevSystemTilgang> systemTilgangList = brevSystemTilgangRepository.findBySysId(systemId);
-			if (systemTilgangList.size() > 0) {
+			if (!systemTilgangList.isEmpty()) {
 				return systemtilgangTilVoConverter.convert(systemTilgangList.get(0));
 			}
 			return null;

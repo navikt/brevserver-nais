@@ -64,10 +64,11 @@ public class PeBestillBrevService {
 			boolean ok = brevtilgangService.lagreTilgang(brevStatusVo.getSystemID(), brevStatusVo.getBrevreferanse(),
 					brevStatusVo.getToken());
 			if (ok) {
-				log.info("Tilgang gitt for systemID '{}' med brevref:", sanitizeUnsafeChar(brevStatusVo.getSystemID()), sanitizeUnsafeChar(brevStatusVo.getBrevreferanse()));
-			} else {
-				log.warn("Kunne ikke gi tilgang '{}' for systemID '{}'", brevStatusVo.getCensoredToken(),
+				log.info("Tilgang gitt for systemID: {} med brevreferanse: {}",
 						sanitizeUnsafeChar(brevStatusVo.getSystemID()), sanitizeUnsafeChar(brevStatusVo.getBrevreferanse()));
+			} else {
+				log.warn("Kunne ikke gi tilgang til brevreferanse: {} for systemID: {}",
+						sanitizeUnsafeChar(brevStatusVo.getBrevreferanse()), sanitizeUnsafeChar(brevStatusVo.getSystemID()));
 			}
 			exchange.setProperty(SENDTOMODE, INGEN_TILBAKEMELDING);
 
@@ -85,13 +86,13 @@ public class PeBestillBrevService {
 			}
 
 			brevStatusVo.setStatus(Konstanter.BREVSTATUS_BREVPAKKE);
-			if(brevStatusVo.getReturKoe() == null) {
+			if (brevStatusVo.getReturKoe() == null) {
 				brevStatusVo.setReturKoe(messageVo.getReplyQueueName());
 			}
 			brevstatusService.lagreBrevStatus(brevStatusVo);
 			log.info("Brev med brevref: {} er arkivert i Brevlageret", sanitizeUnsafeChar(brevStatusVo.getBrevreferanse()));
 
-			if(brevserverProperties.isLoggXML()){
+			if (brevserverProperties.isLoggXML()) {
 				log.info("Pensjons-XML til Exstream:\n" + messageVo.getStringBody());
 			}
 			setBodyAndMode(exchange,
@@ -121,7 +122,7 @@ public class PeBestillBrevService {
 
 		if (!brevStatusVo.getSystemID().startsWith(SystemType.PE.toString())) {
 			String errorMessage = "Brev med feil systemID mottatt: '" + brevStatusVo.getSystemID()
-					+ "', forventer pensjonsbrev";
+								  + "', forventer pensjonsbrev";
 			throw new BrevFunctionalException(errorMessage, null);
 		}
 
@@ -130,7 +131,7 @@ public class PeBestillBrevService {
 			notEmpty("Systemid", brevStatusVo.getSystemID(), false);
 			notEmpty("Returkø", brevStatusVo.getReturKoe(), false);
 		} catch (BrevException e) {
-			String errorMsg ="Ugyldig XML mottatt for brevreferanse " + messageVO.getBrevreferanse();
+			String errorMsg = "Ugyldig XML mottatt for brevreferanse " + messageVO.getBrevreferanse();
 			log.error(errorMsg, e);
 			throw new BrevFunctionalException(errorMsg);
 		}
