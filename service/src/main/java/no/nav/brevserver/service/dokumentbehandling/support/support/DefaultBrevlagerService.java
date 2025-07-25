@@ -46,7 +46,7 @@ import static no.nav.brevserver.core.vo.FilType.RTF;
 @Slf4j
 public class DefaultBrevlagerService implements BrevlagerService {
 
-	private static String LAGER_STATUS_A = "A";
+	private static final String LAGER_STATUS_A = "A";
 	private final byte[] PDF_MED_FORKLARING;
 	private final JoarkService joarkService;
 	private final BrevstatusService brevstatusService;

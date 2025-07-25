@@ -39,7 +39,7 @@ public class DokumentbehandlingEndpoint implements DokumentbehandlingPortType {
 	private static final Log log = new Log(DokumentbehandlingEndpoint.class);
 	private static final String EXCEPTION_MESSAGE = "SOAPkall feilet";
 	private static final String NAMESPACE_URI = "http://dokumentbehandling.brevogarkiv.tjenester.nav.no/";
-	private ObjectFactory objectFactory;
+	private final ObjectFactory objectFactory;
 
 	private final DokumentbehandlingProvider dokumentbehandlingProvider;
 

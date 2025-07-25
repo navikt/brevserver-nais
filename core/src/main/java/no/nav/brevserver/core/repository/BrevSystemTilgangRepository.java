@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface BrevSystemTilgangRepository extends CrudRepository<BrevSystemTilgang, Long> {
 
-	public List<BrevSystemTilgang> findBySysId(String systemId);
+	List<BrevSystemTilgang> findBySysId(String systemId);
 }

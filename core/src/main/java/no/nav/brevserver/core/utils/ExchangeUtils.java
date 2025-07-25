@@ -1,13 +1,13 @@
 package no.nav.brevserver.core.utils;
 
+import jakarta.jms.JMSException;
+import jakarta.jms.Queue;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.brevserver.core.exception.BrevException;
 import no.nav.brevserver.core.vo.MessageVO;
 import org.apache.camel.Exchange;
 import org.apache.commons.lang3.StringUtils;
 
-import jakarta.jms.JMSException;
-import jakarta.jms.Queue;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -33,16 +33,17 @@ public class ExchangeUtils {
 	public static final String JMS_OVERRIDDEN = "jms:dummy";
 
 
-	private static Pattern containsQueuemanager = Pattern.compile("//(.*)/");
+	private static final Pattern containsQueuemanager = Pattern.compile("//(.*)/");
 
-	private static Pattern containsReadAheadAllowed = Pattern.compile("(&readAheadAllowed=1)|(readAheadAllowed=1&)|(\\?readAheadAllowed=1)(?!&)");
-	private static Pattern containsPutAsync = Pattern.compile("(&putAsyncAllowed=1)|(putAsyncAllowed=1&)|(\\?putAsyncAllowed=1)(?!&)");
+	private static final Pattern containsReadAheadAllowed = Pattern.compile("(&readAheadAllowed=1)|(readAheadAllowed=1&)|(\\?readAheadAllowed=1)(?!&)");
+	private static final Pattern containsPutAsync = Pattern.compile("(&putAsyncAllowed=1)|(putAsyncAllowed=1&)|(\\?putAsyncAllowed=1)(?!&)");
+
 	public static MessageVO getMessageVoFromExchange(Exchange exchange) {
 
 		MessageVO vo = new MessageVO(exchange.getIn().getBody(byte[].class));
 		vo.setStringBody(exchange.getIn().getBody(String.class));
 
-		if(log.isDebugEnabled()) {
+		if (log.isDebugEnabled()) {
 			log.debug("JMS-headers: " + getJMSHeaders(exchange));
 		}
 
@@ -55,26 +56,26 @@ public class ExchangeUtils {
 		return vo;
 	}
 
-	public static String getJMSHeaders(Exchange exchange){
+	public static String getJMSHeaders(Exchange exchange) {
 		String JMSHeaders = "";
 		Map<String, Object> headers = exchange.getIn().getHeaders();
 
-		JMSHeaders += "JMSMessage: " + headers.get("JMSMessage")+"\n";
-		JMSHeaders += "JMSType: " + headers.get("JMSType")+"\n";
-		JMSHeaders += "JMSDeliveryMode: " + headers.get("JMSDeliveryMode")+"\n";
-		JMSHeaders += "JMSDeliveryDelay: " + headers.get("JMSDeliveryDelay")+"\n";
-		JMSHeaders += "JMSDeliveryTime: " + headers.get("JMSDeliveryTime")+"\n";
-		JMSHeaders += "JMSExpiration: " + headers.get("JMSExpiration")+"\n";
-		JMSHeaders += "JMSPriority: " + headers.get("JMSPriority")+"\n";
-		JMSHeaders += "JMSMessageID: " + headers.get("JMSMessageID")+"\n";
-		JMSHeaders += "JMSTimestamp: " + headers.get("JMSTimestamp")+"\n";
-		JMSHeaders += "JMSCorrelationID: " + headers.get("JMSCorrelationID")+"\n";
-		JMSHeaders += "JMSDestination: "+ headers.get("JMSDestination")+"\n";
-		JMSHeaders += "JMSReplyTo: " + headers.get("JMSReplyTo")+"\n";
-		JMSHeaders += "JMSRedelivered: " + headers.get("JMSRedelivered")+"\n";
-		JMSHeaders += "JMS_IBM_Format:" + headers.get("JMS_IBM_Format")+"\n";
-		JMSHeaders += "JMS_IBM_Character_Set: " + headers.get("JMS_IBM_Character_Set")+"\n";
-		JMSHeaders += "JMS_IBM_Encoding: " + headers.get("JMS_IBM_Encoding")+"\n";
+		JMSHeaders += "JMSMessage: " + headers.get("JMSMessage") + "\n";
+		JMSHeaders += "JMSType: " + headers.get("JMSType") + "\n";
+		JMSHeaders += "JMSDeliveryMode: " + headers.get("JMSDeliveryMode") + "\n";
+		JMSHeaders += "JMSDeliveryDelay: " + headers.get("JMSDeliveryDelay") + "\n";
+		JMSHeaders += "JMSDeliveryTime: " + headers.get("JMSDeliveryTime") + "\n";
+		JMSHeaders += "JMSExpiration: " + headers.get("JMSExpiration") + "\n";
+		JMSHeaders += "JMSPriority: " + headers.get("JMSPriority") + "\n";
+		JMSHeaders += "JMSMessageID: " + headers.get("JMSMessageID") + "\n";
+		JMSHeaders += "JMSTimestamp: " + headers.get("JMSTimestamp") + "\n";
+		JMSHeaders += "JMSCorrelationID: " + headers.get("JMSCorrelationID") + "\n";
+		JMSHeaders += "JMSDestination: " + headers.get("JMSDestination") + "\n";
+		JMSHeaders += "JMSReplyTo: " + headers.get("JMSReplyTo") + "\n";
+		JMSHeaders += "JMSRedelivered: " + headers.get("JMSRedelivered") + "\n";
+		JMSHeaders += "JMS_IBM_Format:" + headers.get("JMS_IBM_Format") + "\n";
+		JMSHeaders += "JMS_IBM_Character_Set: " + headers.get("JMS_IBM_Character_Set") + "\n";
+		JMSHeaders += "JMS_IBM_Encoding: " + headers.get("JMS_IBM_Encoding") + "\n";
 
 		return JMSHeaders;
 	}
@@ -85,7 +86,7 @@ public class ExchangeUtils {
 	 */
 	public static void setBodyAndReturnQueueWithMode(Exchange exchange, Object Body, String returnQueue, SendToMode sendToMode) {
 		exchange.getIn().setBody(Body);
-		if(returnQueue!=null) {
+		if (returnQueue != null) {
 			returnQueue = returnQueue.trim();
 		}
 		String returKo = StringUtils.isBlank(returnQueue) ? (String) exchange.getIn().getHeader(DEFAULT_RETURN_QUEUE) : returnQueue;
@@ -101,6 +102,7 @@ public class ExchangeUtils {
 	public static void setDestination(Exchange exchange, String newDestination) {
 		exchange.getIn().setHeader(OVERRIDE_DESTINATION, setTargetClientForQueue(newDestination));
 	}
+
 	public static void setDestinationWithQueueString(Exchange exchange, String newDestination) {
 		exchange.getIn().setHeader(OVERRIDE_DESTINATION, buildReturnQueue(newDestination));
 	}
@@ -134,7 +136,7 @@ public class ExchangeUtils {
 
 	private static String getReplyTo(Exchange exchange) throws JMSException {
 		if (exchange.getIn() != null && exchange.getIn().getHeaders() != null
-				&& exchange.getIn().getHeaders().get(JMSReplyTo) != null) {
+			&& exchange.getIn().getHeaders().get(JMSReplyTo) != null) {
 
 			return ((Queue) exchange.getIn().getHeaders().get(JMSReplyTo)).getQueueName();
 		} else {
@@ -143,12 +145,12 @@ public class ExchangeUtils {
 	}
 
 
-	public static String buildReturnQueue(String queuename){
+	public static String buildReturnQueue(String queuename) {
 		String oldQname = queuename;
-		if(queuename!=null) {
+		if (queuename != null) {
 			queuename = queuename.trim();
 		}
-		if(!isEmpty(queuename)) {
+		if (!isEmpty(queuename)) {
 			//delete queuemanager om den finnes
 			queuename = stripQueueManager(queuename);
 			//delete unwanted parameters
@@ -161,15 +163,16 @@ public class ExchangeUtils {
 		log.debug("original returkø:{} ny returkø:{} ", oldQname, queuename);
 		return queuename;
 	}
+
 	/*
 	 * Vi lar mq selv bestemme hvilken queuemanager køen tilhører ved å fjerne den spesifikke.
 	 */
-	private static String stripQueueManager(String queuename){
+	private static String stripQueueManager(String queuename) {
 		return containsQueuemanager.matcher(queuename).replaceAll("///");
 	}
 
 	//Noen parametre gjør at vi ikke klarer å sende til køen. Fjern disse.
-	private static String stripExtraParameters(String queuename){
+	private static String stripExtraParameters(String queuename) {
 		queuename = containsReadAheadAllowed.matcher(queuename).replaceAll("");
 		return containsPutAsync.matcher(queuename).replaceAll("");
 
@@ -181,20 +184,20 @@ public class ExchangeUtils {
 	 * Ved å sende denne propertien håndterer ibm-mq selv hvor meldingen skal sendes og overstyrer camel sin to()
 	 */
 	private static String setTargetClientForQueue(String queuename) {
-		if(!isEmpty(queuename)) {
-            //targetclient er allerede satt, returner kønavnet som det er
-            if(queuename.toLowerCase().contains("targetclient")){
-                return queuename;
-            }
+		if (!isEmpty(queuename)) {
+			//targetclient er allerede satt, returner kønavnet som det er
+			if (queuename.toLowerCase().contains("targetclient")) {
+				return queuename;
+			}
 			//Noen svarkøer inneholder allerede parametre definert etter ?
 			//Legg på ?targetclient=1 om det ikke allerede finnes parametre og &targerclient=1 om det finnes parametre fra før
 			return queuename.contains("?") ? queuename + "&targetClient=1" : queuename + "?targetClient=1";
 		}
-        return queuename;
+		return queuename;
 	}
 
-	private static String setQueueString(String queuename){
-		if(!isEmpty(queuename) && !queuename.toLowerCase().contains("queue:///")) {
+	private static String setQueueString(String queuename) {
+		if (!isEmpty(queuename) && !queuename.toLowerCase().contains("queue:///")) {
 			return "queue:///" + queuename;
 		}
 		return queuename;

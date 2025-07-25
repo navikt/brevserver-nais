@@ -20,9 +20,9 @@ public class JournalpostVO {
     private String tilgangskode;
     private String hjemmelUoff;
 
-    private List<AvsenderMottakerVO> avsenderMottaker = new ArrayList<AvsenderMottakerVO>();
-    private List<TilleggsinfoVO> tilleggsinfo = new ArrayList<TilleggsinfoVO>();
-    private List<DokBeskrivelseVO> dokbeskrivelse = new ArrayList<DokBeskrivelseVO>();
+    private List<AvsenderMottakerVO> avsenderMottaker = new ArrayList<>();
+    private List<TilleggsinfoVO> tilleggsinfo = new ArrayList<>();
+    private List<DokBeskrivelseVO> dokbeskrivelse = new ArrayList<>();
     
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)

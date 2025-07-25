@@ -31,11 +31,4 @@ public class BrevException extends Exception {
 		return "Ukjent feil";
 	}
 
-	public boolean isFeilkode(int i) {
-		if (i == feilkode) {
-			return true;
-		}
-		return false;
-	}
-
 }

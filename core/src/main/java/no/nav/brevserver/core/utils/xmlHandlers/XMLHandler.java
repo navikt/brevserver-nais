@@ -303,7 +303,7 @@ public class XMLHandler extends DefaultHandler {
 	 * @param e
 	 */
 	public void error(SAXParseException e) {
-		log.error("XMLHandler.error()", "Feil med XML", e);
+		log.error("XMLHandler.error() - Feil med XML", e);
 	}
 
 	/**
@@ -312,7 +312,7 @@ public class XMLHandler extends DefaultHandler {
 	 * @param e
 	 */
 	public void warning(SAXParseException e) {
-		log.warn("XMLHandler.warning()", "Feil med XML", e);
+		log.warn("XMLHandler.warning() - Feil med XML", e);
 	}
 
 	/**
@@ -321,7 +321,7 @@ public class XMLHandler extends DefaultHandler {
 	 * @param e
 	 */
 	public void fatalError(SAXParseException e) {
-		log.error("XMLHandler.fatalError()", "Feil med XML", e);  // Logges høyere opp i hierarkiet
+		log.error("XMLHandler.fatalError() - Feil med XML", e);  // Logges høyere opp i hierarkiet
 	}
 
 	/**

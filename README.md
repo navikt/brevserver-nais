@@ -6,7 +6,7 @@ Selv om selve git-historikken i dette repoet er "vasket" nå, inneholder noen av
 lisensbelagte filer. Det er to måter å håndtere det om dette repoet skal opensources:
 
 1. kontakt github kundeservice, og få dem til å slette PR-ene i dette repoet
-1. Lag et nytt, åpent github-repo, men bruk samme git-repo. Slett/arkiver det opprinnelige github-repoet.
+2. Lag et nytt, åpent github-repo, men bruk samme git-repo. Slett/arkiver det opprinnelige github-repoet.
 
 # Brevserver-nais
 
