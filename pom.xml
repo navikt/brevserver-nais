@@ -27,7 +27,7 @@
 		<dok-legacy-tjenestespesifikasjoner.version>29-af3d66d</dok-legacy-tjenestespesifikasjoner.version>
 		<camel.version>4.13.0</camel.version>
 		<token-support.version>5.0.30</token-support.version>
-		<ibm-mq.version>9.4.3.0</ibm-mq.version>
+		<ibm-mq.version>9.4.3.1</ibm-mq.version>
 		<commons-io.version>2.20.0</commons-io.version>
 		<logstash-logback-encoder.version>8.1</logstash-logback-encoder.version>
 		<jakarta.jws-api.version>3.0.0</jakarta.jws-api.version>
