@@ -11,14 +11,15 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 
 import java.util.Arrays;
-import java.util.concurrent.TimeUnit;
+
+import static java.util.concurrent.TimeUnit.MINUTES;
 
 @Configuration
 @EnableCaching
 public class LokalCacheConfig {
+
 	public static final String SYSTEM_TILGANG_CACHE = "systemTilgang";
 	public static final String HENT_SYSTEM_TILGANG_CACHE = "hentTilgang";
-	public static final String OIDC_TOKEN_CACHE = "OidcTokenCache";
 
 	@Bean
 	@Primary
@@ -27,15 +28,14 @@ public class LokalCacheConfig {
 		SimpleCacheManager manager = new SimpleCacheManager();
 		manager.setCaches(Arrays.asList(
 				new CaffeineCache(SYSTEM_TILGANG_CACHE, Caffeine.newBuilder()
-						.expireAfterWrite(10, TimeUnit.MINUTES)
+						.expireAfterWrite(10, MINUTES)
 						.maximumSize(10)
+						.recordStats()
 						.build()),
 				new CaffeineCache(HENT_SYSTEM_TILGANG_CACHE, Caffeine.newBuilder()
-						.expireAfterWrite(10, TimeUnit.MINUTES)
+						.expireAfterWrite(10, MINUTES)
 						.maximumSize(10)
-						.build()),
-				new CaffeineCache(OIDC_TOKEN_CACHE, Caffeine.newBuilder()
-						.expireAfterWrite(55, TimeUnit.MINUTES)
+						.recordStats()
 						.build())
 		));
 		return manager;
