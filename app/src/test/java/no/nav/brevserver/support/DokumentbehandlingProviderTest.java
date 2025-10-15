@@ -1,8 +1,6 @@
 package no.nav.brevserver.support;
 
-
 import no.nav.brevserver.AbstractBrevserviceTest;
-import no.nav.brevserver.core.constants.SystemType;
 import no.nav.brevserver.core.exception.BrevException;
 import no.nav.brevserver.core.vo.BrevVO;
 import no.nav.brevserver.nais.DokumentbehandlingProvider;
@@ -23,13 +21,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static no.nav.brevserver.core.constants.SystemType.PE;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-/**
- * Unit tests for DokumentbehandlingProvider
- */
 @ExtendWith(MockitoExtension.class)
 public class DokumentbehandlingProviderTest extends AbstractBrevserviceTest {
 
@@ -61,7 +57,9 @@ public class DokumentbehandlingProviderTest extends AbstractBrevserviceTest {
 		when(hentDokumentRequestMapper.map(wsRequest)).thenReturn(domainRequest);
 		when(brevlagerService.hentDokumentFromBrevlagerOrJoark(domainRequest.getBrevStatus())).thenReturn(new BrevVO());
 		when(brevstatusService.hentBrevStatus(any(), any())).thenReturn(createBrevStatus());
+
 		dokumentbehandlingProvider.hentDokument(wsRequest);
+
 		verify(brevlagerService).hentDokumentFromBrevlagerOrJoark(domainRequest.getBrevStatus());
 	}
 
@@ -76,7 +74,7 @@ public class DokumentbehandlingProviderTest extends AbstractBrevserviceTest {
 
 		dokumentbehandlingProvider.lagreDokument(wsRequest);
 
-		verify(brevlagerService).lagreDokument(domainRequest.getBrev(), domainRequest.getBrevStatus(), SystemType.PE);
+		verify(brevlagerService).lagreDokument(domainRequest.getBrev(), domainRequest.getBrevStatus(), PE);
 	}
 
 	@Test
@@ -107,4 +105,5 @@ public class DokumentbehandlingProviderTest extends AbstractBrevserviceTest {
 
 		verify(brevlagerService).ferdigstillBrev(domainRequest.getBrevStatus(), domainRequest.getBrev(), domainRequest.getPdfBrev());
 	}
+
 }

@@ -1,7 +1,6 @@
 package no.nav.brevserver.bestillBrev.pesys;
 
 import config.AbstractTest;
-import no.nav.brevserver.bestillBrev.Utils;
 import no.nav.brevserver.core.vo.BrevStatusVO;
 import org.apache.activemq.artemis.jms.client.ActiveMQMessage;
 import org.junit.jupiter.api.AfterEach;
@@ -10,17 +9,15 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import java.util.concurrent.TimeUnit;
-
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static no.nav.brevserver.bestillBrev.Utils.CALLID;
 import static no.nav.brevserver.bestillBrev.Utils.PENSJON_SYSTEM_ID;
 import static no.nav.brevserver.bestillBrev.Utils.classpathToString;
 import static no.nav.brevserver.bestillBrev.Utils.createInputFromFagsystem;
+import static no.nav.brevserver.bestillBrev.Utils.getBrevFinnesAlleredeString;
 import static no.nav.brevserver.core.constants.Konstanter.BREVSTATUS_BREVPAKKE;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class BestillBrevRoutePeIT extends AbstractTest {
 
@@ -34,33 +31,34 @@ public class BestillBrevRoutePeIT extends AbstractTest {
 	@Test
 	public void shouldBestillNewBrev() throws Exception {
 		String message = classpathToString("brevXml/pensjonsbrev.xml");
-		sendStringMessage(onlinebrevPe, message, Utils.CALLID);
-		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
-			String recieved = receive(dialogueOnlinePe);
-			assertNotNull(recieved);
-			BrevStatusVO endretBrevstatusVo = brevstatusService.hentBrevStatus(BREVREF_XML, PENSJON_SYSTEM_ID);
-			assertEquals(BREVSTATUS_BREVPAKKE, endretBrevstatusVo.getStatus());
-		});
+		sendStringMessage(onlinebrevPe, message, CALLID);
 
+		await().atMost(10, SECONDS).untilAsserted(() -> {
+			String received = receive(dialogueOnlinePe);
+			assertThat(received).isNotNull();
+			BrevStatusVO endretBrevstatusVo = brevstatusService.hentBrevStatus(BREVREF_XML, PENSJON_SYSTEM_ID);
+			assertThat(endretBrevstatusVo.getStatus()).isEqualTo(BREVSTATUS_BREVPAKKE);
+		});
 	}
 
 	@Test
 	public void shouldGiTilgang() throws Exception {
 		String message = classpathToString("brevXml/fraBrevlagerPe.xml");
-		sendStringMessage(onlinebrevPe, message, Utils.CALLID);
+		sendStringMessage(onlinebrevPe, message, CALLID);
 
-		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() ->
-				assertTrue(brevtilgangService.sjekkTilgang(PENSJON_SYSTEM_ID, "92fa00f8d8024b0", "klientToken")));
-
+		await().atMost(10, SECONDS).untilAsserted(() ->
+				assertThat(brevtilgangService.sjekkTilgang(PENSJON_SYSTEM_ID, "92fa00f8d8024b0", "klientToken")).isTrue()
+		);
 	}
 
 	@Test
 	public void shouldSendToFeilKoOnException() throws Exception {
 		String badHeader = classpathToString("brevXml/bisysBrev.xml");
-		sendStringMessage(onlinebrevPe, badHeader, Utils.CALLID);
-		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
-			String recieved = receive(deadletter);
-			assertEquals(recieved, classpathToString("brevXml/bisysBrev.xml"));
+		sendStringMessage(onlinebrevPe, badHeader, CALLID);
+
+		await().atMost(10, SECONDS).untilAsserted(() -> {
+			String received = receive(deadletter);
+			assertThat(received).isEqualTo(classpathToString("brevXml/bisysBrev.xml"));
 		});
 	}
 
@@ -70,7 +68,7 @@ public class BestillBrevRoutePeIT extends AbstractTest {
 		sendStringMessage(onlinebrevPe, header, CALL_ID);
 
 		await().atMost(10, SECONDS).untilAsserted(() -> {
-			assertNotNull(brevtilgangRepository.findBySystemIdAndBrevreferanse("BI12", "10000000000"));
+			assertThat(brevtilgangRepository.findBySystemIdAndBrevreferanse("BI12", "10000000000")).isNotNull();
 		});
 	}
 
@@ -83,7 +81,7 @@ public class BestillBrevRoutePeIT extends AbstractTest {
 
 		await().atMost(10, SECONDS).untilAsserted(() -> {
 			String received = receive(deadletter);
-			assertEquals(received, header);
+			assertThat(received).isEqualTo(header);
 		});
 	}
 
@@ -93,7 +91,7 @@ public class BestillBrevRoutePeIT extends AbstractTest {
 
 		await().atMost(10, SECONDS).untilAsserted(() -> {
 			ActiveMQMessage received = receive(deadletter);
-			assertEquals(received.getJMSCorrelationID(), (CORRELATION_ID));
+			assertThat(received.getJMSCorrelationID()).isEqualTo(CORRELATION_ID);
 		});
 	}
 
@@ -105,7 +103,7 @@ public class BestillBrevRoutePeIT extends AbstractTest {
 
 		await().atMost(10, SECONDS).untilAsserted(() -> {
 			String received = receive(SVARKOSTRING);
-			assertEquals(received, Utils.getBrevFinnesAlleredeString(PENSJON_SYSTEM_ID));
+			assertThat(received).isEqualTo(getBrevFinnesAlleredeString(PENSJON_SYSTEM_ID));
 		});
 	}
 

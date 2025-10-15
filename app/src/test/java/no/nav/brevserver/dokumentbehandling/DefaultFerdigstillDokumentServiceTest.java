@@ -1,10 +1,11 @@
 package no.nav.brevserver.dokumentbehandling;
 
+import jakarta.activation.DataHandler;
+import jakarta.mail.util.ByteArrayDataSource;
 import no.nav.brevserver.core.constants.SystemType;
 import no.nav.brevserver.core.exception.BrevException;
 import no.nav.brevserver.core.vo.BrevStatusVO;
 import no.nav.brevserver.core.vo.BrevVO;
-import no.nav.brevserver.core.vo.FilType;
 import no.nav.brevserver.nais.DokumentbehandlingProvider;
 import no.nav.brevserver.nais.support.FerdigstillDokumentRequestMapper;
 import no.nav.brevserver.nais.support.impl.DefaultFerdigstillDokumentRequestMapper;
@@ -19,22 +20,16 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import jakarta.activation.DataHandler;
-import jakarta.mail.util.ByteArrayDataSource;
-
 import java.io.IOException;
 import java.io.InputStream;
 
+import static no.nav.brevserver.core.vo.FilType.PDF;
+import static no.nav.brevserver.core.vo.FilType.RTF;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThatNullPointerException;
 import static org.mockito.Mockito.verify;
 
-/**
- * Unit tests for DefaultFerdigstillDokumentServiceTest
- */
 @ExtendWith(MockitoExtension.class)
 public class DefaultFerdigstillDokumentServiceTest {
 
@@ -45,8 +40,8 @@ public class DefaultFerdigstillDokumentServiceTest {
 	private static final String KVITTERINGSKOE = "kvitteringsKoe";
 	private static final String MALPAKKE = "malpakke";
 	private static final boolean NYTT_DOKUMENT = true;
-	private static final String CONTENT_TYPE_PDF = FilType.PDF.getContentType();
-	private static final String CONTENT_TYPE_RTF = FilType.RTF.getContentType();
+	private static final String CONTENT_TYPE_PDF = PDF.getContentType();
+	private static final String CONTENT_TYPE_RTF = RTF.getContentType();
 	private static final byte[] DOKUMENTDATA_PDF = "hello pdf".getBytes();
 	private static final byte[] DOKUMENTDATA_RTF = "hello rtf".getBytes();
 
@@ -74,9 +69,26 @@ public class DefaultFerdigstillDokumentServiceTest {
 		verify(brevlagerService).ferdigstillBrev(brevStatusVOCaptor.capture(),
 				brevCaptor.capture(), brevCaptor.capture());
 
-		assertBrevStatus(brevStatusVOCaptor.getValue());
-		assertRtfBrev(brevCaptor.getAllValues().get(0));
-		assertPdfBrev(brevCaptor.getAllValues().get(1));
+		var brevstatus = brevStatusVOCaptor.getValue();
+		assertThat(brevstatus.getSystemID()).isEqualTo(SYSTEM_ID);
+		assertThat(brevstatus.getBrevreferanse()).isEqualTo(BREVREFERANSE);
+		assertThat(brevstatus.getToken()).isEqualTo(TOKEN);
+		assertThat(brevstatus.getReturKoe()).isEqualTo(KVITTERINGSKOE);
+		assertThat(brevstatus.getBrevmal()).isEqualTo(MALPAKKE);
+
+		var rtfBrev = brevCaptor.getAllValues().getFirst();
+		assertThat(rtfBrev.getBrevdata()).isEqualTo(DOKUMENTDATA_RTF);
+		assertThat(rtfBrev.getContentType()).isEqualTo(CONTENT_TYPE_RTF);
+		assertThat(rtfBrev.getBrukerID()).isEqualTo(BRUKER_ID);
+		assertThat(rtfBrev.getBrevreferanse()).isEqualTo(BREVREFERANSE);
+		assertThat(rtfBrev.getSystemID()).isEqualTo(SYSTEM_ID);
+
+		var pdfBrev = brevCaptor.getAllValues().get(1);
+		assertThat(pdfBrev.getBrevdata()).isEqualTo(DOKUMENTDATA_PDF);
+		assertThat(pdfBrev.getContentType()).isEqualTo(CONTENT_TYPE_PDF);
+		assertThat(pdfBrev.getBrukerID()).isEqualTo(BRUKER_ID);
+		assertThat(pdfBrev.getBrevreferanse()).isEqualTo(BREVREFERANSE);
+		assertThat(pdfBrev.getSystemID()).isEqualTo(SYSTEM_ID);
 	}
 
 	@Test
@@ -84,64 +96,38 @@ public class DefaultFerdigstillDokumentServiceTest {
 		var request = createFerdigstillDokumentRequest();
 		request.setPdfDokument(new DataHandler(new ByteArrayDataSource(InputStream.nullInputStream(), "application/pdf")));
 
-		assertThatIllegalArgumentException().isThrownBy(() -> dokumentbehandlingProvider.ferdigstillDokument(request))
+		assertThatIllegalArgumentException()
+				.isThrownBy(() -> dokumentbehandlingProvider.ferdigstillDokument(request))
 				.withMessage("Dokumentet kan ikke ferdigstilles da PDF-dokumentet er tomt");
 	}
 
-
 	@Test
-	public void shouldThrowExceptionIfValidationFails() throws BrevException {
-		var e = assertThrows(NullPointerException.class, () -> dokumentbehandlingProvider.ferdigstillDokument(new FerdigstillDokumentRequest()));
-
-		assertEquals("brevStatus.systemID must be set", e.getMessage());
+	public void shouldThrowExceptionIfValidationFails() {
+		assertThatNullPointerException()
+				.isThrownBy(() -> dokumentbehandlingProvider.ferdigstillDokument(new FerdigstillDokumentRequest()))
+				.withMessage("brevStatus.systemID must be set");
 	}
 
 	@Test
-	public void shouldThrowExceptionIfKvitteringskoeMissingAndNewDokumentSet() throws BrevException {
+	public void shouldThrowExceptionIfKvitteringskoeMissingAndNewDokumentSet() {
 		FerdigstillDokumentRequest ferdigstillDokumentRequest = createFerdigstillDokumentRequest();
 		ferdigstillDokumentRequest.setNyttDokument(true);
 		ferdigstillDokumentRequest.setKvitteringskoe(null);
 
-		var e = assertThrows(NullPointerException.class, () -> dokumentbehandlingProvider.ferdigstillDokument(ferdigstillDokumentRequest));
-
-		assertEquals("brevStatus.returKoe must be set if newDocument is true", e.getMessage());
+		assertThatNullPointerException()
+				.isThrownBy(() -> dokumentbehandlingProvider.ferdigstillDokument(ferdigstillDokumentRequest))
+				.withMessage("brevStatus.returKoe must be set if newDocument is true");
 	}
 
 	@Test
-	public void shouldThrowExceptionIfMalpakkeMissingAndNewDokumentSet() throws BrevException {
+	public void shouldThrowExceptionIfMalpakkeMissingAndNewDokumentSet() {
 		FerdigstillDokumentRequest ferdigstillDokumentRequest = createFerdigstillDokumentRequest();
 		ferdigstillDokumentRequest.setNyttDokument(true);
 		ferdigstillDokumentRequest.setMalpakke(null);
 
-		var e = assertThrows(NullPointerException.class, () -> dokumentbehandlingProvider.ferdigstillDokument(ferdigstillDokumentRequest));
-
-		assertEquals("brevStatus.brevmal must be set if newDocument is true", e.getMessage());
-	}
-
-	private void assertBrevStatus(BrevStatusVO brevStatus) {
-		assertThat(brevStatus.getSystemID(), is(SYSTEM_ID));
-		assertThat(brevStatus.getBrevreferanse(), is(BREVREFERANSE));
-		assertThat(brevStatus.getToken(), is(TOKEN));
-		assertThat(brevStatus.getReturKoe(), is(KVITTERINGSKOE));
-		assertThat(brevStatus.getBrevmal(), is(MALPAKKE));
-	}
-
-	private void assertRtfBrev(BrevVO brev) {
-		assertThat(brev.getBrevdata(), is(DOKUMENTDATA_RTF));
-		assertThat(brev.getContentType(), is(CONTENT_TYPE_RTF));
-		assertBrev(brev);
-	}
-
-	private void assertPdfBrev(BrevVO brev) {
-		assertThat(brev.getBrevdata(), is(DOKUMENTDATA_PDF));
-		assertThat(brev.getContentType(), is(CONTENT_TYPE_PDF));
-		assertBrev(brev);
-	}
-
-	private void assertBrev(BrevVO brev) {
-		assertThat(brev.getBrukerID(), is(BRUKER_ID));
-		assertThat(brev.getBrevreferanse(), is(BREVREFERANSE));
-		assertThat(brev.getSystemID(), is(SYSTEM_ID));
+		assertThatNullPointerException()
+				.isThrownBy(() -> dokumentbehandlingProvider.ferdigstillDokument(ferdigstillDokumentRequest))
+				.withMessage("brevStatus.brevmal must be set if newDocument is true");
 	}
 
 	private FerdigstillDokumentRequest createFerdigstillDokumentRequest() {

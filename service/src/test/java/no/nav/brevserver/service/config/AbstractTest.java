@@ -1,6 +1,5 @@
 package no.nav.brevserver.service.config;
 
-import no.nav.brevserver.core.constants.Konstanter;
 import no.nav.brevserver.core.repository.BrevRepository;
 import no.nav.brevserver.core.repository.BrevSystemTilgangRepository;
 import no.nav.brevserver.core.repository.BrevlagerHistorikkRepository;
@@ -14,12 +13,12 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestEntityManager;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+import static no.nav.brevserver.core.constants.Konstanter.BREVLAGER_STATUS_KLADD;
+import static no.nav.brevserver.core.vo.FilType.RTF;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-
 
 @AutoConfigureDataJpa
 @AutoConfigureTestDatabase
@@ -64,8 +63,13 @@ public abstract class AbstractTest {
 	protected BrevRepository brevRepository;
 
 	protected BrevVO.BrevVOBuilder defaultBrev() {
-		return BrevVO.builder().brevreferanse(BREVREFERANSE).systemID(SYSTEM_ID).contentType(FilType.RTF.getContentType())
-				.lagerStatus(Konstanter.BREVLAGER_STATUS_KLADD).brukerID(BRUKERID).brevdata(BREVDATA);
+		return BrevVO.builder()
+				.brevreferanse(BREVREFERANSE)
+				.systemID(SYSTEM_ID)
+				.contentType(RTF.getContentType())
+				.lagerStatus(BREVLAGER_STATUS_KLADD)
+				.brukerID(BRUKERID)
+				.brevdata(BREVDATA);
 	}
 
 }

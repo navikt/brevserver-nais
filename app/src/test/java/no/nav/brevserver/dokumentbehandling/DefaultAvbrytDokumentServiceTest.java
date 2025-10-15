@@ -1,13 +1,11 @@
 package no.nav.brevserver.dokumentbehandling;
 
-import no.nav.brevserver.core.exception.BrevException;
 import no.nav.brevserver.core.vo.BrevStatusVO;
 import no.nav.brevserver.nais.DokumentbehandlingProvider;
 import no.nav.brevserver.nais.support.AvbrytDokumentRequestMapper;
 import no.nav.brevserver.nais.support.impl.DefaultAvbrytDokumentRequestMapper;
 import no.nav.brevserver.service.BrevlagerService;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.AvbrytDokumentRequest;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -17,15 +15,12 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThatNullPointerException;
 import static org.mockito.Mockito.verify;
 
-/**
- * Unit tests for DefaultAvbrytDokumentService
- */
 @ExtendWith(MockitoExtension.class)
 public class DefaultAvbrytDokumentServiceTest {
+
 	private static final String BREVREFERANSE = "1";
 	private static final String TOKEN = "123";
 	private static final String SYSTEM_ID = "PE2";
@@ -42,25 +37,18 @@ public class DefaultAvbrytDokumentServiceTest {
 	@Captor
 	private ArgumentCaptor<BrevStatusVO> brevStatusCaptor;
 
-	private AvbrytDokumentRequest request;
-
-	@BeforeEach
-	public void setUp() {
-		request = createAvbrytDokumentRequest();
-	}
-
 	@Test
 	public void shouldAvbrytDokument() throws Exception {
-		dokumentbehandlingProvider.avbrytDokument(request);
+		dokumentbehandlingProvider.avbrytDokument(createAvbrytDokumentRequest());
 
 		verify(controllerMock).avbrytDokument(brevStatusCaptor.capture());
-
 	}
 
 	@Test
-	public void shouldThrowExceptionIfValidationFails() throws BrevException {
-		var e = assertThrows(NullPointerException.class, () -> dokumentbehandlingProvider.avbrytDokument(new AvbrytDokumentRequest()));
-		assertThat(e.getMessage()).isEqualTo("brevStatus.systemID must be set");
+	public void shouldThrowExceptionIfValidationFails() {
+		assertThatNullPointerException()
+				.isThrownBy(() -> dokumentbehandlingProvider.avbrytDokument(new AvbrytDokumentRequest()))
+				.withMessage("brevStatus.systemID must be set");
 	}
 
 	private AvbrytDokumentRequest createAvbrytDokumentRequest() {

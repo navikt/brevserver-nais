@@ -1,18 +1,18 @@
 package no.nav.brevserver.bestillBrev.pesys;
 
 import config.AbstractTest;
-import no.nav.brevserver.bestillBrev.Utils;
 import org.apache.activemq.artemis.jms.client.ActiveMQMessage;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import java.util.concurrent.TimeUnit;
-
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static no.nav.brevserver.bestillBrev.Utils.PENSJON_SYSTEM_ID;
 import static no.nav.brevserver.bestillBrev.Utils.createInputFromFagsystem;
+import static no.nav.brevserver.bestillBrev.Utils.getBrevFinnesAlleredeString;
+import static no.nav.brevserver.bestillBrev.Utils.getHappyPathText;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PeBestillBrevServiceTest extends AbstractTest {
 	
@@ -25,9 +25,9 @@ public class PeBestillBrevServiceTest extends AbstractTest {
 		String header = createInputFromFagsystem(PENSJON_SYSTEM_ID);
 		sendStringMessage(onlinebrevPe, header, CORRELATION_ID);
 
-		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
-			String recieved = receive(dialogueOnlinePe);
-			assertEquals(recieved, Utils.getHappyPathText(PENSJON_SYSTEM_ID));
+		await().atMost(10, SECONDS).untilAsserted(() -> {
+			String received = receive(dialogueOnlinePe);
+			assertThat(received).isEqualTo(getHappyPathText(PENSJON_SYSTEM_ID));
 		});
 	}
 
@@ -35,9 +35,9 @@ public class PeBestillBrevServiceTest extends AbstractTest {
 	public void shouldFailOnNullInput() {
 		sendStringMessage(onlinebrevPe, null, CALL_ID);
 
-		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
-			ActiveMQMessage recieved = receive(deadletterPe);
-			assertEquals(recieved.getJMSCorrelationID(), (CORRELATION_ID));
+		await().atMost(10, SECONDS).untilAsserted(() -> {
+			ActiveMQMessage received = receive(deadletterPe);
+			assertThat(received.getJMSCorrelationID()).isEqualTo(CORRELATION_ID);
 		});
 	}
 
@@ -47,9 +47,9 @@ public class PeBestillBrevServiceTest extends AbstractTest {
 		String header = createInputFromFagsystem(input);
 		sendStringMessage(onlinebrevPe, header, CALL_ID);
 
-		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
-			String recieved = receive(deadletterPe);
-			assertEquals(recieved, header);
+		await().atMost(10, SECONDS).untilAsserted(() -> {
+			String received = receive(deadletterPe);
+			assertThat(received).isEqualTo(header);
 		});
 	}
 
@@ -59,9 +59,10 @@ public class PeBestillBrevServiceTest extends AbstractTest {
 		sendStringMessage(onlinebrevPe, header, CALL_ID);
 		sendStringMessage(onlinebrevPe, header, CALL_ID);
 
-		await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
-			String recieved = receive(SVARKOSTRING);
-			assertEquals(recieved, Utils.getBrevFinnesAlleredeString(PENSJON_SYSTEM_ID));
+		await().atMost(10, SECONDS).untilAsserted(() -> {
+			String received = receive(SVARKOSTRING);
+			assertThat(received).isEqualTo(getBrevFinnesAlleredeString(PENSJON_SYSTEM_ID));
 		});
 	}
+
 }

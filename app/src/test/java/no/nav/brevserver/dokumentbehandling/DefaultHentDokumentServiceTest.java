@@ -4,7 +4,6 @@ import no.nav.brevserver.core.constants.KnappStatus;
 import no.nav.brevserver.core.exception.BrevFinnesIkkeException;
 import no.nav.brevserver.core.vo.BrevStatusVO;
 import no.nav.brevserver.core.vo.BrevVO;
-import no.nav.brevserver.core.vo.FilType;
 import no.nav.brevserver.nais.DokumentbehandlingProvider;
 import no.nav.brevserver.nais.support.HentDokumentRequestMapper;
 import no.nav.brevserver.nais.support.HentDokumentResponseMapper;
@@ -24,19 +23,14 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.io.IOException;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static no.nav.brevserver.core.vo.FilType.RTF;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatNullPointerException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-/**
- * Unit tests for DefaultHentDokumentService
- */
 @ExtendWith(MockitoExtension.class)
 public class DefaultHentDokumentServiceTest {
 
@@ -45,7 +39,7 @@ public class DefaultHentDokumentServiceTest {
 	private static final String TOKEN = "123";
 
 	private static final String BRUKER_ID = "brukerId";
-	private static final String CONTENT_TYPE = FilType.RTF.getContentType();
+	private static final String CONTENT_TYPE = RTF.getContentType();
 	private static final String STATUS = "status";
 	private static final byte[] DOKUMENTDATA = "brevdata".getBytes();
 
@@ -66,7 +60,7 @@ public class DefaultHentDokumentServiceTest {
 	private HentDokumentRequest request;
 
 	@BeforeEach
-	public void setUp() throws Exception {
+	public void setUp() {
 		request = createHentBrevRequest();
 	}
 
@@ -74,39 +68,34 @@ public class DefaultHentDokumentServiceTest {
 	public void shouldHentBrev() throws Exception {
 		when(brevlagerService.hentDokumentFromBrevlagerOrJoark(any())).thenReturn(createBrev());
 		when(brevstatusService.hentBrevStatus(any(), any())).thenReturn(createBrevStatus());
+
 		HentDokumentResponse2 response = dokumentbehandlingProvider.hentDokument(request);
+
 		verify(brevlagerService).hentDokumentFromBrevlagerOrJoark(brevStatusCaptor.capture());
-		BrevStatusVO brevStatus = brevStatusCaptor.getValue();
-		assertBrevStatus(brevStatus);
-		assertHentBrevResponse(response);
+		BrevStatusVO brevstatus = brevStatusCaptor.getValue();
+		assertThat(brevstatus.getSystemID()).isEqualTo(SYSTEM_ID);
+		assertThat(brevstatus.getBrevreferanse()).isEqualTo(BREVREFERANSE);
+		assertThat(brevstatus.getToken()).isEqualTo(TOKEN);
+
+		assertThat(response.getDokumentData().getContentType()).isEqualTo(CONTENT_TYPE);
+		assertThat(response.getDokumentData().getInputStream().readAllBytes()).isEqualTo(DOKUMENTDATA);
+		assertThat(response.getKnappStatus()).isEqualTo(String.valueOf(KnappStatus.getDefaultValue()));
 	}
 
 	@Test
 	public void shouldThrowExceptionIfBrevWasNotFound() throws Exception {
 		when(brevlagerService.hentDokumentFromBrevlagerOrJoark(any(BrevStatusVO.class))).thenReturn(null);
 
-		var e = assertThrows(BrevFinnesIkkeException.class, () -> dokumentbehandlingProvider.hentDokument(request));
-
-		assertEquals("Brevserver fant ikke dokumentet med brevreferanse: " + BREVREFERANSE, e.getMessage());
+		assertThatExceptionOfType(BrevFinnesIkkeException.class)
+				.isThrownBy(() -> dokumentbehandlingProvider.hentDokument(request))
+				.withMessage("Brevserver fant ikke dokumentet med brevreferanse: " + BREVREFERANSE);
 	}
 
 	@Test
-	public void shouldThrowExceptionIfMissingStatus() throws Exception {
-		var e = assertThrows(NullPointerException.class, () -> dokumentbehandlingProvider.hentDokument(new HentDokumentRequest()));
-
-		assertEquals("brevStatus.systemID must be set", e.getMessage());
-	}
-
-	private void assertHentBrevResponse(HentDokumentResponse2 response) throws IOException {
-		assertThat(response.getDokumentData().getContentType(), is(CONTENT_TYPE));
-		assertThat(response.getDokumentData().getInputStream().readAllBytes(), is(DOKUMENTDATA));
-		assertThat(response.getKnappStatus(), is(String.valueOf(KnappStatus.getDefaultValue())));
-	}
-
-	private void assertBrevStatus(BrevStatusVO brevStatus) {
-		assertThat(brevStatus.getSystemID(), is(SYSTEM_ID));
-		assertThat(brevStatus.getBrevreferanse(), is(BREVREFERANSE));
-		assertThat(brevStatus.getToken(), is(TOKEN));
+	public void shouldThrowExceptionIfMissingStatus() {
+		assertThatNullPointerException()
+				.isThrownBy(() -> dokumentbehandlingProvider.hentDokument(new HentDokumentRequest()))
+				.withMessage("brevStatus.systemID must be set");
 	}
 
 	private HentDokumentRequest createHentBrevRequest() {
@@ -135,4 +124,5 @@ public class DefaultHentDokumentServiceTest {
 		brevStatus.setToken(TOKEN);
 		return brevStatus;
 	}
+
 }

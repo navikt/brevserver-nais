@@ -1,22 +1,18 @@
 package no.nav.brevserver.ws.loggmottak.map.support;
 
-import no.nav.brevserver.service.loggmottak.Log;
-import no.nav.brevserver.service.loggmottak.exception.LoggedException;
 import no.nav.tjenester.brevogarkiv.loggmottak.BrevklientArguments;
 import no.nav.tjenester.brevogarkiv.loggmottak.LoggRequest;
 import no.nav.tjenester.brevogarkiv.loggmottak.Severity;
 import no.nav.tjenester.brevogarkiv.loggmottak.WrappedException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static no.nav.brevserver.service.loggmottak.Log.ERROR;
+import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * Unit tests for DefaultLoggRequestMapper
- */
+
 public class DefaultLoggRequestMapperTest {
+
 	private static final String SYSTEM_ID = "PE2";
 	private static final String BREVREFERANSE = "123";
 	private static final String INFOTRYGD_ID = "456";
@@ -27,33 +23,22 @@ public class DefaultLoggRequestMapperTest {
 	private static final String EXCEPTION_MESSAGE = "test";
 	private String stacktrace;
 
-	private DefaultLoggRequestMapper loggRequestMapper;
-	private LoggRequest wsRequest;
-	private no.nav.brevserver.service.loggmottak.to.LoggRequest domainRequest;
-
-	@BeforeEach
-	public void setUp() {
-		loggRequestMapper = new DefaultLoggRequestMapper();
-		wsRequest = createWsLoggRequest();
-	}
+	private final DefaultLoggRequestMapper loggRequestMapper = new DefaultLoggRequestMapper();
 
 	@Test
 	public void shouldMapFromWsRequestToDomainRequest() {
-		domainRequest = loggRequestMapper.map(wsRequest);
+		no.nav.brevserver.service.loggmottak.to.LoggRequest domainRequest = loggRequestMapper.map(createWsLoggRequest());
 
-		assertThat(domainRequest.getSystemId(), is(SYSTEM_ID));
-		assertThat(domainRequest.getBrevreferanse(), is(BREVREFERANSE));
-		assertThat(domainRequest.getInfotrygdId(), is(INFOTRYGD_ID));
-		assertThat(domainRequest.getKlientVersion(), is(BREVKLIENT_VERSION));
-		assertThat(domainRequest.getBrukerId(), is(BRUKER_ID));
-		assertThat(domainRequest.getSeverity(), is(Log.ERROR));
-		assertThat(domainRequest.getMessage(), is(LOGMESSAGE));
-		assertLoggedException(domainRequest.getException());
-	}
+		assertThat(domainRequest.getSystemId()).isEqualTo(SYSTEM_ID);
+		assertThat(domainRequest.getBrevreferanse()).isEqualTo(BREVREFERANSE);
+		assertThat(domainRequest.getInfotrygdId()).isEqualTo(INFOTRYGD_ID);
+		assertThat(domainRequest.getKlientVersion()).isEqualTo(BREVKLIENT_VERSION);
+		assertThat(domainRequest.getBrukerId()).isEqualTo(BRUKER_ID);
+		assertThat(domainRequest.getSeverity()).isEqualTo(ERROR);
+		assertThat(domainRequest.getMessage()).isEqualTo(LOGMESSAGE);
 
-	private void assertLoggedException(LoggedException loggedException) {
-		assertThat(loggedException.getMessage(), is(EXCEPTION_MESSAGE));
-		assertThat(loggedException.getStacktrace(), is(stacktrace));
+		assertThat(domainRequest.getException().getMessage()).isEqualTo(EXCEPTION_MESSAGE);
+		assertThat(domainRequest.getException().getStacktrace()).isEqualTo(stacktrace);
 	}
 
 	private LoggRequest createWsLoggRequest() {
@@ -86,4 +71,5 @@ public class DefaultLoggRequestMapperTest {
 		exception.setStacktrace(stacktrace);
 		return exception;
 	}
+
 }

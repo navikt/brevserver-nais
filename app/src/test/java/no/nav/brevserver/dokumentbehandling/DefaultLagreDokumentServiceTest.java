@@ -1,12 +1,11 @@
 package no.nav.brevserver.dokumentbehandling;
 
+import jakarta.activation.DataHandler;
+import jakarta.mail.util.ByteArrayDataSource;
 import no.nav.brevserver.AbstractBrevserviceTest;
-import no.nav.brevserver.core.constants.Konstanter;
 import no.nav.brevserver.core.constants.SystemType;
-import no.nav.brevserver.core.exception.BrevException;
 import no.nav.brevserver.core.vo.BrevStatusVO;
 import no.nav.brevserver.core.vo.BrevVO;
-import no.nav.brevserver.core.vo.FilType;
 import no.nav.brevserver.nais.DokumentbehandlingProvider;
 import no.nav.brevserver.nais.support.LagreDokumentRequestMapper;
 import no.nav.brevserver.nais.support.impl.DefaultLagreDokumentRequestMapper;
@@ -21,19 +20,14 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import jakarta.activation.DataHandler;
-import jakarta.mail.util.ByteArrayDataSource;
-import java.io.IOException;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static no.nav.brevserver.core.constants.Konstanter.BREVLAGER_STATUS_KLADD;
+import static no.nav.brevserver.core.constants.Konstanter.BREVSTATUS_LAGRET_KLADD;
+import static no.nav.brevserver.core.constants.SystemType.PE;
+import static no.nav.brevserver.core.vo.FilType.RTF;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNullPointerException;
 import static org.mockito.Mockito.verify;
 
-/**
- * Unit tests for DefaultLagreDokumentService
- */
 @ExtendWith(MockitoExtension.class)
 public class DefaultLagreDokumentServiceTest extends AbstractBrevserviceTest {
 
@@ -56,78 +50,68 @@ public class DefaultLagreDokumentServiceTest extends AbstractBrevserviceTest {
 
 	@Test
 	public void shouldLagreKladdDokumentRtf() throws Exception {
-		dokumentbehandlingProvider.lagreDokument(createLagreDokumentRequest(CONTENT_TYPE_RTF));
+		dokumentbehandlingProvider.lagreDokument(createLagreDokumentRequest());
 
-		verify(brevlagerService).lagreDokument(
-				brevCaptor.capture(),
-				brevStatusCaptor.capture(),
-				systemTypeCaptor.capture()
-		);
+		verify(brevlagerService).lagreDokument(brevCaptor.capture(), brevStatusCaptor.capture(), systemTypeCaptor.capture());
 
-		assertBrev(brevCaptor.getValue(), CONTENT_TYPE_RTF, Konstanter.BREVLAGER_STATUS_KLADD);
-		assertBrevStatus(brevStatusCaptor.getValue(), Konstanter.BREVSTATUS_LAGRET_KLADD);
-		assertThat(systemTypeCaptor.getValue(), is(SystemType.PE));
+		var brev = brevCaptor.getValue();
+		assertThat(brev.getSystemID()).isEqualTo(SYSTEM_ID);
+		assertThat(brev.getBrevreferanse()).isEqualTo(BREVREFERANSE);
+		assertThat(brev.getContentType()).isEqualTo(CONTENT_TYPE_RTF);
+		assertThat(brev.getBrevdata()).isEqualTo(DOKUMENTDATA_RTF);
+		assertThat(brev.getBrukerID()).isEqualTo(BRUKER_ID);
+		assertThat(brev.getLagerStatus()).isEqualTo(BREVLAGER_STATUS_KLADD);
+
+		var brevstatus = brevStatusCaptor.getValue();
+		assertThat(brevstatus.getSystemID()).isEqualTo(SYSTEM_ID);
+		assertThat(brevstatus.getBrevreferanse()).isEqualTo(BREVREFERANSE);
+		assertThat(brevstatus.getToken()).isEqualTo(TOKEN);
+		assertThat(brevstatus.getBrevmal()).isEqualTo(MALPAKKE);
+		assertThat(brevstatus.getReturKoe()).isEqualTo(KVITTERINGSKOE);
+		assertThat(brevstatus.getStatus()).isEqualTo(BREVSTATUS_LAGRET_KLADD);
+
+		assertThat(systemTypeCaptor.getValue()).isEqualTo(PE);
 	}
 
 	@Test
-	public void shouldThrowExceptionIfValidationFails() throws BrevException {
-		var e = assertThrows(NullPointerException.class, () -> dokumentbehandlingProvider.lagreDokument(new LagreDokumentRequest()));
-
-		assertEquals("brevStatus.systemID must be set", e.getMessage());
+	public void shouldThrowExceptionIfValidationFails() {
+		assertThatNullPointerException()
+				.isThrownBy(() -> dokumentbehandlingProvider.lagreDokument(new LagreDokumentRequest()))
+				.withMessage("brevStatus.systemID must be set");
 	}
 
-
 	@Test
-	public void shouldThrowExceptionIfKvitteringskoeMissingAndNewDokumentSet() throws BrevException, IOException {
-		LagreDokumentRequest lagreDokumentRequest = createLagreDokumentRequest(CONTENT_TYPE_RTF);
+	public void shouldThrowExceptionIfKvitteringskoeMissingAndNewDokumentSet() {
+		LagreDokumentRequest lagreDokumentRequest = createLagreDokumentRequest();
 		lagreDokumentRequest.setNyttDokument(true);
 		lagreDokumentRequest.setKvitteringskoe(null);
 
-		var e = assertThrows(NullPointerException.class, () -> dokumentbehandlingProvider.lagreDokument(lagreDokumentRequest));
-
-		assertEquals("brevStatus.returKoe must be set if newDocument is true", e.getMessage());
+		assertThatNullPointerException()
+				.isThrownBy(() -> dokumentbehandlingProvider.lagreDokument(lagreDokumentRequest))
+				.withMessage("brevStatus.returKoe must be set if newDocument is true");
 	}
 
 	@Test
-	public void shouldThrowExceptionIfMalpakkeMissingAndNewDokumentSet() throws BrevException, IOException {
-		LagreDokumentRequest lagreDokumentRequest = createLagreDokumentRequest(CONTENT_TYPE_RTF);
+	public void shouldThrowExceptionIfMalpakkeMissingAndNewDokumentSet() {
+		LagreDokumentRequest lagreDokumentRequest = createLagreDokumentRequest();
 		lagreDokumentRequest.setNyttDokument(true);
 		lagreDokumentRequest.setMalpakke(null);
 
-		var e = assertThrows(NullPointerException.class, () -> dokumentbehandlingProvider.lagreDokument(lagreDokumentRequest));
-
-		assertEquals("brevStatus.brevmal must be set if newDocument is true", e.getMessage());
+		assertThatNullPointerException()
+				.isThrownBy(() -> dokumentbehandlingProvider.lagreDokument(lagreDokumentRequest))
+				.withMessage("brevStatus.brevmal must be set if newDocument is true");
 	}
 
-	private void assertBrev(BrevVO brev, String contentType, String lagerStatus) {
-		assertThat(brev.getSystemID(), is(SYSTEM_ID));
-		assertThat(brev.getBrevreferanse(), is(BREVREFERANSE));
-		assertThat(brev.getContentType(), is(contentType));
-		assertThat(brev.getBrevdata(), is(DOKUMENTDATA_RTF));
-		assertThat(brev.getBrukerID(), is(BRUKER_ID));
-		assertThat(brev.getLagerStatus(), is(lagerStatus));
-	}
-
-	private void assertBrevStatus(BrevStatusVO brevStatus, String status) {
-		assertThat(brevStatus.getSystemID(), is(SYSTEM_ID));
-		assertThat(brevStatus.getBrevreferanse(), is(BREVREFERANSE));
-		assertThat(brevStatus.getToken(), is(TOKEN));
-		assertThat(brevStatus.getBrevmal(), is(MALPAKKE));
-		assertThat(brevStatus.getReturKoe(), is(KVITTERINGSKOE));
-		assertThat(brevStatus.getStatus(), is(status));
-	}
-
-	private LagreDokumentRequest createLagreDokumentRequest(String contentType) throws IOException {
+	private LagreDokumentRequest createLagreDokumentRequest() {
 		LagreDokumentRequest lagreDokumentRequest = new LagreDokumentRequest();
 		lagreDokumentRequest.setBrukerId(BRUKER_ID);
 		lagreDokumentRequest.setSystemId(SYSTEM_ID);
 		lagreDokumentRequest.setBrevreferanse(BREVREFERANSE);
-		lagreDokumentRequest.setDokumentData(new DataHandler(new ByteArrayDataSource(DOKUMENTDATA_RTF, FilType.RTF.getContentType())));
+		lagreDokumentRequest.setDokumentData(new DataHandler(new ByteArrayDataSource(DOKUMENTDATA_RTF, RTF.getContentType())));
 		lagreDokumentRequest.setToken(TOKEN);
 		lagreDokumentRequest.setMalpakke(MALPAKKE);
 		lagreDokumentRequest.setKvitteringskoe(KVITTERINGSKOE);
 		return lagreDokumentRequest;
 	}
-
 
 }
