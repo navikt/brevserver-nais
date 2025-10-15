@@ -32,6 +32,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 		webEnvironment = RANDOM_PORT)
 @ActiveProfiles("itest")
 public class AbstractTest {
+
 	@MockitoBean
 	protected JoarkService joarkService;
 	@Autowired

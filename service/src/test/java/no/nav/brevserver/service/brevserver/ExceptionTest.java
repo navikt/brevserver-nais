@@ -16,10 +16,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.nullValue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -37,76 +35,82 @@ public class ExceptionTest extends AbstractTest {
 	private BrevtilgangRepository brevtilgangRepository;
 
 	@Test
-	public void shouldThrowExceptionIfSjekkSystemtilgangFailsBecauseOfWrongStatement() throws Exception {
-		throwExceptionWhenQueryIsExecuted();
-		var e = assertThrows(BrevTechnicalException.class, () -> brevtilgangService.sjekkSystemTilgang(SYSTEM_ID, SYSTEM_PASSORD));
+	public void shouldThrowExceptionIfSjekkSystemtilgangFailsBecauseOfWrongStatement() {
+		when(brevSystemTilgangRepository.findBySysId(any(String.class))).thenThrow(new RuntimeException("Database nede"));
 
-		assertEquals("Databasen til brevserveren er ikke tilgjengelig", e.getMessage());
+		assertThatExceptionOfType(BrevTechnicalException.class)
+				.isThrownBy(() -> brevtilgangService.sjekkSystemTilgang(SYSTEM_ID, SYSTEM_PASSORD))
+				.withMessage("Databasen til brevserveren er ikke tilgjengelig");
 	}
 
 	@Test
-	public void shouldThrowExceptionIfHentBrevStatusFailsBecauseOfWrongStatement() throws Exception {
-		throwExceptionWhenQueryIsExecuted();
+	public void shouldThrowExceptionIfHentBrevStatusFailsBecauseOfWrongStatement() {
+		when(brevstatusRepository.findById(any(BrevreferanseSystemCompositeId.class))).thenThrow(new RuntimeException("Database nede"));
 
-		var e = assertThrows(BrevTechnicalException.class, () -> brevstatusService.hentBrevStatus(BREVREFERANSE, SYSTEM_ID));
-
-		assertEquals("Databasen til brevserveren er ikke tilgjengelig", e.getMessage());
+		assertThatExceptionOfType(BrevTechnicalException.class)
+				.isThrownBy(() -> brevstatusService.hentBrevStatus(BREVREFERANSE, SYSTEM_ID))
+				.withMessage("Databasen til brevserveren er ikke tilgjengelig");
 	}
 
 	@Test
-	public void shouldThrowExceptionIfLagreBrevStatusFailsBecauseOfWrongStatement() throws Exception {
-		throwExceptionWhenQueryIsExecuted();
+	public void shouldThrowExceptionIfLagreBrevStatusFailsBecauseOfWrongStatement() {
+		when(brevstatusRepository.save(any(Brevstatus.class))).thenThrow(new RuntimeException("Database nede"));
 
-		var e = assertThrows(BrevTechnicalException.class, () -> brevstatusService.lagreBrevStatus(defaultBrevStatus()));
-
-		assertEquals("Databasen til brevserveren er ikke tilgjengelig", e.getMessage());
+		assertThatExceptionOfType(BrevTechnicalException.class)
+				.isThrownBy(() -> brevstatusService.lagreBrevStatus(defaultBrevStatus()))
+				.withMessage("Databasen til brevserveren er ikke tilgjengelig");
 	}
 
 	@Test
-	public void shouldThrowExceptionIfLagreTilgangFailsBecauseOfWrongStatement() throws Exception {
-		throwExceptionWhenQueryIsExecuted();
+	public void shouldThrowExceptionIfLagreTilgangFailsBecauseOfWrongStatement() {
+		when(brevtilgangRepository.save(any(Brevtilgang.class))).thenThrow(new RuntimeException("Database nede"));
 
-		var e = assertThrows(BrevTechnicalException.class, () -> brevtilgangService.lagreTilgang(SYSTEM_ID, BREVREFERANSE, TOKEN));
-
-		assertEquals("Databasen til brevserveren er ikke tilgjengelig", e.getMessage());
+		assertThatExceptionOfType(BrevTechnicalException.class)
+				.isThrownBy(() -> brevtilgangService.lagreTilgang(SYSTEM_ID, BREVREFERANSE, TOKEN))
+				.withMessage("Databasen til brevserveren er ikke tilgjengelig");
 	}
 
 	@Test
 	public void shouldReturnNullforSystilgangSomIkkeEksisterer() throws Exception {
 		SysTilgangVO sysTilgang = brevtilgangService.hentTilgangUtenCache(SYSTEM_ID);
 
-		assertThat(sysTilgang, nullValue());
+		assertThat(sysTilgang).isNull();
 	}
 
 	@Test
-	public void shouldThrowExceptionIfHentTilgangFailsBecauseOfWrongStatement() throws Exception {
-		throwExceptionWhenQueryIsExecuted();
+	public void shouldThrowExceptionIfHentTilgangFailsBecauseOfWrongStatement() {
+		when(brevSystemTilgangRepository.findBySysId(any(String.class))).thenThrow(new RuntimeException("Database nede"));
 
-		var e = assertThrows(BrevTechnicalException.class, () -> brevtilgangService.hentTilgangUtenCache(SYSTEM_ID));
-
-		assertEquals("Databasen til brevserveren er ikke tilgjengelig", e.getMessage());
+		assertThatExceptionOfType(BrevTechnicalException.class)
+				.isThrownBy(() -> brevtilgangService.hentTilgangUtenCache(SYSTEM_ID))
+				.withMessage("Databasen til brevserveren er ikke tilgjengelig");
 	}
 
 	@Test
-	public void shouldThrowExceptionForNotAllowedNullField() throws Exception {
-		throwExceptionWhenQueryIsExecuted();
+	public void shouldThrowExceptionForNotAllowedNullField() {
+		when(brevstatusRepository.findById(any(BrevreferanseSystemCompositeId.class))).thenThrow(new RuntimeException("Database nede"));
 
 		BrevStatusVO invalidBrevStatus = defaultBrevStatus().toBuilder().brevreferanse(null).systemID(null).build();
-		var e = assertThrows(BrevTechnicalException.class, () -> brevstatusService.lagreBrevStatus(invalidBrevStatus));
 
-		assertEquals("Databasen til brevserveren er ikke tilgjengelig", e.getMessage());
-	}
-
-	private void throwExceptionWhenQueryIsExecuted() throws Exception {
-		when(brevSystemTilgangRepository.findBySysId(any(String.class))).thenThrow(new RuntimeException("Database nede"));
-		when(brevstatusRepository.findById(any(BrevreferanseSystemCompositeId.class))).thenThrow(new RuntimeException("Database nede"));
-		when(brevtilgangRepository.save(any(Brevtilgang.class))).thenThrow(new RuntimeException("Database nede"));
-		when(brevstatusRepository.save(any(Brevstatus.class))).thenThrow(new RuntimeException("Database nede"));
+		assertThatExceptionOfType(BrevTechnicalException.class)
+				.isThrownBy(() -> brevstatusService.lagreBrevStatus(invalidBrevStatus))
+				.withMessage("Databasen til brevserveren er ikke tilgjengelig");
 	}
 
 	private BrevStatusVO defaultBrevStatus() {
-		return BrevStatusVO.builder().brevreferanse(BREVREFERANSE).systemID(SYSTEM_ID).returKoe(RETURKOE)
-				.bestillerBrukerID(BESTILLER_ID).brevmal(BREVMAL).status(STATUS).format(FORMAT)
-				.skrivertype(SKRIVERTYPE).skriver(SKRIVER).arkiver(ARKIVER).skuff(SKUFF).build();
+		return BrevStatusVO.builder()
+				.brevreferanse(BREVREFERANSE)
+				.systemID(SYSTEM_ID)
+				.returKoe(RETURKOE)
+				.bestillerBrukerID(BESTILLER_ID)
+				.brevmal(BREVMAL)
+				.status(STATUS)
+				.format(FORMAT)
+				.skrivertype(SKRIVERTYPE)
+				.skriver(SKRIVER)
+				.arkiver(ARKIVER)
+				.skuff(SKUFF)
+				.build();
 	}
+
 }

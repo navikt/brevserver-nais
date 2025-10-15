@@ -1,42 +1,44 @@
-import no.nav.brevserver.core.utils.ExchangeUtils;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static no.nav.brevserver.core.utils.ExchangeUtils.buildReturnQueue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ExchangeUtilsTest {
 
-	@Test
-	public void shouldCreateGoodQueueString() {
-		String expectedQueueString = "queue:///QA.P464.BISYS_REPLY_QUE?targetClient=1";
+	@ParameterizedTest
+	@ValueSource(strings = {
+			"queue://MPLSC02/QA.P464.BISYS_REPLY_QUE?putAsyncAllowed=1&readAheadAllowed=1",
+			"queue://MPLSC02/QA.P464.BISYS_REPLY_QUE?readAheadAllowed=1&putAsyncAllowed=1",
+			"queue://MPLSC02/QA.P464.BISYS_REPLY_QUE?putAsyncAllowed=1&targetClient=1"
+	})
+	public void shouldBuildReturnQueue(String queue) {
+		String expectedQueue = "queue:///QA.P464.BISYS_REPLY_QUE?targetClient=1";
 
-		String actualProblemQ = "queue://MPLSC02/QA.P464.BISYS_REPLY_QUE?putAsyncAllowed=1&readAheadAllowed=1";
-		String actualProblemQ2 = "queue://MPLSC02/QA.P464.BISYS_REPLY_QUE?readAheadAllowed=1&putAsyncAllowed=1";
-		String actualProblemQ3 = "queue://MPLSC02/QA.P464.BISYS_REPLY_QUE?putAsyncAllowed=1&targetClient=1";
+		String returnQueue = buildReturnQueue(queue);
 
-		String goodq1 = ExchangeUtils.buildReturnQueue(actualProblemQ);
-		assertThat(expectedQueueString, is(goodq1));
-
-		String goodq2 = ExchangeUtils.buildReturnQueue(actualProblemQ2);
-		assertThat(expectedQueueString, is(goodq2));
-
-		String goodq3 = ExchangeUtils.buildReturnQueue(actualProblemQ3);
-		assertThat(expectedQueueString, is(goodq3));
+		assertThat(returnQueue).isEqualTo(expectedQueue);
 	}
 
 	@Test
-	public void shouldCreateGoodQueueStringFromMinimal() {
-		String badQueueString = "queue://MRP1/QA.P460.BREV_REPLY_QUE";
-		String expectedQueueString = "queue:///QA.P460.BREV_REPLY_QUE?targetClient=1";
-		String goodQueueString = ExchangeUtils.buildReturnQueue(badQueueString);
-		assertThat(expectedQueueString, is(goodQueueString));
+	public void shouldBuildReturnQueueFromMinimal() {
+		String minimalQueue = "queue://MRP1/QA.P460.BREV_REPLY_QUE";
+		String expectedQueue = "queue:///QA.P460.BREV_REPLY_QUE?targetClient=1";
+
+		String returnQueue = buildReturnQueue(minimalQueue);
+
+		assertThat(returnQueue).isEqualTo(expectedQueue);
 	}
 
 	@Test
-	public void shouldNotAddTargetClientWhenExsists() {
-		String badQueueString = "queue://MPL01/QA.P464.BREV_REPLY_QUE?targetClient=1";
-		String expectedQueueString = "queue:///QA.P464.BREV_REPLY_QUE?targetClient=1";
-		String goodQueueString = ExchangeUtils.buildReturnQueue(badQueueString);
-		assertThat(expectedQueueString, is(goodQueueString));
+	public void shouldNotAddTargetClientWhenExists() {
+		String queue = "queue://MPL01/QA.P464.BREV_REPLY_QUE?targetClient=1";
+		String expectedQueue = "queue:///QA.P464.BREV_REPLY_QUE?targetClient=1";
+
+		String returnQueue = buildReturnQueue(queue);
+
+		assertThat(returnQueue).isEqualTo(expectedQueue);
 	}
+
 }

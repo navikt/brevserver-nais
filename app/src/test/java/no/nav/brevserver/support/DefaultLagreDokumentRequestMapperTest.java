@@ -1,23 +1,16 @@
 package no.nav.brevserver.support;
 
-import no.nav.brevserver.core.vo.BrevStatusVO;
-import no.nav.brevserver.core.vo.BrevVO;
+import jakarta.activation.DataHandler;
+import jakarta.mail.util.ByteArrayDataSource;
 import no.nav.brevserver.core.vo.FilType;
 import no.nav.brevserver.nais.support.impl.DefaultLagreDokumentRequestMapper;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.LagreDokumentRequest;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import jakarta.activation.DataHandler;
-import jakarta.mail.util.ByteArrayDataSource;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-
-/**
- * Unit tests for DefaultLagreDokumentRequestMapper
- */
 public class DefaultLagreDokumentRequestMapperTest {
+
 	private static final String BREVREFERANSE = "1";
 	private static final String TOKEN = "123";
 	private static final String SYSTEM_ID = "PE2";
@@ -28,39 +21,27 @@ public class DefaultLagreDokumentRequestMapperTest {
 	private static final byte[] DOKUMENTDATA = "hello world".getBytes();
 	private static final String CONTENT_TYPE = FilType.RTF.getContentType();
 
-	private DefaultLagreDokumentRequestMapper lagreBrevRequestMapper;
-	private LagreDokumentRequest wsRequest;
-	private no.nav.brevserver.app.dokumentbehandling.to.LagreDokumentRequest domainRequest;
-
-	@BeforeEach
-	public void setUp() {
-		lagreBrevRequestMapper = new DefaultLagreDokumentRequestMapper();
-		wsRequest = createWsLagreDokumentRequest();
-	}
+	private final DefaultLagreDokumentRequestMapper lagreBrevRequestMapper = new DefaultLagreDokumentRequestMapper();
 
 	@Test
 	public void shouldMapFromWsRequestToDomainRequest() {
-		domainRequest = lagreBrevRequestMapper.map(wsRequest);
+		no.nav.brevserver.app.dokumentbehandling.to.LagreDokumentRequest domainRequest = lagreBrevRequestMapper.map(createWsLagreDokumentRequest());
 
-		assertThat(domainRequest.isNewDocument(), is(NYTT_DOKUMENT));
-		assertBrevStatus(domainRequest.getBrevStatus());
-		assertBrev(domainRequest.getBrev());
-	}
+		assertThat(domainRequest.isNewDocument()).isEqualTo(NYTT_DOKUMENT);
 
-	private void assertBrevStatus(BrevStatusVO brevStatus) {
-		assertThat(brevStatus.getSystemID(), is(SYSTEM_ID));
-		assertThat(brevStatus.getBrevreferanse(), is(BREVREFERANSE));
-		assertThat(brevStatus.getToken(), is(TOKEN));
-		assertThat(brevStatus.getBrevmal(), is(MALPAKKE));
-		assertThat(brevStatus.getReturKoe(), is(KVITTERINGSKOE));
-	}
+		var brevstatus = domainRequest.getBrevStatus();
+		assertThat(brevstatus.getSystemID()).isEqualTo(SYSTEM_ID);
+		assertThat(brevstatus.getBrevreferanse()).isEqualTo(BREVREFERANSE);
+		assertThat(brevstatus.getToken()).isEqualTo(TOKEN);
+		assertThat(brevstatus.getBrevmal()).isEqualTo(MALPAKKE);
+		assertThat(brevstatus.getReturKoe()).isEqualTo(KVITTERINGSKOE);
 
-	private void assertBrev(BrevVO brev) {
-		assertThat(brev.getSystemID(), is(SYSTEM_ID));
-		assertThat(brev.getBrevreferanse(), is(BREVREFERANSE));
-		assertThat(brev.getContentType(), is(CONTENT_TYPE));
-		assertThat(brev.getBrevdata(), is(DOKUMENTDATA));
-		assertThat(brev.getBrukerID(), is(BRUKER_ID));
+		var brev = domainRequest.getBrev();
+		assertThat(brev.getSystemID()).isEqualTo(SYSTEM_ID);
+		assertThat(brev.getBrevreferanse()).isEqualTo(BREVREFERANSE);
+		assertThat(brev.getContentType()).isEqualTo(CONTENT_TYPE);
+		assertThat(brev.getBrevdata()).isEqualTo(DOKUMENTDATA);
+		assertThat(brev.getBrukerID()).isEqualTo(BRUKER_ID);
 	}
 
 	private LagreDokumentRequest createWsLagreDokumentRequest() {
@@ -75,4 +56,5 @@ public class DefaultLagreDokumentRequestMapperTest {
 		lagreDokumentRequest.setDokumentData(new DataHandler(new ByteArrayDataSource(DOKUMENTDATA, CONTENT_TYPE)));
 		return lagreDokumentRequest;
 	}
+
 }

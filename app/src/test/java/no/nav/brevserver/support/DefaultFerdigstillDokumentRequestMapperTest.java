@@ -1,23 +1,16 @@
 package no.nav.brevserver.support;
 
-import no.nav.brevserver.core.vo.BrevStatusVO;
-import no.nav.brevserver.core.vo.BrevVO;
+import jakarta.activation.DataHandler;
+import jakarta.mail.util.ByteArrayDataSource;
 import no.nav.brevserver.core.vo.FilType;
 import no.nav.brevserver.nais.support.impl.DefaultFerdigstillDokumentRequestMapper;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.FerdigstillDokumentRequest;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import jakarta.activation.DataHandler;
-import jakarta.mail.util.ByteArrayDataSource;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-
-/**
- * Unit tests for DefaultFerdigstillDokumentRequestMapper
- */
 public class DefaultFerdigstillDokumentRequestMapperTest {
+
 	private static final String BREVREFERANSE = "1";
 	private static final String TOKEN = "123";
 	private static final String SYSTEM_ID = "PE2";
@@ -30,50 +23,34 @@ public class DefaultFerdigstillDokumentRequestMapperTest {
 	private static final byte[] DOKUMENTDATA_PDF = "hello pdf".getBytes();
 	private static final String CONTENT_TYPE_PDF = FilType.PDF.getContentType();
 
-	private DefaultFerdigstillDokumentRequestMapper ferdigstillDokumentRequestMapper;
-	private FerdigstillDokumentRequest wsRequest;
-	private no.nav.brevserver.app.dokumentbehandling.to.FerdigstillDokumentRequest domainRequest;
-
-	@BeforeEach
-	public void setUp() {
-		ferdigstillDokumentRequestMapper = new DefaultFerdigstillDokumentRequestMapper();
-		wsRequest = createWsFerdigstillDokumentRequest();
-	}
+	private final DefaultFerdigstillDokumentRequestMapper ferdigstillDokumentRequestMapper = new DefaultFerdigstillDokumentRequestMapper();
 
 	@Test
 	public void shouldMapFromWsRequestToDomainRequest() {
-		domainRequest = ferdigstillDokumentRequestMapper.map(wsRequest);
+		no.nav.brevserver.app.dokumentbehandling.to.FerdigstillDokumentRequest domainRequest = ferdigstillDokumentRequestMapper.map(createWsFerdigstillDokumentRequest());
 
-		assertThat(domainRequest.isNewDocument(), is(NYTT_DOKUMENT));
-		assertBrevStatus(domainRequest.getBrevStatus());
-		assertRtfBrev(domainRequest.getBrev());
-		assertPdfBrev(domainRequest.getPdfBrev());
-	}
+		assertThat(domainRequest.isNewDocument()).isEqualTo(NYTT_DOKUMENT);
 
-	private void assertBrevStatus(BrevStatusVO brevStatus) {
-		assertThat(brevStatus.getSystemID(), is(SYSTEM_ID));
-		assertThat(brevStatus.getBrevreferanse(), is(BREVREFERANSE));
-		assertThat(brevStatus.getToken(), is(TOKEN));
-		assertThat(brevStatus.getBrevmal(), is(MALPAKKE));
-		assertThat(brevStatus.getReturKoe(), is(KVITTERINGSKOE));
-	}
+		var brevstatus = domainRequest.getBrevStatus();
+		assertThat(brevstatus.getSystemID()).isEqualTo(SYSTEM_ID);
+		assertThat(brevstatus.getBrevreferanse()).isEqualTo(BREVREFERANSE);
+		assertThat(brevstatus.getToken()).isEqualTo(TOKEN);
+		assertThat(brevstatus.getBrevmal()).isEqualTo(MALPAKKE);
+		assertThat(brevstatus.getReturKoe()).isEqualTo(KVITTERINGSKOE);
 
-	private void assertRtfBrev(BrevVO brev) {
-		assertThat(brev.getBrevdata(), is(DOKUMENTDATA_RTF));
-		assertThat(brev.getContentType(), is(CONTENT_TYPE_RTF));
-		assertBrev(brev);
-	}
+		var rtfBrev = domainRequest.getBrev();
+		assertThat(rtfBrev.getBrevdata()).isEqualTo(DOKUMENTDATA_RTF);
+		assertThat(rtfBrev.getContentType()).isEqualTo(CONTENT_TYPE_RTF);
+		assertThat(rtfBrev.getBrukerID()).isEqualTo(BRUKER_ID);
+		assertThat(rtfBrev.getBrevreferanse()).isEqualTo(BREVREFERANSE);
+		assertThat(rtfBrev.getSystemID()).isEqualTo(SYSTEM_ID);
 
-	private void assertPdfBrev(BrevVO brev) {
-		assertThat(brev.getBrevdata(), is(DOKUMENTDATA_PDF));
-		assertThat(brev.getContentType(), is(CONTENT_TYPE_PDF));
-		assertBrev(brev);
-	}
-
-	private void assertBrev(BrevVO brev) {
-		assertThat(brev.getBrukerID(), is(BRUKER_ID));
-		assertThat(brev.getBrevreferanse(), is(BREVREFERANSE));
-		assertThat(brev.getSystemID(), is(SYSTEM_ID));
+		var pdfBrev = domainRequest.getPdfBrev();
+		assertThat(pdfBrev.getBrevdata()).isEqualTo(DOKUMENTDATA_PDF);
+		assertThat(pdfBrev.getContentType()).isEqualTo(CONTENT_TYPE_PDF);
+		assertThat(pdfBrev.getBrukerID()).isEqualTo(BRUKER_ID);
+		assertThat(pdfBrev.getBrevreferanse()).isEqualTo(BREVREFERANSE);
+		assertThat(pdfBrev.getSystemID()).isEqualTo(SYSTEM_ID);
 	}
 
 	private FerdigstillDokumentRequest createWsFerdigstillDokumentRequest() {
@@ -89,4 +66,5 @@ public class DefaultFerdigstillDokumentRequestMapperTest {
 		ferdigstillDokumentRequest.setPdfDokument(new DataHandler(new ByteArrayDataSource(DOKUMENTDATA_PDF, CONTENT_TYPE_PDF)));
 		return ferdigstillDokumentRequest;
 	}
+
 }

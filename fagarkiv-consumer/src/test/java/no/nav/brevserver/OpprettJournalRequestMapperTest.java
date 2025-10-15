@@ -97,7 +97,7 @@ public class OpprettJournalRequestMapperTest {
 				.hasSameSizeAs(journalpost.getJournalpostDokumentInfoRelasjonListe())
 				.singleElement()
 				.satisfies(journalpostDokumentInfoRelasjon ->
-						assertJournalpostDokumentInfoRelasjon(journalpostDokumentInfoRelasjon, journalpost.getJournalpostDokumentInfoRelasjonListe().get(0)));
+						assertJournalpostDokumentInfoRelasjon(journalpostDokumentInfoRelasjon, journalpost.getJournalpostDokumentInfoRelasjonListe().getFirst()));
 	}
 
 	private void assertJournalpostDokumentInfoRelasjon(no.nav.virksomhet.tjenester.arkiv.journalbehandling.meldinger.v1.JournalpostDokumentInfoRelasjon actual, JournalpostDokumentInfoRelasjon expected) {
@@ -130,7 +130,7 @@ public class OpprettJournalRequestMapperTest {
 		assertThat(actual.getFildetaljerListe())
 				.hasSameSizeAs(expected.getFildetaljerListe())
 				.singleElement()
-				.satisfies(fildetaljer -> assertFildetaljer(fildetaljer, expected.getFildetaljerListe().get(0)));
+				.satisfies(fildetaljer -> assertFildetaljer(fildetaljer, expected.getFildetaljerListe().getFirst()));
 	}
 
 	private void assertFildetaljer(no.nav.virksomhet.tjenester.arkiv.journalbehandling.meldinger.v1.Fildetaljer actual, Fildetaljer expected) {
@@ -157,7 +157,7 @@ public class OpprettJournalRequestMapperTest {
 		assertThat(request.getGjelderListe())
 				.hasSameSizeAs(journalpost.getGjelderListe())
 				.singleElement()
-				.satisfies(bruker -> assertBruker(bruker, journalpost.getGjelderListe().get(0)));
+				.satisfies(bruker -> assertBruker(bruker, journalpost.getGjelderListe().getFirst()));
 	}
 
 	private void assertBruker(no.nav.virksomhet.tjenester.arkiv.journalbehandling.meldinger.v1.Bruker actual, Bruker expected) {

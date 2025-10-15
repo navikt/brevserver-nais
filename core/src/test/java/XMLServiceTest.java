@@ -1,7 +1,6 @@
 import no.nav.brevserver.core.constants.Konstanter;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
 import no.nav.brevserver.core.vo.BrevStatusVO;
-import no.nav.brevserver.core.vo.FilType;
 import no.nav.brevserver.core.vo.KvitteringVO;
 import org.junit.jupiter.api.Test;
 
@@ -11,11 +10,11 @@ import java.io.StringReader;
 import static no.nav.brevserver.core.utils.xmlHandlers.XMLService.marshalBrevStatus;
 import static no.nav.brevserver.core.utils.xmlHandlers.XMLService.marshalHeader;
 import static no.nav.brevserver.core.utils.xmlHandlers.XMLService.unmarshal;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
+import static no.nav.brevserver.core.vo.FilType.PDF;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class XMLServiceTest {
+
 	private final String BREVREFERANSE = "12345";
 	private final String SYSTEM_ID = "PE00";
 	private final String FEILKODE = "0";
@@ -33,77 +32,76 @@ public class XMLServiceTest {
 	public void shouldUnmarshalKvitteringAndBrevstatus() {
 		String result = unmarshal(createKvittering(), createBrevstatus());
 
-		assertThat(result, is(xmlKvittering()));
+		assertThat(result).isEqualTo(xmlKvittering());
 	}
 
 	@Test
 	public void shouldMarshalHeader() throws Exception {
 		KvitteringVO kvittering = marshalHeader(new ByteArrayInputStream(xmlKvittering().getBytes()));
 
-		assertThat(kvittering.getBrevreferanse(), is(BREVREFERANSE));
-		assertThat(kvittering.getSystemID(), is(SYSTEM_ID));
-		assertThat(kvittering.getContentType(), is(FilType.PDF.getContentType()));
-		assertThat(kvittering.getFeilkode(), is(FEILKODE));
+		assertThat(kvittering.getBrevreferanse()).isEqualTo(BREVREFERANSE);
+		assertThat(kvittering.getSystemID()).isEqualTo(SYSTEM_ID);
+		assertThat(kvittering.getContentType()).isEqualTo(PDF.getContentType());
+		assertThat(kvittering.getFeilkode()).isEqualTo(FEILKODE);
 	}
 
 	@Test
 	public void shouldMarshalBrevstatus() throws Exception {
 		BrevStatusVO brevStatus = marshalBrevStatus(new StringReader(xmlBrevstatus()));
 
-		assertThat(brevStatus.getToken(), is(TOKEN));
-		assertThat(brevStatus.getBestillerBrukerID(), is(BRUKERID));
-		assertThat(brevStatus.getBrevmal(), is(BREVMAL));
-		assertThat(brevStatus.getSystemID(), is(SYSTEM_ID));
-		assertThat(brevStatus.getModus(), is(MODUS));
-		assertThat(brevStatus.getFormat(), is(FORMAT));
-		assertThat(brevStatus.getSkrivertype(), is(SKRIVER_TYPE));
-		assertThat(brevStatus.getSkriver(), is(SKRIVER));
-		assertThat(brevStatus.getArkiver(), is(ARKIVER));
-		assertThat(brevStatus.getSkuff(), is(SKUFF));
+		assertThat(brevStatus.getToken()).isEqualTo(TOKEN);
+		assertThat(brevStatus.getBestillerBrukerID()).isEqualTo(BRUKERID);
+		assertThat(brevStatus.getBrevmal()).isEqualTo(BREVMAL);
+		assertThat(brevStatus.getSystemID()).isEqualTo(SYSTEM_ID);
+		assertThat(brevStatus.getModus()).isEqualTo(MODUS);
+		assertThat(brevStatus.getFormat()).isEqualTo(FORMAT);
+		assertThat(brevStatus.getSkrivertype()).isEqualTo(SKRIVER_TYPE);
+		assertThat(brevStatus.getSkriver()).isEqualTo(SKRIVER);
+		assertThat(brevStatus.getArkiver()).isEqualTo(ARKIVER);
+		assertThat(brevStatus.getSkuff()).isEqualTo(SKUFF);
 	}
 
 	@Test
 	public void shouldMarshalBrevstatusBisysExample() throws BrevTechnicalException {
 		BrevStatusVO brevStatus = marshalBrevStatus(new StringReader(xmlBrevstatusBisysExample()));
 
-		assertThat(brevStatus.getBrevreferanse(), is("BIF100000061"));
-		assertThat(brevStatus.getToken(), nullValue());
-		assertThat(brevStatus.getPassord(), is("test"));
-		assertThat(brevStatus.getBestillerBrukerID(), is("Z994977"));
-		assertThat(brevStatus.getBrevmal(), is("BI01.BI01S02"));
-		assertThat(brevStatus.getSystemID(), is("BI12"));
-		assertThat(brevStatus.getModus(), nullValue());
-		assertThat(brevStatus.getFormat(), is("ENSIDIG"));
-		assertThat(brevStatus.getSkrivertype(), is("LOKAL"));
-		assertThat(brevStatus.getSkriver(), is(""));
-		assertThat(brevStatus.getArkiver(), is("JA"));
-		assertThat(brevStatus.getSkuff(), is(""));
+		assertThat(brevStatus.getBrevreferanse()).isEqualTo("BIF100000061");
+		assertThat(brevStatus.getToken()).isNull();
+		assertThat(brevStatus.getPassord()).isEqualTo("test");
+		assertThat(brevStatus.getBestillerBrukerID()).isEqualTo("Z994977");
+		assertThat(brevStatus.getBrevmal()).isEqualTo("BI01.BI01S02");
+		assertThat(brevStatus.getSystemID()).isEqualTo("BI12");
+		assertThat(brevStatus.getModus()).isNull();
+		assertThat(brevStatus.getFormat()).isEqualTo("ENSIDIG");
+		assertThat(brevStatus.getSkrivertype()).isEqualTo("LOKAL");
+		assertThat(brevStatus.getSkriver()).isEqualTo("");
+		assertThat(brevStatus.getArkiver()).isEqualTo("JA");
+		assertThat(brevStatus.getSkuff()).isEqualTo("");
 	}
 
 	@Test
 	public void shouldMarshalBrevstatusPesysExample() throws BrevTechnicalException {
 		BrevStatusVO brevStatus = marshalBrevStatus(new StringReader(xmlBrevstatusPesysExample()));
 
-		assertThat(brevStatus.getBrevreferanse(), is("453836537"));
-		assertThat(brevStatus.getToken(), nullValue());
-		assertThat(brevStatus.getPassord(), is(nullValue()));
-		assertThat(brevStatus.getBestillerBrukerID(), is("F_Z990541 E_Z990541"));
-		assertThat(brevStatus.getBrevmal(), is("PE_IY_05_007"));
-		assertThat(brevStatus.getSystemID(), is("PE2"));
-		assertThat(brevStatus.getModus(), nullValue());
-		assertThat(brevStatus.getFormat(), is(nullValue()));
-		assertThat(brevStatus.getSkrivertype(), is(nullValue()));
-		assertThat(brevStatus.getSkriver(), is(nullValue()));
-		assertThat(brevStatus.getArkiver(), is(nullValue()));
-		assertThat(brevStatus.getSkuff(), is(nullValue()));
+		assertThat(brevStatus.getBrevreferanse()).isEqualTo("453836537");
+		assertThat(brevStatus.getToken()).isNull();
+		assertThat(brevStatus.getPassord()).isNull();
+		assertThat(brevStatus.getBestillerBrukerID()).isEqualTo("F_Z990541 E_Z990541");
+		assertThat(brevStatus.getBrevmal()).isEqualTo("PE_IY_05_007");
+		assertThat(brevStatus.getSystemID()).isEqualTo("PE2");
+		assertThat(brevStatus.getModus()).isNull();
+		assertThat(brevStatus.getFormat()).isNull();
+		assertThat(brevStatus.getSkrivertype()).isNull();
+		assertThat(brevStatus.getSkriver()).isNull();
+		assertThat(brevStatus.getArkiver()).isNull();
+		assertThat(brevStatus.getSkuff()).isNull();
 	}
-
 
 	private KvitteringVO createKvittering() {
 		KvitteringVO kvittering = new KvitteringVO();
 		kvittering.setBrevreferanse(BREVREFERANSE);
 		kvittering.setSystemID(SYSTEM_ID);
-		kvittering.setContentType(FilType.PDF.getContentType());
+		kvittering.setContentType(PDF.getContentType());
 		kvittering.setFeilkode(FEILKODE);
 		return kvittering;
 	}

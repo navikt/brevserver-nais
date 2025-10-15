@@ -2,23 +2,13 @@ package no.nav.brevserver.ws.loggmottak.map.support;
 
 import no.nav.brevserver.service.loggmottak.Log;
 import no.nav.tjenester.brevogarkiv.loggmottak.Severity;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * Unit tests for SeverityToLogSeverityCustomConverter
- */
 public class SeverityToLogSeverityCustomConverterTest {
 
-	private SeverityToLogSeverityCustomConverter severityCustomConverter;
-
-	@BeforeEach
-	public void setUp() {
-		severityCustomConverter = new SeverityToLogSeverityCustomConverter();
-	}
+	private final SeverityToLogSeverityCustomConverter severityCustomConverter = new SeverityToLogSeverityCustomConverter();
 
 	@Test
 	public void shouldConvertFromSeverityToDownscaledLogSeverity() {
@@ -30,6 +20,8 @@ public class SeverityToLogSeverityCustomConverterTest {
 
 	private void convertAndAssertSeverityToLogSeverity(Severity severity, int expectedLogSeverity) {
 		int actualLogSeverity = severityCustomConverter.convertTo(severity);
-		assertThat(actualLogSeverity, is(expectedLogSeverity));
+
+		assertThat(expectedLogSeverity).isEqualTo(actualLogSeverity);
 	}
+
 }

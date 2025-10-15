@@ -8,22 +8,19 @@ import no.nav.brevserver.core.exception.BrevTechnicalException;
 import no.nav.brevserver.joark.JoarkService;
 import no.nav.brevserver.service.BrevstatusService;
 import org.apache.activemq.artemis.jms.client.ActiveMQMessage;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import utils.Utils;
 
-import java.util.Objects;
-import java.util.concurrent.TimeUnit;
-
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static no.nav.brevserver.core.constants.Konstanter.BREVSTATUS_FEIL;
 import static no.nav.brevserver.core.constants.Konstanter.FEIL_BREV_EKSISTERER;
 import static no.nav.brevserver.core.constants.Konstanter.FEIL_UKJENT;
 import static no.nav.brevserver.core.vo.FilType.PDF;
 import static no.nav.brevserver.core.vo.FilType.RTF;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static utils.Utils.BREVREFERANSE;
@@ -34,12 +31,17 @@ import static utils.Utils.PENSJON_SYSTEM_ID;
 import static utils.Utils.STATUS_FERDIG;
 import static utils.Utils.STATUS_LAGRET;
 import static utils.Utils.classpathToString;
+import static utils.Utils.createBadXmlKvitteringHeader;
 import static utils.Utils.createBisysKvittering;
 import static utils.Utils.createPesysKvittering;
 import static utils.Utils.createPesysKvitteringFeilNiva;
 
-
 public class ArkiverBrevRoutePeIT extends AbstractTest {
+
+	private final String CALL_ID = "1234-callid-5678";
+	//Kan ikke bruke selve køen da vi legger på ?targetclient=1 på kønavnet i servicen.
+	private static final String SVARKOE = "queue:///mottakSvarKo?targetClient=1";
+
 	@Autowired
 	protected BrevstatusService brevstatusService;
 	@Autowired
@@ -51,11 +53,6 @@ public class ArkiverBrevRoutePeIT extends AbstractTest {
 	@Autowired
 	private JoarkService joarkServiceMock;
 
-	private final String CALL_ID = "1234-callid-5678";
-	//Kan ikke bruke selve køen da vi legger på ?targetclient=1 på kønavnet i servicen.
-	private static final String SVARKOSTRING = "queue:///mottakSvarKo?targetClient=1";
-
-
 	@BeforeEach
 	public void cleanUp() {
 		super.cleanupDb();
@@ -64,23 +61,26 @@ public class ArkiverBrevRoutePeIT extends AbstractTest {
 	@Test
 	//happypath
 	public void shouldArkivereBrev() {
-		String header = Utils.createPesysKvittering();
+		String header = createPesysKvittering();
 		sendStringMessage(mottakArkivPeLinux, header + "Dette er en pdf".getBytes(), CALLID);
-		await().atMost(5, TimeUnit.SECONDS).untilAsserted(() -> {
-			Message received = jmsTemplate.receive(SVARKOSTRING);
-			assertEquals(Objects.requireNonNull(received).getJMSCorrelationID(), CORRELATION_ID);
-			assertEquals(received.getBody(String.class), createReplyToKvittering(STATUS_FERDIG, PENSJON_SYSTEM_ID, PDF_CONTENTTYPE, "0"));
-			assertEquals(brevstatusService.hentBrevStatus(Utils.BREVREFERANSE, PENSJON_SYSTEM_ID).getStatus(), STATUS_FERDIG);
+
+		await().atMost(5, SECONDS).untilAsserted(() -> {
+			Message received = jmsTemplate.receive(SVARKOE);
+			assertThat(received).isNotNull();
+			assertThat(received.getJMSCorrelationID()).isEqualTo(CORRELATION_ID);
+			assertThat(received.getBody(String.class)).isEqualTo(createReplyToKvittering(STATUS_FERDIG, PENSJON_SYSTEM_ID, PDF_CONTENTTYPE, "0"));
+			assertThat(brevstatusService.hentBrevStatus(Utils.BREVREFERANSE, PENSJON_SYSTEM_ID).getStatus()).isEqualTo(STATUS_FERDIG);
 		});
 	}
 
 	@Test
 	public void shouldSendToFeilko() {
-		String header = Utils.createBadXmlKvitteringHeader(PENSJON_SYSTEM_ID);
+		String header = createBadXmlKvitteringHeader(PENSJON_SYSTEM_ID);
 		sendStringMessage(mottakArkivPeLinux, header, CALLID);
-		await().atMost(5, TimeUnit.SECONDS).untilAsserted(() -> {
+
+		await().atMost(5, SECONDS).untilAsserted(() -> {
 			String received = receive(deadletter);
-			assertEquals(received, classpathToString("svarXml/deadletterPe.xml"));
+			assertThat(received).isEqualTo(classpathToString("svarXml/deadletterPe.xml"));
 		});
 	}
 
@@ -89,9 +89,10 @@ public class ArkiverBrevRoutePeIT extends AbstractTest {
 		doThrow(BrevTechnicalException.class).when(joarkServiceMock).lagreDokument(any(), any(), any());
 		String message = createPesysKvittering();
 		sendStringMessage(mottakArkivPeLinux, message, CALLID);
-		await().atMost(5, TimeUnit.SECONDS).untilAsserted(() -> {
+
+		await().atMost(5, SECONDS).untilAsserted(() -> {
 			String received = receive(mottakArkivPeLinuxBq);
-			assertEquals(received, message);
+			assertThat(received).isEqualTo(message);
 		});
 	}
 
@@ -100,9 +101,9 @@ public class ArkiverBrevRoutePeIT extends AbstractTest {
 		String header = createPesysKvittering(RTF.getContentType());
 		sendStringMessage(mottakArkivPeLinux, header, CALL_ID);
 
-		await().atMost(5, TimeUnit.SECONDS).untilAsserted(() -> {
-			String received = receive(SVARKOSTRING);
-			assertEquals(received, createReplyToKvittering(STATUS_LAGRET, PENSJON_SYSTEM_ID, RTF.getContentType(), "0"));
+		await().atMost(5, SECONDS).untilAsserted(() -> {
+			String received = receive(SVARKOE);
+			assertThat(received).isEqualTo(createReplyToKvittering(STATUS_LAGRET, PENSJON_SYSTEM_ID, RTF.getContentType(), "0"));
 		});
 	}
 
@@ -111,9 +112,9 @@ public class ArkiverBrevRoutePeIT extends AbstractTest {
 		String header = createPesysKvittering(PDF.getContentType());
 		sendStringMessage(mottakArkivPeLinux, header, CALL_ID);
 
-		await().atMost(5, TimeUnit.SECONDS).untilAsserted(() -> {
-			String received = receive(SVARKOSTRING);
-			assertEquals(received, createReplyToKvittering(STATUS_FERDIG, PENSJON_SYSTEM_ID, PDF.getContentType(), "0"));
+		await().atMost(5, SECONDS).untilAsserted(() -> {
+			String received = receive(SVARKOE);
+			assertThat(received).isEqualTo(createReplyToKvittering(STATUS_FERDIG, PENSJON_SYSTEM_ID, PDF.getContentType(), "0"));
 		});
 	}
 
@@ -122,9 +123,9 @@ public class ArkiverBrevRoutePeIT extends AbstractTest {
 		String header = createPesysKvitteringFeilNiva();
 		sendStringMessage(mottakArkivPeLinux, header, CALL_ID);
 
-		await().atMost(5, TimeUnit.SECONDS).untilAsserted(() -> {
-			String received = receive(SVARKOSTRING);
-			assertEquals(received, createReplyToKvittering(BREVSTATUS_FEIL, PENSJON_SYSTEM_ID, PDF.getContentType(), FEIL_UKJENT));
+		await().atMost(5, SECONDS).untilAsserted(() -> {
+			String received = receive(SVARKOE);
+			assertThat(received).isEqualTo(createReplyToKvittering(BREVSTATUS_FEIL, PENSJON_SYSTEM_ID, PDF.getContentType(), FEIL_UKJENT));
 		});
 	}
 
@@ -134,9 +135,9 @@ public class ArkiverBrevRoutePeIT extends AbstractTest {
 		sendStringMessage(mottakArkivPeLinux, message, CALL_ID);
 		sendStringMessage(mottakArkivPeLinux, message, CALL_ID);
 
-		await().atMost(5, TimeUnit.SECONDS).untilAsserted(() -> {
-			String received = receive(SVARKOSTRING);
-			assertEquals(received, createReplyToKvittering(BREVSTATUS_FEIL, PENSJON_SYSTEM_ID, FORMAT, FEIL_BREV_EKSISTERER));
+		await().atMost(5, SECONDS).untilAsserted(() -> {
+			String received = receive(SVARKOE);
+			assertThat(received).isEqualTo(createReplyToKvittering(BREVSTATUS_FEIL, PENSJON_SYSTEM_ID, FORMAT, FEIL_BREV_EKSISTERER));
 		});
 	}
 
@@ -145,9 +146,9 @@ public class ArkiverBrevRoutePeIT extends AbstractTest {
 		String message = createBisysKvittering();
 		sendStringMessage(mottakArkivPeLinux, message, CALL_ID);
 
-		await().atMost(5, TimeUnit.SECONDS).untilAsserted(() -> {
+		await().atMost(5, SECONDS).untilAsserted(() -> {
 			String received = receive(deadletter);
-			assertEquals(received, message);
+			assertThat(received).isEqualTo(message);
 		});
 	}
 
@@ -155,9 +156,9 @@ public class ArkiverBrevRoutePeIT extends AbstractTest {
 	public void shouldFailOnNullKvittering() {
 		sendStringMessage(mottakArkivPeLinux, null, CALL_ID);
 
-		await().atMost(5, TimeUnit.SECONDS).untilAsserted(() -> {
+		await().atMost(5, SECONDS).untilAsserted(() -> {
 			ActiveMQMessage received = receive(deadletter);
-			Assertions.assertEquals(received.getJMSCorrelationID(), CORRELATION_ID);
+			assertThat(received.getJMSCorrelationID()).isEqualTo(CORRELATION_ID);
 		});
 	}
 
@@ -172,4 +173,5 @@ public class ArkiverBrevRoutePeIT extends AbstractTest {
 				<feilkode>%s</feilkode>
 				</rtv-brevkvitt>""".formatted(BREVREFERANSE, fagsystem, format, status, feilkode);
 	}
+
 }

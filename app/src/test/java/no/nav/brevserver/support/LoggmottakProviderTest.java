@@ -13,9 +13,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-/**
- * Unit tests for LoggmottakProvider
- */
 @ExtendWith(MockitoExtension.class)
 public class LoggmottakProviderTest {
 
@@ -28,7 +25,7 @@ public class LoggmottakProviderTest {
 	private LoggmottakProvider loggmottakProvider;
 
 	@Test
-	public void shouldDelegateLoggToLoggmottakService() throws Exception {
+	public void shouldDelegateLoggToLoggmottakService() {
 		LoggRequest wsRequest = new LoggRequest();
 		no.nav.brevserver.service.loggmottak.to.LoggRequest domainRequest =
 				new no.nav.brevserver.service.loggmottak.to.LoggRequest();

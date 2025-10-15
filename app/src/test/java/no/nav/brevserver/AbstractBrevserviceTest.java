@@ -2,7 +2,8 @@ package no.nav.brevserver;
 
 import no.nav.brevserver.core.vo.BrevStatusVO;
 import no.nav.brevserver.core.vo.BrevVO;
-import no.nav.brevserver.core.vo.FilType;
+
+import static no.nav.brevserver.core.vo.FilType.RTF;
 
 public abstract class AbstractBrevserviceTest {
 
@@ -10,7 +11,7 @@ public abstract class AbstractBrevserviceTest {
 	protected static final String TOKEN = "123";
 	protected static final String SYSTEM_ID = "PE2";
 	protected static final String BRUKER_ID = "brukerID";
-	protected static final String CONTENT_TYPE_RTF = FilType.RTF.getContentType();
+	protected static final String CONTENT_TYPE_RTF = RTF.getContentType();
 	protected static final String KVITTERINGSKOE = "kvitteringsKoe";
 	protected static final String MALPAKKE = "malpakke";
 	protected static final byte[] DOKUMENTDATA_RTF = "hello rtf".getBytes();
@@ -34,4 +35,5 @@ public abstract class AbstractBrevserviceTest {
 		brevStatus.setReturKoe(KVITTERINGSKOE);
 		return brevStatus;
 	}
+
 }

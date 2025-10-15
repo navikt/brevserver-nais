@@ -7,7 +7,6 @@ import no.nav.brevserver.core.exception.BrevFunctionalException;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
 import no.nav.brevserver.core.vo.BrevStatusVO;
 import no.nav.brevserver.core.vo.BrevVO;
-import no.nav.brevserver.core.vo.FilType;
 import no.nav.brevserver.nais.DokumentbehandlingProvider;
 import no.nav.brevserver.nais.support.AvbrytDokumentRequestMapper;
 import no.nav.brevserver.nais.support.FerdigstillDokumentRequestMapper;
@@ -30,15 +29,14 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static no.nav.brevserver.core.constants.SystemType.PE;
+import static no.nav.brevserver.core.vo.FilType.RTF;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-/**
- * Unit tests for DefaultDokumentbehandlingServiceTest
- */
 @ExtendWith(MockitoExtension.class)
 public class DefaultDokumentbehandlingServiceTest {
 
@@ -47,7 +45,7 @@ public class DefaultDokumentbehandlingServiceTest {
 	private static final String TOKEN = "123";
 
 	private static final String BRUKER_ID = "brukerId";
-	private static final String CONTENT_TYPE = FilType.RTF.getContentType();
+	private static final String CONTENT_TYPE = RTF.getContentType();
 	private static final String STATUS = "status";
 	private static final byte[] DOKUMENTDATA = "brevdata".getBytes();
 	private static final String KVITTERINGSKOE = "kvitteringsKoe";
@@ -86,13 +84,14 @@ public class DefaultDokumentbehandlingServiceTest {
 		no.nav.brevserver.app.dokumentbehandling.to.HentDokumentRequest request = mock(no.nav.brevserver.app.dokumentbehandling.to.HentDokumentRequest.class);
 		when(request.getBrevStatus()).thenReturn(createBrevStatus());
 		when(hentDokumentRequestMapper.map(any())).thenReturn(request);
+
 		dokumentbehandlingProvider.hentDokument(hentDokumentRequest);
+
 		verify(brevlagerService).hentDokumentFromBrevlagerOrJoark(brevStatusCaptor.capture());
 		BrevStatusVO brevStatusVOCapt = brevStatusCaptor.getValue();
-		assertEquals(brevStatusVOCapt.getSystemID(), hentDokumentRequest.getSystemId());
-		assertEquals(brevStatusVOCapt.getBrevreferanse(), hentDokumentRequest.getBrevreferanse());
+		assertThat(brevStatusVOCapt.getSystemID()).isEqualTo(hentDokumentRequest.getSystemId());
+		assertThat(brevStatusVOCapt.getBrevreferanse()).isEqualTo(hentDokumentRequest.getBrevreferanse());
 	}
-
 
 	@Test
 	public void shouldCallLagreDokument() throws BrevException {
@@ -101,13 +100,14 @@ public class DefaultDokumentbehandlingServiceTest {
 		when(request.getBrevStatus()).thenReturn(createBrevStatus());
 		when(request.getBrev()).thenReturn(createBrev());
 		when(lagreDokumentRequestMapper.map(any())).thenReturn(request);
+
 		dokumentbehandlingProvider.lagreDokument(lagreDokumentRequest);
 
 		verify(brevlagerService).lagreDokument(brevCaptor.capture(), brevStatusCaptor.capture(), systemTypeCaptor.capture());
 		BrevStatusVO brevStatusVO = brevStatusCaptor.getValue();
-		assertEquals(brevStatusVO.getSystemID(), SYSTEM_ID);
-		assertEquals(brevStatusVO.getBrevreferanse(), BREVREFERANSE);
-		assertEquals(systemTypeCaptor.getValue(), SystemType.PE);
+		assertThat(brevStatusVO.getSystemID()).isEqualTo(SYSTEM_ID);
+		assertThat(brevStatusVO.getBrevreferanse()).isEqualTo(BREVREFERANSE);
+		assertThat(systemTypeCaptor.getValue()).isEqualTo(PE);
 	}
 
 	@Test
@@ -116,12 +116,13 @@ public class DefaultDokumentbehandlingServiceTest {
 		no.nav.brevserver.app.dokumentbehandling.to.AvbrytDokumentRequest request = mock(no.nav.brevserver.app.dokumentbehandling.to.AvbrytDokumentRequest.class);
 		when(request.getBrevStatus()).thenReturn(createBrevStatus());
 		when(avbrytDokumentRequestMapper.map(any())).thenReturn(request);
+
 		dokumentbehandlingProvider.avbrytDokument(avbrytDokumentRequest);
 
 		verify(brevlagerService).avbrytDokument(brevStatusCaptor.capture());
 		BrevStatusVO brevStatusVO = brevStatusCaptor.getValue();
-		assertEquals(brevStatusVO.getSystemID(), SYSTEM_ID);
-		assertEquals(brevStatusVO.getBrevreferanse(), BREVREFERANSE);
+		assertThat(brevStatusVO.getSystemID()).isEqualTo(SYSTEM_ID);
+		assertThat(brevStatusVO.getBrevreferanse()).isEqualTo(BREVREFERANSE);
 	}
 
 	@Test
@@ -130,12 +131,13 @@ public class DefaultDokumentbehandlingServiceTest {
 		no.nav.brevserver.app.dokumentbehandling.to.FerdigstillDokumentRequest request = mock(no.nav.brevserver.app.dokumentbehandling.to.FerdigstillDokumentRequest.class);
 		when(request.getBrevStatus()).thenReturn(createBrevStatus());
 		when(ferdigstillDokumentRequestMapper.map(any())).thenReturn(request);
+
 		dokumentbehandlingProvider.ferdigstillDokument(ferdigstillDokumentRequest);
 
 		verify(brevlagerService).ferdigstillBrev(brevStatusCaptor.capture(), any(), any());
 		BrevStatusVO brevStatusVO = brevStatusCaptor.getValue();
-		assertEquals(brevStatusVO.getSystemID(), SYSTEM_ID);
-		assertEquals(brevStatusVO.getBrevreferanse(), BREVREFERANSE);
+		assertThat(brevStatusVO.getSystemID()).isEqualTo(SYSTEM_ID);
+		assertThat(brevStatusVO.getBrevreferanse()).isEqualTo(BREVREFERANSE);
 	}
 
 	private HentDokumentRequest createHentDokumentRequest() {
