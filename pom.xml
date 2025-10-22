@@ -29,7 +29,7 @@
 		<token-support.version>5.0.37</token-support.version>
 
 		<camel.version>4.15.0</camel.version>
-		<com.ibm.mq.jakarta.client.version>9.4.3.1</com.ibm.mq.jakarta.client.version>
+		<com.ibm.mq.jakarta.client.version>9.4.4.0</com.ibm.mq.jakarta.client.version>
 		<commons-io.version>2.20.0</commons-io.version>
 		<logstash-logback-encoder.version>8.1</logstash-logback-encoder.version>
 		<jakarta.jws-api.version>3.0.0</jakarta.jws-api.version>
