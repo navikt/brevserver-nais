@@ -9,9 +9,18 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-body-size: "256m"
     nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
 spec:
+  envFrom:
+    - secret: {{ BREVSERVER_SECRET }}
   env:
-    - name: SPRING_DATASOURCE_URL
-      value: {{ SPRING_DATASOURCE_URL }}
+    - name: JAVA_TRUSTSTORE_OPTIONS
+      value: "-Djavax.net.ssl.trustStore=$(NAV_TRUSTSTORE_PATH)
+              -Djavax.net.ssl.trustStorePassword=$(NAV_TRUSTSTORE_PASSWORD)"
+    - name: JDK_JAVA_OPTIONS
+      value: "-Djavax.net.ssl.keyStore=$(NAV_TRUSTSTORE_PATH)
+              -Djavax.net.ssl.keyStorePassword=$(NAV_TRUSTSTORE_PASSWORD)
+              -Djavax.net.ssl.keyStoreType=jks
+              -XX:MaxRAMPercentage=75
+              $(JAVA_PROXY_OPTIONS) $(JAVA_TRUSTSTORE_OPTIONS)"
     - name: MQGATEWAY01_HOSTNAME
       value: {{ MQGATEWAY01_HOSTNAME }}
     - name: MQGATEWAY01_PORT
@@ -102,15 +111,6 @@ spec:
           cluster: {{ cluster }}
       {{/each}}
   {{/if}}
-  vault:
-    enabled: true
-    paths:
-      - kvPath: {{ SRVBREVSERVER }}
-        mountPath: /var/run/secrets/nais.io/srvbrevserver
-      - kvPath: {{ BREVSERVER_DS_CREDS }}
-        mountPath: /var/run/secrets/nais.io/db_creds
-      - kvPath: {{ BREVSERVER_DS_CONFIG }}
-        mountPath: /var/run/secrets/nais.io/db_config
   observability:
     logging:
       destinations:

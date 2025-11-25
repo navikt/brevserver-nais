@@ -8,6 +8,7 @@
     "https://brevserver-nais.nais.adeo.no",
     "https://wasapp.adeo.no"
   ],
+  "BREVSERVER_SECRET": "brevserver-nais",
   "MQGATEWAY01_HOSTNAME": "mpls01.adeo.no",
   "MQGATEWAY01_PORT": "1414",
   "MQGATEWAY01_NAME": "MPLS01",
@@ -26,9 +27,6 @@
   "FAGARKIV_ENDPOINTS_JOURNAL": "https://wasapp.adeo.no/joark/Journal",
   "FAGARKIV_ENDPOINTS_JOURNALBEHANDLING": "https://wasapp.adeo.no/joark/Journalbehandling",
   "SECURITY_TOKEN_SERVICE_TOKEN_URL": "https://security-token-service.nais.adeo.no/rest/v1/sts",
-  "SRVBREVSERVER": "/serviceuser/data/prod/srvbrevserver",
-  "BREVSERVER_DS_CREDS": "/oracle/data/prod/creds/brevserver-user",
-  "BREVSERVER_DS_CONFIG": "/oracle/data/prod/config/brevserver",
   "BREVSERVERPROPERTIES_LOGGXML": "false",
   "BREVSERVERPROPERTIES_DATABASE_POOLSIZE": "60",
   "NO_NAV_SECURITY_JWT_ISSUER_RESTSTS_ACCEPTED_AUDIENCE": "srvdokprodbatch",
