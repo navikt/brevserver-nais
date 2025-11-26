@@ -8,6 +8,7 @@ import jakarta.jms.JMSException;
 import jakarta.jms.Queue;
 import no.nav.brevserver.core.alias.FagarkivProperties;
 import no.nav.brevserver.core.alias.MqGatewayProperties;
+import no.nav.brevserver.core.alias.NaisAppNameProperties;
 import org.messaginghub.pooled.jms.JmsPoolConnectionFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -28,15 +29,12 @@ public class JmsConfig {
 	private static final String ANY_TLS13_OR_HIGHER = "*TLS13ORHIGHER";
 
 	@Bean
-	public ConnectionFactory wmqConnectionFactory(final MqGatewayProperties mqGatewayAlias,
-												  final FagarkivProperties fagarkivProperties) throws JMSException {
-		return createConnectionFactory(mqGatewayAlias, fagarkivProperties);
-	}
-
-	private JmsPoolConnectionFactory createConnectionFactory(final MqGatewayProperties mqGatewayAlias,
-															final FagarkivProperties fagarkivProperties) throws JMSException {
+	public ConnectionFactory wmqConnectionFactory(MqGatewayProperties mqGatewayAlias,
+												  FagarkivProperties fagarkivProperties,
+												  NaisAppNameProperties appNameProperties) throws JMSException {
 		MQConnectionFactory connectionFactory = new MQConnectionFactory();
 		connectionFactory.setHostName(mqGatewayAlias.getHostname());
+		connectionFactory.setAppName(appNameProperties.appName());
 		connectionFactory.setPort(mqGatewayAlias.getPort());
 		connectionFactory.setQueueManager(mqGatewayAlias.getName());
 		connectionFactory.setTransportType(WMQ_CM_CLIENT);

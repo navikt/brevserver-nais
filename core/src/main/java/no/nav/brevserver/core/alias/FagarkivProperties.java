@@ -1,5 +1,7 @@
 package no.nav.brevserver.core.alias;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 import lombok.ToString;
@@ -13,7 +15,9 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 public class FagarkivProperties {
 
+	@Valid
 	private final Endpoints endpoints = new Endpoints();
+	@Valid
 	private final Serviceuser serviceuser = new Serviceuser();
 
 	@Data
@@ -22,9 +26,9 @@ public class FagarkivProperties {
 		/**
 		 * URL til oppslagstjenesten i fagarkivet.
 		 */
-		@NotEmpty
+		@NotBlank
 		private String journal;
-		@NotEmpty
+		@NotBlank
 		private String journalbehandling;
 
 	}
@@ -35,13 +39,13 @@ public class FagarkivProperties {
 		/**
 		 * Brukernavn til onprem AD servicebruker.
 		 */
-		@NotEmpty
+		@NotBlank
 		@ToString.Exclude
 		private String username;
 		/**
 		 * Passord til onprem AD servicebruker.
 		 */
-		@NotEmpty
+		@NotBlank
 		@ToString.Exclude
 		private String password;
 	}
