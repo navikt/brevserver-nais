@@ -4,8 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import no.nav.brevserver.core.constants.KnappStatus;
-import no.nav.brevserver.core.constants.Konstanter;
-import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
 
@@ -101,20 +99,6 @@ public class BrevStatusVO implements Serializable {
 
 	public String getToken() {
 		return token;
-	}
-
-	/**
-	 * Returnerer en sensurert versjon av token som kan brukes i logging.
-	 * Formatet som blir returnert tilsvarer {@value Konstanter#MASKED_PASSWORD} + opptil de 3 siste tegnene i tokenet.
-	 *
-	 * @return The censored token
-	 */
-	public String getCensoredToken() {
-		if (token != null) {
-			return Konstanter.MASKED_PASSWORD + StringUtils.right(token, 3);
-		} else {
-			return Konstanter.MASKED_PASSWORD;
-		}
 	}
 
 	public void setToken(String token) {
