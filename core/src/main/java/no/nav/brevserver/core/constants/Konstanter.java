@@ -9,8 +9,6 @@ public final class Konstanter {
 		// noop
 	}
 
-	public static final String MASKED_PASSWORD = "*****";
-
 	// konstanter for brevlageret
 	public static final String BREVLAGER_STATUS_FERDIG = "FERDIG";
 	public static final String BREVLAGER_STATUS_KLADD = "KLADD";

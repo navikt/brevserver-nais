@@ -71,7 +71,7 @@ public class BestillBrevService {
 			if (ok) {
 				log.info("Tilgang gitt for systemID '{}' med brevref:{}", sanitizeUnsafeChar(brevStatusVo.getSystemID()), sanitizeUnsafeChar(brevStatusVo.getBrevreferanse()));
 			} else {
-				log.warn("Kunne ikke gi tilgang '{}' for systemID '{}' med brevref:{}", brevStatusVo.getCensoredToken(),
+				log.warn("Kunne ikke gi tilgang til systemID='{}' med brevref={}",
 						sanitizeUnsafeChar(brevStatusVo.getSystemID()), sanitizeUnsafeChar(brevStatusVo.getBrevreferanse()));
 			}
 			exchange.setProperty(SENDTOMODE, INGEN_TILBAKEMELDING);

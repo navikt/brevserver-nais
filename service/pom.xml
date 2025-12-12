@@ -21,7 +21,6 @@
 			<groupId>no.nav.brevserver</groupId>
 			<artifactId>fagarkiv-consumer</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>no.nav.tjenester.brevogarkiv</groupId>
 			<artifactId>dokumentbehandling-tjenestespesifikasjon</artifactId>

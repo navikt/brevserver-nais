@@ -53,7 +53,8 @@ public class DokumentbehandlingResource {
 			MDC.put(SYSTEMID_KEY, lagreDokumentRequest.getSystemId());
 			MDC.put(BREVREFERANSE_KEY, lagreDokumentRequest.getBrevreferanse());
 
-			log.info("Brevserver har mottat kall for å lagre dokument {} fra: {} ", sanitizeUnsafeChar(lagreDokumentRequest.getBrevreferanse()), sanitizeUnsafeChar(lagreDokumentRequest.getSystemId()));
+			log.info("Brevserver har mottat kall for å lagre dokument {} fra: {}",
+					sanitizeUnsafeChar(lagreDokumentRequest.getBrevreferanse()), sanitizeUnsafeChar(lagreDokumentRequest.getSystemId()));
 			dokumentbehandlingProvider.lagreDokument(lagreDokumentRequest);
 		} catch (RuntimeException e) {
 			log.error("lagreDokument message={}", e.getMessage(), e);
@@ -70,7 +71,8 @@ public class DokumentbehandlingResource {
 			MDC.put(SYSTEMID_KEY, avbrytDokumentRequest.getSystemId());
 			MDC.put(BREVREFERANSE_KEY, avbrytDokumentRequest.getBrevreferanse());
 
-			log.info("Brevserver har mottatt kall for å avbryte dokument {} fra {}", sanitizeUnsafeChar(avbrytDokumentRequest.getBrevreferanse()), sanitizeUnsafeChar(avbrytDokumentRequest.getSystemId()));
+			log.info("Brevserver har mottatt kall for å avbryte dokument {} fra {}",
+					sanitizeUnsafeChar(avbrytDokumentRequest.getBrevreferanse()), sanitizeUnsafeChar(avbrytDokumentRequest.getSystemId()));
 			dokumentbehandlingProvider.avbrytDokument(avbrytDokumentRequest);
 		} catch (RuntimeException e) {
 			log.error("avbrytDokument message={}", e.getMessage(), e);
@@ -81,7 +83,12 @@ public class DokumentbehandlingResource {
 	}
 
 	@PostMapping("/ferdigstill")
-	public void ferdigstillDokument(@RequestPart FerdigstillDokumentRequest ferdigstillDokumentRequest, @RequestPart MultipartFile pdfDokument, @RequestPart String pdfMimetype, @RequestPart MultipartFile redDokument, @RequestPart String redMimetype, @RequestPart(required = false) Boolean tillatRekjoring) throws BrevException {
+	public void ferdigstillDokument(@RequestPart FerdigstillDokumentRequest ferdigstillDokumentRequest,
+									@RequestPart MultipartFile pdfDokument,
+									@RequestPart String pdfMimetype,
+									@RequestPart MultipartFile redDokument,
+									@RequestPart String redMimetype,
+									@RequestPart(required = false) Boolean tillatRekjoring) throws BrevException {
 		try {
 			handleMDCCallId();
 			MDC.put(SYSTEMID_KEY, ferdigstillDokumentRequest.getSystemId());
