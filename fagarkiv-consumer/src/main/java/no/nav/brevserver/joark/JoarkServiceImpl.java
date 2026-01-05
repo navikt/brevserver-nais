@@ -65,12 +65,20 @@ public class JoarkServiceImpl implements JoarkService {
 
 	private OppdaterJournalRequest createOppdaterJournalRequest(String brevreferanse) throws BrevTechnicalException {
 		Journalpost journalpost = journalClient.hentJournalpost(getBrevreferanseAsLong(brevreferanse));
+		log.info("Kaller oppdaterJournalpost med journalpostId={}, journalStatus={}", journalpost.getJournalpostId(), getKode(journalpost));
 		verifyNotEmptyBruker(journalpost);
 		verifyJournalStatus(journalpost);
 		OppdaterJournalRequest oppdaterJournalRequest = OppdaterJournalRequestMapper.map(journalpost);
 		oppdaterJournalRequest.setEndretAvNavn(RequestContextHolder.isRequestContextSet() ? RequestContextHolder.currentRequestContext().getUserId() : "srvbrevserver");
 		verifyNotEmptyBruker(oppdaterJournalRequest);
 		return oppdaterJournalRequest;
+	}
+
+	private static String getKode(Journalpost journalpost) {
+		if(journalpost.getJournalstatus() == null) {
+			return "null";
+		}
+		return journalpost.getJournalstatus().getKode();
 	}
 
 	private void verifyNotEmptyBruker(OppdaterJournalRequest journalpost) {
