@@ -1,7 +1,7 @@
 package no.nav.brevserver.bestillBrev.peSys;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.brevserver.core.alias.BrevserverProperties;
+import no.nav.brevserver.core.properties.BrevserverProperties;
 import no.nav.brevserver.core.constants.Konstanter;
 import no.nav.brevserver.core.constants.SystemType;
 import no.nav.brevserver.core.exception.BrevException;

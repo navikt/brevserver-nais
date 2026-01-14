@@ -52,6 +52,8 @@ public class ArkiverBrevRoutePeIT extends AbstractTest {
 	private Queue mottakArkivPeLinuxBq;
 	@Autowired
 	private JoarkService joarkServiceMock;
+	@Autowired
+	private Queue deadletterPe;
 
 	@BeforeEach
 	public void cleanUp() {
@@ -79,7 +81,7 @@ public class ArkiverBrevRoutePeIT extends AbstractTest {
 		sendStringMessage(mottakArkivPeLinux, header, CALLID);
 
 		await().atMost(5, SECONDS).untilAsserted(() -> {
-			String received = receive(deadletter);
+			String received = receive(deadletterPe);
 			assertThat(received).isEqualTo(classpathToString("svarXml/deadletterPe.xml"));
 		});
 	}
@@ -147,7 +149,7 @@ public class ArkiverBrevRoutePeIT extends AbstractTest {
 		sendStringMessage(mottakArkivPeLinux, message, CALL_ID);
 
 		await().atMost(5, SECONDS).untilAsserted(() -> {
-			String received = receive(deadletter);
+			String received = receive(deadletterPe);
 			assertThat(received).isEqualTo(message);
 		});
 	}
@@ -157,7 +159,7 @@ public class ArkiverBrevRoutePeIT extends AbstractTest {
 		sendStringMessage(mottakArkivPeLinux, null, CALL_ID);
 
 		await().atMost(5, SECONDS).untilAsserted(() -> {
-			ActiveMQMessage received = receive(deadletter);
+			ActiveMQMessage received = receive(deadletterPe);
 			assertThat(received.getJMSCorrelationID()).isEqualTo(CORRELATION_ID);
 		});
 	}

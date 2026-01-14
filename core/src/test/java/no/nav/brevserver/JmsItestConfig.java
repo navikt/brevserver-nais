@@ -1,8 +1,7 @@
-package config;
+package no.nav.brevserver;
 
 import jakarta.jms.ConnectionFactory;
 import jakarta.jms.Queue;
-import no.nav.brevserver.core.config.jms.JmsConfig;
 import org.apache.activemq.artemis.core.server.embedded.EmbeddedActiveMQ;
 import org.apache.activemq.artemis.jms.client.ActiveMQConnectionFactory;
 import org.apache.activemq.artemis.jms.client.ActiveMQQueue;
@@ -10,13 +9,27 @@ import org.messaginghub.pooled.jms.JmsPoolConnectionFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Profile;
 
 @Configuration
 @Profile("itest")
-@Import({JmsConfig.class})
 public class JmsItestConfig {
+
+	@Bean
+	public Queue mottakArkiv(@Value("${mottak_arkiv.queuename}") String mottakArkivQueueName) {
+		return new ActiveMQQueue(mottakArkivQueueName);
+	}
+
+	@Bean
+	public Queue deadletter() {
+		return new ActiveMQQueue("DLQBi");
+	}
+
+	@Bean
+	public Queue mottakSvarKo() {
+		return new ActiveMQQueue("mottakSvarKo");
+	}
 
 	@Bean
 	public Queue onlinebrev(@Value("${onlinebrev.queuename}") String brevserverOnlinebrev) {
@@ -48,18 +61,8 @@ public class JmsItestConfig {
 	}
 
 	@Bean
-	public Queue deadletter() {
-		return new ActiveMQQueue("DLQ");
-	}
-
-	@Bean
 	public Queue deadletterPe() {
-		return new ActiveMQQueue("DLQ");
-	}
-
-	@Bean
-	public Queue svarKo() {
-		return new ActiveMQQueue("SvarKo");
+		return new ActiveMQQueue("DLQPe");
 	}
 
 	@Bean
@@ -82,15 +85,41 @@ public class JmsItestConfig {
 		return new ActiveMQQueue("bestillBrevPeBq");
 	}
 
+	@Bean
+	public Queue mottakOnlineLinux(@Value("${mottak_online_linux.queuename}") String mottakOnlineQueueName) {
+		return new ActiveMQQueue(mottakOnlineQueueName);
+	}
+
+	@Bean
+	// exstream -> brevserver
+	// returkø fra exstream til brevserver
+	public Queue mottakArkivPeLinux(@Value("${mottak_arkiv_pe_linux.queuename}") String mottakArkivPeQueueName) {
+		return new ActiveMQQueue(mottakArkivPeQueueName);
+	}
+
+	@Bean
+	public Queue mottakArkivPeLinuxBq() {
+		return new ActiveMQQueue("mottakArkivPeLinuxBq");
+	}
+
+	@Bean
+	// exstream -> brevserver
+	// returkø fra exstream til brevserver
+	public Queue mottakOnlinePeLinux(@Value("${mottak_online_pe_linux.queuename}") String brevserverMottakOnlinePe) {
+		return new ActiveMQQueue(brevserverMottakOnlinePe);
+	}
+
+
 	@Bean(initMethod = "start", destroyMethod = "stop")
-	public EmbeddedActiveMQ broker() {
+	public EmbeddedActiveMQ embeddedActiveMQ() {
 		EmbeddedActiveMQ service = new EmbeddedActiveMQ();
 		service.setConfigResourcePath("artemis-server.xml");
 		return service;
 	}
 
 	@Bean
-	public ConnectionFactory activemqConnectionFactory(EmbeddedActiveMQ embeddedActiveMQ) { // EmbeddedActiveMQ must be initialized before we try to connect, therefore we depend on it here
+	@DependsOn("embeddedActiveMQ")
+	public ConnectionFactory activemqConnectionFactory() {
 		ActiveMQConnectionFactory activeMQConnectionFactory = new ActiveMQConnectionFactory("vm://localhost?create=false");
 
 		JmsPoolConnectionFactory pooledFactory = new JmsPoolConnectionFactory();
@@ -98,5 +127,4 @@ public class JmsItestConfig {
 		pooledFactory.setMaxConnections(1);
 		return pooledFactory;
 	}
-
 }

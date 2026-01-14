@@ -1,4 +1,4 @@
-package no.nav.brevserver.core.alias;
+package no.nav.brevserver.core.properties;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;

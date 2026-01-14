@@ -1,6 +1,6 @@
 package no.nav.brevserver.bestillBrev.biSys;
 
-import config.AbstractTest;
+import no.nav.brevserver.bestillBrev.AbstractTest;
 import no.nav.brevserver.core.vo.BrevStatusVO;
 import org.apache.activemq.artemis.jms.client.ActiveMQMessage;
 import org.junit.jupiter.api.AfterEach;

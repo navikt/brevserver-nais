@@ -1,8 +1,7 @@
-package no.nav.brevserver.core.alias;
+package no.nav.brevserver.core.properties;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 import lombok.ToString;
 import org.springframework.boot.context.properties.ConfigurationProperties;

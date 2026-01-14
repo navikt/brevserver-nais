@@ -1,3 +1,5 @@
+package no.nav.brevserver;
+
 import no.nav.brevserver.core.constants.Konstanter;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
 import no.nav.brevserver.core.vo.BrevStatusVO;

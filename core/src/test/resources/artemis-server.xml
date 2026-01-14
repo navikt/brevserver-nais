@@ -6,17 +6,66 @@
 		</acceptors>
 		<security-enabled>false</security-enabled>
 		<persistence-enabled>false</persistence-enabled>
+
 		<address-settings>
-			<address-setting match="mottak">
-				<dead-letter-address>DLQ</dead-letter-address>
+			<address-setting match="mottakArkiv">
+				<dead-letter-address>mottakArkivBq</dead-letter-address>
+				<max-delivery-attempts>1</max-delivery-attempts>
+			</address-setting>
+			<address-setting match="mottakArkivPeLinux">
+				<dead-letter-address>mottakArkivPeLinuxBq</dead-letter-address>
+				<max-delivery-attempts>1</max-delivery-attempts>
+			</address-setting>
+			<address-setting match="mottakOnlineLinux">
+				<dead-letter-address>mottakOnlineLinuxBq</dead-letter-address>
+				<max-delivery-attempts>1</max-delivery-attempts>
+			</address-setting>
+			<address-setting match="mottakOnlinePeLinux">
+				<dead-letter-address>mottakOnlinePeLinuxBq</dead-letter-address>
 				<max-delivery-attempts>1</max-delivery-attempts>
 			</address-setting>
 		</address-settings>
 
+
 		<addresses>
-			<address name="mottakarkiv">
+			<address name="mottakArkiv">
 				<anycast>
-					<queue name="mottakarkiv"/>
+					<queue name="mottakArkiv"/>
+				</anycast>
+			</address>
+			<address name="mottakArkivBq">
+				<anycast>
+					<queue name="mottakArkivBq"/>
+				</anycast>
+			</address>
+			<address name="mottakArkivPeLinux">
+				<anycast>
+					<queue name="mottakArkivPeLinux"/>
+				</anycast>
+			</address>
+			<address name="mottakArkivPeLinuxBq">
+				<anycast>
+					<queue name="mottakArkivPeLinuxBq"/>
+				</anycast>
+			</address>
+			<address name="mottakOnlineLinux">
+				<anycast>
+					<queue name="mottakOnlineLinux"/>
+				</anycast>
+			</address>
+			<address name="mottakOnlineLinuxBq">
+				<anycast>
+					<queue name="mottakOnlineLinuxBq"/>
+				</anycast>
+			</address>
+			<address name="mottakOnlinePeLinux">
+				<anycast>
+					<queue name="mottakOnlinePeLinux"/>
+				</anycast>
+			</address>
+			<address name="mottakOnlinePeLinuxBq">
+				<anycast>
+					<queue name="mottakOnlinePeLinuxBq"/>
 				</anycast>
 			</address>
 			<address name="mottakDLQ">
@@ -26,7 +75,48 @@
 			</address>
 			<address name="mottakSvarKo">
 				<anycast>
-					<queue name="mottakSvarKoe"/>
+					<queue name="mottakSvarKo"/>
+				</anycast>
+			</address>
+			<address name="brevKvittering">
+				<anycast>
+					<queue name="brevKvittering"/>
+				</anycast>
+			</address>
+			<address name="onlinebrev">
+				<anycast>
+					<queue name="onlinebrev"/>
+				</anycast>
+			</address>
+			<address name="onlinebrevPe">
+				<anycast>
+					<queue name="onlinebrevPe"/>
+				</anycast>
+			</address>
+			<address name="dialogueOnline">
+				<anycast>
+					<queue name="dialogueOnline"/>
+				</anycast>
+			</address>
+			<address name="dialogueOnlinePe">
+				<anycast>
+					<queue name="dialogueOnlinePe"/>
+				</anycast>
+			</address>
+			<address name="brevReplyPe">
+				<anycast>
+					<queue name="brevReplyPe"/>
+				</anycast>
+			</address>
+
+			<address name="DLQPe">
+				<anycast>
+					<queue name="DLQPe"/>
+				</anycast>
+			</address>
+			<address name="DLQBi">
+				<anycast>
+					<queue name="DLQBi"/>
 				</anycast>
 			</address>
 		</addresses>

@@ -6,9 +6,9 @@ import com.ibm.msg.client.jakarta.jms.JmsConstants;
 import jakarta.jms.ConnectionFactory;
 import jakarta.jms.JMSException;
 import jakarta.jms.Queue;
-import no.nav.brevserver.core.alias.FagarkivProperties;
-import no.nav.brevserver.core.alias.MqGatewayProperties;
-import no.nav.brevserver.core.alias.NaisAppNameProperties;
+import no.nav.brevserver.core.properties.FagarkivProperties;
+import no.nav.brevserver.core.properties.MqGatewayProperties;
+import no.nav.brevserver.core.properties.NaisProperties;
 import org.messaginghub.pooled.jms.JmsPoolConnectionFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -31,10 +31,10 @@ public class JmsConfig {
 	@Bean
 	public ConnectionFactory wmqConnectionFactory(MqGatewayProperties mqGatewayAlias,
 												  FagarkivProperties fagarkivProperties,
-												  NaisAppNameProperties appNameProperties) throws JMSException {
+												  NaisProperties naisProperties) throws JMSException {
 		MQConnectionFactory connectionFactory = new MQConnectionFactory();
 		connectionFactory.setHostName(mqGatewayAlias.getHostname());
-		connectionFactory.setAppName(appNameProperties.appName());
+		connectionFactory.setAppName(naisProperties.appName());
 		connectionFactory.setPort(mqGatewayAlias.getPort());
 		connectionFactory.setQueueManager(mqGatewayAlias.getName());
 		connectionFactory.setTransportType(WMQ_CM_CLIENT);

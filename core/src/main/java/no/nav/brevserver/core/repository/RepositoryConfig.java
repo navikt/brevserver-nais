@@ -1,8 +1,8 @@
 package no.nav.brevserver.core.repository;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.brevserver.core.DataSourceAdditionalProperties;
-import no.nav.brevserver.core.alias.BrevserverProperties;
+import no.nav.brevserver.core.properties.BrevserverProperties;
+import no.nav.brevserver.core.properties.DataSourceAdditionalProperties;
 import oracle.jdbc.pool.OracleDataSource;
 import oracle.net.ns.SQLnetDef;
 import oracle.ucp.jdbc.PoolDataSource;
@@ -34,8 +34,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @EnableTransactionManagement
 @EnableConfigurationProperties({
 		DataSourceProperties.class,
-		DataSourceAdditionalProperties.class,
-		BrevserverProperties.class
+		DataSourceAdditionalProperties.class
 })
 @Configuration
 @Slf4j

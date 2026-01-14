@@ -1,6 +1,6 @@
 package no.nav.brevserver.bestillBrev.pesys;
 
-import config.AbstractTest;
+import no.nav.brevserver.bestillBrev.AbstractTest;
 import no.nav.brevserver.core.vo.BrevStatusVO;
 import org.apache.activemq.artemis.jms.client.ActiveMQMessage;
 import org.junit.jupiter.api.AfterEach;
@@ -57,7 +57,7 @@ public class BestillBrevRoutePeIT extends AbstractTest {
 		sendStringMessage(onlinebrevPe, badHeader, CALLID);
 
 		await().atMost(10, SECONDS).untilAsserted(() -> {
-			String received = receive(deadletter);
+			String received = receive(deadletterPe);
 			assertThat(received).isEqualTo(classpathToString("brevXml/bisysBrev.xml"));
 		});
 	}
@@ -80,7 +80,7 @@ public class BestillBrevRoutePeIT extends AbstractTest {
 		sendStringMessage(onlinebrevPe, header, CALL_ID);
 
 		await().atMost(10, SECONDS).untilAsserted(() -> {
-			String received = receive(deadletter);
+			String received = receive(deadletterPe);
 			assertThat(received).isEqualTo(header);
 		});
 	}
@@ -90,7 +90,7 @@ public class BestillBrevRoutePeIT extends AbstractTest {
 		sendStringMessage(onlinebrevPe, null, CALL_ID);
 
 		await().atMost(10, SECONDS).untilAsserted(() -> {
-			ActiveMQMessage received = receive(deadletter);
+			ActiveMQMessage received = receive(deadletterPe);
 			assertThat(received.getJMSCorrelationID()).isEqualTo(CORRELATION_ID);
 		});
 	}

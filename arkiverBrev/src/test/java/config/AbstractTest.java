@@ -4,6 +4,7 @@ import jakarta.jms.Queue;
 import jakarta.jms.TextMessage;
 import jakarta.xml.bind.JAXBElement;
 import lombok.SneakyThrows;
+import no.nav.brevserver.ApplicationTestConfig;
 import no.nav.brevserver.core.repository.BrevRepository;
 import no.nav.brevserver.core.repository.BrevSystemTilgangRepository;
 import no.nav.brevserver.core.repository.BrevstatusRepository;

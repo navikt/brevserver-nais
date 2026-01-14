@@ -1,4 +1,4 @@
-package no.nav.brevserver.core.alias;
+package no.nav.brevserver.core.properties;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
