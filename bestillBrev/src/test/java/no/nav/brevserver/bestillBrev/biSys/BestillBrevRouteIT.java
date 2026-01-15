@@ -78,9 +78,8 @@ public class BestillBrevRouteIT extends AbstractTest {
 		String header = createInputFromFagsystem(BISYS_SYSTEM_ID, "frabrevlager");
 		sendStringMessage(onlinebrev, header, CALL_ID);
 
-		await().atMost(10, SECONDS).untilAsserted(() -> {
-			assertThat(brevtilgangRepository.findBySystemIdAndBrevreferanse("BI12", "10000000000")).isNotNull();
-		});
+		await().atMost(10, SECONDS).untilAsserted(() ->
+				assertThat(brevtilgangRepository.findBySystemIdAndBrevreferanse("BI12", "10000000000")).isNotNull());
 	}
 
 	@ParameterizedTest

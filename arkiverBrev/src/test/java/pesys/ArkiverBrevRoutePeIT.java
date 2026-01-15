@@ -47,8 +47,6 @@ public class ArkiverBrevRoutePeIT extends AbstractTest {
 	@Autowired
 	protected Queue mottakArkivPeLinux;
 	@Autowired
-	protected Queue deadletter;
-	@Autowired
 	private Queue mottakArkivPeLinuxBq;
 	@Autowired
 	private JoarkService joarkServiceMock;
@@ -64,7 +62,7 @@ public class ArkiverBrevRoutePeIT extends AbstractTest {
 	//happypath
 	public void shouldArkivereBrev() {
 		String header = createPesysKvittering();
-		sendStringMessage(mottakArkivPeLinux, header + "Dette er en pdf".getBytes(), CALLID);
+		sendStringMessage(mottakArkivPeLinux, header + "Dette er en pdf", CALLID);
 
 		await().atMost(5, SECONDS).untilAsserted(() -> {
 			Message received = jmsTemplate.receive(SVARKOE);
