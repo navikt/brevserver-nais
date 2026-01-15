@@ -93,7 +93,7 @@ public class PeBestillBrevService {
 			brevstatusService.lagreBrevStatus(brevStatusVo);
 			log.info("Brev med brevref: {} er arkivert i Brevlageret", sanitizeUnsafeChar(brevStatusVo.getBrevreferanse()));
 
-			if (brevserverProperties.isLoggXML()) {
+			if (brevserverProperties.isLoggXml()) {
 				log.info("Pensjons-XML til Exstream:\n" + messageVo.getStringBody());
 			}
 			setBodyAndMode(exchange,
