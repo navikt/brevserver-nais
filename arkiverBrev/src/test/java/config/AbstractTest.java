@@ -9,20 +9,28 @@ import no.nav.brevserver.core.repository.BrevRepository;
 import no.nav.brevserver.core.repository.BrevSystemTilgangRepository;
 import no.nav.brevserver.core.repository.BrevstatusRepository;
 import no.nav.brevserver.core.repository.BrevtilgangRepository;
-import no.nav.brevserver.joark.JoarkService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestEntityManager;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.http.HttpStatus;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @AutoConfigureDataJpa
 @AutoConfigureTestDatabase
@@ -32,10 +40,9 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @SpringBootTest(classes = {ApplicationTestConfig.class},
 		webEnvironment = RANDOM_PORT)
 @ActiveProfiles("itest")
+@AutoConfigureWireMock(port = 0)
 public class AbstractTest {
 
-	@MockitoBean
-	protected JoarkService joarkService;
 	@Autowired
 	protected BrevtilgangRepository brevtilgangRepository;
 	@Autowired
@@ -90,5 +97,30 @@ public class AbstractTest {
 			return msg;
 		});
 	}
+
+	protected static void naisTexasTokenStub() {
+		stubFor(post("/naistexas")
+				.willReturn(aResponse()
+						.withStatus(OK.value())
+						.withHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+						.withBodyFile("naistexas/token_response.json")));
+	}
+
+	protected static void dokarkivStub() {
+		dokarkivStub(OK, "dokarkiv/settbrevdata-ok.json");
+	}
+
+	protected static void dokarkivStubServerError() {
+		dokarkivStub(INTERNAL_SERVER_ERROR, "dokarkiv/settbrevdata-server-error.json");
+	}
+
+	protected static void dokarkivStub(HttpStatus httpStatus, String bodyFile) {
+		stubFor(post(urlPathMatching("/dokarkiv/journalpostapi/v1/journalpost/(\\d+)/settBrevdata/(ARKIV|PRODUKSJON)"))
+				.willReturn(aResponse()
+						.withStatus(httpStatus.value())
+						.withHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+						.withBodyFile(bodyFile)));
+	}
+
 
 }

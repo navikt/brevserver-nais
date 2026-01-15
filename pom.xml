@@ -34,6 +34,7 @@
 		<logstash-logback-encoder.version>8.1</logstash-logback-encoder.version>
 		<jakarta.jws-api.version>3.0.0</jakarta.jws-api.version>
 		<patrodyne-basicjaxb.version>2.2.1</patrodyne-basicjaxb.version>
+		<spring-cloud-starter-contract-stub-runner.version>4.3.1</spring-cloud-starter-contract-stub-runner.version>
 
 		<!-- Plugins -->
 		<maven-toolchains-plugin.version>3.2.0</maven-toolchains-plugin.version>
@@ -145,6 +146,12 @@
 				<artifactId>core</artifactId>
 				<version>${project.version}</version>
 				<type>test-jar</type>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-starter-contract-stub-runner</artifactId>
+				<version>${spring-cloud-starter-contract-stub-runner.version}</version>
+				<scope>test</scope>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

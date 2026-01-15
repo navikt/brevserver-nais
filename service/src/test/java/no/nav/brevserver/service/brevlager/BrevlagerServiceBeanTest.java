@@ -46,7 +46,7 @@ public class BrevlagerServiceBeanTest extends AbstractTest {
 	private BrevstatusTilVoConverter brevstatusTilVoConverter;
 	@MockitoBean
 	private BrevtilgangService brevtilgangServiceMock;
-	@MockitoBean
+	@MockitoBean("joarkService")
 	private JoarkService joarkServiceMock;
 	@Autowired
 	private BrevlagerService brevlagerService;

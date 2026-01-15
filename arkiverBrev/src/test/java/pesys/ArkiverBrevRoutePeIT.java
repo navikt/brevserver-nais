@@ -4,15 +4,19 @@ import config.AbstractTest;
 import jakarta.jms.Message;
 import jakarta.jms.Queue;
 import no.nav.brevserver.core.exception.BrevException;
-import no.nav.brevserver.core.exception.BrevTechnicalException;
-import no.nav.brevserver.joark.JoarkService;
 import no.nav.brevserver.service.BrevstatusService;
 import org.apache.activemq.artemis.jms.client.ActiveMQMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import utils.Utils;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.binaryEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
+import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static no.nav.brevserver.core.constants.Konstanter.BREVSTATUS_FEIL;
 import static no.nav.brevserver.core.constants.Konstanter.FEIL_BREV_EKSISTERER;
@@ -21,8 +25,6 @@ import static no.nav.brevserver.core.vo.FilType.PDF;
 import static no.nav.brevserver.core.vo.FilType.RTF;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doThrow;
 import static utils.Utils.BREVREFERANSE;
 import static utils.Utils.CALLID;
 import static utils.Utils.FORMAT;
@@ -38,6 +40,8 @@ import static utils.Utils.createPesysKvitteringFeilNiva;
 
 public class ArkiverBrevRoutePeIT extends AbstractTest {
 
+	public static final String DOKUMENT_KLADD = "Dokument kladd";
+	public static final String DOKUMENT_FERDIG = "Dokument ferdig";
 	private final String CALL_ID = "1234-callid-5678";
 	//Kan ikke bruke selve køen da vi legger på ?targetclient=1 på kønavnet i servicen.
 	private static final String SVARKOE = "queue:///mottakSvarKo?targetClient=1";
@@ -49,20 +53,20 @@ public class ArkiverBrevRoutePeIT extends AbstractTest {
 	@Autowired
 	private Queue mottakArkivPeLinuxBq;
 	@Autowired
-	private JoarkService joarkServiceMock;
-	@Autowired
 	private Queue deadletterPe;
 
 	@BeforeEach
 	public void cleanUp() {
 		super.cleanupDb();
+		naisTexasTokenStub();
 	}
 
+
 	@Test
-	//happypath
 	public void shouldArkivereBrev() {
-		String header = createPesysKvittering();
-		sendStringMessage(mottakArkivPeLinux, header + "Dette er en pdf", CALLID);
+		dokarkivStub();
+		String message = createPesysKvittering();
+		sendStringMessage(mottakArkivPeLinux, message + "Dette er en pdf", CALLID);
 
 		await().atMost(5, SECONDS).untilAsserted(() -> {
 			Message received = jmsTemplate.receive(SVARKOE);
@@ -75,8 +79,8 @@ public class ArkiverBrevRoutePeIT extends AbstractTest {
 
 	@Test
 	public void shouldSendToFeilko() {
-		String header = createBadXmlKvitteringHeader(PENSJON_SYSTEM_ID);
-		sendStringMessage(mottakArkivPeLinux, header, CALLID);
+		String message = createBadXmlKvitteringHeader(PENSJON_SYSTEM_ID);
+		sendStringMessage(mottakArkivPeLinux, message, CALLID);
 
 		await().atMost(5, SECONDS).untilAsserted(() -> {
 			String received = receive(deadletterPe);
@@ -86,7 +90,7 @@ public class ArkiverBrevRoutePeIT extends AbstractTest {
 
 	@Test
 	public void shouldSendMessageToBqWhenBrevTechnicalException() throws BrevException {
-		doThrow(BrevTechnicalException.class).when(joarkServiceMock).lagreDokument(any(), any(), any());
+		dokarkivStubServerError();
 		String message = createPesysKvittering();
 		sendStringMessage(mottakArkivPeLinux, message, CALLID);
 
@@ -98,30 +102,38 @@ public class ArkiverBrevRoutePeIT extends AbstractTest {
 
 	@Test
 	public void shouldSaveAsKladd() {
-		String header = createPesysKvittering(RTF.getContentType());
-		sendStringMessage(mottakArkivPeLinux, header, CALL_ID);
+		dokarkivStub();
+		String message = createPesysKvittering(RTF.getContentType()) + DOKUMENT_KLADD;
+		sendStringMessage(mottakArkivPeLinux, message, CALL_ID);
 
 		await().atMost(5, SECONDS).untilAsserted(() -> {
 			String received = receive(SVARKOE);
 			assertThat(received).isEqualTo(createReplyToKvittering(STATUS_LAGRET, PENSJON_SYSTEM_ID, RTF.getContentType(), "0"));
+			verify(postRequestedFor(urlPathMatching("/dokarkiv/journalpostapi/v1/journalpost/" + BREVREFERANSE + "/settBrevdata/PRODUKSJON"))
+					.withHeader(HttpHeaders.CONTENT_TYPE, equalTo("application/rtf"))
+					.withRequestBody(binaryEqualTo(DOKUMENT_KLADD.getBytes())));
 		});
 	}
 
 	@Test
 	public void shouldSaveAsFerdig() {
-		String header = createPesysKvittering(PDF.getContentType());
-		sendStringMessage(mottakArkivPeLinux, header, CALL_ID);
+		dokarkivStub();
+		String message = createPesysKvittering(PDF.getContentType()) + DOKUMENT_FERDIG;
+		sendStringMessage(mottakArkivPeLinux, message, CALL_ID);
 
 		await().atMost(5, SECONDS).untilAsserted(() -> {
 			String received = receive(SVARKOE);
 			assertThat(received).isEqualTo(createReplyToKvittering(STATUS_FERDIG, PENSJON_SYSTEM_ID, PDF.getContentType(), "0"));
+			verify(postRequestedFor(urlPathMatching("/dokarkiv/journalpostapi/v1/journalpost/" + BREVREFERANSE + "/settBrevdata/ARKIV"))
+					.withHeader(HttpHeaders.CONTENT_TYPE, equalTo("application/pdf"))
+					.withRequestBody(binaryEqualTo(DOKUMENT_FERDIG.getBytes())));
 		});
 	}
 
 	@Test
 	public void shouldHandleFeilKvittering() {
-		String header = createPesysKvitteringFeilNiva();
-		sendStringMessage(mottakArkivPeLinux, header, CALL_ID);
+		String message = createPesysKvitteringFeilNiva();
+		sendStringMessage(mottakArkivPeLinux, message, CALL_ID);
 
 		await().atMost(5, SECONDS).untilAsserted(() -> {
 			String received = receive(SVARKOE);
@@ -131,6 +143,7 @@ public class ArkiverBrevRoutePeIT extends AbstractTest {
 
 	@Test
 	public void shouldFailBrevFinnesAllerede() {
+		dokarkivStub();
 		String message = createPesysKvittering();
 		sendStringMessage(mottakArkivPeLinux, message, CALL_ID);
 		sendStringMessage(mottakArkivPeLinux, message, CALL_ID);

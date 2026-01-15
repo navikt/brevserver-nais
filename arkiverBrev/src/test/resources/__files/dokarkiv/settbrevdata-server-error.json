@@ -1,0 +1,7 @@
+{
+  "timestamp": "2026-01-15T12:26:32.525+00:00",
+  "status": 500,
+  "error": "Internal Server Error",
+  "message": "Noe feil skjedde",
+  "path": "/rest/internal/journalpostapi/v1/journalpost"
+}

@@ -13,8 +13,10 @@ import no.nav.virksomhet.tjenester.arkiv.journalbehandling.meldinger.v1.Dokument
 import no.nav.virksomhet.tjenester.arkiv.journalbehandling.meldinger.v1.Fildetaljer;
 import no.nav.virksomhet.tjenester.arkiv.journalbehandling.meldinger.v1.JournalpostDokumentInfoRelasjon;
 import no.nav.virksomhet.tjenester.arkiv.journalbehandling.meldinger.v1.OppdaterJournalRequest;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+@Qualifier("joarkService")
 @Service
 @Slf4j
 public class JoarkServiceImpl implements JoarkService {

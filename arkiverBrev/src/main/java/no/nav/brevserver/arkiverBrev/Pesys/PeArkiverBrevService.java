@@ -16,6 +16,7 @@ import no.nav.brevserver.joark.JoarkService;
 import no.nav.brevserver.service.BrevstatusService;
 import org.apache.camel.Exchange;
 import org.apache.camel.Handler;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.GI_TILBAKEMELDING;
@@ -26,15 +27,16 @@ import static no.nav.brevserver.core.utils.ExchangeUtils.setBodyAndReturnQueueWi
 public class PeArkiverBrevService {
 
 	private final BrevstatusService brevstatusService;
-	private final JoarkService joarkService;
+	private final JoarkService dokarkivService;
 
 	public PeArkiverBrevService(
 			BrevstatusService brevstatusService,
-			JoarkService joarkService) {
+			@Qualifier("dokarkivService") JoarkService dokarkivService) {
 		this.brevstatusService = brevstatusService;
-		this.joarkService = joarkService;
+		this.dokarkivService = dokarkivService;
 	}
 
+	@SuppressWarnings("unused")
 	@Handler
 	public void execute(Exchange exchange) throws BrevException {
 		//Konverter Exchange til messageVo
@@ -81,7 +83,7 @@ public class PeArkiverBrevService {
 
 			// Alt gikk bra, lagre i JOARK.
 		} else {
-			joarkService.lagreDokument(kvittering.getBrevreferanse(), kvittering.getContentType(), kvittering.getBrevdata());
+			dokarkivService.lagreDokument(kvittering.getBrevreferanse(), kvittering.getContentType(), kvittering.getBrevdata());
 
 			if (FilType.PDF.getContentType().equals(kvittering.getContentType())) {
 				kvittering.setLagerStatus(Konstanter.BREVLAGER_STATUS_FERDIG);

@@ -27,11 +27,11 @@ public class Utils {
 	public static final String STATUS_FERDIG = "FERDIG";
 	public static final String PDF_CONTENTTYPE = PDF.getContentType();
 
-	public static String createPesysKvittering(){
+	public static String createPesysKvittering() {
 		return StringUtils.rightPad(generateKvitteringHeader(PDF_CONTENTTYPE, PENSJON_SYSTEM_ID, BREVREFERANSE).toString(), MELDING_HEADER_LENGTH, ' ');
 	}
 
-	public static String createPesysKvittering(String format){
+	public static String createPesysKvittering(String format) {
 		return StringUtils.rightPad(generateKvitteringHeader(format, PENSJON_SYSTEM_ID, BREVREFERANSE).toString(), MELDING_HEADER_LENGTH, ' ');
 	}
 
@@ -52,15 +52,15 @@ public class Utils {
 		return StringUtils.rightPad(generateKvitteringHeader(PDF_CONTENTTYPE, PENSJON_SYSTEM_ID, BREVREFERANSE, BREVPAKKE_FEILNIVA_FEIL, FEIL_UKJENT).toString(), MELDING_HEADER_LENGTH, ' ');
 	}
 
-	public static String createBadXmlKvitteringHeader(String system){
+	public static String createBadXmlKvitteringHeader(String system) {
 		return generateKvitteringHeader(FORMAT, system, BREVREFERANSE).toString();
 	}
 
-	public static  StringBuilder generateKvitteringHeader(String contentType, String fagsystem, String brevref){
+	public static StringBuilder generateKvitteringHeader(String contentType, String fagsystem, String brevref) {
 		return generateKvitteringHeader(contentType, fagsystem, brevref, "0", "0");
 	}
 
-	public static  StringBuilder generateKvitteringHeader(String contentType, String fagsystem, String brevref, String feilniva, String feilkode){
+	public static StringBuilder generateKvitteringHeader(String contentType, String fagsystem, String brevref, String feilniva, String feilkode) {
 		StringBuilder builder = new StringBuilder("<?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>");
 		builder.append("<rtv-brevkvitt>");
 		builder.append("<brevref>").append(brevref).append("</brevref>");
@@ -72,7 +72,7 @@ public class Utils {
 		return builder;
 	}
 
-	public static  String classpathToString(String classpathResource) throws IOException {
+	public static String classpathToString(String classpathResource) throws IOException {
 		InputStream inputStream = new ClassPathResource(classpathResource).getInputStream();
 		return IOUtils.toString(inputStream, UTF_8);
 	}
