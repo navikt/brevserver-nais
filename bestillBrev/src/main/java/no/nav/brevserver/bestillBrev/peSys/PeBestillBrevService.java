@@ -1,13 +1,13 @@
 package no.nav.brevserver.bestillBrev.peSys;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.brevserver.core.alias.BrevserverProperties;
 import no.nav.brevserver.core.constants.Konstanter;
 import no.nav.brevserver.core.constants.SystemType;
 import no.nav.brevserver.core.exception.BrevException;
 import no.nav.brevserver.core.exception.BrevFunctionalException;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
 import no.nav.brevserver.core.metrics.Metrics;
+import no.nav.brevserver.core.properties.BrevserverProperties;
 import no.nav.brevserver.core.utils.ExchangeUtils;
 import no.nav.brevserver.core.utils.xmlHandlers.XMLService;
 import no.nav.brevserver.core.vo.BrevStatusVO;
@@ -51,6 +51,7 @@ public class PeBestillBrevService {
 	/**
 	 * Forespørsel lagres i databasen. Deretter sendes den originale meldingen videre på definert kø.
 	 */
+	@SuppressWarnings("unused")
 	@Handler
 	public void execute(Exchange exchange) throws BrevException {
 		MessageVO messageVo = ExchangeUtils.getMessageVoFromExchange(exchange);

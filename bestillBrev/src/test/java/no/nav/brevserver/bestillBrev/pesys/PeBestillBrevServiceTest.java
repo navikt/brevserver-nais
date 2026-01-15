@@ -1,6 +1,6 @@
 package no.nav.brevserver.bestillBrev.pesys;
 
-import config.AbstractTest;
+import no.nav.brevserver.bestillBrev.AbstractTest;
 import org.apache.activemq.artemis.jms.client.ActiveMQMessage;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -18,7 +18,7 @@ public class PeBestillBrevServiceTest extends AbstractTest {
 	
 	private final String CORRELATION_ID = "abcd-1234-def-5678";
 	private final String CALL_ID = "12-callID-34";
-	private final String SVARKOSTRING = "queue:///SvarKo?targetClient=1";
+	private final String SVARKOSTRING = "queue:///mottakSvarKo?targetClient=1";
 
 	@Test
 	public void shouldHandleMessage()  {

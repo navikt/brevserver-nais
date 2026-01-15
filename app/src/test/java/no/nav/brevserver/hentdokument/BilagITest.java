@@ -1,5 +1,6 @@
 package no.nav.brevserver.hentdokument;
 
+import no.nav.brevserver.ApplicationTestConfig;
 import no.nav.brevserver.core.domain.entities.Brev;
 import no.nav.brevserver.core.domain.entities.id.BrevreferanseSystemCompositeId;
 import no.nav.brevserver.core.repository.BrevRepository;

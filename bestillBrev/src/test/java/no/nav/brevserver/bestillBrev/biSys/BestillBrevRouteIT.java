@@ -1,6 +1,6 @@
 package no.nav.brevserver.bestillBrev.biSys;
 
-import config.AbstractTest;
+import no.nav.brevserver.bestillBrev.AbstractTest;
 import no.nav.brevserver.core.vo.BrevStatusVO;
 import org.apache.activemq.artemis.jms.client.ActiveMQMessage;
 import org.junit.jupiter.api.AfterEach;
@@ -78,9 +78,8 @@ public class BestillBrevRouteIT extends AbstractTest {
 		String header = createInputFromFagsystem(BISYS_SYSTEM_ID, "frabrevlager");
 		sendStringMessage(onlinebrev, header, CALL_ID);
 
-		await().atMost(10, SECONDS).untilAsserted(() -> {
-			assertThat(brevtilgangRepository.findBySystemIdAndBrevreferanse("BI12", "10000000000")).isNotNull();
-		});
+		await().atMost(10, SECONDS).untilAsserted(() ->
+				assertThat(brevtilgangRepository.findBySystemIdAndBrevreferanse("BI12", "10000000000")).isNotNull());
 	}
 
 	@ParameterizedTest

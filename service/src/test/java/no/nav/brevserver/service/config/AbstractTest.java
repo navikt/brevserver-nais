@@ -1,5 +1,6 @@
 package no.nav.brevserver.service.config;
 
+import no.nav.brevserver.ApplicationTestConfig;
 import no.nav.brevserver.core.repository.BrevRepository;
 import no.nav.brevserver.core.repository.BrevSystemTilgangRepository;
 import no.nav.brevserver.core.repository.BrevlagerHistorikkRepository;
