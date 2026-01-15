@@ -69,7 +69,7 @@ public class RepositoryConfig {
 		connProperties.setProperty("oracle.jdbc.thinForceDNSLoadBalancing", "true");
 		// Statisk poolsize. Se brevserverProperties.java
 		int poolsize = brevserverProperties.getDatabase().getPoolsize();
-		log.info("Setter brevserverdb poolsize til: " + poolsize);
+		log.info("Setter brevserver db poolsize={}", poolsize);
 
 		poolDataSource.setInitialPoolSize(poolsize);
 		poolDataSource.setMinPoolSize(poolsize);

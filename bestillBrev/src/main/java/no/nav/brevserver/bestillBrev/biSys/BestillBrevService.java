@@ -1,12 +1,12 @@
 package no.nav.brevserver.bestillBrev.biSys;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.brevserver.core.properties.BrevserverProperties;
 import no.nav.brevserver.core.constants.Konstanter;
 import no.nav.brevserver.core.constants.SystemType;
 import no.nav.brevserver.core.exception.BrevException;
 import no.nav.brevserver.core.exception.BrevFunctionalException;
 import no.nav.brevserver.core.metrics.Metrics;
+import no.nav.brevserver.core.properties.BrevserverProperties;
 import no.nav.brevserver.core.utils.ExchangeUtils;
 import no.nav.brevserver.core.utils.xmlHandlers.XMLService;
 import no.nav.brevserver.core.vo.BrevStatusVO;
@@ -92,7 +92,7 @@ public class BestillBrevService {
 				brevstatusService.lagreBrevStatus(brevStatusVo);
 
 				log.info("Brev med brevref:{} er arkivert i Brevlageret", sanitizeUnsafeChar(brevStatusVo.getBrevreferanse()));
-				if (brevserverProperties.isLoggXML()) {
+				if (brevserverProperties.isLoggXml()) {
 					log.info("Bidrags-XML til Exstream:\n" + messageVo.getStringBody());
 				}
 				setBodyAndMode(exchange,

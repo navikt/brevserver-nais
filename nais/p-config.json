@@ -27,8 +27,10 @@
   "FAGARKIV_ENDPOINTS_JOURNAL": "https://wasapp.adeo.no/joark/Journal",
   "FAGARKIV_ENDPOINTS_JOURNALBEHANDLING": "https://wasapp.adeo.no/joark/Journalbehandling",
   "SECURITY_TOKEN_SERVICE_TOKEN_URL": "https://security-token-service.nais.adeo.no/rest/v1/sts",
-  "BREVSERVERPROPERTIES_LOGGXML": "false",
-  "BREVSERVERPROPERTIES_DATABASE_POOLSIZE": "60",
+  "BREVSERVER_LOGG_XML": "false",
+  "BREVSERVER_DATABASE_POOLSIZE": "60",
+  "BREVSERVER_ENDPOINTS_DOKARKIV_URL": "http://dokarkiv.teamdokumenthandtering.svc.nais.local/rest/internal",
+  "BREVSERVER_ENDPOINTS_DOKARKIV_SCOPE": "api://prod-fss.teamdokumenthandtering.dokarkiv/.default",
   "NO_NAV_SECURITY_JWT_ISSUER_RESTSTS_ACCEPTED_AUDIENCE": "srvdokprodbatch",
   "NO_NAV_SECURITY_JWT_ISSUER_RESTSTS_DISCOVERYURL": "https://security-token-service.nais.adeo.no/rest/v1/sts/.well-known/openid-configuration",
   "AZURE_IAC_RULES": [

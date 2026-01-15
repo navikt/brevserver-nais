@@ -1,21 +1,28 @@
 package no.nav.brevserver.core.properties;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
+import java.net.URI;
+
 
 @Data
-@ConfigurationProperties("brevserverproperties")
+@ConfigurationProperties("brevserver")
 @Validated
 public class BrevserverProperties {
 
-	private boolean loggXML;
+	private boolean loggXml;
+	@Valid
 	private final Database database = new Database();
+	@Valid
+	private final Endpoints endpoints = new Endpoints();
 
 	@Data
-	@Validated
 	public static class Database {
 		/// Statisk pool verdi for dokarkiv databasen.
 		///
@@ -33,6 +40,23 @@ public class BrevserverProperties {
 		/// @see no.nav.brevserver.core.repository.RepositoryConfig
 		@Positive
 		private int poolsize = 60;
+	}
+
+	@Data
+	public static class Endpoints {
+		@NotNull
+		private EntraEndpoint dokarkiv;
+	}
+
+	@Data
+	public static class EntraEndpoint {
+		/// Url til tjeneste som har entra autorisasjon
+		@NotNull
+		private URI url;
+
+		/// Scope til entra client credential flow
+		@NotEmpty
+		private String scope;
 	}
 
 }
