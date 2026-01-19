@@ -19,6 +19,7 @@ import no.nav.brevserver.service.BrevtilgangService;
 import no.nav.brevserver.service.converter.BrevTilVoConverter;
 import no.nav.brevserver.service.converter.VoTilBrevConverter;
 import no.nav.brevserver.service.queue.KvitteringService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,6 +50,7 @@ public class DefaultBrevlagerService implements BrevlagerService {
 	private static final String LAGER_STATUS_A = "A";
 	private final byte[] PDF_MED_FORKLARING;
 	private final JoarkService joarkService;
+	private final JoarkService dokarkivService;
 	private final BrevstatusService brevstatusService;
 	private final BrevRepository brevRepository;
 	private final DefaultBrevlagerHistorikkService defaultBrevlagerHistorikkService;
@@ -57,7 +59,8 @@ public class DefaultBrevlagerService implements BrevlagerService {
 	private final BrevtilgangService brevtilgangService;
 	private final KvitteringService kvitteringService;
 
-	public DefaultBrevlagerService(JoarkService joarkService,
+	public DefaultBrevlagerService(@Qualifier("joarkService") JoarkService joarkService,
+								   @Qualifier("dokarkivService") JoarkService dokarkivService,
 								   BrevTilVoConverter brevTilVoConverter,
 								   BrevstatusService brevstatusService,
 								   BrevRepository brevRepository,
@@ -67,6 +70,7 @@ public class DefaultBrevlagerService implements BrevlagerService {
 								   KvitteringService kvitteringService) throws IOException {
 		PDF_MED_FORKLARING = new ClassPathResource("/static/rtf-konvertering-sanert-forklaring.pdf").getInputStream().readAllBytes();
 		this.joarkService = joarkService;
+		this.dokarkivService = dokarkivService;
 		this.brevRepository = brevRepository;
 		this.brevTilVoConverter = brevTilVoConverter;
 		this.defaultBrevlagerHistorikkService = defaultBrevlagerHistorikkService;
@@ -100,7 +104,7 @@ public class DefaultBrevlagerService implements BrevlagerService {
 			translateContentTypeDocxToDb2(brev);
 
 			if (brevstatus.getSystemID() != null && brevstatus.getSystemID().startsWith(PE.toString())) {
-				joarkService.lagreDokument(brevstatus.getBrevreferanse(), brev.getContentType(), brev.getBrevdata());
+				dokarkivService.lagreDokument(brevstatus.getBrevreferanse(), brev.getContentType(), brev.getBrevdata());
 			} else {
 				brevRepository.save(voTilBrevConverter.convert(brev));
 			}
@@ -123,7 +127,7 @@ public class DefaultBrevlagerService implements BrevlagerService {
 			pdfBrev.setLagerStatus(BREVLAGER_STATUS_FERDIG);
 
 			if (brevStatus.getSystemID().startsWith(PE.toString())) {
-				joarkService.lagreFerdigstiltDokument(brevStatus.getBrevreferanse(), redBrev, pdfBrev);
+				dokarkivService.lagreFerdigstiltDokument(brevStatus.getBrevreferanse(), redBrev, pdfBrev);
 			} else {
 				brevferdigstillBrevlagerDokument(brevStatus, redBrev, pdfBrev);
 			}
@@ -172,10 +176,6 @@ public class DefaultBrevlagerService implements BrevlagerService {
 	}
 
 	@Override
-	/*
-	 * Brukes bare av bidrag??
-	 * Se avbrytDokument i LagreCOntrollerDelegate.java i gamle brevserver
-	 */
 	public void avbrytDokument(BrevStatusVO brevStatus) throws BrevException {
 		if (brevStatus == null) {
 			throw new IllegalArgumentException("Brevstatus er null!");
@@ -208,7 +208,7 @@ public class DefaultBrevlagerService implements BrevlagerService {
 
 		verifyChangeRequest(brevStatusVO);
 		if (brevStatusVO.getSystemID().startsWith(PE.toString())) {
-			lagreJoarkDokument(brev);
+			dokarkivService.lagreDokument(brev.getBrevreferanse(), brev.getContentType(), brev.getBrevdata());
 		} else {
 			lagreBrev(brev, brevStatusVO);
 		}
@@ -226,14 +226,6 @@ public class DefaultBrevlagerService implements BrevlagerService {
 				throw new BrevTechnicalException("Brevet har status = '" + BREVLAGER_STATUS_FERDIG + "' og kan ikke endres");
 			}
 			defaultBrevlagerHistorikkService.insertHistorikk(brev);
-		}
-	}
-
-	private void lagreJoarkDokument(BrevVO brev) {
-		try {
-			joarkService.lagreDokument(brev.getBrevreferanse(), brev.getContentType(), brev.getBrevdata());
-		} catch (BrevException e) {
-			e.printStackTrace();
 		}
 	}
 

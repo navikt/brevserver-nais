@@ -22,8 +22,8 @@ public class PeBestillBrevServiceTest extends AbstractTest {
 
 	@Test
 	public void shouldHandleMessage()  {
-		String header = createInputFromFagsystem(PENSJON_SYSTEM_ID);
-		sendStringMessage(onlinebrevPe, header, CORRELATION_ID);
+		String message = createInputFromFagsystem(PENSJON_SYSTEM_ID);
+		sendStringMessage(onlinebrevPe, message, CORRELATION_ID);
 
 		await().atMost(10, SECONDS).untilAsserted(() -> {
 			String received = receive(dialogueOnlinePe);
@@ -44,20 +44,20 @@ public class PeBestillBrevServiceTest extends AbstractTest {
 	@ParameterizedTest
 	@ValueSource(strings = {"","<rtv-brev>badXML<rtv-brev>", "BI12"})
 	public void shouldSendMessageToDeadletterWhenBadInput(String input)  {
-		String header = createInputFromFagsystem(input);
-		sendStringMessage(onlinebrevPe, header, CALL_ID);
+		String message = createInputFromFagsystem(input);
+		sendStringMessage(onlinebrevPe, message, CALL_ID);
 
 		await().atMost(10, SECONDS).untilAsserted(() -> {
 			String received = receive(deadletterPe);
-			assertThat(received).isEqualTo(header);
+			assertThat(received).isEqualTo(message);
 		});
 	}
 
 	@Test
 	public void brevFinnesAllerede()  {
-		String header = createInputFromFagsystem(PENSJON_SYSTEM_ID);
-		sendStringMessage(onlinebrevPe, header, CALL_ID);
-		sendStringMessage(onlinebrevPe, header, CALL_ID);
+		String message = createInputFromFagsystem(PENSJON_SYSTEM_ID);
+		sendStringMessage(onlinebrevPe, message, CALL_ID);
+		sendStringMessage(onlinebrevPe, message, CALL_ID);
 
 		await().atMost(10, SECONDS).untilAsserted(() -> {
 			String received = receive(SVARKOSTRING);
