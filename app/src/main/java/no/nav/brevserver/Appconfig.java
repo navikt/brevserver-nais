@@ -6,7 +6,7 @@ import no.nav.brevserver.core.properties.BrevserverProperties;
 import no.nav.brevserver.core.properties.FagarkivProperties;
 import no.nav.brevserver.core.properties.MqGatewayProperties;
 import no.nav.brevserver.core.properties.NaisProperties;
-import no.nav.brevserver.joark.JournalbehandlingConfiguration;
+import no.nav.brevserver.joark.SoapConsumerConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -25,7 +25,7 @@ import org.springframework.retry.annotation.EnableRetry;
 @Import({
 		CoreConfig.class,
 		JmsConfig.class,
-		JournalbehandlingConfiguration.class
+		SoapConsumerConfiguration.class
 })
 @Configuration
 public class Appconfig {

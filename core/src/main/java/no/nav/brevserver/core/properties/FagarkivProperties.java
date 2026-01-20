@@ -27,8 +27,6 @@ public class FagarkivProperties {
 		 */
 		@NotBlank
 		private String journal;
-		@NotBlank
-		private String journalbehandling;
 
 	}
 
