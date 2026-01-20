@@ -24,7 +24,6 @@
   "DEADLETTER_QUEUENAME": "QA.Q475.BREVSERVER_DLQ",
   "DEADLETTER_PE_QUEUENAME": "QA.Q475.BREVSERVER_DLQ_PE",
   "FAGARKIV_ENDPOINTS_JOURNAL": "https://wasapp-q1.adeo.no/joark/Journal",
-  "FAGARKIV_ENDPOINTS_JOURNALBEHANDLING": "https://wasapp-q1.adeo.no/joark/Journalbehandling",
   "SECURITY_TOKEN_SERVICE_TOKEN_URL": "https://security-token-service.nais.preprod.local/rest/v1/sts",
   "BREVSERVER_LOGG_XML": "true",
   "BREVSERVER_DATABASE_POOLSIZE": "10",

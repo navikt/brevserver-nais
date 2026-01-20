@@ -29,11 +29,6 @@
 		<!-- test-->
 		<dependency>
 			<groupId>org.apache.activemq</groupId>
-			<artifactId>artemis-jakarta-server</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.activemq</groupId>
 			<artifactId>activemq-client</artifactId>
 			<scope>test</scope>
 		</dependency>

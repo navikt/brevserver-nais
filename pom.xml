@@ -84,11 +84,6 @@
 				<version>${dok-legacy-tjenestespesifikasjoner.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>no.nav.tjenester</groupId>
-				<artifactId>nav-journalbehandling-tjenestespesifikasjon</artifactId>
-				<version>${dok-legacy-tjenestespesifikasjoner.version}</version>
-			</dependency>
-			<dependency>
 				<groupId>no.nav.security</groupId>
 				<artifactId>token-validation-spring</artifactId>
 				<version>${token-support.version}</version>

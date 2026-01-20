@@ -2,17 +2,11 @@ package no.nav.brevserver.joark;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
-import no.nav.brevserver.core.utils.stelvio.RequestContextHolder;
 import no.nav.brevserver.core.vo.BrevVO;
 import no.nav.brevserver.core.vo.FilType;
-import no.nav.brevserver.fagarkiv.mapper.OppdaterJournalRequestMapper;
 import no.nav.virksomhet.gjennomforing.arkiv.journal.v2.Journalpost;
 import no.nav.virksomhet.tjenester.arkiv.journal.meldinger.v2.HentDokumentRequest;
 import no.nav.virksomhet.tjenester.arkiv.journal.meldinger.v2.HentDokumentResponse;
-import no.nav.virksomhet.tjenester.arkiv.journalbehandling.meldinger.v1.DokumentInfo;
-import no.nav.virksomhet.tjenester.arkiv.journalbehandling.meldinger.v1.Fildetaljer;
-import no.nav.virksomhet.tjenester.arkiv.journalbehandling.meldinger.v1.JournalpostDokumentInfoRelasjon;
-import no.nav.virksomhet.tjenester.arkiv.journalbehandling.meldinger.v1.OppdaterJournalRequest;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
@@ -23,31 +17,21 @@ public class JoarkServiceImpl implements JoarkService {
 
 	static final String VARIANT_FORMAT_PRODUKSJON = "PRODUKSJON";
 	static final String VARIANT_FORMAT_ARKIV = "ARKIV";
-	static final String[] JOURNALSTATUS_LAGRE_INVALID_LIST = {"A", "FS", "FL"};
 
 	private final JournalClient journalClient;
-	private final JournalbehandlingClient journalbehandlingClient;
 
-	public JoarkServiceImpl(JournalClient journalClient,
-							JournalbehandlingClient journalbehandlingClient) {
+	public JoarkServiceImpl(JournalClient journalClient) {
 		this.journalClient = journalClient;
-		this.journalbehandlingClient = journalbehandlingClient;
 	}
 
 	@Override
 	public void lagreDokument(String brevreferanse, String contentType, byte[] brevdata) throws BrevTechnicalException {
-		OppdaterJournalRequest oppdaterJournalRequest = createOppdaterJournalRequest(brevreferanse);
-		setBrevDataOnRequest(contentType, brevdata, oppdaterJournalRequest);
-		journalbehandlingClient.oppdaterJournalpost(oppdaterJournalRequest);
+		throw new UnsupportedOperationException("lagreDokument mot joark er ikke støttet");
 	}
 
 	@Override
-	public void lagreFerdigstiltDokument(String brevreferanse, BrevVO redBrevVO, BrevVO pdfBrevVO)
-			throws BrevTechnicalException {
-		OppdaterJournalRequest oppdaterJournalRequest = createOppdaterJournalRequest(brevreferanse);
-		setBrevDataOnRequest(redBrevVO.getContentType(), redBrevVO.getBrevdata(), oppdaterJournalRequest);
-		setBrevDataOnRequest(pdfBrevVO.getContentType(), pdfBrevVO.getBrevdata(), oppdaterJournalRequest);
-		journalbehandlingClient.oppdaterJournalpost(oppdaterJournalRequest);
+	public void lagreFerdigstiltDokument(String brevreferanse, BrevVO redBrevVO, BrevVO pdfBrevVO) {
+		throw new UnsupportedOperationException("lagreFerdigstiltDokument mot joark er ikke støttet");
 	}
 
 	@Override
@@ -65,104 +49,6 @@ public class JoarkServiceImpl implements JoarkService {
 		return createBrevVO(brevreferanse, journalstatus, contentType, hentDokumentResponse.getDokument());
 	}
 
-	private OppdaterJournalRequest createOppdaterJournalRequest(String brevreferanse) throws BrevTechnicalException {
-		Journalpost journalpost = journalClient.hentJournalpost(getBrevreferanseAsLong(brevreferanse));
-		log.info("Kaller oppdaterJournalpost med journalpostId={}, journalStatus={}", journalpost.getJournalpostId(), getKode(journalpost));
-		verifyNotEmptyBruker(journalpost);
-		verifyJournalStatus(journalpost);
-		OppdaterJournalRequest oppdaterJournalRequest = OppdaterJournalRequestMapper.map(journalpost);
-		oppdaterJournalRequest.setEndretAvNavn(RequestContextHolder.isRequestContextSet() ? RequestContextHolder.currentRequestContext().getUserId() : "srvbrevserver");
-		verifyNotEmptyBruker(oppdaterJournalRequest);
-		return oppdaterJournalRequest;
-	}
-
-	private static String getKode(Journalpost journalpost) {
-		if(journalpost.getJournalstatus() == null) {
-			return "null";
-		}
-		return journalpost.getJournalstatus().getKode();
-	}
-
-	private void verifyNotEmptyBruker(OppdaterJournalRequest journalpost) {
-		if (journalpost != null && (journalpost.getGjelderListe() == null || journalpost.getGjelderListe().isEmpty())) {
-			log.error("OppdaterJournalpostRequest {} har ingen gyldige brukere etter oppdatering", journalpost.getJournalpostId());
-		}
-	}
-
-	private void verifyNotEmptyBruker(Journalpost journalpost) {
-		if (journalpost != null && (journalpost.getGjelderListe() == null || journalpost.getGjelderListe().isEmpty())) {
-			log.error("Journalpost {} har ingen gyldige brukere før oppdatering", journalpost.getJournalpostId());
-		}
-	}
-
-	private void verifyJournalStatus(Journalpost journalpost) throws BrevTechnicalException {
-		for (String invalidJournalstatus : JOURNALSTATUS_LAGRE_INVALID_LIST) {
-			if (journalpost.getJournalstatus().toString().equals(invalidJournalstatus)) {
-				String msg = "Feil ved lagring/arkivering av dokument på journalpost med id '" + journalpost.getJournalpostId()
-						+ "'. Journalstatus '" + journalpost.getJournalstatus()
-						+ "' tillater ikke lagring/arkivering";
-				throw new BrevTechnicalException(BrevTechnicalException.UGYLDIG_JOURNALSTATUS, msg, new Exception(msg));
-			}
-		}
-	}
-
-	private void setBrevDataOnRequest(String contentType, byte[] brevData, OppdaterJournalRequest oppdaterJournalRequest)
-			throws BrevTechnicalException {
-		Fildetaljer fildetaljer;
-		if (FilType.PDF.getContentType().equals(contentType)) {
-			fildetaljer = findFildetaljer(oppdaterJournalRequest, VARIANT_FORMAT_ARKIV, FilType.PDF.getJoarkCode());
-			if (fildetaljer != null) {
-				fildetaljer.setFiltypeKode(FilType.PDFA.getJoarkCode());
-			}
-		} else if (FilType.RTF.getContentType().equals(contentType)) {
-			fildetaljer = findFildetaljer(oppdaterJournalRequest, VARIANT_FORMAT_PRODUKSJON, FilType.RTF.getJoarkCode());
-		} else if (FilType.DOCX.getContentType().equals(contentType)) {
-			fildetaljer = findFildetaljer(oppdaterJournalRequest, VARIANT_FORMAT_PRODUKSJON, FilType.RTF.getJoarkCode());
-			if (fildetaljer != null) {
-				fildetaljer.setFiltypeKode(FilType.DOCX.getJoarkCode());
-			} else {
-				fildetaljer = findFildetaljer(oppdaterJournalRequest, VARIANT_FORMAT_PRODUKSJON, FilType.DOCX.getJoarkCode());
-			}
-		} else {
-			throw new BrevTechnicalException("Ugyldig filType '" + contentType + "' mottatt, kan ikke lagre i JOARK.");
-		}
-		if (fildetaljer == null) {
-			throw new BrevTechnicalException("Fant ikke filDetaljer for filtype " + contentType
-					+ " på journalpost med brevreferanse " + oppdaterJournalRequest.getJournalpostId());
-		}
-		fildetaljer.setFil(brevData);
-	}
-
-	private Fildetaljer findFildetaljer(OppdaterJournalRequest oppdaterJournalRequest, String variantFormat, String filtype)
-			throws BrevTechnicalException {
-		DokumentInfo dokumentInfo = getDokumentInfo(oppdaterJournalRequest);
-
-		for (Fildetaljer fildetaljer : dokumentInfo.getFildetaljerListe()) {
-			if (fildetaljer.getVariantFormatKode().equals(variantFormat) && fildetaljer.getFiltypeKode().equals(filtype)) {
-				return fildetaljer;
-			}
-		}
-		return null;
-	}
-
-	private DokumentInfo getDokumentInfo(OppdaterJournalRequest oppdaterJournalRequest) throws BrevTechnicalException {
-		JournalpostDokumentInfoRelasjon dokumentInfoRelasjon = null;
-		if (oppdaterJournalRequest.getJournalpostDokumentInfoRelasjonListe().iterator().hasNext()) {
-			dokumentInfoRelasjon = oppdaterJournalRequest.getJournalpostDokumentInfoRelasjonListe().iterator().next();
-		}
-		if (dokumentInfoRelasjon == null) {
-			throw new BrevTechnicalException("Fant ikke JournalpostDokumentInfoRelasjon på journalpost med brevreferanse "
-					+ oppdaterJournalRequest.getJournalpostId());
-		}
-		DokumentInfo dokumentInfo = dokumentInfoRelasjon.getDokumentInfo();
-		if (dokumentInfo == null) {
-			throw new BrevTechnicalException("Fant ikke DokumentInfo på journalpost med brevreferanse "
-					+ oppdaterJournalRequest.getJournalpostId());
-		}
-		return dokumentInfo;
-	}
-
-
 	/**
 	 * Extracts the filUUid from a Journalpost. If both fildetaljer with VariantFormat = ARKIV and VariantFormat = PRODUKSJON
 	 * exists on the Journalpost, the filUUid of the first fildetaljer with VariantFormat = ARKIV is returned.
@@ -171,7 +57,7 @@ public class JoarkServiceImpl implements JoarkService {
 	 * @return The filUUid for the given Journalpost, or null if no filUUid is found.
 	 */
 	private String[] getFilUuid(Journalpost journalpost) throws BrevTechnicalException {
-		no.nav.virksomhet.gjennomforing.arkiv.journal.v2.DokumentInfo dokInfo = journalpost.getJournalpostDokumentInfoRelasjonListe().iterator().next().getDokumentInfo();
+		no.nav.virksomhet.gjennomforing.arkiv.journal.v2.DokumentInfo dokInfo = journalpost.getJournalpostDokumentInfoRelasjonListe().getFirst().getDokumentInfo();
 
 		no.nav.virksomhet.gjennomforing.arkiv.journal.v2.Fildetaljer fildetaljerArkiv = null;
 		no.nav.virksomhet.gjennomforing.arkiv.journal.v2.Fildetaljer fildetaljerProd = null;
@@ -209,7 +95,7 @@ public class JoarkServiceImpl implements JoarkService {
 	}
 
 	private boolean isZeroOrEmpty(String string) {
-		return string == null || string.equals("");
+		return string == null || string.isEmpty();
 	}
 
 	private BrevVO createBrevVO(String brevreferanse, String journalStatus, String contentType, byte[] brevdata) {
