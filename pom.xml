@@ -30,7 +30,7 @@
 
 		<camel.version>4.19.0</camel.version>
 		<com.ibm.mq.jakarta.client.version>9.4.5.0</com.ibm.mq.jakarta.client.version>
-		<commons-io.version>2.21.0</commons-io.version>
+		<commons-io.version>2.22.0</commons-io.version>
 		<logstash-logback-encoder.version>8.1</logstash-logback-encoder.version>
 		<jakarta.jws-api.version>3.0.0</jakarta.jws-api.version>
 		<patrodyne-basicjaxb.version>2.2.1</patrodyne-basicjaxb.version>
