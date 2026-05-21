@@ -4,6 +4,8 @@ import no.nav.security.mock.oauth2.MockOAuth2Server;
 import no.nav.security.mock.oauth2.token.DefaultOAuth2TokenCallback;
 import no.nav.security.token.support.spring.test.EnableMockOAuth2Server;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.wiremock.spring.ConfigureWireMock;
+import org.wiremock.spring.EnableWireMock;
 
 import java.util.List;
 import java.util.Map;
@@ -12,6 +14,7 @@ import static java.util.Map.entry;
 import static java.util.Map.ofEntries;
 
 @EnableMockOAuth2Server
+@EnableWireMock({@ConfigureWireMock(name = "wiremock-server")})
 public abstract class AbstractOauth2Test {
 
 	private static final String AZUREV2_ISSUER = "azurev2";

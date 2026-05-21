@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.5.7</version>
+		<version>4.0.6</version>
 	</parent>
 
 	<groupId>no.nav.brevserver</groupId>
@@ -26,15 +26,14 @@
 		<java.version>25</java.version>
 
 		<dok-legacy-tjenestespesifikasjoner.version>44-7d14e70</dok-legacy-tjenestespesifikasjoner.version>
-		<token-support.version>5.0.37</token-support.version>
+		<token-support.version>6.0.4</token-support.version>
 
 		<camel.version>4.20.0</camel.version>
 		<com.ibm.mq.jakarta.client.version>9.4.5.1</com.ibm.mq.jakarta.client.version>
 		<commons-io.version>2.22.0</commons-io.version>
-		<logstash-logback-encoder.version>8.1</logstash-logback-encoder.version>
+		<logstash-logback-encoder.version>9.0</logstash-logback-encoder.version>
 		<jakarta.jws-api.version>3.0.0</jakarta.jws-api.version>
 		<patrodyne-basicjaxb.version>2.2.1</patrodyne-basicjaxb.version>
-		<spring-cloud-starter-contract-stub-runner.version>4.3.1</spring-cloud-starter-contract-stub-runner.version>
 
 		<!-- Plugins -->
 		<maven-toolchains-plugin.version>3.2.0</maven-toolchains-plugin.version>
@@ -114,6 +113,13 @@
 				<scope>import</scope>
 			</dependency>
 			<dependency>
+				<groupId>org.apache.camel.springboot</groupId>
+				<artifactId>camel-spring-boot-dependencies</artifactId>
+				<version>${camel.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
 				<groupId>com.ibm.mq</groupId>
 				<artifactId>com.ibm.mq.jakarta.client</artifactId>
 				<version>${com.ibm.mq.jakarta.client.version}</version>
@@ -143,9 +149,9 @@
 				<type>test-jar</type>
 			</dependency>
 			<dependency>
-				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-starter-contract-stub-runner</artifactId>
-				<version>${spring-cloud-starter-contract-stub-runner.version}</version>
+				<groupId>org.wiremock.integrations</groupId>
+				<artifactId>wiremock-spring-boot</artifactId>
+				<version>4.2.1</version>
 				<scope>test</scope>
 			</dependency>
 		</dependencies>
@@ -194,6 +200,17 @@
 			<artifactId>h2</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-jdbc-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-data-jpa-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
 
 	<build>

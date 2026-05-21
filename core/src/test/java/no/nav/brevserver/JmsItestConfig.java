@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Profile;
+import org.springframework.jms.core.JmsTemplate;
 
 @Configuration
 @Profile("itest")
@@ -126,5 +127,11 @@ public class JmsItestConfig {
 		pooledFactory.setConnectionFactory(activeMQConnectionFactory);
 		pooledFactory.setMaxConnections(1);
 		return pooledFactory;
+	}
+
+	@Bean
+	@DependsOn("activemqConnectionFactory")
+	public JmsTemplate jmsTemplate(ConnectionFactory connectionFactory) {
+		return new JmsTemplate(connectionFactory);
 	}
 }

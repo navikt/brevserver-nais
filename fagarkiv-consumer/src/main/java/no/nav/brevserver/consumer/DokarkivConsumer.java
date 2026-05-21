@@ -7,7 +7,7 @@ import no.nav.brevserver.token.NaisTexasConsumer;
 import no.nav.brevserver.token.NaisTexasRequestInterceptor;
 import org.springframework.boot.http.client.ClientHttpRequestFactoryBuilder;
 import org.springframework.http.HttpStatusCode;
-import org.springframework.retry.annotation.Retryable;
+import org.springframework.resilience.annotation.Retryable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
@@ -39,7 +39,7 @@ public class DokarkivConsumer {
 		this.dokarkivScope = brevserverProperties.getEndpoints().getDokarkiv().getScope();
 	}
 
-	@Retryable(retryFor = BrevserverTechnicalException.class)
+	@Retryable(includes = BrevserverTechnicalException.class)
 	public SettBrevdataResponse settBrevdata(long journalpostId, String contentType, byte[] brevdata) {
 		return restClient.post()
 				.uri("/journalpostapi/v1/journalpost/{journalpostId}/settBrevdata/{variantFormat}",
