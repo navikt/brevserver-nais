@@ -8,12 +8,12 @@ import no.nav.virksomhet.tjenester.arkiv.journal.meldinger.v2.HentJournalpostReq
 import no.nav.virksomhet.tjenester.arkiv.journal.v2.HentDokument;
 import no.nav.virksomhet.tjenester.arkiv.journal.v2.HentJournalpost;
 import no.nav.virksomhet.tjenester.arkiv.journal.v2.HentJournalpostResponse;
-import org.springframework.retry.annotation.Retryable;
+import org.springframework.resilience.annotation.Retryable;
 import org.springframework.ws.client.core.support.WebServiceGatewaySupport;
 
 public class JournalClient extends WebServiceGatewaySupport {
 
-	@Retryable(retryFor = BrevTechnicalException.class)
+	@Retryable(includes = BrevTechnicalException.class)
 	public Journalpost hentJournalpost(Long brevreferanse) throws BrevTechnicalException {
 		HentJournalpostRequest hentJournalpostRequest = new HentJournalpostRequest();
 		hentJournalpostRequest.setJournalpostId(brevreferanse);
@@ -28,7 +28,7 @@ public class JournalClient extends WebServiceGatewaySupport {
 		}
 	}
 
-	@Retryable(retryFor = BrevTechnicalException.class)
+	@Retryable(includes = BrevTechnicalException.class)
 	public HentDokumentResponse hentDokument(HentDokumentRequest hentDokumentRequest) throws BrevTechnicalException {
 		HentDokument hentDokument = new HentDokument();
 		hentDokument.setRequest(hentDokumentRequest);
