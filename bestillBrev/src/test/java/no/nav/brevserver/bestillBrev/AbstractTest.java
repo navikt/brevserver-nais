@@ -15,7 +15,6 @@ import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabas
 import org.springframework.boot.data.jpa.test.autoconfigure.AutoConfigureDataJpa;
 import org.springframework.boot.jpa.test.autoconfigure.AutoConfigureTestEntityManager;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.wiremock.spring.ConfigureWireMock;
 import org.wiremock.spring.EnableWireMock;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.test.context.ActiveProfiles;
@@ -31,7 +30,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @SpringBootTest(classes = {ApplicationTestConfig.class},
 		webEnvironment = RANDOM_PORT)
 @ActiveProfiles("itest")
-@EnableWireMock({@ConfigureWireMock(name = "wiremock-server")})
+@EnableWireMock
 public class AbstractTest {
 	protected final String CORRELATION_ID = "abcd-1234-def-5678";
 	protected final String CALL_ID = "12-callID-34";
@@ -70,7 +69,7 @@ public class AbstractTest {
 		brevSystemTilgangRepository.deleteAll();
 		brevstatusRepository.deleteAll();
 	}
-	
+
 	protected  <T> T receive(Queue queue) {
 		Object response = jmsTemplate.receiveAndConvert(queue);
 		if (response instanceof JAXBElement) {
