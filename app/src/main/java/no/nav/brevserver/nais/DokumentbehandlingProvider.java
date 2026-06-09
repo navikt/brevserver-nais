@@ -61,8 +61,7 @@ public class DokumentbehandlingProvider {
 		BrevStatusVO brevStatus = hentDokumentRequest.getBrevStatus();
 		BrevVO brev = brevlagerService.hentDokumentFromBrevlagerOrJoark(brevStatus);
 		if (brev == null) {
-			throw new BrevFinnesIkkeException("Brevserver fant ikke dokumentet med brevreferanse: "
-											  + brevStatus.getBrevreferanse());
+			throw new BrevFinnesIkkeException(brevStatus.getBrevreferanse());
 		}
 		return hentDokumentResponseMapper.map(createResponse(brevStatus, brev));
 	}

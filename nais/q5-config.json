@@ -23,12 +23,13 @@
   "BREV_REPLY_PE_QUEUENAME": "QA.Q5_PEN.BREVSERVER_ONLINEBREV_PE01_REPLY",
   "DEADLETTER_QUEUENAME": "QA.Q5_475.BREVSERVER_DLQ",
   "DEADLETTER_PE_QUEUENAME": "QA.Q5_475.BREVSERVER_DLQ_PE",
-  "FAGARKIV_ENDPOINTS_JOURNAL": "https://wasapp-q5.adeo.no/joark/Journal",
   "SECURITY_TOKEN_SERVICE_TOKEN_URL": "https://security-token-service.nais.preprod.local/rest/v1/sts",
   "BREVSERVER_LOGG_XML": "true",
   "BREVSERVER_DATABASE_POOLSIZE": "10",
   "BREVSERVER_ENDPOINTS_DOKARKIV_URL": "http://dokarkiv-q5.teamdokumenthandtering.svc.nais.local/rest/internal",
   "BREVSERVER_ENDPOINTS_DOKARKIV_SCOPE": "api://dev-fss.teamdokumenthandtering.dokarkiv-q5/.default",
+  "BREVSERVER_ENDPOINTS_SAF_URL": "http://saf-q5.teamdokumenthandtering.svc.nais.local",
+  "BREVSERVER_ENDPOINTS_SAF_SCOPE": "api://dev-fss.teamdokumenthandtering.saf-q5/.default",
   "NO_NAV_SECURITY_JWT_ISSUER_RESTSTS_ACCEPTED_AUDIENCE": "srvdokprodbatch",
   "NO_NAV_SECURITY_JWT_ISSUER_RESTSTS_DISCOVERYURL": "https://security-token-service.dev.adeo.no/rest/v1/sts/.well-known/openid-configuration"
 }

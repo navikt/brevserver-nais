@@ -5,6 +5,8 @@ import no.nav.brevserver.core.exception.BrevFinnesIkkeException;
 import no.nav.brevserver.core.exception.BrevFunctionalException;
 import no.nav.brevserver.core.exception.BrevSecurityException;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
+import no.nav.brevserver.core.exception.BrevserverFunctionalException;
+import no.nav.brevserver.core.exception.BrevserverTechnicalException;
 import no.nav.brevserver.nais.DokumentbehandlingProvider;
 import no.nav.brevserver.service.loggmottak.Log;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.AvbrytDokument;
@@ -65,6 +67,15 @@ public class DokumentbehandlingEndpoint implements DokumentbehandlingPortType {
 	public HentDokumentResponse2 hentDokument(HentDokumentRequest hentDokumentRequest) {
 		try {
 			return dokumentbehandlingProvider.hentDokument(hentDokumentRequest);
+		} catch (BrevFinnesIkkeException e) {
+			log.warning("hentDokument finner ikke brev", EXCEPTION_MESSAGE, e);
+			throw new RuntimeException(e.getMessage());
+		} catch (BrevserverFunctionalException e) {
+			log.warning("hentDokument funksjonell feil", EXCEPTION_MESSAGE, e);
+			throw new RuntimeException(e.getMessage());
+		} catch (BrevserverTechnicalException e) {
+			log.error("hentDokument teknisk feil", EXCEPTION_MESSAGE, e);
+			throw new RuntimeException(e.getMessage());
 		} catch (RuntimeException e) {
 			if (e.getCause() != null && e.getCause() instanceof BrevSecurityException) {
 				throw e;
@@ -76,9 +87,6 @@ public class DokumentbehandlingEndpoint implements DokumentbehandlingPortType {
 			throw new RuntimeException(e.getMessage());
 		} catch (BrevFunctionalException e) {
 			log.error("hentDokument feilet funksjonelt med feilmelding: ", EXCEPTION_MESSAGE, e);
-			throw new RuntimeException(e.getMessage());
-		} catch (BrevFinnesIkkeException e){
-			log.warning("hentDokument feilet med BrevFinnesIkke", EXCEPTION_MESSAGE, e);
 			throw new RuntimeException(e.getMessage());
 		}
 	}
@@ -102,7 +110,7 @@ public class DokumentbehandlingEndpoint implements DokumentbehandlingPortType {
 		} catch (RuntimeException e) {
 			log.error("lagreDokument", EXCEPTION_MESSAGE, e);
 			throw e;
-		}  catch (BrevException e) {
+		} catch (BrevException e) {
 			log.error("ferdigstillDokument", EXCEPTION_MESSAGE, e);
 			throw new RuntimeException(e.getMessage());
 		}
@@ -126,7 +134,7 @@ public class DokumentbehandlingEndpoint implements DokumentbehandlingPortType {
 		} catch (RuntimeException e) {
 			log.error("avbrytDokument", EXCEPTION_MESSAGE, e);
 			throw e;
-		}  catch (BrevException e) {
+		} catch (BrevException e) {
 			log.error("ferdigstillDokument", EXCEPTION_MESSAGE, e);
 			throw new RuntimeException(e.getMessage());
 		}
@@ -135,7 +143,7 @@ public class DokumentbehandlingEndpoint implements DokumentbehandlingPortType {
 	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "ferdigstillDokument")
 	@ResponsePayload
 	public void ferdigstillDokumentEndpoint(@RequestPayload FerdigstillDokument ferdigstillDokument) {
-		try{
+		try {
 			MDC.put(MDC_CALL_ID, ferdigstillDokument.getRequest().getBrevreferanse() + ferdigstillDokument.getRequest().getSystemId());
 			ferdigstillDokument(ferdigstillDokument.getRequest());
 		} finally {

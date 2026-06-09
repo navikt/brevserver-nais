@@ -20,11 +20,9 @@ import no.nav.brevserver.service.converter.BrevTilVoConverter;
 import no.nav.brevserver.service.converter.VoTilBrevConverter;
 import no.nav.brevserver.service.queue.KvitteringService;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.util.Optional;
 
 import static no.nav.brevserver.core.constants.Konstanter.BREVLAGER_STATUS_FERDIG;
@@ -39,17 +37,12 @@ import static no.nav.brevserver.core.constants.SystemType.PE;
 import static no.nav.brevserver.core.exception.BrevTechnicalException.DATABASE_IKKE_TILGJENGELIG;
 import static no.nav.brevserver.core.utils.SafeLoggingUtil.sanitizeUnsafeChar;
 import static no.nav.brevserver.core.vo.FilType.DOCX;
-import static no.nav.brevserver.core.vo.FilType.PDF;
-import static no.nav.brevserver.core.vo.FilType.RTF;
 
 @Service
 @Transactional
 @Slf4j
 public class DefaultBrevlagerService implements BrevlagerService {
 
-	private static final String LAGER_STATUS_A = "A";
-	private final byte[] PDF_MED_FORKLARING;
-	private final JoarkService joarkService;
 	private final JoarkService dokarkivService;
 	private final BrevstatusService brevstatusService;
 	private final BrevRepository brevRepository;
@@ -59,17 +52,14 @@ public class DefaultBrevlagerService implements BrevlagerService {
 	private final BrevtilgangService brevtilgangService;
 	private final KvitteringService kvitteringService;
 
-	public DefaultBrevlagerService(@Qualifier("joarkService") JoarkService joarkService,
-								   @Qualifier("dokarkivService") JoarkService dokarkivService,
+	public DefaultBrevlagerService(@Qualifier("dokarkivService") JoarkService dokarkivService,
 								   BrevTilVoConverter brevTilVoConverter,
 								   BrevstatusService brevstatusService,
 								   BrevRepository brevRepository,
 								   VoTilBrevConverter voTilBrevConverter,
 								   DefaultBrevlagerHistorikkService defaultBrevlagerHistorikkService,
 								   BrevtilgangService brevtilgangService,
-								   KvitteringService kvitteringService) throws IOException {
-		PDF_MED_FORKLARING = new ClassPathResource("/static/rtf-konvertering-sanert-forklaring.pdf").getInputStream().readAllBytes();
-		this.joarkService = joarkService;
+								   KvitteringService kvitteringService) {
 		this.dokarkivService = dokarkivService;
 		this.brevRepository = brevRepository;
 		this.brevTilVoConverter = brevTilVoConverter;
@@ -145,18 +135,21 @@ public class DefaultBrevlagerService implements BrevlagerService {
 	@Override
 	public BrevVO hentDokumentFromBrevlagerOrJoark(BrevStatusVO brevStatus) throws BrevTechnicalException {
 		checkRequiredFields(brevStatus.getSystemID(), brevStatus.getBrevreferanse(), brevStatus.getToken());
-		log.info("hentDokumentFromBrevlagerOrJoark:{} fra {} mal:{}", sanitizeUnsafeChar(brevStatus.getBrevreferanse()), sanitizeUnsafeChar(brevStatus.getSystemID()), brevStatus.getBrevmal());
+		log.info("Henter dokument med brevreferanse={}, systemID={}", sanitizeUnsafeChar(brevStatus.getBrevreferanse()), sanitizeUnsafeChar(brevStatus.getSystemID()));
 
 		BrevVO result = null;
 		if (sjekkSystemTokenTilgang(brevStatus.getSystemID(), brevStatus.getBrevreferanse(), brevStatus.getToken())) {
 			if (brevStatus.getSystemID().startsWith(PE.toString())) {
 				result = hentDokumentFraJOARK(brevStatus.getBrevreferanse());
+				log.info("Hentet dokument med brevreferanse={}, systemID={}, contentType={} fra joark",
+						sanitizeUnsafeChar(brevStatus.getBrevreferanse()), sanitizeUnsafeChar(brevStatus.getSystemID()), result.getContentType());
 			} else {
 				result = getBrev(brevStatus.getSystemID(), brevStatus.getBrevreferanse());
+				log.info("Hentet dokument med brevreferanse={}, systemID={}, contentType={} fra brevlageret",
+						sanitizeUnsafeChar(brevStatus.getBrevreferanse()), sanitizeUnsafeChar(brevStatus.getSystemID()), result.getContentType());
 			}
-			log.info("hentDokumentFromBrevlagerOrJoark har hentet {} fra {}", sanitizeUnsafeChar(brevStatus.getBrevreferanse()), sanitizeUnsafeChar(brevStatus.getSystemID()));
 		} else {
-			log.warn("hentDokumentFromBrevlagerOrJoark: Bruker har ikke tilgang til brev med brevreferanse={} fra={}", sanitizeUnsafeChar(brevStatus.getBrevreferanse()), brevStatus.getSystemID());
+			log.warn("Bruker har ikke tilgang til brev med brevreferanse={}, systemID={}", sanitizeUnsafeChar(brevStatus.getBrevreferanse()), brevStatus.getSystemID());
 		}
 
 		return result;
@@ -249,23 +242,7 @@ public class DefaultBrevlagerService implements BrevlagerService {
 	}
 
 	private BrevVO hentDokumentFraJOARK(String journalpostId) throws BrevTechnicalException {
-		BrevVO result = joarkService.hentDokument(journalpostId);
-
-		if (LAGER_STATUS_A.equals(result.getLagerStatus()) && result.getContentType().equals(RTF.getContentType())) {
-			log.warn("Forsøkt hentet avbrutt brev med journalpostId={} med contentType=RTF. " +
-					"Returnerer i stedet pdf med forklaring på hvorfor RTF til PDF konvertering ikke fungerer lenger", sanitizeUnsafeChar(result.getBrevreferanse()));
-			return statiskPdfMedForklaring(journalpostId);
-		}
-		return result;
-	}
-
-	private BrevVO statiskPdfMedForklaring(String brevreferanse) throws BrevTechnicalException {
-		BrevVO brevVO = new BrevVO();
-		brevVO.setBrevreferanse(brevreferanse);
-		brevVO.setLagerStatus(LAGER_STATUS_A);
-		brevVO.setContentType(PDF.getContentType());
-		brevVO.setBrevdata(PDF_MED_FORKLARING);
-		return brevVO;
+		return dokarkivService.hentDokument(journalpostId);
 	}
 
 	private void translateContentTypeDocxToDb2(BrevVO brevVO) {

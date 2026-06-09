@@ -1,0 +1,23 @@
+{
+  "data": {
+    "journalpost": {
+      "journalpostId": "100000000",
+      "journalstatus": "FERDIGSTILT",
+      "dokumenter": [
+        {
+          "dokumentInfoId": "100000000",
+          "dokumentvarianter": [
+            {
+              "variantformat": "ARKIV",
+              "filtype": "PDF"
+            },
+            {
+              "variantformat": "PRODUKSJON",
+              "filtype": "RTF"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

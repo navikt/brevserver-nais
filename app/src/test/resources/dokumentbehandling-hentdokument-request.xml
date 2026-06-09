@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soapenv:Envelope
+		xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+		xmlns:tns="http://dokumentbehandling.brevogarkiv.tjenester.nav.no/">
+	<soapenv:Header/>
+	<soapenv:Body>
+		<tns:hentDokument>
+			<request>
+				<brevreferanse>100000000</brevreferanse>
+				<systemId>PE2</systemId>
+				<token>token</token>
+			</request>
+		</tns:hentDokument>
+	</soapenv:Body>
+</soapenv:Envelope>
