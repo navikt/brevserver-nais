@@ -15,20 +15,7 @@ import org.springframework.validation.annotation.Validated;
 public class FagarkivProperties {
 
 	@Valid
-	private final Endpoints endpoints = new Endpoints();
-	@Valid
 	private final Serviceuser serviceuser = new Serviceuser();
-
-	@Data
-	@Validated
-	public static class Endpoints {
-		/**
-		 * URL til oppslagstjenesten i fagarkivet.
-		 */
-		@NotBlank
-		private String journal;
-
-	}
 
 	@Data
 	@Validated

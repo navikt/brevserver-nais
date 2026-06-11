@@ -1,0 +1,7 @@
+{
+  "timestamp": "2026-06-10T07:25:47.152Z",
+  "status": 404,
+  "error": "Not Found",
+  "message": "Journalpost med journalpostId=100000000, dokumentInfoId=100000000 ikke funnet i Joark.",
+  "path": "/rest/hentdokument/100000000/100000000/PRODUKSJON"
+}

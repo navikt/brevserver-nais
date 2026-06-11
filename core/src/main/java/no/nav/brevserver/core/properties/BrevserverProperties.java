@@ -45,7 +45,11 @@ public class BrevserverProperties {
 	@Data
 	public static class Endpoints {
 		@NotNull
+		@Valid
 		private EntraEndpoint dokarkiv;
+		@NotNull
+		@Valid
+		private EntraEndpoint saf;
 	}
 
 	@Data

@@ -6,7 +6,6 @@ import no.nav.brevserver.core.properties.BrevserverProperties;
 import no.nav.brevserver.core.properties.FagarkivProperties;
 import no.nav.brevserver.core.properties.MqGatewayProperties;
 import no.nav.brevserver.core.properties.NaisProperties;
-import no.nav.brevserver.joark.SoapConsumerConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -24,8 +23,7 @@ import org.springframework.resilience.annotation.EnableResilientMethods;
 })
 @Import({
 		CoreConfig.class,
-		JmsConfig.class,
-		SoapConsumerConfiguration.class
+		JmsConfig.class
 })
 @Configuration
 public class Appconfig {

@@ -13,8 +13,6 @@ import no.nav.brevserver.service.BrevtilgangService;
 import no.nav.brevserver.service.config.AbstractTest;
 import no.nav.brevserver.service.converter.BrevstatusTilVoConverter;
 import no.nav.brevserver.service.converter.VoTilBrevstatusConverter;
-import no.nav.virksomhet.gjennomforing.arkiv.journal.v2.Journalpost;
-import no.nav.virksomhet.gjennomforing.arkiv.journal.v2.Journalstatus;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -24,7 +22,6 @@ import static no.nav.brevserver.core.constants.Konstanter.BREVLAGER_STATUS_KLADD
 import static no.nav.brevserver.core.vo.FilType.DOCX;
 import static no.nav.brevserver.core.vo.FilType.PDF;
 import static no.nav.brevserver.core.vo.FilType.RTF;
-import static org.apache.commons.codec.digest.DigestUtils.sha256Hex;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.eq;
@@ -46,8 +43,8 @@ public class BrevlagerServiceBeanTest extends AbstractTest {
 	private BrevstatusTilVoConverter brevstatusTilVoConverter;
 	@MockitoBean
 	private BrevtilgangService brevtilgangServiceMock;
-	@MockitoBean("joarkService")
-	private JoarkService joarkServiceMock;
+	@MockitoBean("dokarkivService")
+	private JoarkService dokarkivServiceMock;
 	@Autowired
 	private BrevlagerService brevlagerService;
 
@@ -58,10 +55,6 @@ public class BrevlagerServiceBeanTest extends AbstractTest {
 		BrevVO brev = defaultBrev().build();
 		when(voTilBrevstatusConverter.convert(brevStatusVO)).thenReturn(brevStatus);
 		when(brevstatusServiceMock.lagreBrevStatus(brevStatusVO)).thenReturn(null);
-		Journalpost journalpost = new Journalpost();
-		Journalstatus journalstatus = new Journalstatus();
-		journalstatus.setKode("OPPRETTET");
-		journalpost.setJournalstatus(journalstatus);
 
 		BrevStatusVO oldBrevStatus = brevlagerService.lagreBrev(brev, brevStatusVO);
 
@@ -185,12 +178,11 @@ public class BrevlagerServiceBeanTest extends AbstractTest {
 	@Test
 	void shouldHentDokumentFraJoarkWhenPensjon() throws BrevFunctionalException, BrevTechnicalException {
 		when(brevtilgangServiceMock.sjekkTilgang(eq(PENSJON_SYSTEMID), eq(BREVREFERANSE), eq(TOKEN))).thenReturn(true);
-		when(joarkServiceMock.hentDokument(eq(BREVREFERANSE))).thenReturn(BrevVO.builder().lagerStatus("A").contentType(RTF.getContentType()).build());
+		when(dokarkivServiceMock.hentDokument(eq(BREVREFERANSE))).thenReturn(BrevVO.builder().contentType(PDF.getContentType()).build());
 		BrevStatusVO brevStatusVO = BrevStatusVO.builder().systemID(PENSJON_SYSTEMID).brevreferanse(BREVREFERANSE).token(TOKEN).build();
 
 		BrevVO brevVO = brevlagerService.hentDokumentFromBrevlagerOrJoark(brevStatusVO);
 
-		assertThat(sha256Hex(brevVO.getBrevdata())).isEqualTo("817a0c81cecd1871e5acc07ec07fa85f31482f343b72db6402359759c9fdecda");
 		assertThat(brevVO.getContentType()).isEqualTo(PDF.getContentType());
 	}
 

@@ -88,7 +88,7 @@ public class DefaultHentDokumentServiceTest {
 
 		assertThatExceptionOfType(BrevFinnesIkkeException.class)
 				.isThrownBy(() -> dokumentbehandlingProvider.hentDokument(request))
-				.withMessage("Brevserver fant ikke dokumentet med brevreferanse: " + BREVREFERANSE);
+				.withMessage("Finner ikke brev med journalpostId " + BREVREFERANSE);
 	}
 
 	@Test

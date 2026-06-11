@@ -1,0 +1,19 @@
+{
+  "data": {
+    "journalpost": {
+      "journalpostId": "100000000",
+      "journalstatus": "UNDER_ARBEID",
+      "dokumenter": [
+        {
+          "dokumentInfoId": "100000000",
+          "dokumentvarianter": [
+            {
+              "variantformat": "PRODUKSJON",
+              "filtype": "RTF"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

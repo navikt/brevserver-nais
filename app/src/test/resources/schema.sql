@@ -1,0 +1,1 @@
+insert into t_brevtilgang(id, token, systemid, brevreferanse, timestamp) values(1, 'token', 'PE2', '100000000', current_timestamp);
