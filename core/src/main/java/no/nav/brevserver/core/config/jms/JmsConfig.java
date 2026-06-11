@@ -6,7 +6,7 @@ import com.ibm.msg.client.jakarta.jms.JmsConstants;
 import jakarta.jms.ConnectionFactory;
 import jakarta.jms.JMSException;
 import jakarta.jms.Queue;
-import no.nav.brevserver.core.properties.FagarkivProperties;
+import no.nav.brevserver.core.properties.BrevserverProperties;
 import no.nav.brevserver.core.properties.MqGatewayProperties;
 import no.nav.brevserver.core.properties.NaisProperties;
 import org.messaginghub.pooled.jms.JmsPoolConnectionFactory;
@@ -30,7 +30,7 @@ public class JmsConfig {
 
 	@Bean
 	public ConnectionFactory wmqConnectionFactory(MqGatewayProperties mqGatewayAlias,
-												  FagarkivProperties fagarkivProperties,
+												  BrevserverProperties brevserverProperties,
 												  NaisProperties naisProperties) throws JMSException {
 		MQConnectionFactory connectionFactory = new MQConnectionFactory();
 		connectionFactory.setHostName(mqGatewayAlias.getHostname());
@@ -49,8 +49,8 @@ public class JmsConfig {
 
 		UserCredentialsConnectionFactoryAdapter adapter = new UserCredentialsConnectionFactoryAdapter();
 		adapter.setTargetConnectionFactory(connectionFactory);
-		adapter.setUsername(fagarkivProperties.getServiceuser().getUsername());
-		adapter.setPassword(fagarkivProperties.getServiceuser().getPassword());
+		adapter.setUsername(brevserverProperties.getServiceuser().getUsername());
+		adapter.setPassword(brevserverProperties.getServiceuser().getPassword());
 
 		JmsPoolConnectionFactory pooledFactory = new JmsPoolConnectionFactory();
 		pooledFactory.setConnectionFactory(adapter);

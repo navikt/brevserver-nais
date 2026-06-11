@@ -1,18 +1,15 @@
 package no.nav.brevserver.core.domain.entities;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import static no.nav.brevserver.core.domain.entities.id.BrevreferanseSystemCompositeId.SYSTEMID_LENGTH;
 
 @Entity
 @Table(name = "T_BREVSYSTILGANG")
@@ -23,9 +20,9 @@ import jakarta.persistence.Table;
 public class BrevSystemTilgang {
 
 	@Id
-	@Column(name = "systemid", nullable = false)
+	@Column(name = "systemid", length = SYSTEMID_LENGTH, nullable = false)
 	private String sysId;
 
-	@Column(name = "systempassord")
+	@Column(name = "systempassord", length = 32, nullable = false)
 	private String pwd;
 }

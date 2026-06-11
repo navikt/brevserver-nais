@@ -1,14 +1,12 @@
 package no.nav.brevserver.ws.dokumentbehandling;
 
+import lombok.extern.slf4j.Slf4j;
 import no.nav.brevserver.core.exception.BrevException;
 import no.nav.brevserver.core.exception.BrevFinnesIkkeException;
 import no.nav.brevserver.core.exception.BrevFunctionalException;
-import no.nav.brevserver.core.exception.BrevSecurityException;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
 import no.nav.brevserver.core.exception.BrevserverFunctionalException;
 import no.nav.brevserver.core.exception.BrevserverTechnicalException;
-import no.nav.brevserver.nais.DokumentbehandlingProvider;
-import no.nav.brevserver.service.loggmottak.Log;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.AvbrytDokument;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.AvbrytDokumentRequest;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.DokumentbehandlingPortType;
@@ -31,15 +29,12 @@ import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 
 import static no.nav.brevserver.core.mdc.MDCConstants.MDC_CALL_ID;
 
-/**
- * Implementation of the JAX-WS generated service interface DokumentbehandlingPortType.
- * Delegates to DokumentbehandlingProvider at the provider layer.
- */
+/// Implementation of the JAX-WS generated service interface DokumentbehandlingPortType.
+/// Delegates to DokumentbehandlingProvider at the provider layer.
+@Slf4j
 @Endpoint
 public class DokumentbehandlingEndpoint implements DokumentbehandlingPortType {
 
-	private static final Log log = new Log(DokumentbehandlingEndpoint.class);
-	private static final String EXCEPTION_MESSAGE = "SOAPkall feilet";
 	private static final String NAMESPACE_URI = "http://dokumentbehandling.brevogarkiv.tjenester.nav.no/";
 	private final ObjectFactory objectFactory;
 
@@ -68,29 +63,23 @@ public class DokumentbehandlingEndpoint implements DokumentbehandlingPortType {
 		try {
 			return dokumentbehandlingProvider.hentDokument(hentDokumentRequest);
 		} catch (BrevFinnesIkkeException e) {
-			log.warning("hentDokument finner ikke brev", EXCEPTION_MESSAGE, e);
+			log.info("hentDokument finner ikke brev med brevreferanse={}, systemId={}",
+					hentDokumentRequest.getBrevreferanse(), hentDokumentRequest.getSystemId(), e);
 			throw new RuntimeException(e.getMessage());
-		} catch (BrevserverFunctionalException e) {
-			log.warning("hentDokument funksjonell feil", EXCEPTION_MESSAGE, e);
+		} catch (BrevserverFunctionalException | BrevFunctionalException e) {
+			log.warn("hentDokument funksjonell feil for brevreferanse={}, systemId={}",
+					hentDokumentRequest.getBrevreferanse(), hentDokumentRequest.getSystemId(), e);
 			throw new RuntimeException(e.getMessage());
-		} catch (BrevserverTechnicalException e) {
-			log.error("hentDokument teknisk feil", EXCEPTION_MESSAGE, e);
+		} catch (BrevserverTechnicalException | BrevTechnicalException e) {
+			log.error("hentDokument teknisk feil for brevreferanse={}, systemId={}",
+					hentDokumentRequest.getBrevreferanse(), hentDokumentRequest.getSystemId(), e);
 			throw new RuntimeException(e.getMessage());
 		} catch (RuntimeException e) {
-			if (e.getCause() != null && e.getCause() instanceof BrevSecurityException) {
-				throw e;
-			}
-			log.error("hentDokument", EXCEPTION_MESSAGE, e);
+			log.error("hentDokument teknisk feil for brevreferanse={}, systemId={}",
+					hentDokumentRequest.getBrevreferanse(), hentDokumentRequest.getSystemId(), e);
 			throw e;
-		} catch (BrevTechnicalException e) {
-			log.warning("hentDokument feilet teknisk med feilmelding: ", EXCEPTION_MESSAGE, e);
-			throw new RuntimeException(e.getMessage());
-		} catch (BrevFunctionalException e) {
-			log.error("hentDokument feilet funksjonelt med feilmelding: ", EXCEPTION_MESSAGE, e);
-			throw new RuntimeException(e.getMessage());
 		}
 	}
-
 
 	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "lagreDokument")
 	@ResponsePayload
@@ -108,10 +97,12 @@ public class DokumentbehandlingEndpoint implements DokumentbehandlingPortType {
 		try {
 			dokumentbehandlingProvider.lagreDokument(lagreDokumentRequest);
 		} catch (RuntimeException e) {
-			log.error("lagreDokument", EXCEPTION_MESSAGE, e);
+			log.error("lagreDokument feilet for brevreferanse={}, systemId={}",
+					lagreDokumentRequest.getBrevreferanse(), lagreDokumentRequest.getSystemId(), e);
 			throw e;
 		} catch (BrevException e) {
-			log.error("ferdigstillDokument", EXCEPTION_MESSAGE, e);
+			log.error("lagreDokument feilet for brevreferanse={}, systemId={}",
+					lagreDokumentRequest.getBrevreferanse(), lagreDokumentRequest.getSystemId(), e);
 			throw new RuntimeException(e.getMessage());
 		}
 	}
@@ -132,10 +123,12 @@ public class DokumentbehandlingEndpoint implements DokumentbehandlingPortType {
 		try {
 			dokumentbehandlingProvider.avbrytDokument(avbrytDokumentRequest);
 		} catch (RuntimeException e) {
-			log.error("avbrytDokument", EXCEPTION_MESSAGE, e);
+			log.error("avbrytDokument feilet for brevreferanse={}, systemId={}",
+					avbrytDokumentRequest.getBrevreferanse(), avbrytDokumentRequest.getSystemId(), e);
 			throw e;
 		} catch (BrevException e) {
-			log.error("ferdigstillDokument", EXCEPTION_MESSAGE, e);
+			log.error("avbrytDokument feilet for brevreferanse={}, systemId={}",
+					avbrytDokumentRequest.getBrevreferanse(), avbrytDokumentRequest.getSystemId(), e);
 			throw new RuntimeException(e.getMessage());
 		}
 	}
@@ -156,10 +149,12 @@ public class DokumentbehandlingEndpoint implements DokumentbehandlingPortType {
 		try {
 			dokumentbehandlingProvider.ferdigstillDokument(ferdigstillDokumentRequest);
 		} catch (RuntimeException e) {
-			log.error("ferdigstillDokument", EXCEPTION_MESSAGE, e);
+			log.error("ferdigstillDokument feilet for brevreferanse={}, systemId={}",
+					ferdigstillDokumentRequest.getBrevreferanse(), ferdigstillDokumentRequest.getSystemId(), e);
 			throw e;
 		} catch (BrevException e) {
-			log.error("ferdigstillDokument", EXCEPTION_MESSAGE, e);
+			log.error("ferdigstillDokument feilet for brevreferanse={}, systemId={}",
+					ferdigstillDokumentRequest.getBrevreferanse(), ferdigstillDokumentRequest.getSystemId(), e);
 			throw new RuntimeException(e.getMessage());
 		}
 	}

@@ -1,6 +1,5 @@
 package no.nav.brevserver.joark;
 
-import no.nav.brevserver.core.exception.BrevTechnicalException;
 import no.nav.brevserver.core.vo.BrevVO;
 
 public interface JoarkService {
@@ -13,9 +12,8 @@ public interface JoarkService {
 	 * @param brevreferanse
 	 * @param contentType
 	 * @param brevdata
-	 * @throws BrevTechnicalException
 	 */
-	void lagreDokument(String brevreferanse, String contentType, byte[] brevdata) throws BrevTechnicalException;
+	void lagreDokument(String brevreferanse, String contentType, byte[] brevdata);
 
 	/**
 	 * Updates the content of both the RTF and PDF file of Journalpost in Joark.
@@ -23,10 +21,8 @@ public interface JoarkService {
 	 * @param brevreferanse
 	 * @param redBrevVO
 	 * @param pdfBrevVO
-	 * @throws BrevTechnicalException
 	 */
-	void lagreFerdigstiltDokument(String brevreferanse, BrevVO redBrevVO, BrevVO pdfBrevVO)
-			throws BrevTechnicalException;
+	void lagreFerdigstiltDokument(String brevreferanse, BrevVO redBrevVO, BrevVO pdfBrevVO);
 
 	/**
 	 * Retrieves a Dokument from Joark. The Dokument is found by retrieving the Journalpost corresponding to 'brevreferanse' and
@@ -34,7 +30,6 @@ public interface JoarkService {
 	 *
 	 * @param brevreferanse The journalpostId on which to retrieve the Dokument from.
 	 * @return A BrevVO representing the Dokument.
-	 * @throws BrevTechnicalException If an exception occurs.
 	 */
-	BrevVO hentDokument(String brevreferanse) throws BrevTechnicalException;
+	BrevVO hentDokument(String brevreferanse);
 }

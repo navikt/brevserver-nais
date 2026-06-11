@@ -8,7 +8,6 @@ import no.nav.brevserver.consumer.saf.SafConsumer;
 import no.nav.brevserver.consumer.saf.SafDokument;
 import no.nav.brevserver.consumer.saf.SafJournalpost;
 import no.nav.brevserver.core.exception.BrevFinnesIkkeException;
-import no.nav.brevserver.core.exception.BrevTechnicalException;
 import no.nav.brevserver.core.exception.BrevserverTechnicalException;
 import no.nav.brevserver.core.vo.BrevVO;
 import org.jspecify.annotations.NonNull;
@@ -48,7 +47,7 @@ public class DokarkivServiceImpl implements JoarkService {
 	}
 
 	@Override
-	public void lagreDokument(String brevreferanse, String contentType, byte[] brevdata) throws BrevTechnicalException {
+	public void lagreDokument(String brevreferanse, String contentType, byte[] brevdata) {
 		settBrevdata(brevreferanse, contentType, brevdata);
 	}
 
@@ -65,7 +64,7 @@ public class DokarkivServiceImpl implements JoarkService {
 	}
 
 	@Override
-	public BrevVO hentDokument(String brevreferanse) throws BrevTechnicalException {
+	public BrevVO hentDokument(String brevreferanse) {
 		SafJournalpost safJournalpost = safConsumer.performQuery(graphQLRequest(brevreferanse));
 		if (JOURNALSTATUS_AVBRUTT.equals(safJournalpost.getJournalstatus())) {
 			return statiskPdfMedForklaring(brevreferanse);

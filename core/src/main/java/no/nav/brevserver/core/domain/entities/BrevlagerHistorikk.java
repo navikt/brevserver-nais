@@ -16,6 +16,9 @@ import lombok.Setter;
 
 import java.sql.Timestamp;
 
+import static no.nav.brevserver.core.domain.entities.id.BrevreferanseSystemCompositeId.BREVREFERANSE_LENGTH;
+import static no.nav.brevserver.core.domain.entities.id.BrevreferanseSystemCompositeId.SYSTEMID_LENGTH;
+
 @Entity
 @Table(name = "T_BREVLAGER_HISTORIKK")
 @Builder(toBuilder = true)
@@ -33,28 +36,28 @@ public class BrevlagerHistorikk {
 	@Column(name = "BREVLAGER_HISTORIK_ID", columnDefinition = "NUMBER(19,0)")
 	private Long id;
 
-	@Column(name = "BREVREFERANSE")
+	@Column(name = "BREVREFERANSE", length = BREVREFERANSE_LENGTH, nullable = false)
 	private String brevreferanse;
 
-	@Column(name = "SYSTEMID")
+	@Column(name = "SYSTEMID", length = SYSTEMID_LENGTH, nullable = false)
 	private String systemId;
 
-	@Column(name = "BRUKERID")
+	@Column(name = "BRUKERID", length = 18)
 	private String brukerId;
 
-	@Column(name = "STATUS")
+	@Column(name = "STATUS", length = 8, nullable = false)
 	private String status;
 
-	@Column(name = "CONTENTTYPE")
+	@Column(name = "CONTENTTYPE", length = 64)
 	private String contentType;
 
-	@Column(name = "BREVDATA")
+	@Column(name = "BREVDATA", nullable = false)
 	@Lob
 	private byte[] brevdata;
 
-	@Column(name = "VASKET")
+	@Column(name = "VASKET", nullable = false)
 	private Character vasket;
 
-	@Column(name = "TIMESTAMP")
+	@Column(name = "TIMESTAMP", nullable = false)
 	private Timestamp endret;
 }
