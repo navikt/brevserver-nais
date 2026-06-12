@@ -23,36 +23,12 @@ public class Log {
 		write(who, message, INFO);
 	}
 
-	public void debug(String who, String message) {
-		write(who, message, DEBUG);
-	}
-
-	public void debug(String who, String message, Exception e) {
-		write(who, message, DEBUG, e);
-	}
-
 	public void error(String who, String message) {
 		write(who, message, ERROR);
 	}
 
 	public void error(String who, String message, Exception e) {
 		write(who, message, ERROR, e);
-	}
-
-	public void warning(String who, String message) {
-		write(who, message, WARNING);
-	}
-
-	public void warning(String who, String message, Exception e) {
-		write(who, message, WARNING, e);
-	}
-
-	public void fatal(String who, String message) {
-		write(who, message, FATAL);
-	}
-
-	public void fatal(String who, String message, Exception e) {
-		write(who, message, FATAL, e);
 	}
 
 	public void write(String who, String message, int importance) {
@@ -88,7 +64,4 @@ public class Log {
 		}
 	}
 
-	public boolean isDebugEnabled() {
-		return log.isDebugEnabled();
-	}
 }

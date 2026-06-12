@@ -4,6 +4,7 @@ import no.nav.brevserver.core.domain.entities.Brevstatus;
 import no.nav.brevserver.core.domain.entities.id.BrevreferanseSystemCompositeId;
 import no.nav.brevserver.core.exception.BrevFunctionalException;
 import no.nav.brevserver.core.exception.BrevTechnicalException;
+import no.nav.brevserver.core.exception.BrevserverFunctionalException;
 import no.nav.brevserver.core.vo.BrevStatusVO;
 import no.nav.brevserver.core.vo.BrevVO;
 import no.nav.brevserver.joark.JoarkService;
@@ -101,7 +102,7 @@ public class BrevlagerServiceBeanTest extends AbstractTest {
 
 		brevlagerService.lagreBrev(brev, status);
 
-		assertThatExceptionOfType(BrevTechnicalException.class)
+		assertThatExceptionOfType(BrevserverFunctionalException.class)
 				.isThrownBy(() -> brevlagerService.lagreBrev(brev, status))
 				.withMessage("Brevet har status = 'FERDIG' og kan ikke endres");
 	}

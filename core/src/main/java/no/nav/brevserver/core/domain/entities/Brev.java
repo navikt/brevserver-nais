@@ -1,5 +1,10 @@
 package no.nav.brevserver.core.domain.entities;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Lob;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -7,11 +12,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import no.nav.brevserver.core.domain.entities.id.BrevreferanseSystemCompositeId;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Lob;
-import jakarta.persistence.Table;
 import java.sql.Timestamp;
 
 @Entity
@@ -26,19 +26,19 @@ public class Brev {
 	@EmbeddedId
 	private BrevreferanseSystemCompositeId id;
 
-	@Column(name = "STATUS")
+	@Column(name = "STATUS", length = 8, nullable = false)
 	private String status;
 
-	@Column(name = "CONTENTTYPE")
+	@Column(name = "CONTENTTYPE", length = 64)
 	private String contentType;
 
-	@Column(name = "BRUKERID")
+	@Column(name = "BRUKERID", length = 18)
 	private String brukerId;
 
-	@Column(name = "BREVDATA")
+	@Column(name = "BREVDATA", nullable = false)
 	@Lob
 	private byte[] brevdata;
 
-	@Column(name = "TIMESTAMP")
+	@Column(name = "TIMESTAMP", nullable = false)
 	private Timestamp endret;
 }

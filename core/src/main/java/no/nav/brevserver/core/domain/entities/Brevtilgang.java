@@ -14,6 +14,9 @@ import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
 
+import static no.nav.brevserver.core.domain.entities.id.BrevreferanseSystemCompositeId.BREVREFERANSE_LENGTH;
+import static no.nav.brevserver.core.domain.entities.id.BrevreferanseSystemCompositeId.SYSTEMID_LENGTH;
+
 @Entity
 @Table(name = "T_BREVTILGANG")
 @Builder(toBuilder = true)
@@ -30,13 +33,13 @@ public class Brevtilgang {
 	@Column(name = "ID", nullable = false)
 	private Long journalpostId;
 
- 	@Column(name = "TOKEN")
+ 	@Column(name = "TOKEN", length = 64)
 	private String token;
 
-	@Column(name = "SYSTEMID")
+	@Column(name = "SYSTEMID", length = SYSTEMID_LENGTH)
 	private String systemId;
 
-	@Column(name = "BREVREFERANSE")
+	@Column(name = "BREVREFERANSE", length = BREVREFERANSE_LENGTH)
 	private String brevreferanse;
 
 	@Column(name = "TIMESTAMP")

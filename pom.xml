@@ -35,6 +35,7 @@
 		<jakarta.jws-api.version>3.0.0</jakarta.jws-api.version>
 		<patrodyne-basicjaxb.version>3.0.0</patrodyne-basicjaxb.version>
 		<wiremock-spring-boot.version>4.2.1</wiremock-spring-boot.version>
+		<datasource-proxy-spring-boot-starter.version>2.0.0</datasource-proxy-spring-boot-starter.version>
 
 		<!-- Plugins -->
 		<maven-toolchains-plugin.version>3.2.0</maven-toolchains-plugin.version>
@@ -148,6 +149,12 @@
 				<groupId>org.wiremock.integrations</groupId>
 				<artifactId>wiremock-spring-boot</artifactId>
 				<version>${wiremock-spring-boot.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.github.gavlyukovskiy</groupId>
+				<artifactId>datasource-proxy-spring-boot-starter</artifactId>
+				<version>${datasource-proxy-spring-boot-starter.version}</version>
 				<scope>test</scope>
 			</dependency>
 		</dependencies>
