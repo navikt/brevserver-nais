@@ -16,14 +16,13 @@ import no.nav.brevserver.core.utils.xmlHandlers.XMLService;
 import no.nav.brevserver.core.vo.BrevStatusVO;
 import no.nav.brevserver.core.vo.BrevVO;
 import no.nav.brevserver.core.vo.KvitteringVO;
-import no.nav.brevserver.joark.JoarkService;
 import no.nav.brevserver.service.BrevlagerService;
 import no.nav.brevserver.service.BrevstatusService;
 import no.nav.brevserver.service.BrevtilgangService;
 import no.nav.brevserver.service.converter.BrevTilVoConverter;
 import no.nav.brevserver.service.converter.VoTilBrevConverter;
+import no.nav.brevserver.service.joark.JoarkOrchestratorService;
 import no.nav.brevserver.service.queue.KvitteringService;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,7 +44,7 @@ import static no.nav.brevserver.core.utils.SafeLoggingUtil.sanitizeUnsafeChar;
 @Slf4j
 public class DefaultBrevlagerService implements BrevlagerService {
 
-	private final JoarkService dokarkivService;
+	private final JoarkOrchestratorService joarkOrchestratorService;
 	private final BrevstatusService brevstatusService;
 	private final BrevRepository brevRepository;
 	private final DefaultBrevlagerHistorikkService defaultBrevlagerHistorikkService;
@@ -54,7 +53,7 @@ public class DefaultBrevlagerService implements BrevlagerService {
 	private final BrevtilgangService brevtilgangService;
 	private final KvitteringService kvitteringService;
 
-	public DefaultBrevlagerService(@Qualifier("dokarkivService") JoarkService dokarkivService,
+	public DefaultBrevlagerService(JoarkOrchestratorService joarkOrchestratorService,
 								   BrevTilVoConverter brevTilVoConverter,
 								   BrevstatusService brevstatusService,
 								   BrevRepository brevRepository,
@@ -62,7 +61,7 @@ public class DefaultBrevlagerService implements BrevlagerService {
 								   DefaultBrevlagerHistorikkService defaultBrevlagerHistorikkService,
 								   BrevtilgangService brevtilgangService,
 								   KvitteringService kvitteringService) {
-		this.dokarkivService = dokarkivService;
+		this.joarkOrchestratorService = joarkOrchestratorService;
 		this.brevRepository = brevRepository;
 		this.brevTilVoConverter = brevTilVoConverter;
 		this.defaultBrevlagerHistorikkService = defaultBrevlagerHistorikkService;
@@ -94,13 +93,13 @@ public class DefaultBrevlagerService implements BrevlagerService {
 			BrevStatusVO gmlStatus = brevstatusService.lagreBrevStatus(brevstatus);
 
 			if (brevstatus.getSystemID() != null && brevstatus.getSystemID().startsWith(PE.toString())) {
-				dokarkivService.lagreDokument(brevstatus.getBrevreferanse(), brev.getContentType(), brev.getBrevdata());
+				joarkOrchestratorService.lagreDokument(brevstatus.getBrevreferanse(), brev.getContentType(), brev.getBrevdata());
 			} else {
 				brevRepository.save(voTilBrevConverter.convert(brev));
 			}
 
 			return gmlStatus;
-		} catch(BrevserverFunctionalException e) {
+		} catch (BrevserverFunctionalException e) {
 			throw e;
 		} catch (RuntimeException e) {
 			throw new BrevTechnicalException(DATABASE_IKKE_TILGJENGELIG, e);
@@ -119,7 +118,7 @@ public class DefaultBrevlagerService implements BrevlagerService {
 			pdfBrev.setLagerStatus(BREVLAGER_STATUS_FERDIG);
 
 			if (brevStatus.getSystemID().startsWith(PE.toString())) {
-				dokarkivService.lagreFerdigstiltDokument(brevStatus.getBrevreferanse(), redBrev, pdfBrev);
+				joarkOrchestratorService.lagreFerdigstiltDokument(brevStatus.getBrevreferanse(), redBrev, pdfBrev);
 			} else {
 				brevferdigstillBrevlagerDokument(brevStatus, redBrev, pdfBrev);
 			}
@@ -202,7 +201,7 @@ public class DefaultBrevlagerService implements BrevlagerService {
 
 		verifyChangeRequest(brevStatusVO);
 		if (brevStatusVO.getSystemID().startsWith(PE.toString())) {
-			dokarkivService.lagreDokument(brev.getBrevreferanse(), brev.getContentType(), brev.getBrevdata());
+			joarkOrchestratorService.lagreDokument(brev.getBrevreferanse(), brev.getContentType(), brev.getBrevdata());
 		} else {
 			lagreBrev(brev, brevStatusVO);
 		}
@@ -243,7 +242,7 @@ public class DefaultBrevlagerService implements BrevlagerService {
 	}
 
 	private BrevVO hentDokumentFraJOARK(String journalpostId) {
-		return dokarkivService.hentDokument(journalpostId);
+		return joarkOrchestratorService.hentDokument(journalpostId);
 	}
 
 	protected void checkRequiredFields(String systemId, String brevreferanse, String token) throws BrevTechnicalException {

@@ -12,11 +12,10 @@ import no.nav.brevserver.core.vo.BrevStatusVO;
 import no.nav.brevserver.core.vo.FilType;
 import no.nav.brevserver.core.vo.KvitteringVO;
 import no.nav.brevserver.core.vo.MessageVO;
-import no.nav.brevserver.joark.JoarkService;
 import no.nav.brevserver.service.BrevstatusService;
+import no.nav.brevserver.service.joark.JoarkOrchestratorService;
 import org.apache.camel.Exchange;
 import org.apache.camel.Handler;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import static no.nav.brevserver.core.utils.ExchangeUtils.SendToMode.GI_TILBAKEMELDING;
@@ -27,13 +26,12 @@ import static no.nav.brevserver.core.utils.ExchangeUtils.setBodyAndReturnQueueWi
 public class PeArkiverBrevService {
 
 	private final BrevstatusService brevstatusService;
-	private final JoarkService dokarkivService;
+	private final JoarkOrchestratorService joarkOrchestratorService;
 
-	public PeArkiverBrevService(
-			BrevstatusService brevstatusService,
-			@Qualifier("dokarkivService") JoarkService dokarkivService) {
+	public PeArkiverBrevService(BrevstatusService brevstatusService,
+								JoarkOrchestratorService joarkOrchestratorService) {
 		this.brevstatusService = brevstatusService;
-		this.dokarkivService = dokarkivService;
+		this.joarkOrchestratorService = joarkOrchestratorService;
 	}
 
 	@SuppressWarnings("unused")
@@ -43,7 +41,7 @@ public class PeArkiverBrevService {
 		MessageVO messageVo = ExchangeUtils.getMessageVoFromExchange(exchange);
 		//Marshall xml'en til businessobjekt
 		KvitteringVO kvittering = generateKvittering(messageVo);
-		log.info("Mottat kvittering for brevreferanse: " + kvittering.getBrevreferanse());
+		log.info("Mottatt kvittering for brevreferanse={}, systemId={}", kvittering.getBrevreferanse(), kvittering.getSystemID());
 
 		// Sjekk om brevet finnes, hent status
 		BrevStatusVO brevStatusVo = brevstatusService.hentBrevStatus(kvittering.getBrevreferanse(), kvittering.getSystemID());
@@ -83,7 +81,7 @@ public class PeArkiverBrevService {
 
 			// Alt gikk bra, lagre i JOARK.
 		} else {
-			dokarkivService.lagreDokument(kvittering.getBrevreferanse(), kvittering.getContentType(), kvittering.getBrevdata());
+			joarkOrchestratorService.lagreDokument(kvittering.getBrevreferanse(), kvittering.getContentType(), kvittering.getBrevdata());
 
 			if (FilType.PDF.getContentType().equals(kvittering.getContentType())) {
 				kvittering.setLagerStatus(Konstanter.BREVLAGER_STATUS_FERDIG);

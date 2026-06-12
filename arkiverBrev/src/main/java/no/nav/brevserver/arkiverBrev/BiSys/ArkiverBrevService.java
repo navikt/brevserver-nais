@@ -43,13 +43,14 @@ public class ArkiverBrevService {
 		this.kvitteringService = kvitteringService;
 	}
 
+	@SuppressWarnings("unused")
 	@Handler
 	public void execute(Exchange exchange) throws BrevException {
 		//Konverter Exchange til messageVo
 		MessageVO messageVo = ExchangeUtils.getMessageVoFromExchange(exchange);
 		//Marshall xml'en til businessobjekt
 		KvitteringVO kvittering = generateKvittering(messageVo);
-		log.info("Mottat kvittering for brevreferanse: " + kvittering.getBrevreferanse());
+		log.info("Mottat kvittering for brevreferanse={}, systemId={}", kvittering.getBrevreferanse(), kvittering.getSystemID());
 
 		if (kvittering == null) {
 			throw new BrevFunctionalException("Kvittering er null");
@@ -106,7 +107,7 @@ public class ArkiverBrevService {
 			}
 			// Lagre i Brevlageret
 			brevlagerService.lagreBrev(kvittering, brevStatusVo);
-			log.info("Brev med brevreferanse=" + brevStatusVo.getBrevreferanse() + " er arkivert i Brevlageret");
+			log.info("Brev med brevreferanse={}, systemId={} er arkivert i Brevlageret", brevStatusVo.getBrevreferanse(), brevStatusVo.getSystemID());
 		}
 
 		kvitteringService.sendKvitteringBiMedCorrelationID(createReturKvittering(brevStatusVo, kvittering), brevStatusVo.getReturKoe(), exchange);
