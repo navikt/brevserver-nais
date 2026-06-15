@@ -4,7 +4,7 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.slf4j.MDC;
 
-import static no.nav.brevserver.core.mdc.MDCConstants.MDC_CALL_ID;
+import static no.nav.brevserver.core.constants.MDCConstants.MDC_CALL_ID;
 
 
 public class MdcSetterProcessor implements Processor {

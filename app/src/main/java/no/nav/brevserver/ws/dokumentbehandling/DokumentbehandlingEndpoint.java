@@ -27,7 +27,7 @@ import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 
-import static no.nav.brevserver.core.mdc.MDCConstants.MDC_CALL_ID;
+import static no.nav.brevserver.core.constants.MDCConstants.MDC_CALL_ID;
 
 /// Implementation of the JAX-WS generated service interface DokumentbehandlingPortType.
 /// Delegates to DokumentbehandlingProvider at the provider layer.

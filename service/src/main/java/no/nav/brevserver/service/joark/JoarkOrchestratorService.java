@@ -1,8 +1,8 @@
-package no.nav.brevserver.joark;
+package no.nav.brevserver.service.joark;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.brevserver.consumer.DokarkivConsumer;
-import no.nav.brevserver.consumer.SettBrevdataResponse;
+import no.nav.brevserver.consumer.dokarkiv.DokarkivConsumer;
+import no.nav.brevserver.consumer.dokarkiv.SettBrevdataResponse;
 import no.nav.brevserver.consumer.saf.GraphQLRequest;
 import no.nav.brevserver.consumer.saf.SafConsumer;
 import no.nav.brevserver.consumer.saf.SafDokument;
@@ -11,7 +11,6 @@ import no.nav.brevserver.core.exception.BrevFinnesIkkeException;
 import no.nav.brevserver.core.exception.BrevserverTechnicalException;
 import no.nav.brevserver.core.vo.BrevVO;
 import org.jspecify.annotations.NonNull;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -25,10 +24,9 @@ import java.util.stream.Collectors;
 import static java.util.Collections.singletonMap;
 import static no.nav.brevserver.core.vo.FilType.PDF;
 
-@Qualifier("dokarkivService")
-@Service
 @Slf4j
-public class DokarkivServiceImpl implements JoarkService {
+@Service
+public class JoarkOrchestratorService {
 	private static final List<String> JOURNALFOERT_VARIANT_FORMAT_PRIORITET = List.of("SLADDET", "ARKIV");
 	private static final String JOURNALSTATUS_AVBRUTT = "AVBRUTT";
 	private static final String JOURNALSTATUS_UNDER_ARBEID = "UNDER_ARBEID";
@@ -39,19 +37,17 @@ public class DokarkivServiceImpl implements JoarkService {
 	private final byte[] PDF_MED_FORKLARING;
 
 
-	public DokarkivServiceImpl(SafConsumer safConsumer,
-							   DokarkivConsumer dokarkivConsumer) throws IOException {
-		PDF_MED_FORKLARING = new ClassPathResource("/static/rtf-konvertering-sanert-forklaring.pdf").getInputStream().readAllBytes();
+	public JoarkOrchestratorService(SafConsumer safConsumer,
+									DokarkivConsumer dokarkivConsumer) throws IOException {
+		PDF_MED_FORKLARING = new ClassPathResource("/static/rtf-konvertering-avviklet-forklaring.pdf").getInputStream().readAllBytes();
 		this.safConsumer = safConsumer;
 		this.dokarkivConsumer = dokarkivConsumer;
 	}
 
-	@Override
 	public void lagreDokument(String brevreferanse, String contentType, byte[] brevdata) {
 		settBrevdata(brevreferanse, contentType, brevdata);
 	}
 
-	@Override
 	public void lagreFerdigstiltDokument(String brevreferanse, BrevVO redBrevVO, BrevVO pdfBrevVO) {
 		settBrevdata(brevreferanse, redBrevVO.getContentType(), redBrevVO.getBrevdata());
 		settBrevdata(brevreferanse, pdfBrevVO.getContentType(), pdfBrevVO.getBrevdata());
@@ -63,7 +59,6 @@ public class DokarkivServiceImpl implements JoarkService {
 				brevreferanse, settBrevdataResponse.filUuid(), contentType, settBrevdataResponse.filstoerrelse());
 	}
 
-	@Override
 	public BrevVO hentDokument(String brevreferanse) {
 		SafJournalpost safJournalpost = safConsumer.performQuery(graphQLRequest(brevreferanse));
 		if (JOURNALSTATUS_AVBRUTT.equals(safJournalpost.getJournalstatus())) {

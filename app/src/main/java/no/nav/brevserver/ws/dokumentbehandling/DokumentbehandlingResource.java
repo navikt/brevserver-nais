@@ -6,7 +6,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.brevserver.core.exception.BrevException;
 import no.nav.brevserver.core.exception.BrevFinnesAlleredeException;
-import no.nav.brevserver.core.mdc.MDCConstants;
 import no.nav.security.token.support.core.api.Protected;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.AvbrytDokumentRequest;
 import no.nav.tjenester.brevogarkiv.dokumentbehandling.FerdigstillDokumentRequest;
@@ -28,6 +27,7 @@ import java.io.InputStream;
 import java.util.UUID;
 
 import static no.nav.brevserver.core.constants.MDCConstants.BREVREFERANSE_KEY;
+import static no.nav.brevserver.core.constants.MDCConstants.MDC_CALL_ID;
 import static no.nav.brevserver.core.constants.MDCConstants.NAV_CALL_ID;
 import static no.nav.brevserver.core.constants.MDCConstants.SYSTEMID_KEY;
 import static no.nav.brevserver.core.constants.MDCConstants.X_CORRELATION_ID;
@@ -130,25 +130,25 @@ public class DokumentbehandlingResource {
 			HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 			final String navCallId = request.getHeader(NAV_CALL_ID);
 			if (isNotBlank(navCallId)) {
-				MDC.put(MDCConstants.MDC_CALL_ID, navCallId);
+				MDC.put(MDC_CALL_ID, navCallId);
 				return;
 			}
 
 			final String xCorrelationId = request.getHeader(X_CORRELATION_ID);
 			if (isNotBlank(xCorrelationId)) {
-				MDC.put(MDCConstants.MDC_CALL_ID, xCorrelationId);
+				MDC.put(MDC_CALL_ID, xCorrelationId);
 				return;
 			}
 
 			final String callIdHeader = request.getHeader("callId");
 			if (isNotBlank(callIdHeader)) {
-				MDC.put(MDCConstants.MDC_CALL_ID, callIdHeader);
+				MDC.put(MDC_CALL_ID, callIdHeader);
 				return;
 			}
 		} catch (Exception e) {
 			//noop
 		}
 		// Fallback
-		MDC.put(MDCConstants.MDC_CALL_ID, UUID.randomUUID().toString());
+		MDC.put(MDC_CALL_ID, UUID.randomUUID().toString());
 	}
 }

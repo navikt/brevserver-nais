@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Import;
 @EnableJwtTokenValidation
 public class BrevserverApplication {
 
-	public static void main(String[] args) {
+	static void main(String[] args) {
 		SpringApplication.run(BrevserverApplication.class, args);
 	}
 }

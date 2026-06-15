@@ -7,13 +7,13 @@ import no.nav.brevserver.core.exception.BrevTechnicalException;
 import no.nav.brevserver.core.exception.BrevserverFunctionalException;
 import no.nav.brevserver.core.vo.BrevStatusVO;
 import no.nav.brevserver.core.vo.BrevVO;
-import no.nav.brevserver.joark.JoarkService;
 import no.nav.brevserver.service.BrevlagerService;
 import no.nav.brevserver.service.BrevstatusService;
 import no.nav.brevserver.service.BrevtilgangService;
 import no.nav.brevserver.service.config.AbstractTest;
 import no.nav.brevserver.service.converter.BrevstatusTilVoConverter;
 import no.nav.brevserver.service.converter.VoTilBrevstatusConverter;
+import no.nav.brevserver.service.joark.JoarkOrchestratorService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -44,8 +44,8 @@ public class BrevlagerServiceBeanTest extends AbstractTest {
 	private BrevstatusTilVoConverter brevstatusTilVoConverter;
 	@MockitoBean
 	private BrevtilgangService brevtilgangServiceMock;
-	@MockitoBean("dokarkivService")
-	private JoarkService dokarkivServiceMock;
+	@MockitoBean
+	private JoarkOrchestratorService joarkOrchestratorServiceMock;
 	@Autowired
 	private BrevlagerService brevlagerService;
 
@@ -179,7 +179,7 @@ public class BrevlagerServiceBeanTest extends AbstractTest {
 	@Test
 	void shouldHentDokumentFraJoarkWhenPensjon() throws BrevFunctionalException, BrevTechnicalException {
 		when(brevtilgangServiceMock.sjekkTilgang(eq(PENSJON_SYSTEMID), eq(BREVREFERANSE), eq(TOKEN))).thenReturn(true);
-		when(dokarkivServiceMock.hentDokument(eq(BREVREFERANSE))).thenReturn(BrevVO.builder().contentType(PDF.getContentType()).build());
+		when(joarkOrchestratorServiceMock.hentDokument(eq(BREVREFERANSE))).thenReturn(BrevVO.builder().contentType(PDF.getContentType()).build());
 		BrevStatusVO brevStatusVO = BrevStatusVO.builder().systemID(PENSJON_SYSTEMID).brevreferanse(BREVREFERANSE).token(TOKEN).build();
 
 		BrevVO brevVO = brevlagerService.hentDokumentFromBrevlagerOrJoark(brevStatusVO);

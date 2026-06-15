@@ -1,4 +1,4 @@
-package no.nav.brevserver.consumer;
+package no.nav.brevserver.consumer.dokarkiv;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.brevserver.core.exception.BrevserverTechnicalException;

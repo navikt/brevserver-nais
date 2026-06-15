@@ -69,17 +69,19 @@ public class BestillBrevService {
 			boolean ok = brevtilgangService.lagreTilgang(brevStatusVo.getSystemID(), brevStatusVo.getBrevreferanse(),
 					brevStatusVo.getToken());
 			if (ok) {
-				log.info("Tilgang gitt for systemID '{}' med brevref:{}", sanitizeUnsafeChar(brevStatusVo.getSystemID()), sanitizeUnsafeChar(brevStatusVo.getBrevreferanse()));
+				log.info("Tilgang gitt for brevreferanse={}, systemId={}",
+						sanitizeUnsafeChar(brevStatusVo.getBrevreferanse()), sanitizeUnsafeChar(brevStatusVo.getSystemID()));
 			} else {
-				log.warn("Kunne ikke gi tilgang til systemID='{}' med brevref={}",
-						sanitizeUnsafeChar(brevStatusVo.getSystemID()), sanitizeUnsafeChar(brevStatusVo.getBrevreferanse()));
+				log.warn("Kunne ikke gi tilgang til brevreferanse={}, systemId={}",
+						sanitizeUnsafeChar(brevStatusVo.getBrevreferanse()), sanitizeUnsafeChar(brevStatusVo.getSystemID()));
 			}
 			exchange.setProperty(SENDTOMODE, INGEN_TILBAKEMELDING);
 		} else {
 			// Bestill fra Dialogue
 			BrevStatusVO tmp = brevstatusService.hentBrevStatus(brevStatusVo.getBrevreferanse(), brevStatusVo.getSystemID());
 			if (tmp != null) {
-				log.warn("Brevet eksisterer fra før {}", sanitizeUnsafeChar(brevStatusVo.getBrevreferanse()));
+				log.warn("Brev med brevreferanse={}, systemId={} finnes fra før",
+						sanitizeUnsafeChar(brevStatusVo.getBrevreferanse()), sanitizeUnsafeChar(brevStatusVo.getSystemID()));
 				setBodyAndReturnQueueWithMode(
 						exchange,
 						lagFeilmelding(Konstanter.FEIL_BREV_EKSISTERER, brevStatusVo),
@@ -91,9 +93,10 @@ public class BestillBrevService {
 				brevStatusVo.setReturKoe(messageVo.getReplyQueueName());
 				brevstatusService.lagreBrevStatus(brevStatusVo);
 
-				log.info("Brev med brevref:{} er arkivert i Brevlageret", sanitizeUnsafeChar(brevStatusVo.getBrevreferanse()));
+				log.info("Brev med brevreferanse={}, systemId={} er arkivert i Brevlageret",
+						sanitizeUnsafeChar(brevStatusVo.getBrevreferanse()), sanitizeUnsafeChar(brevStatusVo.getSystemID()));
 				if (brevserverProperties.isLoggXml()) {
-					log.info("Bidrags-XML til Exstream:\n" + messageVo.getStringBody());
+					log.info("Bidrags-XML til Exstream:\n{}", messageVo.getStringBody());
 				}
 				setBodyAndMode(exchange,
 						messageVo.getStringBody(),

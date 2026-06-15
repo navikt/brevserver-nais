@@ -21,9 +21,6 @@ public final class Konstanter {
 	public static final String BREVSTATUS_FEIL = "FEIL";
 	public static final String BREVSTATUS_AVBRUTT = "AVBRUTT";
 
-	// Konstanter for ContentType
-	public static final String CONTENTTYPE_DOCX_SHORT = "application/msword.docx";
-
 	// Konstant for meldingene
 	public static final int MELDING_HEADER_LENGTH = 350;
 
