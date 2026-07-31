@@ -115,7 +115,7 @@ public class AbstractTest {
 	}
 
 	protected static void dokarkivStub(HttpStatus httpStatus, String bodyFile) {
-		stubFor(post(urlPathMatching("/dokarkiv/journalpostapi/v1/journalpost/(\\d+)/settBrevdata/(ARKIV|PRODUKSJON)"))
+		stubFor(post(urlPathMatching("/dokarkiv/journalpost/(\\d+)/settBrevdata/(ARKIV|PRODUKSJON)"))
 				.willReturn(aResponse()
 						.withStatus(httpStatus.value())
 						.withHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)

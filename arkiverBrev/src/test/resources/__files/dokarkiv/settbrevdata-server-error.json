@@ -3,5 +3,5 @@
   "status": 500,
   "error": "Internal Server Error",
   "message": "Noe feil skjedde",
-  "path": "/rest/internal/journalpostapi/v1/journalpost"
+  "path": "/rest/internal/journalpost"
 }

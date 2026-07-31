@@ -42,7 +42,7 @@ public class DokarkivConsumer {
 	@Retryable(includes = BrevserverTechnicalException.class)
 	public SettBrevdataResponse settBrevdata(long journalpostId, String contentType, byte[] brevdata) {
 		return restClient.post()
-				.uri("/journalpostapi/v1/journalpost/{journalpostId}/settBrevdata/{variantFormat}",
+				.uri("/journalpost/{journalpostId}/settBrevdata/{variantFormat}",
 						journalpostId, mapVariantFormat(contentType))
 				.accept(APPLICATION_JSON)
 				.header(CONTENT_TYPE, mapContentType(contentType))

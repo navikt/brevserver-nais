@@ -109,7 +109,7 @@ public class ArkiverBrevRoutePeIT extends AbstractTest {
 		await().atMost(5, SECONDS).untilAsserted(() -> {
 			String received = receive(SVARKOE);
 			assertThat(received).isEqualTo(createReplyToKvittering(STATUS_LAGRET, PENSJON_SYSTEM_ID, RTF.getContentType(), "0"));
-			verify(postRequestedFor(urlPathMatching("/dokarkiv/journalpostapi/v1/journalpost/" + BREVREFERANSE + "/settBrevdata/PRODUKSJON"))
+			verify(postRequestedFor(urlPathMatching("/dokarkiv/journalpost/" + BREVREFERANSE + "/settBrevdata/PRODUKSJON"))
 					.withHeader(HttpHeaders.CONTENT_TYPE, equalTo("application/rtf"))
 					.withRequestBody(binaryEqualTo(DOKUMENT_KLADD.getBytes())));
 		});
@@ -124,7 +124,7 @@ public class ArkiverBrevRoutePeIT extends AbstractTest {
 		await().atMost(5, SECONDS).untilAsserted(() -> {
 			String received = receive(SVARKOE);
 			assertThat(received).isEqualTo(createReplyToKvittering(STATUS_FERDIG, PENSJON_SYSTEM_ID, PDF.getContentType(), "0"));
-			verify(postRequestedFor(urlPathMatching("/dokarkiv/journalpostapi/v1/journalpost/" + BREVREFERANSE + "/settBrevdata/ARKIV"))
+			verify(postRequestedFor(urlPathMatching("/dokarkiv/journalpost/" + BREVREFERANSE + "/settBrevdata/ARKIV"))
 					.withHeader(HttpHeaders.CONTENT_TYPE, equalTo("application/pdf"))
 					.withRequestBody(binaryEqualTo(DOKUMENT_FERDIG.getBytes())));
 		});
