@@ -1,8 +1,8 @@
 package no.nav.brevserver.hentdokument;
 
+import com.nimbusds.jwt.SignedJWT;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.security.token.support.core.api.Protected;
 import org.springframework.http.HttpStatus;
@@ -11,11 +11,17 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.ParseException;
+import java.util.Arrays;
+import java.util.regex.Pattern;
+
 import static java.lang.String.format;
-import static no.nav.brevserver.core.utils.SafeLoggingUtil.sanitizeUnsafeChar;
+import static java.util.Collections.emptySet;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -29,8 +35,9 @@ import static org.springframework.http.MediaType.valueOf;
 @RequestMapping("rest")
 public class HentDokumentController {
 
-	// Endepunktet er tilpasset OEBS og henting av bilag til det skulle bli behov for noe mer
-	public static final String OEBS_SYSTEMID = "FS10";
+	public static final Pattern OEBS_PATTERN = Pattern.compile("^\\d{1,32}$");
+	public static final Pattern BISYS_PATTERN = Pattern.compile("^BIF\\d{1,29}$");
+
 	private static final String HENTDOKUMENT_FUNKSJONELL_FEILMELDING = "hentdokument feilet funksjonelt med feilmelding: {}";
 
 	private final HentDokumentService hentDokumentService;
@@ -39,19 +46,26 @@ public class HentDokumentController {
 		this.hentDokumentService = hentDokumentService;
 	}
 
-	@GetMapping(value = "/hentdokument/{dokId}")
+	@GetMapping(value = {
+		// denne eksisterer midlertidig for bakoverkompatibilitet med bilag
+		"/hentdokument/{dokId}",
+		"/hentdokument/{dokId}/{system}" })
 	public ResponseEntity<?> hentDokument(
+			@RequestHeader(AUTHORIZATION) String authorization,
 			@PathVariable("dokId")
 			@NotBlank(message = "brevreferanse kan ikke være blank")
-			@Pattern(regexp = "^\\d{1,32}$", message = "brevreferanse må være numerisk og må ha 32 eller færre siffer.")
-			String brevreferanse
+			String brevreferanse,
+			@PathVariable(value = "system", required = false) String system
 	) {
-		log.info("hentdokument henter dokument med brevreferanse={} og systemId={}", brevreferanse, OEBS_SYSTEMID);
+		var hentDokumentSystem = HentDokumentSystem.parse(system);
+		log.info("hentdokument henter dokument med brevreferanse={} og systemId={}", brevreferanse, hentDokumentSystem.getSystemId());
+		oboTokenAuthorizedForSystem(authorization, hentDokumentSystem);
+		validateBrevReferanseForSystem(hentDokumentSystem, brevreferanse);
 
-		Bilag bilag = hentDokumentService.hentDokumentFraBrevlager(brevreferanse, OEBS_SYSTEMID);
+		Bilag bilag = hentDokumentService.hentDokumentFraBrevlager(brevreferanse, hentDokumentSystem.getSystemId());
 
 		if (bilag == null) {
-			log.info("hentdokument fant ikke dokument med brevreferanse={} og systemId={} i databasen", brevreferanse, OEBS_SYSTEMID);
+			log.info("hentdokument fant ikke dokument med brevreferanse={} og systemId={} i databasen", brevreferanse, hentDokumentSystem.getSystemId());
 			return ResponseEntity.notFound().build();
 		}
 
@@ -62,12 +76,25 @@ public class HentDokumentController {
 			return ResponseEntity.notFound().build();
 		}
 
-		log.info("hentdokument hentet dokument med brevreferanse={} og systemId={}", brevreferanse, OEBS_SYSTEMID);
+		log.info("hentdokument hentet dokument med brevreferanse={} og systemId={}", brevreferanse, hentDokumentSystem.getSystemId());
 
 		return ResponseEntity.ok()
 				.contentType(valueOf(contentType))
-				.header(CONTENT_DISPOSITION, format("inline; filename=%s_%s%s", OEBS_SYSTEMID, brevreferanse, mapExtension(contentType)))
+				.header(CONTENT_DISPOSITION, format("inline; filename=%s_%s%s", hentDokumentSystem.getSystemId(), brevreferanse, mapExtension(contentType)))
 				.body(bilag.brevdata());
+	}
+
+	private void validateBrevReferanseForSystem(HentDokumentSystem scope, @NotBlank(message = "brevreferanse kan ikke være blank") String brevreferanse) {
+		switch (scope) {
+			case OEBS -> {
+				if (!OEBS_PATTERN.matcher(brevreferanse).matches())
+					throw new ConstraintViolationException("brevreferanse må være numerisk og må ha 32 eller færre siffer.", emptySet());
+			}
+			case BISYS -> {
+				if (!BISYS_PATTERN.matcher(brevreferanse).matches())
+					throw new ConstraintViolationException("brevreferanse må starte med \"BIF\" etterfulgt av tall, og inneholde maksimalt 32 tegn.", emptySet());
+			}
+		}
 	}
 
 	private String mapExtension(String contentType) {
@@ -93,4 +120,48 @@ public class HentDokumentController {
 				.body(format("\"%s\"", message));
 	}
 
+	private static void oboTokenAuthorizedForSystem(String authorizationHeader, HentDokumentSystem requestedSystem) {
+		try {
+			String token = authorizationHeader.split(" ")[1];
+			SignedJWT decodedJWT = SignedJWT.parse(token);
+
+			String scopes = decodedJWT.getJWTClaimsSet().getStringClaim("scp");
+			if (scopes != null && Arrays.asList(scopes.split("\\s+")).contains(requestedSystem.getScopeName())) {
+				return;
+			}
+			log.warn("hentdokument avvist fordi tokenet ikke inneholder hverken oebs eller bisys-scope. Scopes={}", scopes);
+			throw new KunneIkkeParseTillattScopeException("hentdokument avvist fordi tokenet ikke inneholder påkrevd scope.");
+		} catch (IndexOutOfBoundsException|ParseException e) {
+			log.warn("hentdokument kunne ikke finne scope i token", e);
+			throw new KunneIkkeParseTillattScopeException();
+		}
+	}
+
+	enum HentDokumentSystem {
+		OEBS("FS10"), BISYS("BI12");
+
+		private final String systemId;
+
+		HentDokumentSystem(String systemId) {
+			this.systemId = systemId;
+		}
+
+		public String getSystemId() {
+			return systemId;
+		}
+
+		public String getScopeName() {
+			return name().toLowerCase();
+		}
+
+		public static HentDokumentSystem parse(String system) {
+			return switch (system) {
+				case "bisys" -> BISYS;
+				case "oebs" -> OEBS;
+				// denne er midlertidig frem til bilag er oppdatert
+				case null -> OEBS;
+				default -> throw new RuntimeException("Unknown system!");
+			};
+		}
+	}
 }

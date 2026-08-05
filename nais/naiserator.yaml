@@ -113,6 +113,13 @@ spec:
         - application: {{ app }}
           namespace: {{ namespace }}
           cluster: {{ cluster }}
+          permissions:
+            {{#if scopes}}
+            scopes:
+              {{#each scopes}}
+              - "{{this}}"
+              {{/each}}
+            {{/if}}
       {{/each}}
   {{/if}}
   observability:

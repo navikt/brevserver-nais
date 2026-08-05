@@ -37,7 +37,8 @@
     {
       "app": "bilag",
       "namespace": "teamdokumenthandtering",
-      "cluster": "prod-fss"
+      "cluster": "prod-fss",
+	  "scopes": ["oebs"]
     }
   ]
 }

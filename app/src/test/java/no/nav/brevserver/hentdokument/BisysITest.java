@@ -32,11 +32,12 @@ import static org.springframework.test.context.transaction.TestTransaction.start
 @AutoConfigureTestDatabase
 @AutoConfigureWebTestClient
 @ActiveProfiles("itest")
-public class BilagITest extends AbstractOauth2Test {
-	private static final String OEBS_SYSTEMID = "FS10";
+public class BisysITest extends AbstractOauth2Test {
+	private static final String BISYS_SYSTEMID = "BI12";
 
-	private static final String HENTDOKUMENT_LEGACY_URL = "/rest/hentdokument/{dokid}";
-	private static final String HENTDOKUMENT_URL = "/rest/hentdokument/{dokid}/oebs";
+	private static final String BISYS_SCOPE = "bisys defaultaccess";
+
+	private static final String HENTDOKUMENT_URL = "/rest/hentdokument/{dokid}/bisys";
 
 	@Autowired
 	WebTestClient webTestClient;
@@ -45,9 +46,9 @@ public class BilagITest extends AbstractOauth2Test {
 	BrevRepository brevRepository;
 
 	@Test
-	void skalHenteBilagsdokument() {
-		var dokId = "123";
-		var referanse = new BrevreferanseSystemCompositeId(dokId, OEBS_SYSTEMID);
+	void skalHenteBisysdokument() {
+		var dokId = "BIF123";
+		var referanse = new BrevreferanseSystemCompositeId(dokId, BISYS_SYSTEMID);
 		var bilag = new Brev(referanse, "status", "application/pdf", "brukerId", "brevdata".getBytes(), Timestamp.valueOf(now()));
 		brevRepository.save(bilag);
 		commitAndBeginNewTransaction();
@@ -64,28 +65,8 @@ public class BilagITest extends AbstractOauth2Test {
 		assertThat(response).isEqualTo("brevdata");
 	}
 
-	@Test
-	void skalHenteBilagsdokumentMedLegacyUrl() {
-		var dokId = "123";
-		var referanse = new BrevreferanseSystemCompositeId(dokId, OEBS_SYSTEMID);
-		var bilag = new Brev(referanse, "status", "application/pdf", "brukerId", "brevdata".getBytes(), Timestamp.valueOf(now()));
-		brevRepository.save(bilag);
-		commitAndBeginNewTransaction();
-
-		var response = webTestClient.get()
-			.uri(HENTDOKUMENT_LEGACY_URL, dokId)
-			.headers(authHeader())
-			.exchange()
-			.expectStatus().isOk()
-			.expectBody(String.class)
-			.returnResult()
-			.getResponseBody();
-
-		assertThat(response).isEqualTo("brevdata");
-	}
-
 	@ParameterizedTest
-	@ValueSource(strings = {"123456789012345678901234567890123", "-1", "a", " "})
+	@ValueSource(strings = {"BIF123456789012345678901234567890", "123", "BIF", "BIFabc", "BIF-1", "a", " "})
 	void skalReturnereBadRequestForUgyldigDokId(String dokId) {
 
 		webTestClient.get()
@@ -96,8 +77,8 @@ public class BilagITest extends AbstractOauth2Test {
 	}
 
 	@Test
-	void skalReturnereNotFoundHvisSystemIdIkkeErOebs() {
-		var dokId = "456";
+	void skalReturnereNotFoundHvisSystemIdIkkeErBisys() {
+		var dokId = "BIF456";
 		var systemId = "FS22";
 
 		var referanse = new BrevreferanseSystemCompositeId(dokId, systemId);
@@ -114,10 +95,8 @@ public class BilagITest extends AbstractOauth2Test {
 
 	@Test
 	void skalReturnereNotFoundHvisDokumentIkkeFinnes() {
-		var dokId = "456";
-
 		webTestClient.get()
-				.uri(HENTDOKUMENT_URL, dokId)
+				.uri(HENTDOKUMENT_URL, "BIF456")
 				.headers(authHeader())
 				.exchange()
 				.expectStatus().isNotFound();
@@ -126,8 +105,8 @@ public class BilagITest extends AbstractOauth2Test {
 	@ParameterizedTest
 	@ValueSource(strings = {"application/msword.docx", "text/rtf"})
 	void skalReturnereNotFoundHvisDokumenttypenIkkeErPdf(String contentType) {
-		var dokId = "789";
-		var referanse = new BrevreferanseSystemCompositeId(dokId, OEBS_SYSTEMID);
+		var dokId = "BIF789";
+		var referanse = new BrevreferanseSystemCompositeId(dokId, BISYS_SYSTEMID);
 		var bilag = new Brev(referanse, "status", contentType, "brukerId", "brevdata".getBytes(), Timestamp.valueOf(now()));
 		brevRepository.save(bilag);
 		commitAndBeginNewTransaction();
@@ -139,8 +118,31 @@ public class BilagITest extends AbstractOauth2Test {
 				.expectStatus().isNotFound();
 	}
 
+	@ParameterizedTest
+	@ValueSource(strings = {"ikke-oebs", "ikke-bisys", "defaultaccess"})
+	void skalReturnereUnauthorizedForUgyldigScope(String scope) {
+		webTestClient.get()
+				.uri(HENTDOKUMENT_URL, "BIF123")
+				.headers(authHeader(scope))
+				.exchange()
+				.expectStatus().isUnauthorized();
+	}
+
+	@Test
+	void skalReturnereUnauthorizedHvisScopeMangler() {
+		webTestClient.get()
+				.uri(HENTDOKUMENT_URL, "BIF123")
+				.headers(headers -> headers.setBearerAuth(jwt()))
+				.exchange()
+				.expectStatus().isUnauthorized();
+	}
+
 	private Consumer<HttpHeaders> authHeader() {
-		return headers -> headers.setBearerAuth(jwt("oebs defaultaccess"));
+		return authHeader(BISYS_SCOPE);
+	}
+
+	private Consumer<HttpHeaders> authHeader(String scope) {
+		return headers -> headers.setBearerAuth(jwt(scope));
 	}
 
 	private static void commitAndBeginNewTransaction() {
