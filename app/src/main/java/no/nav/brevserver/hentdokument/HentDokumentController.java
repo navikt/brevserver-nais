@@ -50,7 +50,7 @@ public class HentDokumentController {
 	@GetMapping(value = {
 		// denne eksisterer midlertidig for bakoverkompatibilitet med bilag
 		"/hentdokument/{dokId}",
-		"/hentdokument/{dokId}/{system}" })
+		"/hentdokument/{system}/{dokId}" })
 	public ResponseEntity<?> hentDokument(
 			@RequestHeader(AUTHORIZATION) String authorization,
 			@PathVariable("dokId")

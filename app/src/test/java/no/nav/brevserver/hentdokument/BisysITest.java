@@ -37,7 +37,7 @@ public class BisysITest extends AbstractOauth2Test {
 
 	private static final String BISYS_SCOPE = "bisys defaultaccess";
 
-	private static final String HENTDOKUMENT_URL = "/rest/hentdokument/{dokid}/bisys";
+	private static final String HENTDOKUMENT_BISYS_URL = "/rest/hentdokument/bisys/{dokid}";
 
 	@Autowired
 	WebTestClient webTestClient;
@@ -54,7 +54,7 @@ public class BisysITest extends AbstractOauth2Test {
 		commitAndBeginNewTransaction();
 
 		var response = webTestClient.get()
-				.uri(HENTDOKUMENT_URL, dokId)
+				.uri(HENTDOKUMENT_BISYS_URL, dokId)
 				.headers(authHeader())
 				.exchange()
 				.expectStatus().isOk()
@@ -70,7 +70,7 @@ public class BisysITest extends AbstractOauth2Test {
 	void skalReturnereBadRequestForUgyldigDokId(String dokId) {
 
 		webTestClient.get()
-				.uri(HENTDOKUMENT_URL, dokId)
+				.uri(HENTDOKUMENT_BISYS_URL, dokId)
 				.headers(authHeader())
 				.exchange()
 				.expectStatus().isBadRequest();
@@ -87,7 +87,7 @@ public class BisysITest extends AbstractOauth2Test {
 		commitAndBeginNewTransaction();
 
 		webTestClient.get()
-				.uri(HENTDOKUMENT_URL, dokId)
+				.uri(HENTDOKUMENT_BISYS_URL, dokId)
 				.headers(authHeader())
 				.exchange()
 				.expectStatus().isNotFound();
@@ -96,7 +96,7 @@ public class BisysITest extends AbstractOauth2Test {
 	@Test
 	void skalReturnereNotFoundHvisDokumentIkkeFinnes() {
 		webTestClient.get()
-				.uri(HENTDOKUMENT_URL, "BIF456")
+				.uri(HENTDOKUMENT_BISYS_URL, "BIF456")
 				.headers(authHeader())
 				.exchange()
 				.expectStatus().isNotFound();
@@ -112,7 +112,7 @@ public class BisysITest extends AbstractOauth2Test {
 		commitAndBeginNewTransaction();
 
 		webTestClient.get()
-				.uri(HENTDOKUMENT_URL, dokId)
+				.uri(HENTDOKUMENT_BISYS_URL, dokId)
 				.headers(authHeader())
 				.exchange()
 				.expectStatus().isNotFound();
@@ -121,10 +121,10 @@ public class BisysITest extends AbstractOauth2Test {
 	@ParameterizedTest
 	@ValueSource(strings = {"ugyldig", "BISYS", "OEBS", "biys", "foo"})
 	void skalReturnereNotFoundNaarSystemHverkenErOebsEllerBisys(String system) {
-		var hentDokumentUrl = "/rest/hentdokument/{dokid}/" + system;
+		var hentDokumentUrl = "/rest/hentdokument/{system}/{dokid}";
 
 		webTestClient.get()
-				.uri(hentDokumentUrl, "BIF123")
+				.uri(hentDokumentUrl, system, "BIF123")
 				.headers(authHeader())
 				.exchange()
 				.expectStatus().isNotFound()
@@ -136,7 +136,7 @@ public class BisysITest extends AbstractOauth2Test {
 	@ValueSource(strings = {"ikke-oebs", "ikke-bisys", "defaultaccess"})
 	void skalReturnereUnauthorizedForUgyldigScope(String scope) {
 		webTestClient.get()
-				.uri(HENTDOKUMENT_URL, "BIF123")
+				.uri(HENTDOKUMENT_BISYS_URL, "BIF123")
 				.headers(authHeader(scope))
 				.exchange()
 				.expectStatus().isUnauthorized();
@@ -145,7 +145,7 @@ public class BisysITest extends AbstractOauth2Test {
 	@Test
 	void skalReturnereUnauthorizedHvisScopeMangler() {
 		webTestClient.get()
-				.uri(HENTDOKUMENT_URL, "BIF123")
+				.uri(HENTDOKUMENT_BISYS_URL, "BIF123")
 				.headers(headers -> headers.setBearerAuth(jwt()))
 				.exchange()
 				.expectStatus().isUnauthorized();

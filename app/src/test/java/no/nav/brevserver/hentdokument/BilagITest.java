@@ -36,7 +36,7 @@ public class BilagITest extends AbstractOauth2Test {
 	private static final String OEBS_SYSTEMID = "FS10";
 
 	private static final String HENTDOKUMENT_LEGACY_URL = "/rest/hentdokument/{dokid}";
-	private static final String HENTDOKUMENT_URL = "/rest/hentdokument/{dokid}/oebs";
+	private static final String HENTDOKUMENT_URL = "/rest/hentdokument/oebs/{dokid}";
 
 	@Autowired
 	WebTestClient webTestClient;
