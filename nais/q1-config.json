@@ -36,7 +36,8 @@
     {
       "app": "bilag-q1",
       "namespace": "teamdokumenthandtering",
-      "cluster": "dev-fss"
+      "cluster": "dev-fss",
+	  "scopes": ["oebs"]
     }
   ]
 }
