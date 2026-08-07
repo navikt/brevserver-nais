@@ -119,6 +119,20 @@ public class BisysITest extends AbstractOauth2Test {
 	}
 
 	@ParameterizedTest
+	@ValueSource(strings = {"ugyldig", "BISYS", "OEBS", "biys", "foo"})
+	void skalReturnereNotFoundNaarSystemHverkenErOebsEllerBisys(String system) {
+		var hentDokumentUrl = "/rest/hentdokument/{dokid}/" + system;
+
+		webTestClient.get()
+				.uri(hentDokumentUrl, "BIF123")
+				.headers(authHeader())
+				.exchange()
+				.expectStatus().isNotFound()
+				.expectBody(String.class)
+				.isEqualTo("\"System %s not found. Must be oebs or bisys\"".formatted(system));
+	}
+
+	@ParameterizedTest
 	@ValueSource(strings = {"ikke-oebs", "ikke-bisys", "defaultaccess"})
 	void skalReturnereUnauthorizedForUgyldigScope(String scope) {
 		webTestClient.get()

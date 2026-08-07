@@ -24,6 +24,7 @@ import static java.util.Collections.emptySet;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.MediaType.APPLICATION_PDF_VALUE;
 import static org.springframework.http.MediaType.valueOf;
@@ -84,8 +85,8 @@ public class HentDokumentController {
 				.body(bilag.brevdata());
 	}
 
-	private void validateBrevReferanseForSystem(HentDokumentSystem scope, @NotBlank(message = "brevreferanse kan ikke være blank") String brevreferanse) {
-		switch (scope) {
+	private void validateBrevReferanseForSystem(HentDokumentSystem system, @NotBlank(message = "brevreferanse kan ikke være blank") String brevreferanse) {
+		switch (system) {
 			case OEBS -> {
 				if (!OEBS_PATTERN.matcher(brevreferanse).matches())
 					throw new ConstraintViolationException("brevreferanse må være numerisk og må ha 32 eller færre siffer.", emptySet());
@@ -112,6 +113,13 @@ public class HentDokumentController {
 		log.warn(HENTDOKUMENT_FUNKSJONELL_FEILMELDING, e.getMessage(), e);
 
 		return getResponseEntity(BAD_REQUEST, e.getMessage());
+	}
+
+	@ExceptionHandler(UgyldigSystemForHentDokumentException.class)
+	public ResponseEntity<Object> ugyldigSystemExceptionHandler(UgyldigSystemForHentDokumentException e) {
+		log.warn(HENTDOKUMENT_FUNKSJONELL_FEILMELDING, e.getMessage(), e);
+
+		return getResponseEntity(NOT_FOUND, e.getMessage());
 	}
 
 	private static ResponseEntity<Object> getResponseEntity(HttpStatus status, String message) {
@@ -160,7 +168,7 @@ public class HentDokumentController {
 				case "oebs" -> OEBS;
 				// denne er midlertidig frem til bilag er oppdatert
 				case null -> OEBS;
-				default -> throw new RuntimeException("Unknown system!");
+				default -> throw new UgyldigSystemForHentDokumentException(system);
 			};
 		}
 	}
