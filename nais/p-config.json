@@ -38,7 +38,13 @@
       "app": "bilag",
       "namespace": "teamdokumenthandtering",
       "cluster": "prod-fss",
-	  "scopes": ["oebs"]
+      "scopes": ["oebs"]
+    },
+    {
+      "app": "bidrag-dokument-journalpost",
+      "namespace": "bidrag",
+      "cluster": "prod-fss",
+      "scopes": ["bisys"]
     }
   ]
 }

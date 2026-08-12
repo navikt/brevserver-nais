@@ -37,7 +37,13 @@
       "app": "bilag-q1",
       "namespace": "teamdokumenthandtering",
       "cluster": "dev-fss",
-	  "scopes": ["oebs"]
+      "scopes": ["oebs"]
+    },
+    {
+      "app": "bidrag-dokument-journalpost-feature",
+      "namespace": "bidrag",
+      "cluster": "dev-fss",
+      "scopes": ["bisys"]
     }
   ]
 }
