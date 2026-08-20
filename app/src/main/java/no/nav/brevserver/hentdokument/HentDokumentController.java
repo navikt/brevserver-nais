@@ -60,7 +60,7 @@ public class HentDokumentController {
 	) {
 		var hentDokumentSystem = HentDokumentSystem.parse(system);
 		log.info("hentdokument henter dokument med brevreferanse={} og systemId={}", brevreferanse, hentDokumentSystem.getSystemId());
-		oboTokenAuthorizedForSystem(authorization, hentDokumentSystem);
+		tokenAuthorizedForSystem(authorization, hentDokumentSystem);
 		validateBrevReferanseForSystem(hentDokumentSystem, brevreferanse);
 
 		Bilag bilag = hentDokumentService.hentDokumentFraBrevlager(brevreferanse, hentDokumentSystem.getSystemId());
@@ -128,19 +128,28 @@ public class HentDokumentController {
 				.body(format("\"%s\"", message));
 	}
 
-	private static void oboTokenAuthorizedForSystem(String authorizationHeader, HentDokumentSystem requestedSystem) {
+	private static void tokenAuthorizedForSystem(String authorizationHeader, HentDokumentSystem requestedSystem) {
 		try {
 			String token = authorizationHeader.split(" ")[1];
 			SignedJWT decodedJWT = SignedJWT.parse(token);
 
-			String scopes = decodedJWT.getJWTClaimsSet().getStringClaim("scp");
-			if (scopes != null && Arrays.asList(scopes.split("\\s+")).contains(requestedSystem.getScopeName())) {
-				return;
+			boolean tokenIsMachineToMachine = "app".equals(decodedJWT.getJWTClaimsSet().getClaimAsString("idtyp"));
+			if (tokenIsMachineToMachine) {
+				String roles = decodedJWT.getJWTClaimsSet().getClaimAsString("roles");
+				if (roles != null && Arrays.asList(roles.split("\\s+")).contains(requestedSystem.getScopeName())) {
+					return;
+				}
+				log.warn("hentdokument avvist fordi tokenet er et maskin-til-maskin token som ikke inneholder hverken oebs eller bisys-role. Roles={}", roles);
+			} else {
+				String scopes = decodedJWT.getJWTClaimsSet().getClaimAsString("scp");
+				if (scopes != null && Arrays.asList(scopes.split("\\s+")).contains(requestedSystem.getScopeName())) {
+					return;
+				}
+				log.warn("hentdokument avvist fordi tokenet er et OBO-token som ikke inneholder hverken oebs eller bisys-scope. Scopes={}", scopes);
 			}
-			log.warn("hentdokument avvist fordi tokenet ikke inneholder hverken oebs eller bisys-scope. Scopes={}", scopes);
-			throw new KunneIkkeParseTillattScopeException("hentdokument avvist fordi tokenet ikke inneholder påkrevd scope.");
+			throw new KunneIkkeParseTillattScopeException("hentdokument avvist fordi tokenet ikke inneholder påkrevd scope eller role.");
 		} catch (IndexOutOfBoundsException|ParseException e) {
-			log.warn("hentdokument kunne ikke finne scope i token", e);
+			log.warn("hentdokument kunne ikke finne scope eller role i token", e);
 			throw new KunneIkkeParseTillattScopeException();
 		}
 	}

@@ -30,6 +30,10 @@ public abstract class AbstractOauth2Test {
 		return jwt(ofEntries(entry("oid", OID), entry("scp", scp)));
 	}
 
+	public String jwtMachinToMachine(String roles) {
+		return jwt(ofEntries(entry("oid", OID), entry("idtyp", "app"), entry("roles", roles)));
+	}
+
 	private String jwt(Map<String, String> claims) {
 		String audience = "brevserver-nais";
 		return mockOAuth2Server.issueToken(
