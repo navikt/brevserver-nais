@@ -1,18 +1,8 @@
-# ⚠️  Les dette før du opensourcer dette repoet: ⚠️
-
-# ⚠️ Pull-Request-historikken i dette repoet inneholder lisensbelagte filer! ⚠️
-
-Selv om selve git-historikken i dette repoet er "vasket" nå, inneholder noen av PR-ene i dette repoet fortsatt
-lisensbelagte filer. Det er to måter å håndtere det om dette repoet skal opensources:
-
-1. kontakt github kundeservice, og få dem til å slette PR-ene i dette repoet
-2. Lag et nytt, åpent github-repo, men bruk samme git-repo. Slett/arkiver det opprinnelige github-repoet.
-
 # Brevserver-nais
 
-Brevserver-nais består av gamle tjenester for å bestille og redigere brev fra fagsystemene. Brukes av pesys, bisys, økonomi og skatt (++ ?). 
+Brevserver-nais består av gamle tjenester for å bestille og redigere brev fra fagsystemene. Brukes av pesys, bisys, økonomi og skatt (++ ?).
 
-For mer informasjon (confluencen for gamle brevserver; overordnet fungerer brevserver-nais på samme måte): [confluence](https://confluence.adeo.no/display/BOA/Brevserver+-+Komponenter+og+programmer)
+For mer informasjon (confluencen for gamle brevserver; overordnet fungerer brevserver-nais på samme måte): [confluence (Nav-internt)](https://confluence.adeo.no/display/BOA/Brevserver+-+Komponenter+og+programmer)
 
 Brevserver består av mq-tjenester for å bestille/arkivere brev og web-tjenester for å redigere disse.
 
@@ -28,11 +18,31 @@ Typisk ser løpet slik ut:
 
 Skatt / økonomi / bidrag har også løp hvor de kun bruker brevserver til å arkivere ferdige pdf'er, uten å redigere disse. Det blir da lagt en melding til arkiverBrev som vanlig.
 
-### Kjøre prosjektet lokalt
-For å kjøre opp applikasjonen lokal, bruk profile `nais` og systemvariabler hentet fra vault: [System variabler](https://vault.adeo.no/ui/vault/secrets/secret/list/dokument/brevserver/q1/) 
+## Komme i gang
 
-### Bygge app.jar og kjøre tester
-`mvn clean package`/`mvn clean install`
+Kjør tester og bygg appen
 
-### Henvendelser
-Spørsmål om koden eller prosjektet kan rettes til [Slack-kanalen for \#Team Dokumentløsninger](https://nav-it.slack.com/archives/C6W9E5GPJ).
+```
+mvn clean verify
+```
+
+---
+
+## Henvendelser
+
+Lag en issue i repository.
+
+## Hva er grunnen til at dette repoet ikke er Public?
+
+1. Pull Request historikk og git-historikk inneholder et par filer med personopplysninger som må vaskes først
+2. Pull Request historikken inneholder en lisensfil
+
+Pull requests må bes slettes av github support og git historikk må vaskes
+
+### For Nav-ansatte
+
+Spørsmål om appen kan stilles på [#team_dokumentløsninger](https://nav-it.slack.com/archives/C6W9E5GPJ)
+
+## Lisens
+
+[MIT](LICENSE.md)
