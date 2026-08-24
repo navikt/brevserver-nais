@@ -17,9 +17,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.text.ParseException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import static java.lang.String.format;
+import static java.util.Collections.emptyList;
 import static java.util.Collections.emptySet;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
@@ -135,8 +137,9 @@ public class HentDokumentController {
 
 			boolean tokenIsMachineToMachine = "app".equals(decodedJWT.getJWTClaimsSet().getClaimAsString("idtyp"));
 			if (tokenIsMachineToMachine) {
-				String roles = decodedJWT.getJWTClaimsSet().getClaimAsString("roles");
-				if (roles != null && Arrays.asList(roles.split("\\s+")).contains(requestedSystem.getScopeName())) {
+				String[] rolesArray = decodedJWT.getJWTClaimsSet().getStringArrayClaim("roles");
+				List<String> roles = rolesArray != null ? List.of(rolesArray) : emptyList();
+				if (roles.contains(requestedSystem.getScopeName())) {
 					return;
 				}
 				log.warn("hentdokument avvist fordi tokenet er et maskin-til-maskin token som ikke inneholder hverken oebs eller bisys-role. Roles={}", roles);

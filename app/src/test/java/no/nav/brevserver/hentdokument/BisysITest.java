@@ -152,7 +152,7 @@ public class BisysITest extends AbstractOauth2Test {
 
 		var response = webTestClient.get()
 				.uri(HENTDOKUMENT_BISYS_URL, dokId)
-				.headers(headers -> headers.setBearerAuth(jwtMachinToMachine("bisys")))
+				.headers(headers -> headers.setBearerAuth(jwtMachineToMachine("bisys")))
 				.exchange()
 				.expectStatus().isOk()
 				.expectBody(String.class)
@@ -167,7 +167,7 @@ public class BisysITest extends AbstractOauth2Test {
 	void skalReturnereUnauthorizedForUgyldigRolleMedMaskinTilMaskinToken(String role) {
 		webTestClient.get()
 				.uri(HENTDOKUMENT_BISYS_URL, "BIF123")
-				.headers(headers -> headers.setBearerAuth(jwtMachinToMachine(role)))
+				.headers(headers -> headers.setBearerAuth(jwtMachineToMachine(role)))
 				.exchange()
 				.expectStatus().isUnauthorized();
 	}
