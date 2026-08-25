@@ -143,6 +143,36 @@ public class BisysITest extends AbstractOauth2Test {
 	}
 
 	@Test
+	void skalHenteBisysdokumentMedMaskinTilMaskinTokenMedBisysRole() {
+		var dokId = "BIF123";
+		var referanse = new BrevreferanseSystemCompositeId(dokId, BISYS_SYSTEMID);
+		var bilag = new Brev(referanse, "status", "application/pdf", "brukerId", "brevdata".getBytes(), Timestamp.valueOf(now()));
+		brevRepository.save(bilag);
+		commitAndBeginNewTransaction();
+
+		var response = webTestClient.get()
+				.uri(HENTDOKUMENT_BISYS_URL, dokId)
+				.headers(headers -> headers.setBearerAuth(jwtMachineToMachine("bisys")))
+				.exchange()
+				.expectStatus().isOk()
+				.expectBody(String.class)
+				.returnResult()
+				.getResponseBody();
+
+		assertThat(response).isEqualTo("brevdata");
+	}
+
+	@ParameterizedTest
+	@ValueSource(strings = {"ikke-oebs", "ikke-bisys", "defaultaccess"})
+	void skalReturnereUnauthorizedForUgyldigRolleMedMaskinTilMaskinToken(String role) {
+		webTestClient.get()
+				.uri(HENTDOKUMENT_BISYS_URL, "BIF123")
+				.headers(headers -> headers.setBearerAuth(jwtMachineToMachine(role)))
+				.exchange()
+				.expectStatus().isUnauthorized();
+	}
+
+	@Test
 	void skalReturnereUnauthorizedHvisScopeMangler() {
 		webTestClient.get()
 				.uri(HENTDOKUMENT_BISYS_URL, "BIF123")

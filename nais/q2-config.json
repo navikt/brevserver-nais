@@ -37,6 +37,7 @@
       "app": "bidrag-dokument-journalpost",
       "namespace": "bidrag",
       "cluster": "dev-fss",
+      "roles": ["bisys"],
       "scopes": ["bisys"]
     }
   ]

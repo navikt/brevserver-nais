@@ -30,7 +30,11 @@ public abstract class AbstractOauth2Test {
 		return jwt(ofEntries(entry("oid", OID), entry("scp", scp)));
 	}
 
-	private String jwt(Map<String, String> claims) {
+	public String jwtMachineToMachine(String roles) {
+		return jwt(ofEntries(entry("oid", OID), entry("idtyp", "app"), entry("roles", List.of(roles))));
+	}
+
+	private String jwt(Map<String, Object> claims) {
 		String audience = "brevserver-nais";
 		return mockOAuth2Server.issueToken(
 				AZUREV2_ISSUER,

@@ -114,6 +114,12 @@ spec:
           namespace: {{ namespace }}
           cluster: {{ cluster }}
           permissions:
+            {{#if roles}}
+            roles:
+              {{#each roles}}
+              - "{{this}}"
+              {{/each}}
+            {{/if}}
             {{#if scopes}}
             scopes:
               {{#each scopes}}
