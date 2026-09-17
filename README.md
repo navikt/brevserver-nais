@@ -32,13 +32,6 @@ mvn clean verify
 
 Lag en issue i repository.
 
-## Hva er grunnen til at dette repoet ikke er Public?
-
-1. Pull Request historikk og git-historikk inneholder et par filer med personopplysninger som må vaskes først
-2. Pull Request historikken inneholder en lisensfil
-
-Pull requests må bes slettes av github support og git historikk må vaskes
-
 ### For Nav-ansatte
 
 Spørsmål om appen kan stilles på [#team_dokumentløsninger](https://nav-it.slack.com/archives/C6W9E5GPJ)
